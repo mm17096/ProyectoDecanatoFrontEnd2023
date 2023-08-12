@@ -24,6 +24,7 @@ export class TopbarComponent implements OnInit {
   flagvalue;
   countryName;
   valueset;
+  icono: string = 'fa fa-fw fa-bars';
 
   constructor(@Inject(DOCUMENT) private document: any, private router: Router, private authService: AuthenticationService,
               private authFackservice: AuthfakeauthenticationService,
@@ -79,6 +80,11 @@ export class TopbarComponent implements OnInit {
   toggleMobileMenu(event: any) {
     event.preventDefault();
     this.mobileMenuButtonClicked.emit();
+    if(this.icono == 'fa fa-fw fa-bars'){
+      this.icono = 'fas fa-arrow-right';
+    }else if(this.icono == 'fas fa-arrow-right'){
+      this.icono = 'fa fa-fw fa-bars';
+    }
   }
 
   /**

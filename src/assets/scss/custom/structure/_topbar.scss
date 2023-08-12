@@ -19,7 +19,9 @@
     align-items: center;
     margin: 0 auto;
     height: $header-height;
-    padding: 0 calc(#{$grid-gutter-width} / 2) 0 0 /*rtl: 0 0 0 calc(#{$grid-gutter-width} / 2) */;
+    padding: 0 calc(#{$grid-gutter-width} / 2) 0 0
+    /*rtl: 0 0 0 calc(#{$grid-gutter-width} / 2) */
+    ;
 
     .dropdown .show {
         &.header-item {
@@ -60,6 +62,7 @@
         box-shadow: none;
         border-radius: 30px;
     }
+
     span {
         position: absolute;
         z-index: 10;
@@ -74,10 +77,11 @@
 // Mega menu
 
 .megamenu-list {
-    li{
+    li {
         position: relative;
         padding: 5px 0px;
-        a{
+
+        a {
             color: $dropdown-color;
         }
     }
@@ -183,9 +187,10 @@
 }
 
 body[data-topbar="dark"] {
-    #page-topbar { 
+    #page-topbar {
         background-color: $header-dark-bg;
     }
+
     .navbar-header {
         .dropdown .show {
             &.header-item {
@@ -200,7 +205,7 @@ body[data-topbar="dark"] {
 
     .header-item {
         color: $header-dark-item-color;
-    
+
         &:hover {
             color: $header-dark-item-color;
         }
@@ -209,7 +214,7 @@ body[data-topbar="dark"] {
     .header-profile-user {
         background-color: rgba($white, 0.25);
     }
-    
+
     .noti-icon {
         i {
             color: $header-dark-item-color;
@@ -225,21 +230,22 @@ body[data-topbar="dark"] {
     }
 
     .app-search {
-    
+
         .form-control {
-            background-color: rgba($topbar-search-bg,0.07);
+            background-color: rgba($topbar-search-bg, 0.07);
             color: $white;
         }
+
         span,
         input.form-control::-webkit-input-placeholder {
-            color: rgba($white,0.5);
+            color: rgba($white, 0.5);
         }
     }
 }
 
 body[data-sidebar="dark"] {
     .navbar-brand-box {
-        background: $sidebar-dark-bg;
+        background: #550000;
     }
 
     .logo-dark {
@@ -250,6 +256,17 @@ body[data-sidebar="dark"] {
         display: block;
     }
 }
+
+@media (max-width: 600px) {
+    .navbar-header {
+        .dropdown {
+            position: static;
+            left: 10px !important;
+            right: 10px !important;
+        }
+    }
+}
+
 
 @media (max-width: 600px) {
     .navbar-header {
@@ -274,16 +291,195 @@ body[data-layout="horizontal"] {
     .navbar-brand-box {
         width: auto;
     }
+
     .page-content {
         margin-top: $header-height;
         padding: calc(55px + #{$grid-gutter-width}) calc(#{$grid-gutter-width} / 2) $footer-height calc(#{$grid-gutter-width} / 2);
-    }    
+    }
 }
 
-@media (max-width: 992px) { 
+@media (max-width: 992px) {
     body[data-layout="horizontal"] {
         .page-content {
             margin-top: 15px;
-        }    
+        }
     }
 }
+
+
+
+////// Variables usuario info & imagen superior/////////////
+.container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .vertical-line {
+    border-left: 1px solid white;
+    /* Puedes ajustar el color y el grosor de la línea aquí */
+    height: 50px;
+    /* Ajusta la altura de la línea según tus necesidades */
+    margin: 0 10px;
+    /* Ajusta el margen izquierdo y derecho para separar la línea del contenido */
+  }
+  
+  .content {
+    display: flex;
+    align-items: center;
+  }
+  
+  .header-profile-user {
+    width: 50px;
+    /* Ajusta el tamaño de la imagen según tus necesidades */
+    height: 50px;
+    /* Ajusta el tamaño de la imagen según tus necesidades */
+    margin: 0px;
+    /* Ajusta el margen derecho para separar la imagen del botón */
+  }
+  
+  .header-profile-name {
+    margin-left: -10px;
+    margin-top: 10px;
+  }
+  
+  .user-text {
+    font-size: 10px;
+    margin-left: -45px;
+  }
+  
+  /* Estilos responsivos */
+  @media screen and (max-width: 1200px) {
+    .constainer {
+      position: static;
+      width: 15%;
+    }
+  
+    .content {
+      position: static;
+      width: 100%;
+      padding-right: 100px !important;
+    }
+  }
+  
+  @media screen and (max-width: 995px) {
+    .constainer {
+      padding: 10px;
+      width: 25%;
+    }
+  
+    .search {
+      padding-top: 5px !important;
+      padding-right: 30px !important;
+    }
+  }
+  
+  @media screen and (max-width: 970px) {
+    .constainer {
+      padding: 10px;
+      width: 27%;
+    }
+  
+    .content {
+      padding-right: 150px !important;
+    }
+  }
+  
+  @media screen and (max-width: 920px) {
+    .constainer {
+      padding: 10px;
+      width: 30%;
+    }
+  }
+  
+  @media screen and (max-width: 820px) {
+    .constainer {
+      width: 34%;
+    }
+  
+  }
+  
+  @media screen and (max-width: 730px) {
+    .constainer {
+      width: 37%;
+    }
+  }
+  
+  @media screen and (max-width: 665px) {
+    .constainer {
+      width: 39%;
+    }
+  }
+  
+  @media screen and (max-width: 635px) {
+    .constainer {
+      width: 40%;
+    }
+  }
+  
+  @media screen and (max-width: 620px) {
+    .constainer {
+      width: 42%;
+    }
+  }
+  
+  @media screen and (max-width: 600px) {
+    .search {
+      padding-top: 7px !important;
+    }
+  }
+  
+  @media screen and (max-width: 590px) {
+    .constainer {
+      width: 44%;
+    }
+  }
+  
+  @media screen and (max-width: 555px) {
+    .constainer {
+      width: 47%;
+    }
+  }
+  
+  @media screen and (max-width: 525px) {
+    .constainer {
+      width: 49%;
+    }
+  }
+  
+  @media screen and (max-width: 510px) {
+    .constainer {
+      width: 51%;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .constainer {
+      width: 53%;
+    }
+  }
+  
+  
+  @media screen and (max-width: 460px) {
+    .constainer {
+      width: 55%;
+    }
+  }
+  
+  @media screen and (max-width: 440px) {
+    .constainer {
+      width: 57%;
+    }
+  }
+  
+  @media screen and (max-width: 425px) {
+    .constainer {
+      width: 60%;
+    }
+  }
+  
+  @media screen and (max-width: 410px) {
+    .constainer {
+      width: 62%;
+    }
+  }
+////// Variables usuario info & imagen superior/////////////

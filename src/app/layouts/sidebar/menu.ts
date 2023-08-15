@@ -11,7 +11,6 @@ export const MENU: MenuItem[] = [
         label: 'Inicio',
         icon: 'bx-home-circle',
         link: '/dashboard',
-
     },
     {
         id: 3,
@@ -49,5 +48,18 @@ export const MENU: MenuItem[] = [
             },
         ],
     },
+    {
+        id: 123,
+        label: "MENUITEMS.MAPS.TEXT",
+        icon: "bx-map",
+        subItems: [
+          {
+            id: 124,
+            label: "MENUITEMS.MAPS.LIST.GOOGLEMAP",
+            link: "/maps/google",
+            parentId: 123,
+          },
+        ],
+      }
 ];
 

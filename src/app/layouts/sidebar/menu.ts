@@ -67,6 +67,25 @@ export const MENU: MenuItem[] = [
           },
       ],
   },
+   {
+        id: 8,
+        label: "Solicitudes de vales",
+        icon: "bx-user-circle",
+        subItems: [
+            {
+                id: 9,
+                label: "Lista de vales",
+                link: "/solicitudes/solicitudvale",
+                parentId: 8,
+            },
+            {
+                id: 10,
+                label: "solictudes de vahiculos",
+                link: "/solicitudes/solicitudv",
+                parentId: 8,
+            },
+        ],
+    },
     {
         id: 123,
         label: "MENUITEMS.MAPS.TEXT",

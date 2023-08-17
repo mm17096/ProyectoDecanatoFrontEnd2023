@@ -72,13 +72,13 @@ export const MENU: MenuItem[] = [
         label: "MENUITEMS.MAPS.TEXT",
         icon: "bx-map",
         subItems: [
-          {
-            id: 124,
-            label: "MENUITEMS.MAPS.LIST.GOOGLEMAP",
-            link: "/maps/google",
-            parentId: 123,
-          },
+            {
+                id: 124,
+                label: "MENUITEMS.MAPS.LIST.GOOGLEMAP",
+                link: "/maps/google",
+                parentId: 123,
+            },
         ],
-      }
+    }
 ];
 

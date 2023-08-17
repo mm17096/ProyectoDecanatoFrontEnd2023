@@ -1,0 +1,42 @@
+<div class="table-responsive mb-0">
+    <table class="table table-centered table-nowrap">
+        <thead class="table-light">
+            <tr>
+                <th class="align-middle text-center">DUI</th>
+                <th class="align-middle text-center">Nombre</th>
+                <th class="align-middle text-center">Cargo</th>
+                <th class="align-middle text-center">Departamento</th>
+                <th class="align-middle text-center">Jefe</th>
+                <th class="align-middle text-center">Correo</th>
+                <th class="align-middle text-center">Estado</th>
+                <th class="align-middle text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let empleado of empleadostabla">
+                <td class="align-middle text-center">{{ empleado.dui }}</td>
+                <td class="align-middle text-center">{{ empleado.nombre + ' ' + empleado.apellido }}</td>
+                <td class="align-middle text-center">{{ empleado.cargo }}</td>
+                <td class="align-middle text-center">{{ empleado.departamento }}</td>
+                <td class="align-middle text-center">{{ empleado.jefe }}</td>
+                <td class="align-middle text-center">{{ empleado.correo }}</td>
+                <td class="align-middle text-center">{{ empleado.estado }}</td>
+                <td class="align-middle text-center text-center">
+                    <button type="button" class="btn btn-primary btn-sm btn-rounded mx-1">
+                        <i class="mdi mdi-account-details-outline"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-primary btn-sm btn-rounded mx-1">
+                        <i class="mdi mdi-account-edit-outline"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-primary btn-sm btn-rounded mx-1">
+                        <i class="mdi mdi-account-lock-outline"></i>
+                        <!-- mdi-account-check-outline -->
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<!-- end table -->

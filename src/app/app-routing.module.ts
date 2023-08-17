@@ -14,6 +14,9 @@ const routes: Routes = [
   { path: 'asignacionVale', component: LayoutComponent, loadChildren: () => import('./modules/asignacion-vales/asignacion-vales.module').then(m => m.AsignacionValesModule), canActivate: [AuthGuard] },
   { path: 'crypto-ico-landing', component: CyptolandingComponent },
 
+  //Ruta de empleado //
+  { path: 'empleados', component: LayoutComponent, loadChildren: () => import('./modules/empleado/empleado.module').then(m => m.EmpleadoModule), canActivate: [AuthGuard] },
+  
   { path: '**', component: Page404Component },
 ];
 

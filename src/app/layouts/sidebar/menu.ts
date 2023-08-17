@@ -49,6 +49,25 @@ export const MENU: MenuItem[] = [
         ],
     },
     {
+      id: 7,
+      label: "Vales",
+      icon: "bx-user-circle",
+      subItems: [
+          {
+              id: 8,
+              label: "Solicitudes",
+              link: "/empleados",
+              parentId: 7,
+          },
+          {
+              id: 9,
+              label: "Asignaciones",
+              link: "/asignacionVale/asignaciones",
+              parentId: 7,
+          },
+      ],
+  },
+    {
         id: 123,
         label: "MENUITEMS.MAPS.TEXT",
         icon: "bx-map",

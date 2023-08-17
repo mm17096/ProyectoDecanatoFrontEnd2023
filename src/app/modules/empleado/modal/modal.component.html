@@ -1,0 +1,82 @@
+<span *ngIf="leyenda !== titulo">
+    <div class="text-sm-end">
+        <button type="button" class="btn btn-primary btn-rounded" (click)="openModal(content)">{{titulo}}
+        </button>
+    </div>
+</span>
+
+<span *ngIf="leyenda === titulo">
+    <button type="button" class="btn btn-primary btn-sm btn-rounded boton-cuadrado edit-btn"
+        (click)="openModal(content)"><i class="bx bx-edit icono-grande"></i></button>
+</span>
+
+<!-- Modal -->
+
+<div class="modal modal-fullscreen-xl-down fade" id="modalEmpleado" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <ng-template #content role="document" let-modal>
+        <div class="modal-header">
+            <h5 class="modal-title mt-0">{{leyenda}} Empleado</h5>
+            <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+
+            <form (ngSubmit)="guardar()" [formGroup]="formBuilder" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-12">
+
+                        <!-- inicio de foto Empleado -->
+                        <div class="form-group row m-4">
+                            <label class="control-label" for="file">Imagen: </label>
+                            <input formControlName="file" id="file" type="file" multiple class="form-control"
+                                (change)="onFileSelected($event)">
+                        </div><!-- fin de foto Empleado -->
+
+
+                        <!-- inicio de tipo Empleado -->
+                        <div class="form-group row m-4">
+                            <label class="control-label">Tipo de Empleado:</label>
+                            <select class="form-control form-select" (change)="SelectTipo()" formControlName="tipo">
+                                <option value="">Seleccione Tipo</option>
+                                <option value="Rastra">Rastra</option>
+                                <option value="Camión">Camión</option>
+                            </select>
+                        </div><!-- fin de tipo Empleado -->
+
+                        <!-- inicio de motorista -->
+                        <div class="form-group row m-4">
+                            <label class="control-label">Motorista:</label>
+                            <select class="form-control form-select" id="selectedMtorista" formControlName="motorista">
+                                <option value="">Seleccione Motorista</option>
+
+                            </select>
+                        </div><!-- fin de motorista -->
+
+                        <!-- inicio de empleado -->
+                        <div class="form-group row m-4">
+                            <label class="control-label">Empleado o Vigilante</label>
+                            <select class="form-control form-select" id="selectedEmpleado" formControlName="empleado">
+                                <option value="">Seleccione {{empleado}}</option>
+
+                            </select>
+                        </div><!-- fin de empleado -->
+
+                    </div>
+                </div>
+
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-primary me-2" id="btn-save" name="btn-save">
+                        Guardar
+                    </button>
+
+                    <button type="button" class="btn btn-dark" id="btn-cancel" name="btn-cancel" aria-hidden="true" (click)="modal.dismiss('Cross click')">
+                        Cancelar
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </ng-template>
+</div>
+<!-- Modal -->

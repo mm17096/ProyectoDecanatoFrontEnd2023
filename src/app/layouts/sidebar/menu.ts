@@ -48,6 +48,26 @@ export const MENU: MenuItem[] = [
             },
         ],
     },
+
+    {
+      id: 6,
+      label: "Solicitud Vehículo",
+      icon: "bx-user-circle",
+      subItems: [
+        {
+          id: 7,
+          label: "Listado",
+          link: "/solicitud-vehiculo/listar",
+          parentId: 6,
+        },
+        {
+          id: 8,
+          label: "Mis solicitudes",
+          link: "/solicitud-vehiculo/mis-solicitudes",
+          parentId: 6,
+        },
+      ],
+    },
     {
       id: 7,
       label: "Vales",

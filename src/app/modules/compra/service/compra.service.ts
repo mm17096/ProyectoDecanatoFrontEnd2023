@@ -1,9 +1,9 @@
-import { Observable } from "rxjs";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "src/environments/environment";
 import { ICompra } from "../interface/datos.interface";
 import Swal, { SweetAlertIcon } from "sweetalert2";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -19,7 +19,6 @@ export class CompraService {
       .get(`${this.baseUrl}/compra/lista`)
       .subscribe((resp: any) => {
         this.listCompra = resp;
-        console.log(resp);
       });
   }
 
@@ -65,7 +64,6 @@ export class CompraService {
     label: string = "Algunos datos no se podrán revertir, digite: ",
     palabraClave: string = "guardar"
   ) {
-
     let estado = false;
     const palabra = palabraClave;
 
@@ -74,13 +72,13 @@ export class CompraService {
       title: title,
       input: "text",
       inputLabel: label + palabraClave,
-      inputValue: '',
+      inputValue: "",
       showCancelButton: true,
       inputValidator: (value) => {
         if (!value) {
           return "¡Tiene que escribir algo!";
         }
-        if(value != palabra){
+        if (value != palabra) {
           return "¡No coincide!";
         }
       },

@@ -26,6 +26,16 @@
       [formGroup]="formularioGeneral"
     >
       <div class="row">
+        <div *ngIf="compra?.codigoCompra">
+          <input
+            id="codigoCompra"
+            name="codigoCompra"
+            type="hidden"
+            readonly="true"
+            class="form-control"
+            formControlName="codigoCompra"
+          />
+        </div>
         <div class="mb-4 col-md-6">
           <label for="proveedor">Proveedor:</label>
           <input
@@ -78,6 +88,7 @@
             placeholder="Codigo inicio"
             [class]="esCampoValido('cod_inicio')"
             (keyup)="getcantidad()"
+            [readonly]="aplicarReadOnly"
           />
           <div class="invalid-feedback">
             <span
@@ -108,6 +119,7 @@
             placeholder="codigo fin"
             [class]="esCampoValido('cod_fin')"
             (keyup)="getcantidad()"
+            [readonly]="aplicarReadOnly"
           />
           <div class="invalid-feedback">
             <span
@@ -158,6 +170,7 @@
             class="form-control"
             formControlName="fecha"
             [class]="esCampoValido('fecha')"
+            [readonly]="aplicarReadOnly"
           />
           <div class="invalid-feedback">
             <!-- aqui la validación-->
@@ -181,6 +194,7 @@
             formControlName="precio_unitario"
             [class]="esCampoValido('precio_unitario')"
             (keyup)="getTotalCompra()"
+            [readonly]="aplicarReadOnly"
           />
           <div class="invalid-feedback">
             <!-- aqui la validación-->

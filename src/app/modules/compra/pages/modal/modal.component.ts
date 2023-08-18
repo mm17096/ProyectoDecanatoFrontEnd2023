@@ -3,7 +3,7 @@ import { ICompra } from "../../interface/datos.interface";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CompraService } from "../../service/compra.service";
-import { NUMBER_VALIDATE, STRING_VALIDATE } from "src/app/constants/constants";
+import { NUMBER_VALIDATE } from "src/app/constants/constants";
 
 @Component({
   selector: "app-modal",
@@ -26,6 +26,8 @@ export class ModalComponent implements OnInit {
   precio_unitario?: number;
   total_compra: number = 0;
 
+  aplicarReadOnly: boolean = false;
+
   constructor(
     private modalService: NgbModal,
     private fb: FormBuilder,
@@ -39,10 +41,9 @@ export class ModalComponent implements OnInit {
       this.cod_inicio = this.compra.cod_inicio;
       this.cod_fin = this.compra.cod_fin;
       this.precio_unitario = this.compra.precio_unitario;
-      this.formularioGeneral.get('cod_inicio').disable();
-      this.formularioGeneral.get('cod_fin').disable();
-      this.formularioGeneral.get('precio_unitario').disable();
-      this.formularioGeneral.get('fecha').disable();
+      this.cantidad = this.compra.cantidad;
+      this.total_compra = this.compra.total_compra;
+      this.aplicarReadOnly = true;
       this.formularioGeneral.patchValue(this.compra);
     }
   }
@@ -83,7 +84,6 @@ export class ModalComponent implements OnInit {
   }
 
   getcantidad(): void {
-
     this.cod_inicio = this.formularioGeneral.get("cod_inicio").value;
     this.cod_fin = this.formularioGeneral.get("cod_fin").value;
 
@@ -97,7 +97,6 @@ export class ModalComponent implements OnInit {
     this.formularioGeneral.controls["cantidad"].setValue(this.cantidad);
     this.getTotalCompra();
   }
-
 
   getTotalCompra(): void {
     this.precio_unitario = this.formularioGeneral.get("precio_unitario").value;
@@ -116,12 +115,11 @@ export class ModalComponent implements OnInit {
     if (this.formularioGeneral.valid) {
       if (this.compra?.codigoCompra) {
         //Modificar
-       // this.editando();
+        this.editando();
       } else {
         if ((await this.compraService.mensajesConfirmar()) == true) {
-          //Guardar
+          // Guardar
           this.registrando();
-          this.modalService.dismissAll();
         }
       }
     } else {
@@ -137,16 +135,34 @@ export class ModalComponent implements OnInit {
 
   registrando() {
     const compra = this.formularioGeneral.value;
-
-    this.compraService.guardar(compra).subscribe((resp: any) => {
-      console.log("COMPRA AGREGADA");
-      this.compraService.getCompras();
-      this.compraService.mensajesToast("success", "Registro agreado");
-      this.limpiarCampos();
-    });
+    this.compraService.guardar(compra).subscribe(
+      (resp: any) => {
+        console.log("COMPRA AGREGADA");
+        this.compraService.getCompras();
+        this.compraService.mensajesToast("success", "Registro agreado");
+        this.modalService.dismissAll();
+        this.limpiarCampos();
+      },
+      (err: any) => {
+        this.compraService.mensajesToast("error", "Error al guardar");
+      }
+    );
   }
 
-
+  editando() {
+    const compra = this.formularioGeneral.value;
+    console.log(compra);
+    this.compraService.modificar(compra).subscribe((resp: any) => {
+      console.log("COMPRA MODIFICADA");
+      this.compraService.getCompras();
+      this.compraService.mensajesToast("success", "Registro modificado");
+      this.modalService.dismissAll();
+      this.limpiarCampos();
+    },
+    (err: any) => {
+      this.compraService.mensajesToast("error", "Error al guardar");
+    });
+  }
 
   esCampoValido(campo: string) {
     const validarCampo = this.formularioGeneral.get(campo);

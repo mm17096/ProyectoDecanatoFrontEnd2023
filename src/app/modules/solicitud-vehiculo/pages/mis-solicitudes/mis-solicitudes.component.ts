@@ -7,9 +7,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MisSolicitudesComponent implements OnInit {
 
+  // migas de pan
+  breadCrumbItems: Array<{}>;
+  term: any; // para buscar
+  p: any; // paginacion
   constructor() { }
 
   ngOnInit(): void {
+    this.breadCrumbItems = [{ label: 'Solicitud de Vehículo' }, { label: 'Mis Solicitudes', active: true }]; // miga de pan
   }
 
 }

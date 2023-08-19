@@ -4,7 +4,7 @@ import {LayoutComponent} from "../layouts/layout.component";
 import {AuthGuard} from "../core/guards/auth.guard";
 
 const routes: Routes = [
-  { path: 'solicitud', loadChildren: () => import('./solicitud-vehiculo/solicitud-vehiculo.module').then(m => m.SolicitudVehiculoModule), }, //  canActivateChild: [AuthChildGuard]
+  { path: 'solicitud-vehiculo', loadChildren: () => import('./solicitud-vehiculo/solicitud-vehiculo.module').then(m => m.SolicitudVehiculoModule), canActivate: [AuthGuard]}, //  canActivateChild: [AuthChildGuard]
 
   { path: 'asignacionVale', loadChildren: () => import('./asignacion-vales/asignacion-vales.module').then(m => m.AsignacionValesModule), canActivate: [AuthGuard] },
 

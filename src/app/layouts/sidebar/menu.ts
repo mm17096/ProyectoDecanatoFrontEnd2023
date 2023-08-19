@@ -57,7 +57,7 @@ export const MENU: MenuItem[] = [
         {
           id: 8,
           label: "Listado",
-          link: "/solicitud/vehiculo",
+          link: "/solicitud-vehiculo/listado",
           parentId: 7,
         },
         {

@@ -50,40 +50,40 @@ export const MENU: MenuItem[] = [
     },
 
     {
-      id: 6,
+      id: 7,
       label: "Solicitud Vehículo",
       icon: "bx-user-circle",
       subItems: [
         {
-          id: 7,
+          id: 8,
           label: "Listado",
-          link: "/solicitud-vehiculo/listar",
-          parentId: 6,
+          link: "/solicitud-vehiculo/listado",
+          parentId: 7,
         },
         {
-          id: 8,
+          id: 9,
           label: "Mis solicitudes",
           link: "/solicitud-vehiculo/mis-solicitudes",
-          parentId: 6,
+          parentId: 7,
         },
       ],
     },
     {
-      id: 7,
+      id: 8,
       label: "Vales",
       icon: "bx-user-circle",
       subItems: [
           {
-              id: 8,
+              id: 9,
               label: "Solicitudes",
               link: "/empleados",
-              parentId: 7,
+              parentId: 8,
           },
           {
-              id: 9,
+              id: 10,
               label: "Asignaciones",
               link: "/asignacionVale/asignaciones",
-              parentId: 7,
+              parentId: 8,
           },
       ],
   },

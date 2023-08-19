@@ -49,7 +49,7 @@ export interface Empleado {
   licencia: any
   tipo_licencia: any
   fecha_licencia: any
-  estado: number
+  estado: any
   jefe: boolean
   correo: string
   nombrefoto: any

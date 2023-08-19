@@ -7,6 +7,7 @@ import { MisSolicitudesComponent } from './pages/mis-solicitudes/mis-solicitudes
 import {UIModule} from "../../shared/ui/ui.module";
 import {FormsModule} from "@angular/forms";
 import {NgxPaginationModule} from "ngx-pagination";
+import {Ng2SearchPipeModule} from "ng2-search-filter";
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import {NgxPaginationModule} from "ngx-pagination";
     UIModule,
     FormsModule,
     NgxPaginationModule, // para paginar
+    Ng2SearchPipeModule,
   ]
 })
 export class SolicitudVehiculoModule { }

@@ -1,0 +1,48 @@
+<span *ngIf="leyenda !== titulo">
+    <div class="text-sm-end">
+        <button type="button" class="btn btn-primary btn-rounded" (click)="openModal(content)">{{titulo}}
+        </button>
+    </div>
+</span>
+
+
+<!-- Modal -->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{leyenda}} Solicitud de Vehículo</h4>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="formularioSoliVe">
+      <div class="col-6">
+        <div class="row">
+          <div class="col-3">
+            <label>Fecha de solicitud</label>
+            <input type="date" class="form-control" id="fecha-solicitud"
+                   formControlName="fechaSolicitud">
+          </div>
+          <div class="col-3">
+            <label>Fecha de misión</label>
+            <input type="date" class="form-control" id="fecha-mision"
+                   formControlName="fechaSalida">
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <div class="d-flex justify-content-end mt-4">
+      <button type="submit" class="btn btn-primary me-2" id="btn-save" name="btn-save">
+        Guardar
+      </button>
+
+      <button type="button" class="btn btn-dark" id="btn-cancel" name="btn-cancel" aria-hidden="true" (click)="modal.dismiss('Cross click')">
+        Cancelar
+      </button>
+    </div>
+  </div>
+</ng-template>
+<!-- Modal -->

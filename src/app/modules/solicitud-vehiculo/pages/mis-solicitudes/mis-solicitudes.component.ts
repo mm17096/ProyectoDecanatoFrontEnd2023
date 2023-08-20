@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
+import {ISolicitudVehiculo} from "../../interfaces/data.interface";
 
 @Component({
   selector: 'app-mis-solicitudes',
@@ -11,10 +13,29 @@ export class MisSolicitudesComponent implements OnInit {
   breadCrumbItems: Array<{}>;
   term: any; // para buscar
   p: any; // paginacion
-  constructor() { }
+
+  solicitudesVehiculo: ISolicitudVehiculo [] = [];
+  constructor( private soliVeService: SolicitudVehiculoService ) { }
 
   ngOnInit(): void {
     this.breadCrumbItems = [{ label: 'Solicitud de Vehículo' }, { label: 'Mis Solicitudes', active: true }]; // miga de pan
+    this.getSolicitudes();
+  }
+
+  // Metodo para obtener todas las solicitudes de vehiculo
+  getSolicitudes() {
+    this.soliVeService.obtenerSolicitudes().subscribe( (resp) => {
+      this.solicitudesVehiculo = resp;
+      console.log(this.solicitudesVehiculo);
+    })
+  }
+
+  calcularNumeroCorrelativo(index: number): number {
+    if (typeof this.p === 'number') {
+      return (this.p - 1) * 10 + index + 1;
+    } else {
+      return index + 1; // Si no es numérico, solo regresamos el índice + 1
+    }
   }
 
 }

@@ -57,13 +57,14 @@
               </thead>
               <tbody>
               <!-- *ngFor="let data of cards | filter:queryString | paginate: { itemsPerPage: 10, currentPage: p }" -->
-              <tr>
-                <td>1</td>
-                <td>Agronomia</td>
-                <td>Casa de la cultura</td>
-                <td>2023-08-31</td>
-                <td>34</td>
-                <td style="text-align: center">INICIADA</td>
+              <tr *ngFor="let data of solicitudesVehiculo | filter:term | paginate: { itemsPerPage: 10, currentPage: p };
+                          let i = index">
+                <td>{{calcularNumeroCorrelativo(i)}}</td>
+                <td>{{data.solicitante.empleado.departamento.nombre}}</td>
+                <td>{{data.lugarMision}}</td>
+                <td>{{data.fechaSalida}}</td>
+                <td style="text-align: center">{{data.cantidadPersonas}}</td>
+                <td style="text-align: center">{{data.estado}}</td>
 
               </tr>
               </tbody>
@@ -86,3 +87,4 @@
     </div>
   </div>
 </div>
+

@@ -59,7 +59,7 @@ export class ModalComponent implements OnInit {
   }
 
   // metodo para generar la filas de la tabla
-  actualizarFilar() {
+  actualizarFilas() {
     let cantidadPersonas  = this.formularioSoliVe.get('cantidadPersonas').value;
     if (cantidadPersonas > this.pasajeros.length && this.pasajeros.length < 5){
       let cantidaFilasNuevas = cantidadPersonas - this.pasajeros.length;
@@ -68,7 +68,7 @@ export class ModalComponent implements OnInit {
       }
     } else if (cantidadPersonas < this.pasajeros.length) {
       this.pasajeros.splice(cantidadPersonas);
-    } else
+    }
     if (cantidadPersonas > 5) {
       this.mostrarTabla = false; // Ocultar la tabla
       this.mostrarArchivoAdjunto = true; // Mostrar el campo de entrada de archivo

@@ -143,8 +143,9 @@
             <div class="col-md-3">
 
                 <input type="number" id="cantidad-pasajeros"
+                       [value]="formularioSoliVe.get('cantidadPersonas').value"
                        class="form-control" formControlName="cantidadPersonas" min="1"
-                (change)="actualizarFilar()">
+                (change)="actualizarFilas()" (input)="actualizarFilas()">
               </div>
             </div>
           </div>

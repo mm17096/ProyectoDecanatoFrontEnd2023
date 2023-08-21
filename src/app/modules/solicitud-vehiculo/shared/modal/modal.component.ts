@@ -12,9 +12,13 @@ export class ModalComponent implements OnInit {
 
   @Input() leyenda!: string;
   @Input() titulo!: string;
-  fechaDeHoy: string = this.obtenerFechaActual(new Date());
 
   formularioSoliVe!: FormGroup;
+  pasajeros: any[] = [{ nombre: ''}];
+  username: string = 'NombreDeUsuario';
+  mostrarTabla: boolean = true;
+  mostrarArchivoAdjunto: boolean = false;
+
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router) { }
 
   ngOnInit(): void {
@@ -37,6 +41,8 @@ export class ModalComponent implements OnInit {
       horaSalida: ['', [Validators.required]],
       horaRegreso: ['', [Validators.required]],
       cantidadPersonas: [1, [Validators.required, Validators.min(1)]],
+      nombre: ['', ],
+      responsableName: ['', [Validators.required]],
     });
   }
   openModal(content: any) {
@@ -50,5 +56,28 @@ export class ModalComponent implements OnInit {
     const dia = date.getDate().toString().
       padStart(2, '0');
     return `${year}-${mes}-${dia}`;
+  }
+
+  // metodo para generar la filas de la tabla
+  actualizarFilar() {
+    let cantidadPersonas  = this.formularioSoliVe.get('cantidadPersonas').value;
+    if (cantidadPersonas > this.pasajeros.length && this.pasajeros.length < 5){
+      let cantidaFilasNuevas = cantidadPersonas - this.pasajeros.length;
+      for (let i = 0; i < cantidaFilasNuevas; i++){
+        this.pasajeros.push({ nombre: ''})
+      }
+    } else if (cantidadPersonas < this.pasajeros.length) {
+      this.pasajeros.splice(cantidadPersonas);
+    } else // Agregar la lógica para mostrar el campo de entrada de archivo si cantidadPersonas es mayor a 5
+    if (cantidadPersonas > 5) {
+      this.mostrarTabla = false; // Ocultar la tabla
+      this.mostrarArchivoAdjunto = true; // Mostrar el campo de entrada de archivo
+    } else {
+      this.mostrarTabla = true; // Mostrar la tabla
+      this.mostrarArchivoAdjunto = false; // Ocultar el campo de entrada de archivo
+    }
+  }
+  handleFileChange(event: Event) {
+    // Lógica para manejar el cambio de archivo
   }
 }

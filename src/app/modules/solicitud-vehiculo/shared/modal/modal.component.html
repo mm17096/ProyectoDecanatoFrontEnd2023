@@ -141,31 +141,44 @@
             <div class="col-md-3">
 
                 <input type="number" id="cantidad-pasajeros"
-                       class="form-control" formControlName="cantidadPersonas" min="1">
+                       class="form-control" formControlName="cantidadPersonas" min="1"
+                (change)="actualizarFilar()">
               </div>
             </div>
           </div>
           <!--aqui tabla de personas-->
           <div class="row">
             <div class="mt-2">
-              <label for="tablaPasajeros">Ingrese los nombres de los pasajeros</label>
-              <table class="table" id="tablaPasajeros">
-                <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Nombre</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>
-                    <input type="text"
-                    >
-                  </td>
-                </tr>
-                </tbody>
-              </table>
+              <div *ngIf="mostrarTabla; else archivoAdjunto">
+                <label for="tablaPasajeros">Ingrese los nombres de los pasajeros</label>
+                <table class="table" id="tablaPasajeros">
+                  <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Nombre</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let pasajero of pasajeros; let i = index">
+                    <td>{{ i + 1}}</td>
+                    <td>
+                      <input type="text"
+                             [value]="i === 0 ? username : pasajero.nombre"
+                             [attr.readonly]=" i === 0 ? true :  null"
+                             formControlName="nombre">
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <ng-template #archivoAdjunto>
+                <div *ngIf="mostrarArchivoAdjunto" class="alert alert-warning">
+                  Por favor, adjunta la lista de pasajeros:
+                  <input type="file" (change)="handleFileChange($event)" />
+                </div>
+              </ng-template>
+
             </div>
           </div>
         </div>

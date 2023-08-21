@@ -127,6 +127,7 @@
         </div>
         <div class="col-md-6">
           <div class="row">
+            <div class="col-md-12">
               <label for="objetivo-mision">Objetivo de la misión</label>
               <textarea id="objetivo-mision"
                         cols="30"
@@ -134,6 +135,7 @@
                         class="form-control"
                         placeholder="Ingrese el objetivo de la misión"
                         formControlName="objetivoMision"></textarea>
+            </div>
           </div>
           <div class="row">
             <div class="mt-2">
@@ -151,7 +153,7 @@
             <div class="mt-2">
               <div *ngIf="mostrarTabla; else archivoAdjunto">
                 <label for="tablaPasajeros">Ingrese los nombres de los pasajeros</label>
-                <table class="table" id="tablaPasajeros">
+                <table class="table excel-table table-responsive" id="tablaPasajeros">
                   <thead>
                   <tr>
                     <th>No</th>
@@ -162,7 +164,7 @@
                   <tr *ngFor="let pasajero of pasajeros; let i = index">
                     <td>{{ i + 1}}</td>
                     <td>
-                      <input type="text"
+                      <input type="text" style="width: 100%"
                              [value]="i === 0 ? username : pasajero.nombre"
                              [attr.readonly]=" i === 0 ? true :  null"
                              formControlName="nombre">

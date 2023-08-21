@@ -68,7 +68,7 @@ export class ModalComponent implements OnInit {
       }
     } else if (cantidadPersonas < this.pasajeros.length) {
       this.pasajeros.splice(cantidadPersonas);
-    } else // Agregar la lógica para mostrar el campo de entrada de archivo si cantidadPersonas es mayor a 5
+    } else
     if (cantidadPersonas > 5) {
       this.mostrarTabla = false; // Ocultar la tabla
       this.mostrarArchivoAdjunto = true; // Mostrar el campo de entrada de archivo
@@ -77,7 +77,9 @@ export class ModalComponent implements OnInit {
       this.mostrarArchivoAdjunto = false; // Ocultar el campo de entrada de archivo
     }
   }
-  handleFileChange(event: Event) {
-    // Lógica para manejar el cambio de archivo
+
+  // subir el archivo
+  cambioDeArchivo(event: Event) {
+
   }
 }

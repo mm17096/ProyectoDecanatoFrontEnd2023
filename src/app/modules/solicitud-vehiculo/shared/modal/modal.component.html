@@ -177,7 +177,7 @@
               <ng-template #archivoAdjunto>
                 <div *ngIf="mostrarArchivoAdjunto" class="alert alert-warning">
                   Por favor, adjunta la lista de pasajeros:
-                  <input type="file" (change)="handleFileChange($event)" />
+                  <input type="file" (change)="cambioDeArchivo($event)" />
                 </div>
               </ng-template>
 

@@ -82,6 +82,17 @@ export const MENU: MenuItem[] = [
       ],
   },
     {
+        id: 10,
+        label: "Entradas y Salidas",
+        icon: "dripicons-document-edit",
+        subItems: [
+          {
+            id: 11,
+            label: "VER",
+            link: "/entrasalida/vista_es",
+            parent: 10,
+          },
+          {
         id: 20,
         label: "MENUITEMS.MAPS.TEXT",
         icon: "bx-map",

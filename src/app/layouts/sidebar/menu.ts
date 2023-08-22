@@ -23,7 +23,7 @@ export const MENU: MenuItem[] = [
         icon: "bx-user-circle",
         subItems: [
             {
-                id: ,
+                id: 7,
                 label: "Lista",
                 link: "/empleados/listar",
                 parentId: 6,
@@ -81,7 +81,7 @@ export const MENU: MenuItem[] = [
           },
       ],
   },
-    {
+   {
         id: 10,
         label: "Entradas y Salidas",
         icon: "dripicons-document-edit",
@@ -92,7 +92,9 @@ export const MENU: MenuItem[] = [
             link: "/entrasalida/vista_es",
             parent: 10,
           },
-          {
+        ]
+    },
+    {
         id: 20,
         label: "MENUITEMS.MAPS.TEXT",
         icon: "bx-map",
@@ -110,6 +112,6 @@ export const MENU: MenuItem[] = [
                 parentId: 20,
             },
         ],
-    }
+    },
 ];
 

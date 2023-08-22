@@ -1,0 +1,243 @@
+
+<div class="container-fluid">
+    <app-page-title title="LISTA DE MISIONES" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+  
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="row mb-2">
+              <div class="col-sm-8">
+                <div class="search-box col-sm-4 mb-2 d-inline-block">
+                  <div class="position-relative">
+                    <input type="text" class="form-control" placeholder="Buscar" >
+                    <i class="bx bx-search-alt search-icon"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Table data -->
+            <div class="table-responsive mb-0" id="htmlData" >
+              <table class="table table-centered table-nowrap" >
+                <thead class="table">
+                  <tr>
+                    <th class="align-middle">Misión</th>
+                    <th class="align-middle">Fecha</th>
+                    <th class="align-middle">Hora</th>
+                    <th class="align-middle">Combustible</th>
+                    <th class="align-middle">Kilometraje</th>
+                    <th class="align-middle">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!--*ngFor="let data of estudiante; let i = index"-->
+                  <tr *ngFor="let data of entradasalidas |  filter:queryString | paginate: { itemsPerPage: 5, currentPage: p }">
+                    <td>{{data.tipo}}</td>
+                    <td>{{data.fecha}}</td>
+                    <td>{{data.hora}}</td>
+                    <td>{{data.combustible}}</td>
+                    <td>{{data.kilometraje}}Km</td>
+                    <td>
+                      <button
+                        class="btn btn-outline-info btn-sm " (click)="openModal(contentA)">+Salida</button>
+                      <button
+                        class="btn btn-outline-danger btn-sm " (click)="openModal(contentB)">+Entrada</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="pagination pagination-rounded justify-content-end mb-2">
+                <pagination-controls (pageChange)="p = $event" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #contentA role="document" let-modal>
+    <div id="" tabindex="-1" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+      <!-- encabezado -->
+      <div class="modal-header">
+        <h3 class="modal-title" id="exampleModalLabel">REGISTRO DE SALIDAS</h3>
+        <button type="button" class="btn-close" aria-hidden="true"
+          (click)="modal.dismiss('Cross click')"></button>
+      </div>
+      <div class="card">
+        <div class="modal-body">
+          <!-- formulario -->
+          <form (ngSubmit)="guardar()" [formGroup]="formBuilder">
+            <label class="text-danger mb-4"> * Campo obligatorio</label>
+            <div class="row">
+              <!-- primera fila -->
+              <div class="col-md-12">
+                <div class="mb-3">
+                  <label>Misión</label><span class="text-danger"> *</span>
+                  <input type="text" class="form-control" id="tipo" name="tipo" placeholder="Escribe tipo de misión"
+                    formControlName="tipo" [class]="esCampoValido('tipo')" />
+                    <div class="invalid-feedback">
+                      <!-- aqui la validación-->
+                      <span *ngIf="formBuilder.get('tipo')?.errors?.['required']">Requiere un nombre para el campo</span>
+                      <span *ngIf="formBuilder.get('tipo')?.errors?.['pattern']">nombre no valido</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                      <label>Fecha</label><span class="text-danger"> *</span>
+                      <input type="date" class="form-control" id="fecha" name="fecha"
+                        formControlName="fecha" autocomplete="off" [class]="esCampoValido('fecha')" />
+                        <div class="invalid-feedback">
+                          <!-- aqui la validación-->
+                          <span *ngIf="formBuilder.get('tipo')?.errors?.['required']">Requiere un fecha</span>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label>Hora</label><span class="text-danger"> *</span>
+                        <input type="time" class="form-control" id="hora" name="hora"
+                          formControlName="hora" autocomplete="off" [class]="esCampoValido('hora')"/>
+                          <div class="invalid-feedback">
+                            <!-- aqui la validación-->
+                            <span *ngIf="formBuilder.get('hora')?.errors?.['required']">Requiere una hora</span>
+                          </div>
+                    </div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="mb-3">
+                  <label>Kilometraje</label><span class="text-danger"> *</span>
+                  <input type="text" class="form-control" id="kilometraje" name="kilometraje"
+                    formControlName="kilometraje" autocomplete="off" [class]="esCampoValido('kilometraje')" pattern="" (keypress)="OnlyNumbersAllowed($event)"/>
+                    <div class="invalid-feedback">
+                      <!-- aqui la validación-->
+                      <span *ngIf="formBuilder.get('kilometraje')?.errors?.['required']">Requiere datos en el campo</span>
+                    </div>
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <div class="mb-3">
+                  <label>Combustible</label><span class="text-danger"> *</span>
+                  <input type="text" class="form-control" id="combustible" name="combustible"
+                    formControlName="combustible" autocomplete="off" [class]="esCampoValido('combustible')"/>
+                    <div class="invalid-feedback">
+                      <!-- aqui la validación-->
+                      <span *ngIf="formBuilder.get('combustible')?.errors?.['required']">Requiere datos en el campo</span>
+                    </div>
+                </div>
+              </div>
+  
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-dark"
+                (click)="modal.dismiss('Cross click')">Cerrar</button>
+              <button type="submit" class="btn btn-info" id="btn-save-event">Guardar</button>
+            </div>
+            
+          </form>
+        </div>
+        <!-- footer -->
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #contentB role="document" let-modal>
+    <div id="" tabindex="-1" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+      <!-- encabezado -->
+      <div class="modal-header">
+        <h3 class="modal-title" id="exampleModalLabel">REGISTRO DE ENTRADAS</h3>
+        <button type="button" class="btn-close" aria-hidden="true"
+          (click)="modal.dismiss('Cross click')"></button>
+      </div>
+      <div class="card">
+        <div class="modal-body">
+          <!-- formulario -->
+          <form (ngSubmit)="guardar()" [formGroup]="formBuilder">
+            <label class="text-danger mb-4"> * Campo obligatorio</label>
+            <div class="row">
+              <!-- primera fila -->
+              <div class="col-md-12">
+                <div class="mb-3">
+                  <label>Misión</label><span class="text-danger"> *</span>
+                  <input type="text" class="form-control" id="tipo" name="tipo" placeholder="Escribe tipo de misión"
+                    formControlName="tipo" [class]="esCampoValido('tipo')" />
+                    <div class="invalid-feedback">
+                      <!-- aqui la validación-->
+                      <span *ngIf="formBuilder.get('tipo')?.errors?.['required']">Requiere un nombre para el campo</span>
+                      <span *ngIf="formBuilder.get('tipo')?.errors?.['pattern']">nombre no valido</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                      <label>Fecha</label><span class="text-danger"> *</span>
+                      <input type="date" class="form-control" id="fecha" name="fecha"
+                        formControlName="fecha" autocomplete="off" [class]="esCampoValido('fecha')" />
+                        <div class="invalid-feedback">
+                          <!-- aqui la validación-->
+                          <span *ngIf="formBuilder.get('tipo')?.errors?.['required']">Requiere un fecha</span>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label>Hora</label><span class="text-danger"> *</span>
+                        <input type="time" class="form-control" id="hora" name="hora"
+                          formControlName="hora" autocomplete="off" [class]="esCampoValido('hora')"/>
+                          <div class="invalid-feedback">
+                            <!-- aqui la validación-->
+                            <span *ngIf="formBuilder.get('hora')?.errors?.['required']">Requiere una hora</span>
+                          </div>
+                    </div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="mb-3">
+                  <label>Kilometraje</label><span class="text-danger"> *</span>
+                  <input type="text" class="form-control" id="kilometraje" name="kilometraje"
+                    formControlName="kilometraje" autocomplete="off" [class]="esCampoValido('kilometraje')" pattern="" (keypress)="OnlyNumbersAllowed($event)"/>
+                    <div class="invalid-feedback">
+                      <!-- aqui la validación-->
+                      <span *ngIf="formBuilder.get('kilometraje')?.errors?.['required']">Requiere datos en el campo</span>
+                    </div>
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <div class="mb-3">
+                  <label>Combustible</label><span class="text-danger"> *</span>
+                  <input type="text" class="form-control" id="combustible" name="combustible"
+                    formControlName="combustible" autocomplete="off" [class]="esCampoValido('combustible')"/>
+                    <div class="invalid-feedback">
+                      <!-- aqui la validación-->
+                      <span *ngIf="formBuilder.get('combustible')?.errors?.['required']">Requiere datos en el campo</span>
+                    </div>
+                </div>
+              </div>
+  
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-dark"
+                (click)="modal.dismiss('Cross click')">Cerrar</button>
+              <button type="submit" class="btn btn-info" id="btn-save-event">Guardar</button>
+            </div>
+            
+          </form>
+        </div>
+        <!-- footer -->
+      </div>
+    </div>
+  </ng-template>
+
+  

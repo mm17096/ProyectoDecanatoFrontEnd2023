@@ -18,18 +18,12 @@ export const MENU: MenuItem[] = [
         isTitle: true
     },
     {
-        id: 5,
-        label: 'Libros',
-        icon: 'bx-share-alt',
-        link: '/libros/mostrar'
-    },
-    {
         id: 6,
         label: "Empleados",
         icon: "bx-user-circle",
         subItems: [
             {
-                id: 7,
+                id: ,
                 label: "Lista",
                 link: "/empleados/listar",
                 parentId: 6,
@@ -88,15 +82,21 @@ export const MENU: MenuItem[] = [
       ],
   },
     {
-        id: 123,
+        id: 20,
         label: "MENUITEMS.MAPS.TEXT",
         icon: "bx-map",
         subItems: [
             {
-                id: 124,
-                label: "MENUITEMS.MAPS.LIST.GOOGLEMAP",
-                link: "/maps/google",
-                parentId: 123,
+                id: 21,
+                label: "Solicitudes",
+                link: "/empleados",
+                parentId: 20,
+            },
+            {
+                id: 22,
+                label: "Asignaciones",
+                link: "/asignacionVale/asignaciones",
+                parentId: 20,
             },
         ],
     }

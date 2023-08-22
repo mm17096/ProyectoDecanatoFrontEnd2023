@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { IEmpleadoTabala } from '../interface/empleado.interface';
+import { IEmpleado } from '../interface/empleado.interface';
 import { EmpleadoService } from '../service/empleado.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { EmpleadoService } from '../service/empleado.service';
 })
 export class TablaComponent implements OnInit {
 
-  empleadostabla: IEmpleadoTabala[] = [];
+  empleados: IEmpleado[] = [];
 
   constructor(private empleadosService: EmpleadoService) { }
 
@@ -21,10 +21,9 @@ export class TablaComponent implements OnInit {
 
   getEmpleados() {
        this.empleadosService
-      .getEmpleadosTabla()
+      .getEmpleados()
       .subscribe((res) => {
-        console.log(res);
-        this.empleadostabla = [...this.empleadostabla, ...res];
+        this.empleados = [...this.empleados, ...res];
       });
   }
 

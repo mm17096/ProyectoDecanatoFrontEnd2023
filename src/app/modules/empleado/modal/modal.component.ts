@@ -4,6 +4,8 @@ import Swal from 'sweetalert2';
 import { EmpleadoService } from '../service/empleado.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
+import { ICargo, IDepartamento, IEmpleado, IEmpleadoTabala } from '../interface/empleado.interface';
+import { Options } from 'ng5-slider';
 
 @Component({
   selector: 'app-modal',
@@ -12,141 +14,109 @@ import { Router } from '@angular/router';
 })
 export class ModalComponent implements OnInit {
 
-  //@Input() vehiculoOd!: IVehiculo;
+  @Input() empleadOd!: IEmpleado;
+  @Input() motoristaOd!: boolean;
   @Input() leyenda!: string;
   @Input() titulo!: string;
   @Input() queryString: string;
 
   public imgTemp: string | ArrayBuffer = null;
 
-/*   motoristas: IEmpleado[] = [];
-  empleados: IEmpleado[] = [];
-
-  motoristaS: IEmpleado;
-  empleadoS: IEmpleado;
- */
-
+  cargos: ICargo[] = [];
+  departamentos: IDepartamento[] = [];
 
   formBuilder!: FormGroup;
-  // vehiculo: IVehiculo;
-  //idempleado: string = '';
-  empleado: string = 'Empleado';
+
+  cargo: ICargo;
+  departamento: IDepartamento;
+  empleado: IEmpleado;
+  esMotorista: boolean = false;
   private file!: File;
+
   buttomtext: string = 'Guardar';
   imagen: string = 'no hay';
 
 
-  constructor(private vehiculoService: EmpleadoService, private modalService: NgbModal, private fb: FormBuilder, private router: Router) { }
+  constructor(private empleadoService: EmpleadoService, private modalService: NgbModal, private fb: FormBuilder, private router: Router) { }
 
   ngOnInit(): void {
-    this.buttomtext = 'Modificar';
-/*     if (this.vehiculoOd != null) {
-      if (this.vehiculoOd.tipo === 'Camión') {
-        this.empleado = "Acompañante";
-      } else {
-        this.empleado = "Vigilante";
-      }
-      // Cambia el texto del botón
-      this.buttomtext = 'Modificar';
+    this.formBuilder = this.Iniciarformulario();
 
-      //inicializar los objetos modificacion y formulario
-      this.formBuilder = this.IniciarformularioMod();
-      this.vehiculo = {
-        idVehiculo: this.vehiculoOd.idVehiculo,
-        tipo: this.vehiculoOd.tipo,
-        nombrefoto: this.vehiculoOd.nombrefoto,
-        urlfoto: this.vehiculoOd.urlfoto,
-        estado: this.vehiculoOd.estado,
-        motorista: this.vehiculoOd.motorista,
-        empleado: this.vehiculoOd.empleado
-      };
+    this.empleado = {
+      dui: "",
+      nombre: "",
+      apellido: "",
+      telefono: "",
+      licencia: "",
+      tipo_licencia: "",
+      fecha_licencia: new Date(),
+      estado: 7,
+      jefe: false,
+      correo: "",
+      nombrefoto: "",
+      urlfoto: "",
+      cargo: null,
+      departamento: null
+    }
 
-    } else {
-      //inicializar los objetos agregar nuevo y formulario
-      this.formBuilder = this.IniciarformularioNuevo();
+    this.cargo = {
+      codigoCargo: 0,
+      nombreCargo: "",
+      descripcion: "",
+      estado: 0
+    }
 
-      this.vehiculo = {
-        idVehiculo: 0,
-        tipo: '',
-        nombrefoto: '',
-        urlfoto: '',
-        estado: 'Activo',
-        motorista: null,
-        empleado: null
-      };
+    this.departamento = {
+      codigoDepto: 0,
+      nombre: "",
+      estado: 0
+    }
 
-      this.motoristaS = {
-        idEmpleado: 0,
-        tipo: '',
-        nombre: ''
-      };
-
-      this.empleadoS = {
-        idEmpleado: 0,
-        tipo: '',
-        nombre: ''
-      };
-    } */
-
-    this.getMotorista();
-    this.getEmpleados();
+    this.getCargos();
+    this.getDepartamentos();
   }
 
-  private IniciarformularioMod(): FormGroup {
+  private Iniciarformulario(): FormGroup {
     return this.fb.group({
-      file: [''],
-      tipo: ['', [Validators.required]],
-      motorista: [''],
-      empleado: ['']
-    });
+      file: [this.empleadOd != null ? '' : '', [this.empleadOd == null ? Validators.required : Validators.nullValidator]],
+      dui: ['', [Validators.required]],
+      nombre: ['', [Validators.required]],
+      apellido: ['', [Validators.required]],
+      telefono: ['', [Validators.required]],
+      licencia: [(this.esMotorista || this.motoristaOd) ? '' : '', [(this.esMotorista || this.motoristaOd) ? Validators.nullValidator : Validators.required]],
+      tipolicencia: [(this.esMotorista || this.motoristaOd) ? '' : '', [(this.esMotorista || this.motoristaOd) ? Validators.nullValidator : Validators.required]],
+      fechalicencia: [(this.esMotorista || this.motoristaOd) ? '' : '', [(this.esMotorista || this.motoristaOd) ? Validators.nullValidator : Validators.required]],
+      jefe: [false, [Validators.required]],
+      correo: ['', [Validators.required]],
+      cargo: ['', [Validators.required]],
+      departamento: ['', [Validators.required]],
+    });    
   }
 
-  private IniciarformularioNuevo(): FormGroup {
-    return this.fb.group({
-      file: ['', [Validators.required]],
-      tipo: ['', [Validators.required]],
-      motorista: ['', [Validators.required]],
-      empleado: ['', [Validators.required]]
-    });
-  }
-
-  getMotorista() {
-/*     this.vehiculoService
-      .getMotoristas()
+  getCargos() {
+    this.empleadoService
+      .getCargos()
       .subscribe((res) => {
-        //console.log(res);
-        this.motoristas = [...this.motoristas, ...res];
-      }); */
+        this.cargos = [...this.cargos, ...res];
+      });
+
   }
 
-  getEmpleados() {
-/*     this.empleados = [];
-
-    if (this.empleado === 'Vigilante') {
-      this.vehiculoService
-        .getVigilante()
-        .subscribe((res) => {
-          //console.log(res);
-          this.empleados = [...this.empleados, ...res];
-        });
-    } else {
-      this.vehiculoService
-        .getAcompaniante()
-        .subscribe((res) => {
-          //console.log(res);
-          this.empleados = [...this.empleados, ...res];
-        });
-    } */
-
+  getDepartamentos() {
+    this.empleadoService
+      .getDepartamentos()
+      .subscribe((res) => {
+        this.departamentos = [...this.departamentos, ...res];
+      });
   }
 
   openModal(content: any) {
-    this.modalService.open(content);
+    this.modalService.open(content, { size: 'xl', centered: true });
   }
 
   guardar() {
-   /*  if (this.formBuilder.valid) {
-      if (this.vehiculoOd != null) {
+    if (this.formBuilder.valid || (this.formBuilder.get("licencia").value == '' || this.formBuilder.get("tipolicencia").value == '' || this.formBuilder.get("fechalicencia").value == '' || this.formBuilder.get("file").value == '')) {
+      if (this.empleadOd != null) {
         this.editando();
       } else {
         this.registrando();
@@ -158,26 +128,33 @@ export class ModalComponent implements OnInit {
         text: 'Complete todos los campos requeridos',
         icon: 'warning',
       });
-    } */
+    }
   }
 
   registrando() {
-    const selectedTipo = this.formBuilder.get('tipo').value;
-    const selectedMtorista = this.formBuilder.get('motorista').value;
-    const selectedEmpleado = this.formBuilder.get('empleado').value;
 
-    //console.log(selectedTipo);
+    this.empleado.dui = this.formBuilder.get('dui').value;
+    this.empleado.nombre = this.formBuilder.get('nombre').value;
+    this.empleado.apellido = this.formBuilder.get('apellido').value;
+    this.empleado.telefono = this.formBuilder.get('telefono').value;
+    this.empleado.licencia = this.formBuilder.get('licencia').value;
+    this.empleado.tipo_licencia = this.formBuilder.get('tipolicencia').value;
+    this.empleado.fecha_licencia = this.formBuilder.get('fechalicencia').value;
+    this.empleado.jefe = this.formBuilder.get('jefe').value;
+    this.empleado.correo = this.formBuilder.get('correo').value;
 
-/*     this.motoristaS.idEmpleado = selectedMtorista;
-    this.empleadoS.idEmpleado = selectedEmpleado;
+    //asignar cargo
+    this.cargo.codigoCargo = this.formBuilder.get('cargo').value;
 
-    this.vehiculo.tipo = selectedTipo;
-    this.vehiculo.motorista = this.motoristaS;
-    this.vehiculo.empleado = this.empleadoS;
- */
-   /*  this.vehiculoService.setVehiculo(this.vehiculo, this.file).subscribe((resp: any) => {
+    this.empleado.cargo = this.cargo;
+
+    //asignar departamento
+    this.departamento.codigoDepto = this.formBuilder.get('departamento').value;
+
+    this.empleado.departamento = this.departamento;
+
+    this.empleadoService.postEmpleado(this.empleado, this.file).subscribe((resp: any) => {
       if (resp) {
-        console.log(resp);
         Swal.fire({
           position: 'center',
           title: 'Buen trabajo',
@@ -189,48 +166,47 @@ export class ModalComponent implements OnInit {
         this.modalService.dismissAll();
       }
     }, (err: any) => {
-      console.log(err);
       Swal.fire({
         icon: 'error',
         title: 'Error',
         text: 'Algo paso, hable con el administrador',
       });
-    }); */
+    });
 
   }
 
-  SelectTipo() {
-    const selectedTipo = this.formBuilder.get('tipo').value;
+  SelectCargo() {
+    // Lógica para determinar si el cargo seleccionado es "Motorista"
 
-    if (selectedTipo === 'Rastra') {
-      this.empleado = "Vigilante";
-      this.getEmpleados();
-    } else {
-      this.empleado = "Acompañante";
-      this.getEmpleados();
-    }
+    //obtenemos el objeto que tenga como nombreCargo Motorista
+    const motoristaOb = this.cargos.find(cargo => cargo.nombreCargo === "Motorista");
+    //Comparamos que el ID sea igual al seleccionado y cambiamos la variable para mostrar los demas campos
+    this.esMotorista = (this.formBuilder.get('cargo').value === motoristaOb.codigoCargo);
+    this.motoristaOd = this.esMotorista;
   }
+
 
   editando() {
 
-/*     const selectedTipo = this.formBuilder.get('tipo').value;
-    const selectedMtorista = this.formBuilder.get('motorista').value;
-    const selectedEmpleado = this.formBuilder.get('empleado').value;
+    this.empleadOd.dui = this.formBuilder.get('dui').value;
+    this.empleadOd.nombre = this.formBuilder.get('nombre').value;
+    this.empleadOd.apellido = this.formBuilder.get('apellido').value;
+    this.empleadOd.telefono = this.formBuilder.get('telefono').value;
 
-    this.vehiculo.tipo = selectedTipo;
+    this.empleadOd.licencia = this.esMotorista || this.motoristaOd ? this.formBuilder.get('licencia').value : '';
+    this.empleadOd.tipo_licencia = this.esMotorista || this.motoristaOd ? this.formBuilder.get('tipolicencia').value : '';
+    this.empleadOd.fecha_licencia = this.esMotorista || this.motoristaOd ? this.formBuilder.get('fechalicencia').value : null;
 
-    if (selectedMtorista) {
-      this.vehiculo.motorista.idEmpleado = selectedMtorista;
-    }
-
-    if (selectedEmpleado) {
-      this.vehiculo.empleado.idEmpleado = selectedEmpleado;
-    } */
-
-   /*  if (this.imagen === 'no hay') {
-      this.vehiculoService.ModVehiculoSinImagen(this.vehiculo).subscribe((resp: any) => {
+    this.empleadOd.jefe = this.formBuilder.get('jefe').value;
+    this.empleadOd.correo = this.formBuilder.get('correo').value;
+    //asignar cargo
+    this.empleadOd.cargo.codigoCargo = this.formBuilder.get('cargo').value;
+    //asignar departamento
+    this.empleadOd.departamento.codigoDepto = this.formBuilder.get('departamento').value;
+    
+    if (this.imagen === 'no hay') {
+      this.empleadoService.putEmpleado(this.empleadOd).subscribe((resp: any) => {
         if (resp) {
-          console.log(resp);
           Swal.fire({
             position: 'center',
             title: 'Buen trabajo',
@@ -242,7 +218,6 @@ export class ModalComponent implements OnInit {
           this.modalService.dismissAll();
         }
       }, (err: any) => {
-        console.log(err);
         Swal.fire({
           icon: 'error',
           title: 'Error',
@@ -250,14 +225,12 @@ export class ModalComponent implements OnInit {
         });
       });
     } else {
-
-      this.vehiculoService.ModVehiculoImagen(this.vehiculo, this.file).subscribe((resp: any) => {
+      this.empleadoService.putEmpleadoImagen(this.empleadOd, this.file).subscribe((resp: any) => {
         if (resp) {
-          console.log(resp);
           Swal.fire({
             position: 'center',
             title: 'Buen trabajo',
-            text: 'Datos guardados con exito',
+            text: 'Datos modificados con exito',
             icon: 'info',
           });
           this.formBuilder.reset();
@@ -265,15 +238,13 @@ export class ModalComponent implements OnInit {
           this.modalService.dismissAll();
         }
       }, (err: any) => {
-        console.log(err);
         Swal.fire({
           icon: 'error',
           title: 'Error',
           text: 'Algo paso, hable con el administrador',
         });
       });
-    } */
-
+    }
   }
 
   recargar() {

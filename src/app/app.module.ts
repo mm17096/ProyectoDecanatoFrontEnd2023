@@ -24,6 +24,9 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ErrorInterceptor } from './core/helpers/error.interceptor';
 import { JwtInterceptor } from './core/helpers/jwt.interceptor';
 import { FakeBackendInterceptor } from './core/helpers/fake-backend';
+import { ListarComponent } from './modules/asignacion-vales/listar/listar.component';
+import { UIModule } from "./shared/ui/ui.module";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -39,39 +42,43 @@ export function createTranslateLoader(http: HttpClient): any {
 }
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    CyptolandingComponent,
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: createTranslateLoader,
-        deps: [HttpClient]
-      }
-    }),
-    LayoutsModule,
-    AppRoutingModule,
-    ExtrapagesModule,
-    CarouselModule,
-    NgbAccordionModule,
-    NgbNavModule,
-    NgbTooltipModule,
-    SharedModule,
-    ScrollToModule.forRoot(),
-    NgbModule
-  ],
-  bootstrap: [AppComponent],
-  providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: FakeBackendInterceptor, multi: true },
-    // LoaderService,
-    // { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorService, multi: true },
-  ],
+    declarations: [
+        AppComponent,
+        CyptolandingComponent,
+        ListarComponent,
+    ],
+    bootstrap: [AppComponent],
+    providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: FakeBackendInterceptor, multi: true },
+        // LoaderService,
+        // { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorService, multi: true },
+    ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: createTranslateLoader,
+                deps: [HttpClient]
+            }
+        }),
+        LayoutsModule,
+        AppRoutingModule,
+        ExtrapagesModule,
+        CarouselModule,
+        NgbAccordionModule,
+        NgbNavModule,
+        NgbTooltipModule,
+        SharedModule,
+        ScrollToModule.forRoot(),
+        NgbModule,
+        UIModule,
+        FormsModule,
+        ReactiveFormsModule
+    ]
 })
 export class AppModule { }

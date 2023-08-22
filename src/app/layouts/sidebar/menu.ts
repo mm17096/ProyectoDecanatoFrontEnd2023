@@ -18,18 +18,12 @@ export const MENU: MenuItem[] = [
         isTitle: true
     },
     {
-        id: 5,
-        label: 'Libros',
-        icon: 'bx-share-alt',
-        link: '/libros/mostrar'
-    },
-    {
         id: 6,
         label: "Empleados",
         icon: "bx-user-circle",
         subItems: [
             {
-                id: 7,
+                id: ,
                 label: "Lista",
                 link: "/empleados/listar",
                 parentId: 6,
@@ -48,6 +42,45 @@ export const MENU: MenuItem[] = [
             },
         ],
     },
+
+    {
+      id: 7,
+      label: "Solicitud Vehículo",
+      icon: "bx-user-circle",
+      subItems: [
+        {
+          id: 8,
+          label: "Listado",
+          link: "/solicitud-vehiculo/listado",
+          parentId: 7,
+        },
+        {
+          id: 9,
+          label: "Mis solicitudes",
+          link: "/solicitud-vehiculo/mis-solicitudes",
+          parentId: 7,
+        },
+      ],
+    },
+    {
+      id: 8,
+      label: "Vales",
+      icon: "bx-user-circle",
+      subItems: [
+          {
+              id: 9,
+              label: "Solicitudes",
+              link: "/empleados",
+              parentId: 8,
+          },
+          {
+              id: 10,
+              label: "Asignaciones",
+              link: "/asignacionVale/asignaciones",
+              parentId: 8,
+          },
+      ],
+  },
     {
         id: 10,
         label: "Entradas y Salidas",
@@ -59,7 +92,24 @@ export const MENU: MenuItem[] = [
             link: "/entrasalida/vista_es",
             parent: 10,
           },
+          {
+        id: 20,
+        label: "MENUITEMS.MAPS.TEXT",
+        icon: "bx-map",
+        subItems: [
+            {
+                id: 21,
+                label: "Solicitudes",
+                link: "/empleados",
+                parentId: 20,
+            },
+            {
+                id: 22,
+                label: "Asignaciones",
+                link: "/asignacionVale/asignaciones",
+                parentId: 20,
+            },
         ],
-      }
+    }
 ];
 

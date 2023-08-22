@@ -49,15 +49,15 @@ export const MENU: MenuItem[] = [
         ],
     },
     {
-        id: 123,
-        label: "MENUITEMS.MAPS.TEXT",
-        icon: "bx-map",
+        id: 10,
+        label: "Entradas y Salidas",
+        icon: "dripicons-document-edit",
         subItems: [
           {
-            id: 124,
-            label: "MENUITEMS.MAPS.LIST.GOOGLEMAP",
-            link: "/maps/google",
-            parentId: 123,
+            id: 11,
+            label: "VER",
+            link: "/entrasalida/vista_es",
+            parent: 10,
           },
         ],
       }

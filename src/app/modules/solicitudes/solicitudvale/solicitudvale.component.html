@@ -24,8 +24,8 @@
                         <!--<label for="exampleCombobox">filtro por estado:</label>-->
                         <select class="form-control" id="exampleCombobox" [(ngModel)]="filtroEstado">
                             <option value="">filtro por estado</option>
-                            <option value="Aprobado">Aprobado</option>
-                            <option value="Por Aprobar">Por Aprobar</option>
+                            <option value="Aprobada">Aprobado</option>
+                            <option value="Por aprobar">Por Aprobar</option>
                             <option value="En espera">En espera</option>
                           </select>
                       </div>
@@ -48,20 +48,19 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let item of filteredItems3()">
-                        <td>{{ item.solicitante }}</td>
-                        <td>{{ item.mision }}</td>
-                        <td>{{ item.estado }}</td>
-                        <td>{{ item.fechaDeUso }}</td>
-                        <td>{{ item.motorista }}</td>
-                      <td>
-                        <div *ngIf="item.estado=='Por Aprobar' || item.estado=='En espera' ">
-                          <button type="button" class="btn btn-primary" (click)="largeModal(largeDataModaldetalle)">Detalle</button>
+                    <tr *ngFor="let item of  filteredItems3()">
+                        <td *ngIf="item.estado=='Aprobada'">{{ item.solicitante.empleado.nombre + ' ' + item.solicitante.empleado.apellido}}</td>
+                        <td *ngIf="item.estado=='Aprobada'">{{ item.lugarMision }}</td>
+                        <td *ngIf="item.estado=='Aprobada'">{{ item.estado }}</td>
+                        <td *ngIf="item.estado=='Aprobada'">{{ item.fechaSalida }}</td>
+                        <td *ngIf="item.estado=='Aprobada'">{{ item.motorista.nombre + ' ' + item.motorista.apellido}}</td>
+                       
+                      <td *ngIf="item.estado=='Aprobada'"><button type="button" class="btn btn-primary" (click)="largeModal(largeDataModalvale,item)">Asignar Vale</button> </td>
+                      <!-- <div *ngIf="item.estado=='En espera por jefe' || item.estado=='En espera por decano' ||  item.estado=='Asignado'">
+                          <button type="button" class="btn btn-primary" (click)="largeModal(largeDataModaldetalle,item)">Detalle</button>
                         </div>
-                        <div *ngIf="item.estado=='Aprobado'">
-                          <button type="button" class="btn btn-primary" (click)="largeModal(largeDataModalvale)">Solicitar Vale</button>
-                        </div>
-                      </td>
+                        <div *ngIf="item.estado=='Aprobada'">
+                        </div>-->                   
                     </tr>
                   </tbody>
                 </table>
@@ -182,40 +181,53 @@
    <!-- Large Modal -->
    <ng-template #largeDataModaldetalle let-modal>
     <div class="modal-header">
-      <h5 class="modal-title mt-0">Large modal</h5>
+      <h5 class="modal-title mt-0">Detalle solicitud de vehiculo</h5>
       <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
     </div>
     <div class="modal-body">
+      <form  [formGroup]="formularioSolicitudVale">
       <div class="row mt-2">
         <div class="col-lg-6">
                 <div class="row mb-4">
-                    <label for="formrow-firstname-input">Fecha:</label>
+                    <label for="formrow-firstname-input">Fecha de solidad</label>
                     <div class="col-sm-12">
-                        <input  type="number" class="form-control" id="horizontal-firstname-input" placeholder="07-07-2023" disabled value="07-07-2023">
+                        <input  type="text" class="form-control" id="horizontal-firstname-input" placeholder="" disabled formControlName="fechaSolicitud">
                     </div>
                 </div>
                 <div class="row mb-4">
-                  <label for="formrow-firstname-input">Fecha de uso:</label>
+                  <label for="formrow-firstname-input">Fecha de entrada</label>
+                  <div class="col-sm-12">
+                      <input  type="text" class="form-control" id="horizontal-firstname-input" placeholder="" disabled formControlName="fechaEntrada">
+                  </div>
+              </div>
+                <div class="row mb-4">
+                  <label for="formrow-firstname-input">Fecha de solida:</label>
                     <div class="col-sm-12">
-                        <input type="number" class="form-control" id="horizontal-email-input" placeholder="08-07-2023" disabled value="08-07-2023">
+                        <input type="text" class="form-control" id="horizontal-email-input" placeholder="" disabled formControlName="fechaSalida">
                     </div>
                 </div>
                 <div class="row mb-4">
                   <label for="formrow-firstname-input">Tipo de vehiculo:</label>
                     <div class="col-sm-12">
-                        <input type="number" class="form-control" id="horizontal-password-input" placeholder="Camion" disabled value="Camion">
+                        <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled formControlName="tipo">
                     </div>
                 </div>
                 <div class="row mb-4">
                   <label for="formrow-firstname-input">Lugar:</label>
                     <div class="col-sm-12">
-                        <input type="number" class="form-control" id="horizontal-password-input" placeholder="Lugar 1" disabled value="Lugar 1">
+                        <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled formControlName="lugarMision">
                     </div>
                 </div>
                 <div class="row mb-4">
                   <label for="formrow-firstname-input">Estado:</label>
                     <div class="col-sm-12">
-                        <input type="number" class="form-control" id="horizontal-password-input" placeholder="Por Aprobar" disabled  value="Por Aprobar">
+                        <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled  formControlName="estado">
+                    </div>
+                </div>
+                <div class="row mb-4">
+                  <label for="formrow-firstname-input">Motorista:</label>
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled  formControlName="motorista">
                     </div>
                 </div>
         </div>
@@ -223,30 +235,51 @@
             <div class="row mb-4">
               <label for="formrow-firstname-input">Nombre de solicitante:</label>
                 <div class="col-sm-12">
-                    <input type="number" class="form-control" id="horizontal-firstname-input" placeholder="Erik Manrique Flores Lara" disabled value="Erik Manrique Flores Lara">
+                    <input type="text" class="form-control" id="horizontal-firstname-input" placeholder="" disabled formControlName="solicitante">
                 </div>
             </div>
             <div class="row mb-4">
               <label for="formrow-firstname-input">Objetivo:</label>
                 <div class="col-sm-12">
-                    <input type="number" class="form-control" id="horizontal-email-input" placeholder="objetivo 1" disabled value="objetivo 1">
+                    <input type="text" class="form-control" id="horizontal-email-input" placeholder="" disabled formControlName="objetivoMision">
                 </div>
             </div>
             <div class="row mb-4">
               <label for="formrow-firstname-input">Placa de vehiculo:</label>
                 <div class="col-sm-12">
-                    <input type="number" class="form-control" id="horizontal-password-input" placeholder="C273-857" disabled value="C273-857">
+                    <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled formControlName="placa">
                 </div>
             </div>
             <div class="row mb-4">
               <label for="formrow-firstname-input">Cantidad de Personas:</label>
                 <div class="col-sm-12">
-                    <input type="number" class="form-control" id="horizontal-password-input" placeholder="5" disabled value="5">
+                    <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled formControlName="cantidadPersonas">
+                </div>
+            </div>
+            <div class="row mb-4">
+              <label for="formrow-firstname-input">Direccion:</label>
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled formControlName="direccion">
+                </div>
+            </div>
+            <div class="row mb-4">
+              <label for="formrow-firstname-input">Unidad Solicitante:</label>
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled formControlName="unidadSolicitante">
+                </div>
+            </div>
+            <div class="row mb-4">
+              <label for="formrow-firstname-input">Nombre de jefe departamento:</label>
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled formControlName="nombreJefeDepto">
                 </div>
             </div>
             
+            
         </div>
+      
     </div>
+    </form>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
@@ -261,74 +294,107 @@
       <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
     </div>
     <div class="modal-body">
-        <div class="container">
-        <div class="row mt-2 align-items-center">
-            <div class="col-lg-6">
-                    <div class="row mb-4">
-                        <label for="formrow-firstname-input">Cantidada de vales Solicitados:</label>
-                        <div class="col-sm-12">
-                            <input  type="number" class="form-control" id="horizontal-firstname-input" placeholder="0"  >
-                        </div>
-                    </div>
-                    <div class="row mb-4">
-                      <label for="formrow-firstname-input">Nombre de solicitante:</label>
-                        <div class="col-sm-12">
-                            <input type="number" class="form-control" id="horizontal-email-input" placeholder="Kevin Antonio Guzman Balladares" disabled>
-                        </div>
-                    </div>
-                    <div class="row mb-4">
-                      <label for="formrow-firstname-input">Lugar:</label>
-                        <div class="col-sm-12">
-                            <input type="number" class="form-control" id="horizontal-password-input" placeholder="Santiago Nonualco" disabled>                        </div>
-                    </div>
-                    <div class="row mb-4">
-                      <label for="formrow-firstname-input">Tipo de vahiculo:</label>
-                        <div class="col-sm-12">
-                            <input type="number" class="form-control" id="horizontal-password-input" placeholder="Camion Grande" disabled>
-                        </div>
-                    </div>
-                    <div class="row mb-4">
-                      <label for="formrow-firstname-input">Objetivo:</label>
-                        <div class="col-sm-12">
-                            <input type="number" class="form-control" id="horizontal-password-input" placeholder="Dia de campo en Santiago Nonualco" disabled>
-                        </div>
-                    </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="row mb-4">
-                  <label for="formrow-firstname-input">Estado:</label>
-                    <div class="col-sm-12">
-                        <input type="number" class="form-control" id="horizontal-firstname-input" placeholder="En espera" disabled >
-                    </div>
-                </div>
-                <div class="row mb-4">
-                  <label for="formrow-firstname-input">Motorista:</label>
-                    <div class="col-sm-12">
-                        <input type="number" class="form-control" id="horizontal-email-input" placeholder="Roberto Nuila Sanchez" disabled>
-                    </div>
-                </div>
-                <div class="row mb-4">
-                  <label for="formrow-firstname-input">Fecha de uso:</label>
-                    <div class="col-sm-12">
-                        <input type="number" class="form-control" id="horizontal-password-input" placeholder="06-08-2023" disabled >
-                    </div>
-                </div>
-                <div class="row mb-4">
-                    <label for="formrow-firstname-input">Placa de vehiculo:</label>
+      <form action="" [formGroup]="formularioSolicitudValev">
+        <div class="row mt-2">
+          <div class="col-lg-6">
+            <div class="row mb-4">
+              <label for="formrow-firstname-input">Cantidad de vales</label>
+              <div class="col-sm-12">
+                  <input  type="number" class="form-control" id="horizontal-firstname-input" placeholder="0" formControlName="cantidadVales">
+              </div>
+          </div>
+                  <div class="row mb-4">
+                      <label for="formrow-firstname-input">Fecha de solidad</label>
                       <div class="col-sm-12">
-                          <input type="number" class="form-control" id="horizontal-password-input" placeholder="P982-990" disabled >
+                          <input  type="text" class="form-control" id="horizontal-firstname-input" placeholder="" disabled formControlName="fechaSolicitud">
                       </div>
                   </div>
-                <div class="row mb-4">
-                  <label for="formrow-firstname-input">Cantidad de Personas:</label>
+                  <div class="row mb-4">
+                    <label for="formrow-firstname-input">Fecha de entrada</label>
                     <div class="col-sm-12">
-                        <input type="number" class="form-control" id="horizontal-password-input" placeholder="5" disabled>
+                        <input  type="text" class="form-control" id="horizontal-firstname-input" placeholder="" disabled formControlName="fechaEntrada">
                     </div>
                 </div>
-                
-            </div>
-        </div>
-    </div>
+                  <div class="row mb-4">
+                    <label for="formrow-firstname-input">Fecha de solida:</label>
+                      <div class="col-sm-12">
+                          <input type="text" class="form-control" id="horizontal-email-input" placeholder="" disabled formControlName="fechaSalida">
+                      </div>
+                  </div>
+                  <div class="row mb-4">
+                    <label for="formrow-firstname-input">Tipo de vehiculo:</label>
+                      <div class="col-sm-12">
+                          <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled formControlName="tipo">
+                      </div>
+                  </div>
+                  <div class="row mb-4">
+                    <label for="formrow-firstname-input">Lugar:</label>
+                      <div class="col-sm-12">
+                          <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled formControlName="lugarMision">
+                      </div>
+                  </div>
+                  <div class="row mb-4">
+                    <label for="formrow-firstname-input">Estado:</label>
+                      <div class="col-sm-12">
+                          <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled  formControlName="estado">
+                      </div>
+                  </div>
+                  <div class="row mb-4">
+                    <label for="formrow-firstname-input">Motorista:</label>
+                      <div class="col-sm-12">
+                          <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled  formControlName="motorista">
+                      </div>
+                  </div>
+          </div>
+          <div class="col-lg-6">
+              <div class="row mb-4">
+                <label for="formrow-firstname-input">Nombre de solicitante:</label>
+                  <div class="col-sm-12">
+                      <input type="text" class="form-control" id="horizontal-firstname-input" placeholder="" disabled formControlName="solicitante">
+                  </div>
+              </div>
+              <div class="row mb-4">
+                <label for="formrow-firstname-input">Objetivo:</label>
+                  <div class="col-sm-12">
+                      <input type="text" class="form-control" id="horizontal-email-input" placeholder="" disabled formControlName="objetivoMision">
+                  </div>
+              </div>
+              <div class="row mb-4">
+                <label for="formrow-firstname-input">Placa de vehiculo:</label>
+                  <div class="col-sm-12">
+                      <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled formControlName="placa">
+                  </div>
+              </div>
+              <div class="row mb-4">
+                <label for="formrow-firstname-input">Cantidad de Personas:</label>
+                  <div class="col-sm-12">
+                      <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled formControlName="cantidadPersonas">
+                  </div>
+              </div>
+              <div class="row mb-4">
+                <label for="formrow-firstname-input">Direccion:</label>
+                  <div class="col-sm-12">
+                      <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled formControlName="direccion">
+                  </div>
+              </div>
+              <div class="row mb-4">
+                <label for="formrow-firstname-input">Unidad Solicitante:</label>
+                  <div class="col-sm-12">
+                      <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled formControlName="unidadSolicitante">
+                  </div>
+              </div>
+              <div class="row mb-4">
+                <label for="formrow-firstname-input">Nombre de jefe departamento:</label>
+                  <div class="col-sm-12">
+                      <input type="text" class="form-control" id="horizontal-password-input" placeholder="" disabled formControlName="nombreJefeDepto">
+                  </div>
+              </div>
+              
+              
+          </div>
+        
+      </div>
+       </form>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary">Aceptar</button>

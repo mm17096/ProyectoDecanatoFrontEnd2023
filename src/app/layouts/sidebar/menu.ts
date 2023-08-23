@@ -80,6 +80,5 @@ export const MENU: MenuItem[] = [
               parentId: 8,
           },
       ],
-  },
-
-
+  }
+  ];

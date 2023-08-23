@@ -1,0 +1,40 @@
+img {
+  width: 160px;
+  height: 155px;
+}
+
+i {
+  font-size: 17px;
+}
+
+/* Agrega una clase para aplicar el estilo de "solo lectura" al select */
+.select-readonly {
+  background-color: #eff2f7; /* Cambia el color de fondo para indicar que está en modo "solo lectura" */
+  pointer-events: none; /* Evita que se capturen eventos en el select */
+}
+
+.select-readonly-check {
+  pointer-events: none; /* Evita que se capturen eventos en el select */
+}
+
+
+/* para no interactuae cuando no sea editable el campo */
+.no-interaction {
+  pointer-events: none;
+  background-color: lightgray;
+}
+
+/* styles.css o styles.scss */
+.align-content-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+/* styles.css o styles.scss */
+.custom-border {
+  border: 1.5px solid #550000;
+  padding: 5px;
+}
+

@@ -18,12 +18,6 @@ export const MENU: MenuItem[] = [
         isTitle: true
     },
     {
-        id: 5,
-        label: 'Libros',
-        icon: 'bx-share-alt',
-        link: '/libros/mostrar'
-    },
-    {
         id: 6,
         label: "Empleados",
         icon: "bx-user-circle",
@@ -87,5 +81,5 @@ export const MENU: MenuItem[] = [
           },
       ],
   },
-];
+
 

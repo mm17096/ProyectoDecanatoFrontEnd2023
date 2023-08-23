@@ -10,14 +10,14 @@ const routes: Routes = [
   { path: 'solicitudes', component: LayoutComponent, loadChildren: () => import('./modules/solicitudes/solicitudes.module').then(m => m.SolicitudesModule)},//canActivate: [AuthGuard]
   { path: 'account', loadChildren: () => import('./account/account.module').then(m => m.AccountModule) },
   // tslint:disable-next-line: max-line-length
-  { path: '', component: LayoutComponent, loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule), canActivate: [AuthGuard] },
+
+
+  // Ruta hacia los modulos
+  { path: '', component: LayoutComponent, loadChildren: () => import('./modules/modules.module').then(m => m.ModulesModule), canActivate: [AuthGuard] },
   { path: 'pages', loadChildren: () => import('./extrapages/extrapages.module').then(m => m.ExtrapagesModule), canActivate: [AuthGuard] },
-  { path: 'asignacionVale', component: LayoutComponent, loadChildren: () => import('./modules/asignacion-vales/asignacion-vales.module').then(m => m.AsignacionValesModule), canActivate: [AuthGuard] },
+
   { path: 'crypto-ico-landing', component: CyptolandingComponent },
 
-  //Ruta de empleado //
-  { path: 'empleados', component: LayoutComponent, loadChildren: () => import('./modules/empleado/empleado.module').then(m => m.EmpleadoModule), canActivate: [AuthGuard] },
-  
   { path: '**', component: Page404Component },
 ];
 

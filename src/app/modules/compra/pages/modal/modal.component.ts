@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { ICompra } from "../../interface/datos.interface";
+import { ICompra } from "../../interface/compra.interface";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CompraService } from "../../service/compra.service";
@@ -45,14 +45,19 @@ export class ModalComponent implements OnInit {
       this.total_compra = this.compra.total_compra;
       this.aplicarReadOnly = true;
       this.formularioGeneral.patchValue(this.compra);
+      this.formularioGeneral.patchValue({
+        proveedor: this.compra.proveedor.id,
+      });
     }
+    this.compraService.getProveedor();
   }
 
   private iniciarFormulario() {
     return this.fb.group({
-      codigoCompra: [""],
+      id: [""],
       factura: ["", [Validators.required]],
       proveedor: ["", [Validators.required]],
+      descripcion: ["", [Validators.required]],
       cantidad: ["", [Validators.required, Validators.min(0)]],
       cod_inicio: [
         "",
@@ -81,6 +86,10 @@ export class ModalComponent implements OnInit {
       ],
       total_compra: ["", [Validators.required, Validators.min(0)]],
     });
+  }
+
+  get listProveedor() {
+    return this.compraService.listProveedor;
   }
 
   getcantidad(): void {
@@ -113,7 +122,7 @@ export class ModalComponent implements OnInit {
   async guardar() {
     this;
     if (this.formularioGeneral.valid) {
-      if (this.compra?.codigoCompra) {
+      if (this.compra?.id) {
         //Modificar
         this.editando();
       } else {
@@ -135,32 +144,33 @@ export class ModalComponent implements OnInit {
 
   registrando() {
     const compra = this.formularioGeneral.value;
-    this.compraService.guardar(compra).subscribe(
-      (resp: any) => {
+    this.compraService.guardar(compra).subscribe({
+      next: (resp: any) => {
         console.log("COMPRA AGREGADA");
         this.compraService.getCompras();
-        this.compraService.mensajesToast("success", "Registro agreado");
+        this.compraService.mensajesToast("success", "Registro agregado");
         this.modalService.dismissAll();
         this.limpiarCampos();
       },
-      (err: any) => {
-        this.compraService.mensajesToast("error", "Error al guardar");
-      }
-    );
+      error: (err) => {
+        this.compraService.mensajesToast("error", err);
+      },
+    });
   }
 
   editando() {
     const compra = this.formularioGeneral.value;
-    console.log(compra);
-    this.compraService.modificar(compra).subscribe((resp: any) => {
-      console.log("COMPRA MODIFICADA");
-      this.compraService.getCompras();
-      this.compraService.mensajesToast("success", "Registro modificado");
-      this.modalService.dismissAll();
-      this.limpiarCampos();
-    },
-    (err: any) => {
-      this.compraService.mensajesToast("error", "Error al guardar");
+    this.compraService.modificar(compra).subscribe({
+      next: (resp: any) => {
+        console.log("COMPRA MODIFICADA");
+        this.compraService.getCompras();
+        this.compraService.mensajesToast("success", "Registro modificado");
+        this.modalService.dismissAll();
+        this.limpiarCampos();
+      },
+      error: (err) => {
+        this.compraService.mensajesToast("error", err);
+      },
     });
   }
 

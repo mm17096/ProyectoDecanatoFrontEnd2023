@@ -5,6 +5,7 @@
         <th class="align-middle">Factura</th>
         <th class="align-middle">Proveedor</th>
         <th class="align-middle">Fecha</th>
+        <th class="align-middle">Descripción</th>
         <th class="align-middle">Cod. inicio</th>
         <th class="align-middle">Cod. fin</th>
         <th class="align-middle">Cantidad</th>
@@ -20,8 +21,9 @@
             {{ data.factura }}
           </a>
         </td>
-        <td>{{ data.proveedor }}</td>
+        <td>{{ data.proveedor.nombre }}</td>
         <td>{{ data.fecha | date : "dd/MM/yyyy h:mm a" }}</td>
+        <td>{{ data.descripcion }}</td>
         <td>{{ data.cod_inicio }}</td>
         <td>{{ data.cod_fin }}</td>
         <td>{{ data.cantidad }}</td>

@@ -1,11 +1,14 @@
+import { IProveedor } from "../../proveedor/interface/proveedor.interface";
+
 export interface ICompra {
-  codigoCompra:    number;
+  id:              string;
   factura:         string;
-  proveedor:       string;
+  proveedor:       IProveedor;
+  descripcion:     string;
   cantidad:        number;
   cod_inicio:      number;
   cod_fin:         number;
-  fecha:           Date;
+  fecha:           string;
   precio_unitario: number;
   total_compra:    number;
 }

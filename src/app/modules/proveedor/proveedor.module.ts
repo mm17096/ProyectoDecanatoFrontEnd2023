@@ -1,31 +1,30 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { CompraRoutingModule } from './compra-routing.module';
-import { ModalComponent } from './pages/modal/modal.component';
+import { ProveedorRoutingModule } from './proveedor-routing.module';
 import { MostrarComponent } from './pages/mostrar/mostrar.component';
 import { TablaComponent } from './pages/tabla/tabla.component';
+import { ModalComponent } from './pages/modal/modal.component';
 import { UIModule } from 'src/app/shared/ui/ui.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
-import { NgSelectModule } from '@ng-select/ng-select';
-
+import { NgxMaskModule } from 'ngx-mask';
 
 
 @NgModule({
   declarations: [
-    ModalComponent,
     MostrarComponent,
-    TablaComponent
+    TablaComponent,
+    ModalComponent
   ],
   imports: [
     CommonModule,
-    CompraRoutingModule,
+    ProveedorRoutingModule,
     FormsModule,
     UIModule,
     Ng2SearchPipeModule,
     ReactiveFormsModule,
-    NgSelectModule
+    NgxMaskModule.forRoot()
   ]
 })
-export class CompraModule { }
+export class ProveedorModule { }

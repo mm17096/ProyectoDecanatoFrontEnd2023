@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ICompra } from '../../interface/compra.interface';
+import { Component, OnInit, Input } from '@angular/core';
+import { IProveedor } from '../../interface/proveedor.interface';
 
 @Component({
   selector: 'app-tabla',
@@ -7,7 +7,8 @@ import { ICompra } from '../../interface/compra.interface';
   styleUrls: ['./tabla.component.scss']
 })
 export class TablaComponent implements OnInit {
-  @Input() compras!: ICompra[];
+
+  @Input() proveedores!: IProveedor[];
   @Input() queryString!: string;
   p: any;
 

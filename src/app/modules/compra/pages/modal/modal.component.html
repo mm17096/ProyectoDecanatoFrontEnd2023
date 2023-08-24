@@ -26,28 +26,31 @@
       [formGroup]="formularioGeneral"
     >
       <div class="row">
-        <div *ngIf="compra?.codigoCompra">
+        <div *ngIf="compra?.id">
           <input
-            id="codigoCompra"
-            name="codigoCompra"
+            id="id"
+            name="id"
             type="hidden"
             readonly="true"
             class="form-control"
-            formControlName="codigoCompra"
+            formControlName="id"
           />
         </div>
         <div class="mb-4 col-md-6">
           <label for="proveedor">Proveedor:</label>
-          <input
-            id="proveedor"
-            name="proveedor"
-            maxlength="200"
-            type="text"
-            class="form-control"
-            placeholder="Proveedor"
+
+          <ng-select
             formControlName="proveedor"
-            [class]="esCampoValido('proveedor')"
-          />
+            placeholder="Escriba o seleccione"
+            [ngClass]="{ 'is-invalid': esCampoValido('proveedor') }"
+          >
+            <ng-option
+              *ngFor="let x of listProveedor"
+              [value]="x.id"
+              >{{ x.nombre }}</ng-option
+            >
+          </ng-select>
+
           <div class="invalid-feedback">
             <span
               *ngIf="formularioGeneral.get('proveedor')?.errors?.['required']"
@@ -238,6 +241,26 @@
               *ngIf="formularioGeneral.get('total_compra')?.errors?.['min']"
             >
               Total compra no puede ser negativo</span
+            >
+          </div>
+        </div>
+        <div class="mb-4 col-md-12">
+          <label for="descripcion">Descripción:</label>
+          <input
+            id="descripcion"
+            name="descripcion"
+            maxlength="750"
+            type="text"
+            class="form-control"
+            placeholder="Descripción"
+            formControlName="descripcion"
+            [class]="esCampoValido('descripcion')"
+          />
+          <div class="invalid-feedback">
+            <span
+              *ngIf="formularioGeneral.get('descripcion')?.errors?.['required']"
+            >
+              Requiere un descripción</span
             >
           </div>
         </div>

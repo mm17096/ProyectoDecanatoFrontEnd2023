@@ -11,6 +11,7 @@ const routes: Routes = [
   // tslint:disable-next-line: max-line-length
   { path: '', component: LayoutComponent, loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule), canActivate: [AuthGuard] },
   { path: 'compra', component: LayoutComponent, loadChildren: () => import('./modules/compra/compra.module').then(m => m.CompraModule) },
+  { path: 'proveedor', component: LayoutComponent, loadChildren: () => import('./modules/proveedor/proveedor.module').then(m => m.ProveedorModule) },
   { path: 'pages', loadChildren: () => import('./extrapages/extrapages.module').then(m => m.ExtrapagesModule), canActivate: [AuthGuard] },
   { path: 'crypto-ico-landing', component: CyptolandingComponent },
 

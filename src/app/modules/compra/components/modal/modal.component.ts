@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { ICompra } from "../../interface/compra.interface";
+import { ICompra } from "../../interfaces/compra.interface";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { CompraService } from "../../service/compra.service";
+import { CompraService } from "../../services/compra.service";
 import { INTEGER_VALIDATE, DECIMAL_VALIDATE } from "src/app/constants/constants";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
 

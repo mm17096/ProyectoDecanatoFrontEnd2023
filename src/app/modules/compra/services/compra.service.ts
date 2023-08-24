@@ -2,10 +2,10 @@ import { map, tap } from "rxjs/operators";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "src/environments/environment";
-import { ICompra } from "../interface/compra.interface";
+import { ICompra } from "../interfaces/compra.interface";
 import Swal, { SweetAlertIcon } from "sweetalert2";
 import { Observable } from "rxjs";
-import { IProveedor } from "../../proveedor/interface/proveedor.interface";
+import { IProveedor } from "../../proveedor/interfaces/proveedor.interface";
 
 @Injectable({
   providedIn: "root",

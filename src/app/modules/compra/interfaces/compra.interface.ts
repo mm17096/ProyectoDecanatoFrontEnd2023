@@ -1,4 +1,4 @@
-import { IProveedor } from "../../proveedor/interface/proveedor.interface";
+import { IProveedor } from "../../proveedor/interfaces/proveedor.interface";
 
 export interface ICompra {
   id:              string;

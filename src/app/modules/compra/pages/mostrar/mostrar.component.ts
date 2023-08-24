@@ -1,4 +1,4 @@
-import { CompraService } from './../../service/compra.service';
+import { CompraService } from '../../services/compra.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({

@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ProveedorRoutingModule } from './proveedor-routing.module';
 import { MostrarComponent } from './pages/mostrar/mostrar.component';
 import { TablaComponent } from './pages/tabla/tabla.component';
-import { ModalComponent } from './pages/modal/modal.component';
+import { ModalComponent } from './components/modal/modal.component';
 import { UIModule } from 'src/app/shared/ui/ui.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';

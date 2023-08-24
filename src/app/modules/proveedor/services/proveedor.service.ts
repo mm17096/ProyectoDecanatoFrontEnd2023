@@ -2,7 +2,7 @@ import { Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map } from "rxjs/operators";
 import { Injectable } from "@angular/core";
-import { IProveedor } from "../interface/proveedor.interface";
+import { IProveedor } from "../interfaces/proveedor.interface";
 import { environment } from "src/environments/environment";
 
 @Injectable({

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProveedorService } from '../../service/proveedor.service';
+import { ProveedorService } from '../../services/proveedor.service';
 
 @Component({
   selector: 'app-mostrar',

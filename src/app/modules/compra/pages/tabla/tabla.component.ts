@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ICompra } from '../../interface/compra.interface';
+import { ICompra } from '../../interfaces/compra.interface';
 
 @Component({
   selector: 'app-tabla',

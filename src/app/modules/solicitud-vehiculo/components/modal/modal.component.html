@@ -5,6 +5,11 @@
     </div>
 </span>
 
+<span *ngIf="leyenda === titulo && titulo == 'Detalle'">
+    <button type="button" class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1" (click)="openModal(content)"><i
+      class="mdi mdi-eye-outline"></i></button>
+</span>
+
 
 <!-- Modal -->
 <ng-template #content let-modal>
@@ -25,7 +30,7 @@
             <div class="col-md-6">
               <label for="fecha-mision">Fecha de misión</label>
               <input type="date" class="form-control" id="fecha-mision"
-                     formControlName="fechaSalida">
+                     formControlName="fechaSalida" [readOnly]="titulo == 'Detalle'">
             </div>
           </div>
           <div class="row">
@@ -44,7 +49,8 @@
                 <div class="mt-2">
                   <label for="tipo-vehiculo">Tipo de vehículo</label>
                   <select class="form-control" id="tipo-vehiculo"
-                  formControlName="tipoVehiculo">
+                  formControlName="tipoVehiculo"
+                  [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
                     <option selected>Selecione...</option>
                   </select>
                 </div>
@@ -53,7 +59,8 @@
                 <div class="mt-2">
                   <label for="placa">Placa</label>
                   <select class="form-control" id="placa"
-                          formControlName="vehiculo">
+                          formControlName="vehiculo"
+                          [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
                     <option selected>Selecione...</option>
                   </select>
                 </div>
@@ -65,7 +72,8 @@
               <input type="text" class="form-control"
                 id="lugar-visitar"
                      placeholder="Ingrese el lugar o insitución que visitará"
-                formControlName="lugarMision">
+                formControlName="lugarMision"
+                     [readOnly]="titulo == 'Detalle'">
             </div>
           </div>
           <div class="row">
@@ -73,7 +81,8 @@
               <div class="mt-2">
                 <label for="detpto">Departamento</label>
                 <select class="form-control" id="detpto"
-                        formControlName="depto">
+                        formControlName="depto"
+                        [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
                   <option selected>Selecione...</option>
                 </select>
               </div>
@@ -82,7 +91,8 @@
               <div class="mt-2">
                 <label for="municipio">Municipio</label>
                 <select class="form-control" id="municipio"
-                        formControlName="municipio">
+                        formControlName="municipio"
+                        [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
                   <option selected>Selecione...</option>
                 </select>
               </div>
@@ -93,7 +103,8 @@
               <div class="mt-2">
                 <label for="distrito">Distrito</label>
                 <select class="form-control" id="distrito"
-                        formControlName="distrito">
+                        formControlName="distrito"
+                        [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
                   <option selected>Selecione...</option>
                 </select>
               </div>
@@ -102,7 +113,8 @@
               <div class="mt-2">
                 <label for="canton">Cantón</label>
                 <select class="form-control" id="canton"
-                        formControlName="canton">
+                        formControlName="canton"
+                        [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
                   <option selected>Selecione...</option>
                 </select>
               </div>
@@ -113,14 +125,16 @@
               <div class="mt-2">
                 <label for="hora-salida">Hora de salida</label>
                 <input type="time" id="hora-salida"
-                       class="form-control" formControlName="horaSalida">
+                       class="form-control" formControlName="horaSalida"
+                       [readOnly]="titulo == 'Detalle'">
               </div>
             </div>
             <div class="col-md-6">
               <div class="mt-2">
                 <label for="hora-regreso">Hora de regreso</label>
                 <input type="time" id="hora-regreso"
-                       class="form-control" formControlName="horaRegreso">
+                       class="form-control" formControlName="horaRegreso"
+                       [readOnly]="titulo == 'Detalle'">
               </div>
             </div>
           </div>
@@ -134,7 +148,8 @@
                         rows="3"
                         class="form-control"
                         placeholder="Ingrese el objetivo de la misión"
-                        formControlName="objetivoMision"></textarea>
+                        formControlName="objetivoMision"
+                        [readOnly]="titulo == 'Detalle'"></textarea>
             </div>
           </div>
           <div class="row">
@@ -144,7 +159,9 @@
 
                 <input type="number" id="cantidad-pasajeros"
                        [value]="formularioSoliVe.get('cantidadPersonas').value"
-                       class="form-control" formControlName="cantidadPersonas" min="1"
+                       class="form-control"
+                       formControlName="cantidadPersonas" min="1"
+                       [readOnly]="titulo == 'Detalle'"
                 (change)="actualizarFilas()" (input)="actualizarFilas()">
               </div>
             </div>
@@ -191,7 +208,7 @@
   <div class="modal-footer">
     <div class="d-flex justify-content-end mt-1">
       <button type="submit" class="btn btn-primary me-2" id="btn-save" name="btn-save">
-        Guardar
+        Enviar
       </button>
 
       <button type="button" class="btn btn-dark" id="btn-cancel" name="btn-cancel" aria-hidden="true" (click)="modal.dismiss('Cross click')">

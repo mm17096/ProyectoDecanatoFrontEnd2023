@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
+import {ISolicitudVehiculo} from "../../interfaces/data.interface";
 
 @Component({
   selector: 'app-modal',
@@ -12,6 +13,7 @@ export class ModalComponent implements OnInit {
 
   @Input() leyenda!: string;
   @Input() titulo!: string;
+  @Input() soliVeOd!: ISolicitudVehiculo;
 
   formularioSoliVe!: FormGroup;
   pasajeros: any[] = [{ nombre: ''}];

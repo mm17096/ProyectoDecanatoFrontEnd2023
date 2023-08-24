@@ -17,6 +17,7 @@ export class MisSolicitudesComponent implements OnInit {
 
   solicitudesVehiculo: ISolicitudVehiculo [] = [];
   estadosSoliVe: IEstados [] = [];
+
   constructor( private soliVeService: SolicitudVehiculoService ) { }
 
   ngOnInit(): void {

@@ -33,8 +33,8 @@ export class CompraService {
 
   getProveedor() {
     this.http
-      .get(`${this.baseUrl}/proveedor/lista`)
-      .pipe(map((resp: any) => resp.content as IProveedor[]))
+      .get(`${this.baseUrl}/proveedor/listasinpagina`)
+      .pipe(map((resp: any) => resp as IProveedor[]))
       .subscribe(
         (proveedor: IProveedor[]) => {
           this.listProveedor = proveedor;
@@ -43,18 +43,6 @@ export class CompraService {
           console.error("Error al obtener los proveedor:", error);
         }
       );
-  }
-
-  getProveedorsById(id: string) {
-    if (id != "") {
-      return this.http
-        .get(`${this.baseUrl}/proveedor/lista/${id}`)
-        .pipe(map((resp: any) => resp as IProveedor));
-    } else {
-      return this.http
-        .get(`${this.baseUrl}/proveedor/lista`)
-        .pipe(map((resp: any) => resp as IProveedor));
-    }
   }
 
   guardar(compra: ICompra) {
@@ -69,72 +57,5 @@ export class CompraService {
     return this.http.delete<ICompra>(
       `${this.baseUrl}/compra/eliminar/${dat.id}`
     );
-  }
-
-  mensajesToast(
-    icono: SweetAlertIcon = "info",
-    title: string = "Registrado con éxito!"
-  ) {
-    Swal.fire({
-      icon: icono,
-      title: title,
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true,
-      didOpen: (toast) => {
-        toast.addEventListener("mouseenter", Swal.stopTimer);
-        toast.addEventListener("mouseleave", Swal.resumeTimer);
-      },
-    });
-  }
-
-  mensajesSweet(
-    icono: SweetAlertIcon = "info",
-    title: string = "Registrado con éxito!",
-    text: string = "Datos almacenados exitosamente",
-    boton: string = "Ok"
-  ) {
-    Swal.fire({
-      icon: icono,
-      title: title,
-      text: text,
-      confirmButtonText: boton,
-      confirmButtonColor: '#972727',
-    })
-  }
-
-  async mensajesConfirmar(
-    icono: SweetAlertIcon = "warning",
-    title: string = "¿Está seguro de guardar?",
-    label: string = "Algunos datos no se podrán revertir, digite: ",
-    palabraClave: string = "guardar"
-  ) {
-    let estado = false;
-    const palabra = palabraClave;
-
-    const { value: valorPalabra } = await Swal.fire({
-      icon: icono,
-      title: title,
-      input: "text",
-      inputLabel: label + palabraClave,
-      inputValue: "",
-      showCancelButton: true,
-      inputValidator: (value) => {
-        if (!value) {
-          return "¡Tiene que escribir algo!";
-        }
-        if (value != palabra) {
-          return "¡No coincide!";
-        }
-      },
-    });
-
-    if (valorPalabra) {
-      estado = true;
-    }
-
-    return estado;
   }
 }

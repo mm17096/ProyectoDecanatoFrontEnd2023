@@ -50,30 +50,24 @@
             [class]="esCampoValido('nombre')"
           />
           <div class="invalid-feedback">
-
-
-            <span
-              *ngIf="formularioGeneral.get('nombre')?.errors?.['required']"
-            >
-              Requiere un nombre</span
-            >
+            <span *ngIf="formularioGeneral.get('nombre').hasError('required')">
+              Requiere un nombre
+            </span>
             <span *ngIf="formularioGeneral.get('nombre').hasError('minlength')">
-              Digite más de 2 caracteres</span
-            >
+              Digite más de 2 caracteres
+            </span>
 
-            <span
-              *ngIf="formularioGeneral.get('nombre')?.errors?.['maxLength']"
-            >
-            Limite 200 caracteres</span
-            >
+            <span *ngIf="formularioGeneral.get('nombre').hasError('maxlength')">
+              Limite 200 caracteres
+            </span>
           </div>
         </div>
         <div class="mb-4 col-md-12">
-          <label for="telefono">Telefono:</label>
+          <label for="telefono">Teléfono:</label>
           <input
             id="telefono"
             name="telefono"
-            maxlength="100"
+            maxlength="15"
             type="text"
             class="form-control"
             placeholder="Telefono"
@@ -83,10 +77,13 @@
           />
           <div class="invalid-feedback">
             <span
-              *ngIf="formularioGeneral.get('telefono')?.errors?.['required']"
+              *ngIf="formularioGeneral.get('telefono').hasError('required')"
             >
-              Requiere un telefono</span
-            >
+              Requiere un teléfono
+            </span>
+            <span *ngIf="formularioGeneral.get('telefono').hasError('mask')"
+              >Teléfono no válido
+            </span>
           </div>
         </div>
         <div class="mb-4 col-md-12">
@@ -94,7 +91,7 @@
           <input
             id="direccion"
             name="direccion"
-            maxlength="100"
+            maxlength="750"
             type="text"
             class="form-control"
             placeholder="Dirección"
@@ -103,10 +100,21 @@
           />
           <div class="invalid-feedback">
             <span
-              *ngIf="formularioGeneral.get('direccion')?.errors?.['required']"
+              *ngIf="formularioGeneral.get('direccion').hasError('required')"
             >
-              Requiere una direccion</span
+              Requiere una dirección
+            </span>
+            <span
+              *ngIf="formularioGeneral.get('direccion').hasError('minlength')"
             >
+              Digite más de 2 caracteres
+            </span>
+
+            <span
+              *ngIf="formularioGeneral.get('direccion').hasError('maxlength')"
+            >
+              Limite 750 caracteres
+            </span>
           </div>
         </div>
         <div class="mb-4 col-md-12">
@@ -122,9 +130,19 @@
             [class]="esCampoValido('email')"
           />
           <div class="invalid-feedback">
-            <span *ngIf="formularioGeneral.get('email')?.errors?.['required']">
-              Requiere un email</span
-            >
+            <span *ngIf="formularioGeneral.get('email').hasError('required')">
+              Requiere un email
+            </span>
+            <span *ngIf="formularioGeneral.get('email').hasError('minlength')">
+              Digite más de 2 caracteres
+            </span>
+
+            <span *ngIf="formularioGeneral.get('email').hasError('maxlength')">
+              Limite 100 caracteres
+            </span>
+            <span *ngIf="formularioGeneral.get('email').hasError('pattern')"
+              >Email no valido
+            </span>
           </div>
         </div>
       </div>

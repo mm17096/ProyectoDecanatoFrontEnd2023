@@ -42,7 +42,9 @@
           <ng-select
             formControlName="proveedor"
             placeholder="Escriba o seleccione"
-            [ngClass]="{ 'is-invalid': esCampoValido('proveedor') }"
+            [selectOnTab]="true"
+            labelForId="proveedor"
+            [class]="esCampoValido('proveedor')"
           >
             <ng-option
               *ngFor="let x of listProveedor"
@@ -106,7 +108,7 @@
             <span
               *ngIf="formularioGeneral.get('cod_inicio')?.errors?.['pattern']"
             >
-              Solamente se permiten numeros</span
+              Solamente se permiten numeros enteros </span
             >
           </div>
         </div>
@@ -135,7 +137,7 @@
             >
 
             <span *ngIf="formularioGeneral.get('cod_fin')?.errors?.['pattern']">
-              Solamente se permiten numeros</span
+              Solamente se permiten numeros enteros</span
             >
           </div>
         </div>
@@ -161,6 +163,9 @@
             <span *ngIf="formularioGeneral.get('cantidad')?.errors?.['min']">
               Cantidad no puede ser negativa</span
             >
+            <span *ngIf="formularioGeneral.get('cantidad')?.errors?.['pattern']">
+              Solamente se permiten numeros enteros</span
+            >
           </div>
         </div>
         <div class="mb-4 col-md-6">
@@ -181,7 +186,7 @@
               Requiere una fecha</span
             >
             <span *ngIf="formularioGeneral.get('fecha')?.errors?.['pattern']">
-              Fecha no valido</span
+              Fecha no valida</span
             >
           </div>
         </div>
@@ -214,7 +219,7 @@
             <span
               *ngIf="formularioGeneral.get('precio_unitario')?.errors?.['pattern']"
             >
-              Solamente se permiten numeros</span
+              Solamente se permiten numeros con dos decimales</span
             >
           </div>
         </div>
@@ -242,6 +247,11 @@
             >
               Total compra no puede ser negativo</span
             >
+            <span
+              *ngIf="formularioGeneral.get('total_compra')?.errors?.['pattern']"
+            >
+              Solamente se permiten numeros con dos decimales</span
+            >
           </div>
         </div>
         <div class="mb-4 col-md-12">
@@ -260,8 +270,14 @@
             <span
               *ngIf="formularioGeneral.get('descripcion')?.errors?.['required']"
             >
-              Requiere un descripción</span
+              Requiere una descripción</span
             >
+
+            <span
+              *ngIf="formularioGeneral.get('descripcion').hasError('minlength')"
+            >
+              Digite más de 2 caracteres
+            </span>
           </div>
         </div>
       </div>

@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { IProveedor } from "../../interface/proveedor.interface";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { NUMBER_VALIDATE } from "src/app/constants/constants";
+import { EMAIL_VALIDATE } from "src/app/constants/constants";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ProveedorService } from "../../service/proveedor.service";
+import { MensajesService } from "src/app/shared/global/mensajes.service";
 
 @Component({
   selector: "app-modal",
@@ -16,19 +17,20 @@ export class ModalComponent implements OnInit {
 
   formularioGeneral: FormGroup;
 
-  private isNumber: string = NUMBER_VALIDATE;
-  private isDate: string = "";
+  private isEmail: string = EMAIL_VALIDATE;
 
   constructor(
     private modalService: NgbModal,
     private fb: FormBuilder,
-    private proveedorService: ProveedorService
+    private proveedorService: ProveedorService,
+    private mensajesService: MensajesService
   ) {
     this.formularioGeneral = this.iniciarFormulario();
   }
 
   ngOnInit(): void {
     if (this.leyenda == "Editar") {
+      console.log(this.proveedor);
       this.formularioGeneral.patchValue(this.proveedor);
     }
   }
@@ -45,8 +47,23 @@ export class ModalComponent implements OnInit {
         ],
       ],
       telefono: ["", [Validators.required]],
-      direccion: ["", [Validators.required]],
-      email: ["", [Validators.required]],
+      direccion: [
+        "",
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(750),
+        ],
+      ],
+      email: [
+        "",
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(100),
+          Validators.pattern(this.isEmail),
+        ],
+      ],
     });
   }
 
@@ -61,7 +78,7 @@ export class ModalComponent implements OnInit {
         this.registrando();
       }
     } else {
-      this.proveedorService.mensajesToast(
+      this.mensajesService.mensajesToast(
         "warning",
         "Complete los que se indican"
       );
@@ -75,14 +92,13 @@ export class ModalComponent implements OnInit {
     const proveedor = this.formularioGeneral.value;
     this.proveedorService.guardar(proveedor).subscribe({
       next: (resp: any) => {
-        console.log("PROVEEDOR AGREGADA");
         this.proveedorService.getProveedors();
-        this.proveedorService.mensajesToast("success", "Registro agregado");
+        this.mensajesService.mensajesToast("success", "Registro agregado");
         this.modalService.dismissAll();
         this.limpiarCampos();
       },
       error: (err) => {
-        this.proveedorService.mensajesSweet(
+        this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",
           err
@@ -95,14 +111,13 @@ export class ModalComponent implements OnInit {
     const proveedor = this.formularioGeneral.value;
     this.proveedorService.modificar(proveedor).subscribe({
       next: (resp: any) => {
-        console.log("PROVEEDOR MODIFICADA");
         this.proveedorService.getProveedors();
-        this.proveedorService.mensajesToast("success", "Registro modificado");
+        this.mensajesService.mensajesToast("success", "Registro modificado");
         this.modalService.dismissAll();
         this.limpiarCampos();
       },
       error: (err) => {
-        this.proveedorService.mensajesSweet(
+        this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",
           err

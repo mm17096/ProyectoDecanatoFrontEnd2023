@@ -9,3 +9,9 @@ export const NUMBER_VALIDATE = '^[0-9]+([\\.,][0-9]+)?$';
 
 // Para string
 export const STRING_VALIDATE = '^([A-Za-z]+[ ]?){1,2}$';
+
+// Para entero
+export const INTEGER_VALIDATE = '^[0-9]+$';
+
+// Para decimal .00
+export const DECIMAL_VALIDATE = '^[0-9]+(\\.[0-9]{1,2})?$';

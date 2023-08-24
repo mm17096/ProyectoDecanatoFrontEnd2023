@@ -3,7 +3,8 @@ import { ICompra } from "../../interface/compra.interface";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CompraService } from "../../service/compra.service";
-import { NUMBER_VALIDATE } from "src/app/constants/constants";
+import { INTEGER_VALIDATE, DECIMAL_VALIDATE } from "src/app/constants/constants";
+import { MensajesService } from "src/app/shared/global/mensajes.service";
 
 @Component({
   selector: "app-modal",
@@ -16,7 +17,8 @@ export class ModalComponent implements OnInit {
 
   formularioGeneral: FormGroup;
 
-  private isNumber: string = NUMBER_VALIDATE;
+  private isNumber: string = DECIMAL_VALIDATE;
+  private isInteger: string = INTEGER_VALIDATE;
   private isDate: string = "";
 
   cod_inicio?: number;
@@ -31,7 +33,8 @@ export class ModalComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private fb: FormBuilder,
-    private compraService: CompraService
+    private compraService: CompraService,
+    private mensajesService: MensajesService
   ) {
     this.formularioGeneral = this.iniciarFormulario();
   }
@@ -57,14 +60,22 @@ export class ModalComponent implements OnInit {
       id: [""],
       factura: ["", [Validators.required]],
       proveedor: ["", [Validators.required]],
-      descripcion: ["", [Validators.required]],
-      cantidad: ["", [Validators.required, Validators.min(0)]],
+      descripcion: ["", [Validators.required, Validators.minLength(2)]],
+      cantidad: [
+        "",
+        [
+          Validators.required,
+          Validators.min(0),
+          Validators.pattern(this.isInteger),
+        ],
+      ],
+
       cod_inicio: [
         "",
         [
           Validators.required,
           Validators.min(0),
-          Validators.pattern(this.isNumber),
+          Validators.pattern(this.isInteger),
         ],
       ],
       cod_fin: [
@@ -72,7 +83,7 @@ export class ModalComponent implements OnInit {
         [
           Validators.required,
           Validators.min(0),
-          Validators.pattern(this.isNumber),
+          Validators.pattern(this.isInteger),
         ],
       ],
       fecha: ["", [Validators.required, Validators.pattern(this.isDate)]],
@@ -84,7 +95,14 @@ export class ModalComponent implements OnInit {
           Validators.pattern(this.isNumber),
         ],
       ],
-      total_compra: ["", [Validators.required, Validators.min(0)]],
+      total_compra: [
+        "",
+        [
+          Validators.required,
+          Validators.min(0),
+          Validators.pattern(this.isNumber),
+        ],
+      ],
     });
   }
 
@@ -126,13 +144,13 @@ export class ModalComponent implements OnInit {
         //Modificar
         this.editando();
       } else {
-        if ((await this.compraService.mensajesConfirmar()) == true) {
+        if ((await this.mensajesService.mensajesConfirmar()) == true) {
           // Guardar
           this.registrando();
         }
       }
     } else {
-      this.compraService.mensajesToast(
+      this.mensajesService.mensajesToast(
         "warning",
         "Complete los que se indican"
       );
@@ -148,12 +166,16 @@ export class ModalComponent implements OnInit {
       next: (resp: any) => {
         console.log("COMPRA AGREGADA");
         this.compraService.getCompras();
-        this.compraService.mensajesToast("success", "Registro agregado");
+        this.mensajesService.mensajesToast("success", "Registro agregado");
         this.modalService.dismissAll();
         this.limpiarCampos();
       },
       error: (err) => {
-        this.compraService.mensajesToast("error", err);
+        this.mensajesService.mensajesSweet(
+          "error",
+          "Ups... Algo salió mal",
+          err
+        );
       },
     });
   }
@@ -164,12 +186,16 @@ export class ModalComponent implements OnInit {
       next: (resp: any) => {
         console.log("COMPRA MODIFICADA");
         this.compraService.getCompras();
-        this.compraService.mensajesToast("success", "Registro modificado");
+        this.mensajesService.mensajesToast("success", "Registro modificado");
         this.modalService.dismissAll();
         this.limpiarCampos();
       },
       error: (err) => {
-        this.compraService.mensajesToast("error", err);
+        this.mensajesService.mensajesSweet(
+          "error",
+          "Ups... Algo salió mal",
+          err
+        );
       },
     });
   }

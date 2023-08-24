@@ -20,8 +20,8 @@
               <div class="ng-select-wrapper mb-3">
                 <div class="d-flex align-items-center">
                   <label class="me-2">Filtro por estado</label>
-                  <select class="control-form custom-select">
-                    <option></option>
+                  <select class="control-form custom-select" (change)="onEstadoSeleccionado($event)">
+                    <option *ngFor="let estado of estadosSoliVe" [value]="estado.codigoEstado">{{estado.nombreEstado}}</option>
                   </select>
                 </div>
               </div>
@@ -30,9 +30,7 @@
 
             <div class="col-sm-5">
               <div class="text-sm-end">
-                <button type="button" class="btn btn-rounded mb-2 me-2" style="background-color: #93301F; color: white">
-                  Nueva
-                </button>
+                <app-modal [leyenda]="'Nueva'" [titulo]="'Agregar'"></app-modal>
               </div>
             </div>
             <!-- end col-->
@@ -47,7 +45,7 @@
                 <th class="align-middle">Departamento</th>
                 <th class="align-middle">Lugar</th>
                 <th class="align-middle">Fecha uso</th>
-                <th class="align-middle">Personas</th>
+                <th class="align-middle" style="text-align: center">Personas</th>
                 <th class="align-middle" style="text-align: center">Estado</th>
                 <th class="align-middle"
                     style="text-align: center;">
@@ -56,16 +54,29 @@
               </tr>
               </thead>
               <tbody>
-              <!-- *ngFor="let data of cards | filter:queryString | paginate: { itemsPerPage: 10, currentPage: p }" -->
-              <tr>
-                <td>1</td>
-                <td>Agronomia</td>
-                <td>Casa de la cultura</td>
-                <td>2023-08-31</td>
-                <td>34</td>
-                <td style="text-align: center">INICIADA</td>
+              <ng-container *ngIf="solicitudesVehiculo.length > 0; else noDataTemplate">
+                <!-- *ngFor="let data of cards | filter:queryString | paginate: { itemsPerPage: 10, currentPage: p }" -->
+                <tr *ngFor="let data of solicitudesVehiculo | filter:term | paginate: { itemsPerPage: 10, currentPage: p };
+                            let i = index">
+                  <td>{{calcularNumeroCorrelativo(i)}}</td>
+                  <td>{{data.solicitante.empleado.departamento.nombre}}</td>
+                  <td>{{data.lugarMision}}</td>
+                  <td>{{data.fechaSalida}}</td>
+                  <td style="text-align: center">{{data.cantidadPersonas}}</td>
+                  <td style="text-align: center">{{data.estado}}</td>
+                  <td style="text-align: center">
+                    <app-modal [leyenda]="'Detalle'" [titulo]="'Detalle'" [soliVeOd]="data" ></app-modal>
+                  </td>
 
-              </tr>
+                </tr>
+              </ng-container>
+              <ng-template #noDataTemplate>
+                <tr>
+                  <td colspan="6" style="text-align: center;">
+                    No hay datos disponibles.
+                  </td>
+                </tr>
+              </ng-template>
               </tbody>
             </table>
 
@@ -86,3 +97,4 @@
     </div>
   </div>
 </div>
+

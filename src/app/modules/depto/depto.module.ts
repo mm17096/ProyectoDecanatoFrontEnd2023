@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { DeptoRoutingModule } from './depto-routing.module';
-import { ListarComponent } from './listar/listar.component';
-import { ModalComponent } from './modal/modal.component';
+import { ListarComponent } from './pages/listar/listar.component';
+import { ModalComponent } from './components/modal/modal.component';
 import { UIModule } from 'src/app/shared/ui/ui.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';

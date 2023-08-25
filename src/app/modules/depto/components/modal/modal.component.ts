@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IDepto } from '../interface/depto';
-import { DeptoService } from '../service/depto.service';
+import { IDepto } from '../../interface/depto';
+import { DeptoService } from '../../service/depto.service';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';

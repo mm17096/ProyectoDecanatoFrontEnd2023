@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ICargo } from '../interface/cargo';
-import { CargoService } from '../service/cargoservice';
+import { ICargo } from '../../interface/cargo';
+import { CargoService } from '../../service/cargoservice';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';

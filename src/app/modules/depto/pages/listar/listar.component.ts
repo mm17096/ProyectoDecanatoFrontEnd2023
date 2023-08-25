@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { IDepto } from '../interface/depto';
-import { DeptoService } from '../service/depto.service';
+import { IDepto } from '../../interface/depto';
+import { DeptoService } from '../../service/depto.service';
 
 @Component({
   selector: 'app-listar',

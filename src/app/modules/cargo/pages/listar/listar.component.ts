@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CargoService } from '../service/cargoservice';
-import { ICargo } from '../interface/cargo';
+import { CargoService } from '../../service/cargoservice';
+import { ICargo } from '../../interface/cargo';
 
 @Component({
   selector: 'app-listar',

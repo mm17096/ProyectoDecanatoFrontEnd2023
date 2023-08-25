@@ -1,1 +1,70 @@
-<p>listar works!</p>
+<div class="container-fluid">
+  <app-page-title title="Listado de cargos disponibles" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+
+  <div class="row">
+      <div class="col-12">
+          <div class="card">
+              <div class="card-body">
+                  <div class="row mb-2" >
+                      <div class="col-sm-4">
+                           <div class="search-box me-2 mb-2 d-inline-block">
+            <div class="position-relative">
+              <p>Departamentos</p>
+
+              <select class="form-select" aria-label="Default select example" (change)="cargaDeptos($event)">
+                <option selected>Seleccione Estado</option>
+                <option value="8">Activo</option>
+                <option value="9">Inactivo</option>
+
+                </select>
+            </div>
+          </div>
+                      </div>
+                      <div class="col-sm-8">
+                        <div class="text-sm-end">
+                            <app-modal [leyenda]="'Agregar'"></app-modal>
+                        </div>
+                      </div>
+                  </div>
+                  <!-- Contenido de la tabla data -->
+
+                  <div class="table-responsive mb-0">
+                      <table class="table table-centered table-nowrap">
+                          <thead class="table-light">
+                              <tr>
+                              <!--  <th class="border-0 rounded-start">#</th>-->
+                                  <th class="align-middle text-center">#</th>
+                                  <th class="align-middle text-center">Departamento</th>
+                                  <th class="align-middle text-center">Acciones</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr  *ngFor="let data of lstDeptos;let i = index">
+                                  <td class="align-middle text-center">{{ (i + 1) }}</td>
+                                  <td class="align-middle text-center">{{ data.nombre }}</td>
+                                  <td class="align-middle text-center text-center">
+                                      <!-- <div class="btn-group"> -->
+                                        <app-modal [deptos]="data" [leyenda]="'Editar'" ></app-modal>
+
+                                         <button type="button" class="btn btn-warning btn-sm btn-rounded mx-1"
+                                         ngbTooltip="dar baja">
+                                          <i class="mdi mdi-account-lock-outline"></i>
+                                          <!-- mdi-account-check-outline -->
+                                          </button>
+                                      <!--</div>-->
+
+                                  </td>
+                              </tr>
+
+                              </tbody>
+                      </table>
+
+              </div>
+          </div>
+      </div>
+
+  </div>
+</div>
+</div>
+
+

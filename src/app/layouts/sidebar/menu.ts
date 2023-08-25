@@ -23,7 +23,7 @@ export const MENU: MenuItem[] = [
         icon: "bx-user-circle",
         subItems: [
             {
-                id: ,
+                id: 7,
                 label: "Lista",
                 link: "/empleados/listar",
                 parentId: 6,

@@ -10,6 +10,8 @@ const routes: Routes = [
 
   //Ruta de empleado //
   { path: 'empleados', loadChildren: () => import('./empleado/empleado.module').then(m => m.EmpleadoModule), canActivate: [AuthGuard] },
+  { path: 'cargo', loadChildren: () => import('./cargo/cargo.module').then(m => m.CargoModule)},
+  {  path: 'depto', loadChildren: () => import('./depto/depto.module').then(m => m.DeptoModule)},
 ];
 
 @NgModule({

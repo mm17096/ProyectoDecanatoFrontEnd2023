@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class CargoService {
 
-  url = 'http://localhost:8081/cargo';
+  url = 'http://localhost:8080/cargo';
 
   constructor(private http : HttpClient) { }
 
@@ -16,7 +16,7 @@ export class CargoService {
     return this.http.get<unknown[]>(`${this.url}/listar/${estado}`);
   }
 
-  saveCargos(data : unknown){
+  saveCargos(data : any){
     //console.log(data.type)
     return this.http.post(`${this.url}`,data);
   }
@@ -25,9 +25,9 @@ export class CargoService {
     return this.http.get(`${this.url}/${code}`);
   }
 
-  editCargo( codigo : number, nombre : any, precio : any, tipo : any, foto : any){
+  editCargo( data : unknown){
 
-    return this.http.put(this.url,{"codigoProducto": codigo, "nombre": nombre, "precio": precio, "tipo": tipo, "foto" : foto});
+    return this.http.put(this.url,data);
   }
 
   deleteCargo(code : any){

@@ -33,7 +33,7 @@ export class EmpleadoService {
     const formData: FormData = new FormData();
     formData.append('imagen', file);
     formData.append('empleado', JSON.stringify(empleado));
-    return this.http.post(this.url + "empleado/insertar", formData);
+    return this.http.post(this.url + "empleado/insertar", empleado);
   }
 
   public putEmpleado(empleado: IEmpleado): Observable<Object> {
@@ -45,6 +45,14 @@ export class EmpleadoService {
     formData.append('imagen', file);
     formData.append('empleado', JSON.stringify(empleado));
     return this.http.put(this.url + "empleado/modificarconImagen", formData);
+  }
+
+  //Cambiar estado de empleado
+  public cambiarEstado(empleadoId: string): Observable<Object> {
+    const formData: FormData = new FormData();
+    formData.append('id', empleadoId);
+
+    return this.http.put(this.url + "empleado/modificarestado", formData);
   }
 
 }

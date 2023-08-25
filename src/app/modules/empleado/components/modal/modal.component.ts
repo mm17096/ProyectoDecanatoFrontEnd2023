@@ -1,11 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { EmpleadoService } from '../service/empleado.service';
+import { EmpleadoService } from '../../service/empleado.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
-import { ICargo, IDepartamento, IEmpleado, IEmpleadoTabala } from '../interface/empleado.interface';
-import { Options } from 'ng5-slider';
+import { ICargo, IDepartamento, IEmpleado } from '../../interface/empleado.interface';
+import { EMAIL_VALIDATE, TEXT_VALIDATE } from '../../../constants/constants';
+
+import { FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'app-modal',
@@ -22,6 +24,9 @@ export class ModalComponent implements OnInit {
 
   public imgTemp: string | ArrayBuffer = null;
 
+  private isEmail: string = EMAIL_VALIDATE;
+  private isText: string = TEXT_VALIDATE;
+
   cargos: ICargo[] = [];
   departamentos: IDepartamento[] = [];
 
@@ -33,8 +38,9 @@ export class ModalComponent implements OnInit {
   esMotorista: boolean = false;
   private file!: File;
 
-  buttomtext: string = 'Guardar';
   imagen: string = 'no hay';
+
+  hovered: boolean = false; // Inicializamos hovered como falso
 
 
   constructor(private empleadoService: EmpleadoService, private modalService: NgbModal, private fb: FormBuilder, private router: Router) { }
@@ -78,19 +84,18 @@ export class ModalComponent implements OnInit {
 
   private Iniciarformulario(): FormGroup {
     return this.fb.group({
-      file: [this.empleadOd != null ? '' : '', [this.empleadOd == null ? Validators.required : Validators.nullValidator]],
       dui: ['', [Validators.required]],
-      nombre: ['', [Validators.required]],
-      apellido: ['', [Validators.required]],
+      nombre: ['', [Validators.required, Validators.pattern(this.isText)]],
+      apellido: ['', [Validators.required, Validators.pattern(this.isText)]],
       telefono: ['', [Validators.required]],
-      licencia: [(this.esMotorista || this.motoristaOd) ? '' : '', [(this.esMotorista || this.motoristaOd) ? Validators.nullValidator : Validators.required]],
-      tipolicencia: [(this.esMotorista || this.motoristaOd) ? '' : '', [(this.esMotorista || this.motoristaOd) ? Validators.nullValidator : Validators.required]],
-      fechalicencia: [(this.esMotorista || this.motoristaOd) ? '' : '', [(this.esMotorista || this.motoristaOd) ? Validators.nullValidator : Validators.required]],
+      licencia: ['', [Validators.required]],
+      tipolicencia: ['', [Validators.required]],
+      fechalicencia: ['', [Validators.required]],
       jefe: [false, [Validators.required]],
-      correo: ['', [Validators.required]],
+      correo: ['', [Validators.required, Validators.pattern(this.isEmail)]],
       cargo: ['', [Validators.required]],
       departamento: ['', [Validators.required]],
-    });    
+    });
   }
 
   getCargos() {
@@ -115,7 +120,8 @@ export class ModalComponent implements OnInit {
   }
 
   guardar() {
-    if (this.formBuilder.valid || (this.formBuilder.get("licencia").value == '' || this.formBuilder.get("tipolicencia").value == '' || this.formBuilder.get("fechalicencia").value == '' || this.formBuilder.get("file").value == '')) {
+    
+    if (this.formBuilder.valid || this.motoristaOd) {
       if (this.empleadOd != null) {
         this.editando();
       } else {
@@ -155,12 +161,23 @@ export class ModalComponent implements OnInit {
 
     this.empleadoService.postEmpleado(this.empleado, this.file).subscribe((resp: any) => {
       if (resp) {
-        Swal.fire({
-          position: 'center',
-          title: 'Buen trabajo',
-          text: 'Datos guardados con exito',
-          icon: 'info',
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          //timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
         });
+
+        Toast.fire({
+          icon: 'success',
+          text: 'Almacenamiento exitoso'
+        });
+
         this.formBuilder.reset();
         this.recargar();
         this.modalService.dismissAll();
@@ -175,7 +192,7 @@ export class ModalComponent implements OnInit {
 
   }
 
-  SelectCargo() {
+  SelectCargo(newValue: string) {
     // Lógica para determinar si el cargo seleccionado es "Motorista"
 
     //obtenemos el objeto que tenga como nombreCargo Motorista
@@ -183,6 +200,12 @@ export class ModalComponent implements OnInit {
     //Comparamos que el ID sea igual al seleccionado y cambiamos la variable para mostrar los demas campos
     this.esMotorista = (this.formBuilder.get('cargo').value === motoristaOb.codigoCargo);
     this.motoristaOd = this.esMotorista;
+
+    // Retrasamos la actualización del teléfono en 3 segundos
+    setTimeout(() => {
+      this.formBuilder.get('telefono').setValue(newValue); // Función para cambiar teléfono
+    }, 50); // 1000 milisegundos = 1 segundos
+
   }
 
 
@@ -203,16 +226,27 @@ export class ModalComponent implements OnInit {
     this.empleadOd.cargo.codigoCargo = this.formBuilder.get('cargo').value;
     //asignar departamento
     this.empleadOd.departamento.codigoDepto = this.formBuilder.get('departamento').value;
-    
+
     if (this.imagen === 'no hay') {
       this.empleadoService.putEmpleado(this.empleadOd).subscribe((resp: any) => {
         if (resp) {
-          Swal.fire({
-            position: 'center',
-            title: 'Buen trabajo',
-            text: 'Datos modificados con exito',
-            icon: 'info',
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            //timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
           });
+
+          Toast.fire({
+            icon: 'success',
+            text: 'Modificación exitosa'
+          });
+
           this.formBuilder.reset();
           this.recargar();
           this.modalService.dismissAll();
@@ -227,12 +261,23 @@ export class ModalComponent implements OnInit {
     } else {
       this.empleadoService.putEmpleadoImagen(this.empleadOd, this.file).subscribe((resp: any) => {
         if (resp) {
-          Swal.fire({
-            position: 'center',
-            title: 'Buen trabajo',
-            text: 'Datos modificados con exito',
-            icon: 'info',
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            //timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
           });
+
+          Toast.fire({
+            icon: 'success',
+            text: 'Modificación exitosa'
+          });
+
           this.formBuilder.reset();
           this.recargar();
           this.modalService.dismissAll();
@@ -252,6 +297,12 @@ export class ModalComponent implements OnInit {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.router.onSameUrlNavigation = "reload";
     this.router.navigate([currentUrl]);
+  }
+
+  esCampoValido(campo: string) {
+    const validarCampo = this.formBuilder.get(campo);
+    return !validarCampo?.valid && validarCampo?.touched
+      ? 'is-invalid' : validarCampo?.touched ? 'is-valid' : '';
   }
 
 
@@ -274,5 +325,35 @@ export class ModalComponent implements OnInit {
       this.imgTemp = reader.result;
     };
   }
+
+  validarfecha() {
+    const currentDate = new Date();
+    const fechaString = this.formBuilder.get('fechalicencia').value; // Debe ser un string en formato 'yyyy-MM-dd'
+    const fecha = new Date(fechaString);
+
+    if (!isNaN(fecha.getTime())) {
+      if (fecha <= currentDate) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          //timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        });
+
+        Toast.fire({
+          icon: 'warning',
+          text: 'Fecha invalida'
+        });
+
+        this.formBuilder.get('fechalicencia').setValue(null);
+      }
+    }
+  }
+
 
 }

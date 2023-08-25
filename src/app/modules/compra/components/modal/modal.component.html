@@ -1,0 +1,294 @@
+<button
+  type="button"
+  class="btn btn-rounded"
+  [ngClass]="getClassOf()"
+  (click)="openModal(content, compra)"
+  [innerHTML]="getIconsOf()"
+>
+  {{ leyenda }}
+</button>
+
+<ng-template #content role="document" let-modal>
+  <div class="modal-header custom-header">
+    <h5 class="modal-title mt-0">Compra</h5>
+    <button
+      type="button"
+      class="btn-close"
+      aria-hidden="true"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <form
+      id="formCompra"
+      name="formCompra"
+      (ngSubmit)="guardar()"
+      [formGroup]="formularioGeneral"
+    >
+      <div class="row">
+        <div *ngIf="compra?.id">
+          <input
+            id="id"
+            name="id"
+            type="hidden"
+            readonly="true"
+            class="form-control"
+            formControlName="id"
+          />
+        </div>
+        <div class="mb-4 col-md-6">
+          <label for="proveedor">Proveedor:</label>
+
+          <ng-select
+            formControlName="proveedor"
+            placeholder="Escriba o seleccione"
+            [selectOnTab]="true"
+            labelForId="proveedor"
+            [class]="esCampoValido('proveedor')"
+          >
+            <ng-option
+              *ngFor="let x of listProveedor"
+              [value]="x.id"
+              >{{ x.nombre }}</ng-option
+            >
+          </ng-select>
+
+          <div class="invalid-feedback">
+            <span
+              *ngIf="formularioGeneral.get('proveedor')?.errors?.['required']"
+            >
+              Requiere un proveedor</span
+            >
+          </div>
+        </div>
+        <div class="mb-4 col-md-6">
+          <label for="factura">Factura:</label>
+          <input
+            id="factura"
+            name="factura"
+            maxlength="100"
+            type="text"
+            class="form-control"
+            placeholder="Factura"
+            formControlName="factura"
+            [class]="esCampoValido('factura')"
+          />
+          <div class="invalid-feedback">
+            <span
+              *ngIf="formularioGeneral.get('factura')?.errors?.['required']"
+            >
+              Requiere una factura</span
+            >
+          </div>
+        </div>
+        <div class="mb-4 col-md-6">
+          <label for="cod_inicio">Cod. inicio:</label>
+          <input
+            id="cod_inicio"
+            name="cod_inicio"
+            type="number"
+            min="0"
+            class="form-control"
+            formControlName="cod_inicio"
+            placeholder="Codigo inicio"
+            [class]="esCampoValido('cod_inicio')"
+            (keyup)="getcantidad()"
+            [readonly]="aplicarReadOnly"
+          />
+          <div class="invalid-feedback">
+            <span
+              *ngIf="formularioGeneral.get('cod_inicio')?.errors?.['required']"
+            >
+              Requiere un cod. inicio</span
+            >
+            <span *ngIf="formularioGeneral.get('cod_inicio')?.errors?.['min']">
+              Cod. inicio no puede ser negativo</span
+            >
+
+            <span
+              *ngIf="formularioGeneral.get('cod_inicio')?.errors?.['pattern']"
+            >
+              Solamente se permiten numeros enteros </span
+            >
+          </div>
+        </div>
+        <div class="mb-4 col-md-6">
+          <label for="cod_fin">Cod. fin:</label>
+          <input
+            id="cod_fin"
+            name="cod_inicio"
+            type="number"
+            class="form-control"
+            formControlName="cod_fin"
+            min="0"
+            placeholder="codigo fin"
+            [class]="esCampoValido('cod_fin')"
+            (keyup)="getcantidad()"
+            [readonly]="aplicarReadOnly"
+          />
+          <div class="invalid-feedback">
+            <span
+              *ngIf="formularioGeneral.get('cod_fin')?.errors?.['required']"
+            >
+              Requiere un cod. fin</span
+            >
+            <span *ngIf="formularioGeneral.get('cod_fin')?.errors?.['min']">
+              Cod. fin no puede ser negativo</span
+            >
+
+            <span *ngIf="formularioGeneral.get('cod_fin')?.errors?.['pattern']">
+              Solamente se permiten numeros enteros</span
+            >
+          </div>
+        </div>
+        <div class="mb-4 col-md-6">
+          <label for="cantidad">Cantidad:</label>
+          <input
+            id="cantidad"
+            name="cantidad"
+            type="text"
+            readonly="true"
+            class="form-control"
+            formControlName="cantidad"
+            placeholder="Cantidad"
+            [class]="esCampoValido('cantidad')"
+          />
+          <div class="invalid-feedback">
+            <!-- aqui la validación-->
+            <span
+              *ngIf="formularioGeneral.get('cantidad')?.errors?.['required']"
+            >
+              Requiere una cantidad</span
+            >
+            <span *ngIf="formularioGeneral.get('cantidad')?.errors?.['min']">
+              Cantidad no puede ser negativa</span
+            >
+            <span *ngIf="formularioGeneral.get('cantidad')?.errors?.['pattern']">
+              Solamente se permiten numeros enteros</span
+            >
+          </div>
+        </div>
+        <div class="mb-4 col-md-6">
+          <label for="fecha">Fecha:</label>
+          <input
+            id="fecha"
+            name="fecha"
+            type="datetime-local"
+            placeholder="dd/MM/yyyy HH:mm"
+            class="form-control"
+            formControlName="fecha"
+            [class]="esCampoValido('fecha')"
+            [readonly]="aplicarReadOnly"
+          />
+          <div class="invalid-feedback">
+            <!-- aqui la validación-->
+            <span *ngIf="formularioGeneral.get('fecha')?.errors?.['required']">
+              Requiere una fecha</span
+            >
+            <span *ngIf="formularioGeneral.get('fecha')?.errors?.['pattern']">
+              Fecha no valida</span
+            >
+          </div>
+        </div>
+        <div class="mb-4 col-md-6">
+          <label for="precio_unitario">Precio unitario:</label>
+          <input
+            id="precio_unitario"
+            name="precio_unitario"
+            type="number"
+            min="0"
+            class="form-control"
+            placeholder="Precio unitario"
+            formControlName="precio_unitario"
+            [class]="esCampoValido('precio_unitario')"
+            (keyup)="getTotalCompra()"
+            [readonly]="aplicarReadOnly"
+          />
+          <div class="invalid-feedback">
+            <!-- aqui la validación-->
+            <span
+              *ngIf="formularioGeneral.get('precio_unitario')?.errors?.['required']"
+            >
+              Precio unitario requerido.</span
+            >
+            <span
+              *ngIf="formularioGeneral.get('precio_unitario')?.errors?.['min']"
+            >
+              Precio unitario no puede ser negativo</span
+            >
+            <span
+              *ngIf="formularioGeneral.get('precio_unitario')?.errors?.['pattern']"
+            >
+              Solamente se permiten numeros con dos decimales</span
+            >
+          </div>
+        </div>
+        <div class="mb-4 col-md-6">
+          <label for="total_compra">Total compra:</label>
+          <input
+            id="total_compra"
+            name="total_compra"
+            type="text"
+            readonly="true"
+            class="form-control"
+            formControlName="total_compra"
+            placeholder="Total compra"
+            [class]="esCampoValido('total_compra')"
+          />
+          <div class="invalid-feedback">
+            <!-- aqui la validación-->
+            <span
+              *ngIf="formularioGeneral.get('total_compra')?.errors?.['required']"
+            >
+              Requiere un total de compra</span
+            >
+            <span
+              *ngIf="formularioGeneral.get('total_compra')?.errors?.['min']"
+            >
+              Total compra no puede ser negativo</span
+            >
+            <span
+              *ngIf="formularioGeneral.get('total_compra')?.errors?.['pattern']"
+            >
+              Solamente se permiten numeros con dos decimales</span
+            >
+          </div>
+        </div>
+        <div class="mb-4 col-md-12">
+          <label for="descripcion">Descripción:</label>
+          <input
+            id="descripcion"
+            name="descripcion"
+            maxlength="750"
+            type="text"
+            class="form-control"
+            placeholder="Descripción"
+            formControlName="descripcion"
+            [class]="esCampoValido('descripcion')"
+          />
+          <div class="invalid-feedback">
+            <span
+              *ngIf="formularioGeneral.get('descripcion')?.errors?.['required']"
+            >
+              Requiere una descripción</span
+            >
+
+            <span
+              *ngIf="formularioGeneral.get('descripcion').hasError('minlength')"
+            >
+              Digite más de 2 caracteres
+            </span>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer custom-modal">
+    <button class="btn btn-primary" type="submit" form="formCompra">
+      Guardar
+    </button>
+    <button class="btn btn-dark" (click)="modal.close('Close click')">
+      Cerrar
+    </button>
+  </div>
+</ng-template>

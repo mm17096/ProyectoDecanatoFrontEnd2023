@@ -80,25 +80,8 @@ export const MENU: MenuItem[] = [
               parentId: 8,
           },
       ],
+
   },
-    {
-        id: 20,
-        label: "MENUITEMS.MAPS.TEXT",
-        icon: "bx-map",
-        subItems: [
-            {
-                id: 21,
-                label: "Solicitudes",
-                link: "/empleados",
-                parentId: 20,
-            },
-            {
-                id: 22,
-                label: "Asignaciones",
-                link: "/asignacionVale/asignaciones",
-                parentId: 20,
-            },
-        ],
-    }
-];
+
+]
 

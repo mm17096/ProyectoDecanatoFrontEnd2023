@@ -1,0 +1,54 @@
+<div class="table-responsive mb-0">
+  <table class="table table-centered table-nowrap">
+    <thead class="table-light">
+      <tr>
+        <th class="align-middle">Factura</th>
+        <th class="align-middle">Proveedor</th>
+        <th class="align-middle">Fecha</th>
+        <th class="align-middle">Descripción</th>
+        <th class="align-middle">Cod. inicio</th>
+        <th class="align-middle">Cod. fin</th>
+        <th class="align-middle">Cantidad</th>
+        <th class="align-middle">Precio unitario</th>
+        <th class="align-middle">Total compra</th>
+        <th class="align-middle text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of compras | filter : queryString; let i = index">
+        <td>
+          <a class="text-body fw-bold">
+            {{ data.factura }}
+          </a>
+        </td>
+        <td>{{ data.proveedor.nombre }}</td>
+        <td>{{ data.fecha | date : "dd/MM/yyyy h:mm a" }}</td>
+        <td>{{ data.descripcion }}</td>
+        <td>{{ data.cod_inicio }}</td>
+        <td>{{ data.cod_fin }}</td>
+        <td>{{ data.cantidad }}</td>
+        <td>
+          {{ data.precio_unitario | currency : "USD" : "symbol" : "1.2-2" }}
+        </td>
+        <td>{{ data.total_compra | currency : "USD" : "symbol" : "1.2-2" }}</td>
+        <td class="d-flex justify-content-center gap-1">
+          <app-modal [compra]="data" [leyenda]="'Editar'"></app-modal>
+          <!-- Button trigger modal
+          <button
+            (click)="eliminar(data)"
+            class="btn btn-danger btn-sm btn-rounded"
+          >
+            Eliminar
+          </button> -->
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ! PAGINACION
+  <div class="pagination pagination-rounded justify-content-end mb-2">
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
+  -->
+</div>
+<!-- end table -->

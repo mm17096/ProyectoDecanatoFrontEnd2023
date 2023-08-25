@@ -20,15 +20,7 @@ export class ListarComponent implements OnInit {
 
   ngOnInit(): void {
     this.breadCrumbItems = [{ label: 'Solicitud de Vehículo' }, { label: 'Lista', active: true }]; // miga de pan
-    this.getSolicitudes();
-  }
 
-  // Metodo para obtener todas las solicitudes de vehiculo
-  getSolicitudes() {
-    this.soliVeService.obtenerSolicitudes().subscribe( (resp) => {
-      this.solicitudesVehiculo = resp;
-      console.log(this.solicitudesVehiculo);
-    })
   }
 
   calcularNumeroCorrelativo(index: number): number {

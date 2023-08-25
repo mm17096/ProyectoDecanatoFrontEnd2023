@@ -1,0 +1,220 @@
+<span *ngIf="leyenda !== titulo">
+    <div class="text-sm-end">
+        <button type="button" class="btn btn-primary btn-rounded" (click)="openModal(content)">{{titulo}}
+        </button>
+    </div>
+</span>
+
+<span *ngIf="leyenda === titulo && titulo == 'Detalle'">
+    <button type="button" class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1" (click)="openModal(content)"><i
+      class="mdi mdi-eye-outline"></i></button>
+</span>
+
+
+<!-- Modal -->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{leyenda}} Solicitud de Vehículo</h4>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="formularioSoliVe">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="fecha-solicitud">Fecha de solicitud</label>
+              <input type="date" class="form-control" id="fecha-solicitud"
+                     formControlName="fechaSolicitud" readonly>
+            </div>
+            <div class="col-md-6">
+              <label for="fecha-mision">Fecha de misión</label>
+              <input type="date" class="form-control" id="fecha-mision"
+                     formControlName="fechaSalida" [readOnly]="titulo == 'Detalle'">
+            </div>
+          </div>
+          <div class="row">
+            <div class="mt-2">
+              <div class="form-group">
+                <label for="unidad-solicitante">Unidad solicitante</label>
+                <input type="text"
+                       class="form-control"
+                       id="unidad-solicitante"
+                       formControlName="unidadSolicitante" readonly>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+              <div class="col-md-6">
+                <div class="mt-2">
+                  <label for="tipo-vehiculo">Tipo de vehículo</label>
+                  <select class="form-control" id="tipo-vehiculo"
+                  formControlName="tipoVehiculo"
+                  [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
+                    <option selected>Selecione...</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mt-2">
+                  <label for="placa">Placa</label>
+                  <select class="form-control" id="placa"
+                          formControlName="vehiculo"
+                          [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
+                    <option selected>Selecione...</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          <div class="row">
+            <div class="mt-2">
+              <label for="lugar-visitar">Lugar que visitará</label>
+              <input type="text" class="form-control"
+                id="lugar-visitar"
+                     placeholder="Ingrese el lugar o insitución que visitará"
+                formControlName="lugarMision"
+                     [readOnly]="titulo == 'Detalle'">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mt-2">
+                <label for="detpto">Departamento</label>
+                <select class="form-control" id="detpto"
+                        formControlName="depto"
+                        [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
+                  <option selected>Selecione...</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mt-2">
+                <label for="municipio">Municipio</label>
+                <select class="form-control" id="municipio"
+                        formControlName="municipio"
+                        [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
+                  <option selected>Selecione...</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mt-2">
+                <label for="distrito">Distrito</label>
+                <select class="form-control" id="distrito"
+                        formControlName="distrito"
+                        [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
+                  <option selected>Selecione...</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mt-2">
+                <label for="canton">Cantón</label>
+                <select class="form-control" id="canton"
+                        formControlName="canton"
+                        [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
+                  <option selected>Selecione...</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mt-2">
+                <label for="hora-salida">Hora de salida</label>
+                <input type="time" id="hora-salida"
+                       class="form-control" formControlName="horaSalida"
+                       [readOnly]="titulo == 'Detalle'">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mt-2">
+                <label for="hora-regreso">Hora de regreso</label>
+                <input type="time" id="hora-regreso"
+                       class="form-control" formControlName="horaRegreso"
+                       [readOnly]="titulo == 'Detalle'">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-12">
+              <label for="objetivo-mision">Objetivo de la misión</label>
+              <textarea id="objetivo-mision"
+                        cols="30"
+                        rows="3"
+                        class="form-control"
+                        placeholder="Ingrese el objetivo de la misión"
+                        formControlName="objetivoMision"
+                        [readOnly]="titulo == 'Detalle'"></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="mt-2">
+            <label for="cantidad-pasajeros">No. de personas que viajarán</label>
+            <div class="col-md-3">
+
+                <input type="number" id="cantidad-pasajeros"
+                       [value]="formularioSoliVe.get('cantidadPersonas').value"
+                       class="form-control"
+                       formControlName="cantidadPersonas" min="1"
+                       [readOnly]="titulo == 'Detalle'"
+                (change)="actualizarFilas()" (input)="actualizarFilas()">
+              </div>
+            </div>
+          </div>
+          <!--aqui tabla de personas-->
+          <div class="row">
+            <div class="mt-2">
+              <div *ngIf="mostrarTabla; else archivoAdjunto">
+                <label for="tablaPasajeros">Ingrese los nombres de los pasajeros</label>
+                <table class="table excel-table table-responsive" id="tablaPasajeros">
+                  <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Nombre</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let pasajero of pasajeros; let i = index">
+                    <td>{{ i + 1}}</td>
+                    <td>
+                      <input type="text" style="width: 100%"
+                             [value]="i === 0 ? username : pasajero.nombre"
+                             [attr.readonly]=" i === 0 ? true :  null"
+                             formControlName="nombre">
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <ng-template #archivoAdjunto>
+                <div *ngIf="mostrarArchivoAdjunto" class="alert alert-warning">
+                  Por favor, adjunta la lista de pasajeros:
+                  <input type="file" (change)="cambioDeArchivo($event)" />
+                </div>
+              </ng-template>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <div class="d-flex justify-content-end mt-1">
+      <button type="submit" class="btn btn-primary me-2" id="btn-save" name="btn-save">
+        Enviar
+      </button>
+
+      <button type="button" class="btn btn-dark" id="btn-cancel" name="btn-cancel" aria-hidden="true" (click)="modal.dismiss('Cross click')">
+        Cancelar
+      </button>
+    </div>
+  </div>
+</ng-template>
+<!-- Modal -->

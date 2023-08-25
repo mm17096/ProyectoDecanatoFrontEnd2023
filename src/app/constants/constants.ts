@@ -15,3 +15,7 @@ export const INTEGER_VALIDATE = '^[0-9]+$';
 
 // Para decimal .00
 export const DECIMAL_VALIDATE = '^[0-9]+(\\.[0-9]{1,2})?$';
+
+// Para fecha
+export const DATETIME_VALIDATE = '^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(\\d{4}) (20|21|22|23|[01]\\d|\\d)(([:][0-5]\\d){1,2})$';
+

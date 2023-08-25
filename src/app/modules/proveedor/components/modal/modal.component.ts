@@ -30,7 +30,6 @@ export class ModalComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.leyenda == "Editar") {
-      console.log(this.proveedor);
       this.formularioGeneral.patchValue(this.proveedor);
     }
   }

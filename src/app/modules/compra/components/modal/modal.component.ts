@@ -3,7 +3,11 @@ import { ICompra } from "../../interfaces/compra.interface";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CompraService } from "../../services/compra.service";
-import { INTEGER_VALIDATE, DECIMAL_VALIDATE } from "src/app/constants/constants";
+import {
+  INTEGER_VALIDATE,
+  DECIMAL_VALIDATE,
+  DATETIME_VALIDATE,
+} from "src/app/constants/constants";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
 
 @Component({
@@ -137,17 +141,35 @@ export class ModalComponent implements OnInit {
     this.formularioGeneral.controls["total_compra"].setValue(this.total_compra);
   }
 
+  validarfecha() {
+    const inputDate = new Date(this.formularioGeneral.get("fecha").value);
+
+    if (inputDate.getFullYear() > 999 && inputDate.getFullYear() < 10000) {
+      // La fecha es válida y el año tiene 4 dígitos, puedes continuar
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   async guardar() {
     this;
     if (this.formularioGeneral.valid) {
-      if (this.compra?.id) {
-        //Modificar
-        this.editando();
-      } else {
-        if ((await this.mensajesService.mensajesConfirmar()) == true) {
-          // Guardar
-          this.registrando();
+      if (this.validarfecha()) {
+        if (this.compra?.id) {
+          //Modificar
+          this.editando();
+        } else {
+          if ((await this.mensajesService.mensajesConfirmar()) == true) {
+            // Guardar
+            this.registrando();
+          }
         }
+      } else {
+        this.mensajesService.mensajesToast(
+          "warning",
+          "Año de fecha incorrecto"
+        );
       }
     } else {
       this.mensajesService.mensajesToast(
@@ -164,7 +186,6 @@ export class ModalComponent implements OnInit {
     const compra = this.formularioGeneral.value;
     this.compraService.guardar(compra).subscribe({
       next: (resp: any) => {
-        console.log("COMPRA AGREGADA");
         this.compraService.getCompras();
         this.mensajesService.mensajesToast("success", "Registro agregado");
         this.modalService.dismissAll();
@@ -184,7 +205,6 @@ export class ModalComponent implements OnInit {
     const compra = this.formularioGeneral.value;
     this.compraService.modificar(compra).subscribe({
       next: (resp: any) => {
-        console.log("COMPRA MODIFICADA");
         this.compraService.getCompras();
         this.mensajesService.mensajesToast("success", "Registro modificado");
         this.modalService.dismissAll();

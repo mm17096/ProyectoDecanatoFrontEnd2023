@@ -27,6 +27,7 @@ export interface IDepartamento {
     nombre: string,
     estado: number
 }
+
 export interface IEmpleadoTabala {
     dui: string,
     nombre: string,

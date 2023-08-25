@@ -1,0 +1,231 @@
+<span *ngIf="leyenda !== titulo">
+    <div class="text-sm-end">
+        <button type="button" class="btn btn-primary btn-rounded" (click)="openModal(content)">{{titulo}}
+        </button>
+    </div>
+</span>
+
+<span *ngIf="leyenda === titulo && titulo == 'Detalle'">
+    <button type="button" class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1" (click)="openModal(content)"><i
+            class="mdi mdi-account-details-outline"></i></button>
+</span>
+
+<span *ngIf="leyenda === titulo && titulo == 'Editar'">
+    <button type="button" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1" (click)="openModal(content)"><i
+            class="mdi mdi-account-edit-outline"></i></button>
+</span>
+
+
+<!-- Modal -->
+
+<div class="modal modal-fullscreen-xl-down fade" id="modalEmpleado" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <ng-template #content role="document" let-modal>
+        <div class="modal-header">
+            <h5 class="modal-title mt-0">{{leyenda}} Empleado</h5>
+            <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+
+            <form (ngSubmit)="guardar()" [formGroup]="formBuilder" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-6">
+
+                        <!-- inicio de foto Empleado -->
+                        <div class="form-group row">
+
+                            <div class="col-md-7" *ngIf="titulo !== 'Detalle'">
+                                <div class="form-group row m-4">
+                                    <label class="control-label" for="file">Foto: </label>
+                                    <input formControlName="file" id="file" type="file" multiple class="form-control"
+                                        (change)="onFileSelected($event)" />
+                                </div>
+                            </div>
+
+                            <span class="align-text-top col-md-4" style="display: flex; left: 10%;" *ngIf="titulo === 'Detalle' && !imgTemp"><strong>Foto de Perfil :</strong></span>
+
+                            <div class="col-md-4" >
+                                <img class="rounded-circle custom-border"  *ngIf="leyenda === titulo && !imgTemp" src="{{empleadOd.nombrefoto}}" alt="">
+                               
+                                <img class="rounded-circle custom-border" *ngIf="imgTemp" [src]="imgTemp" alt="">
+                            </div>
+
+                        </div>
+                        <!-- fin de foto Empleado -->
+
+                        <!-- inicio de dui Empleado -->
+                        <div class="form-group row m-4">
+                            <label class="control-label">Dui:</label>
+                            <input type="text" formControlName="dui" class="form-control" id="dui" name="dui"
+                                placeholder="Ingrese dui" [readonly]="empleadOd != null && titulo == 'Detalle'"
+                                [ngModel]="empleadOd !=null ? empleadOd.dui : ''" />
+                        </div>
+                        <!-- fin de licencia Empleado -->
+
+                        <!-- inicio de nombre Empleado -->
+                        <div class="form-group row m-4">
+                            <label class="control-label">Nombre:</label>
+                            <input type="text" formControlName="nombre" class="form-control" id="nombre" name="nombre"
+                                placeholder="Ingrese nombre" [readonly]="empleadOd != null && titulo == 'Detalle'"
+                                [ngModel]="empleadOd!=null ? empleadOd.nombre : ''" />
+                        </div>
+                        <!-- fin de nombre Empleado -->
+
+                        <!-- inicio de apellido Empleado -->
+                        <div class="form-group row m-4">
+                            <label class="control-label">Apellido:</label>
+                            <input type="text" formControlName="apellido" class="form-control" id="apellido"
+                                name="apellido" placeholder="Ingrese apellido"
+                                [readonly]="empleadOd != null && titulo == 'Detalle'"
+                                [ngModel]="empleadOd!=null ? empleadOd.apellido : ''" />
+                        </div>
+                        <!-- fin de apellido Empleado -->
+
+                        <!-- inicio de telefono Empleado -->
+                        <div class="form-group row m-4" *ngIf="esMotorista || motoristaOd">
+                            <label class="control-label">Telefono:</label>
+                            <input type="text" formControlName="telefono" class="form-control" id="telefono"
+                                name="telefono" placeholder="Ingrese telefono"
+                                [readonly]="empleadOd != null && titulo == 'Detalle'"
+                                [ngModel]="empleadOd!=null ? empleadOd.telefono : ''" />
+                        </div>
+                        <!-- fin de telefono Empleado -->
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <!-- inicio de telefono Empleado -->
+                        <div class="form-group row m-4" *ngIf="!esMotorista && !motoristaOd">
+                            <label class="control-label">Telefono:</label>
+                            <input type="text" formControlName="telefono" class="form-control" id="telefono"
+                                name="telefono" placeholder="Ingrese telefono"
+                                [readonly]="empleadOd != null && titulo == 'Detalle'"
+                                [ngModel]="empleadOd!=null ? empleadOd.telefono : ''" />
+                        </div>
+                        <!-- fin de telefono Empleado -->
+
+                        <!-- inicio de correo Empleado -->
+                        <div class="form-group row m-4">
+                            <label class="control-label">Correo:</label>
+                            <input type="text" formControlName="correo" class="form-control" id="correo" name="correo"
+                                placeholder="Ingrese correo" [readonly]="empleadOd != null && titulo == 'Detalle'"
+                                [ngModel]="empleadOd!=null ? empleadOd.correo : ''" />
+                        </div>
+                        <!-- fin de correo Empleado -->
+
+                        <!-- inicio de cargo Empleado -->
+                        <div class="form-group row m-4">
+                            <label class="control-label">Cargo:</label>
+                            <select class="form-control form-select" (change)="SelectCargo()" id="selectCargo"
+                                name="selectCargo" formControlName="cargo"
+                                [ngClass]="{'select-readonly': empleadOd != null && titulo == 'Detalle'}"
+                                [ngModel]="empleadOd != null ? empleadOd.cargo.codigoCargo : ''">
+                                <option value="">Seleccione Cargo</option>
+                                <option *ngFor="let cargodata of cargos" [ngValue]="cargodata.codigoCargo">
+                                    {{cargodata.nombreCargo}}
+                                </option>
+                            </select>
+                        </div>
+                        <!-- fin de cargo Empleado -->
+
+                        <!-- inicio de licencia Empleado -->
+                        <div class="form-group row m-4" *ngIf="esMotorista || motoristaOd">
+                            <label class="control-label">Licencia:</label>
+                            <input type="text" formControlName="licencia" class="form-control" id="licencia"
+                                name="licencia" placeholder="Ingrese licencia"
+                                [readonly]="empleadOd != null && titulo == 'Detalle'"
+                                [ngModel]="empleadOd!=null ? empleadOd.licencia : ''" />
+                        </div>
+                        <!-- fin de licencia Empleado -->
+
+                        <!-- inicio de tipolicencia & fecha de expiracion Empleado -->
+                        <div class="form-group row m-3" *ngIf="esMotorista || motoristaOd">
+
+                            <div class="col-md-6">
+                                <label class="control-label">Tipo de Licencia:</label>
+                                <select class="form-control form-select" id="selectTipoLicencia"
+                                    name="selectTipoLicencia" formControlName="tipolicencia"
+                                    [ngClass]="{'select-readonly': empleadOd != null && titulo == 'Detalle'}"
+                                    [ngModel]="empleadOd != null ? empleadOd.tipo_licencia : ''">
+                                    <option value="">Seleccione Tipo</option>
+                                    <option value="Liviana">Liviana</option>
+                                    <option value="Pesada">Pesada</option>
+                                    <option value="Motocicleta">Motocicleta</option>
+                                </select>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <label class="control-label">Fecha de expiracion:</label>
+                                <input type="date" formControlName="fechalicencia" class="form-control"
+                                    id="fechalicencia" name="fechalicencia" placeholder="Ingrese fechalicencia"
+                                    [readonly]="empleadOd != null && titulo == 'Detalle'"
+                                    [ngModel]="empleadOd!=null ? empleadOd.fecha_licencia : ''" />
+                            </div>
+
+                        </div>
+                        <!-- fin de tipolicencia & fecha de expiracion Empleado -->
+
+
+                        <!-- inicio de departamento & es jefe Empleado -->
+                        <div class="form-group row m-3 align-items-center">
+                            <div class="col-md-6">
+                                <label class="control-label">Departamento:</label>
+                                <select class="form-control form-select" id="selectDepartamento"
+                                    name="selectDepartamento" formControlName="departamento"
+                                    [ngClass]="{'select-readonly': empleadOd != null && titulo == 'Detalle'}"
+                                    [ngModel]="empleadOd != null ? empleadOd.departamento.codigoDepto : ''">
+                                    <option value="">Seleccione Departamento</option>
+                                    <option *ngFor="let departamentodata of departamentos"
+                                        [ngValue]="departamentodata.codigoDepto">
+                                        {{departamentodata.nombre}}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 form-check form-switch form-switch-md" style="top: 15px;">
+                                <input class="form-check-input" type="checkbox" formControlName="jefe" id="jefe"
+                                    name="jefe" [ngClass]="{'select-readonly-check': empleadOd != null && titulo == 'Detalle'}"
+                                    [ngModel]="empleadOd!=null ? empleadOd.jefe : ''">
+                                <label class="form-check-label" for="jefe">Es Jefe de
+                                    Departamento</label>
+                            </div>
+                        </div>
+
+                        <!-- fin de departamento & es jefe Empleado -->
+
+                    </div>
+                </div>
+
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-primary me-2" id="btn-save" name="btn-save">
+                        Guardar
+                    </button>
+
+                    <button type="button" class="btn btn-dark" id="btn-cancel" name="btn-cancel" aria-hidden="true"
+                        (click)="modal.dismiss('Cross click')">
+                        Cancelar
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </ng-template>
+</div>
+<!-- Modal -->
+
+<script>
+    // Deshabilitar el cursor en el campo de entrada
+    const readonlyInput = document.getElementById("readonlyInput");
+
+    readonlyInput.addEventListener("mousedown", (event) => {
+        event.preventDefault();
+    });
+
+    readonlyInput.addEventListener("keydown", (event) => {
+        event.preventDefault();
+    });
+</script>

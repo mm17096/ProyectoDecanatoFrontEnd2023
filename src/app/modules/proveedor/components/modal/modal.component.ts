@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { IProveedor } from "../../interfaces/proveedor.interface";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { EMAIL_VALIDATE } from "src/app/constants/constants";
+import { EMAIL_VALIDATE } from "src/app/modules/constants/constants";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ProveedorService } from "../../services/proveedor.service";
 import { MensajesService } from "src/app/shared/global/mensajes.service";

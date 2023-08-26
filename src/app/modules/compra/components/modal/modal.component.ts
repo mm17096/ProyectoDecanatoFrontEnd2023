@@ -3,12 +3,9 @@ import { ICompra } from "../../interfaces/compra.interface";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CompraService } from "../../services/compra.service";
-import {
-  INTEGER_VALIDATE,
-  DECIMAL_VALIDATE,
-  DATETIME_VALIDATE,
-} from "src/app/constants/constants";
+
 import { MensajesService } from "src/app/shared/global/mensajes.service";
+import { DECIMAL_VALIDATE, INTEGER_VALIDATE } from "src/app/modules/constants/constants";
 
 @Component({
   selector: "app-modal",

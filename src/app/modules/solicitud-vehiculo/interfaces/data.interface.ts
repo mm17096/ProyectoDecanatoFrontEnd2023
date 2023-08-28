@@ -1,5 +1,5 @@
 export interface ISolicitudVehiculo {
-  codigoSolicitudVehiculo: number,
+  codigoSolicitudVehiculo: string,
   fechaSolicitud: string,
   fechaSalida: string,
   unidadSolicitante: any,

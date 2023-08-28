@@ -37,60 +37,7 @@
           </div>
 
           <!-- Table data -->
-          <div class="table-responsive mb-0">
-            <table class="table table-centered table-nowrap">
-              <thead class="table-light">
-              <tr>
-                <th class="align-middle">No.</th>
-                <th class="align-middle">Departamento</th>
-                <th class="align-middle">Lugar</th>
-                <th class="align-middle">Fecha uso</th>
-                <th class="align-middle" style="text-align: center">Personas</th>
-                <th class="align-middle" style="text-align: center">Estado</th>
-                <th class="align-middle"
-                    style="text-align: center;">
-                  Acciones
-                </th>
-              </tr>
-              </thead>
-              <tbody>
-              <ng-container *ngIf="solicitudesVehiculo.length > 0; else noDataTemplate">
-                <!-- *ngFor="let data of cards | filter:queryString | paginate: { itemsPerPage: 10, currentPage: p }" -->
-                <tr *ngFor="let data of solicitudesVehiculo | filter:term | paginate: { itemsPerPage: 10, currentPage: p };
-                            let i = index">
-                  <td>{{calcularNumeroCorrelativo(i)}}</td>
-                  <td>{{data.solicitante.empleado.departamento.nombre}}</td>
-                  <td>{{data.lugarMision}}</td>
-                  <td>{{data.fechaSalida}}</td>
-                  <td style="text-align: center">{{data.cantidadPersonas}}</td>
-                  <td style="text-align: center">{{data.estado}}</td>
-                  <td style="text-align: center">
-                    <app-modal [leyenda]="'Detalle'" [titulo]="'Detalle'" [soliVeOd]="data" ></app-modal>
-                  </td>
-
-                </tr>
-              </ng-container>
-              <ng-template #noDataTemplate>
-                <tr>
-                  <td colspan="6" style="text-align: center;">
-                    No hay datos disponibles.
-                  </td>
-                </tr>
-              </ng-template>
-              </tbody>
-            </table>
-
-            <div class="pagination pagination-rounded justify-content-end mb-2">
-              <pagination-controls
-                previousLabel="Anterior"
-                nextLabel="Siguiente"
-                firstLabel="Primera"
-                lastLabel="Última"
-                itemsPerPageLabel="por página"
-                (pageChange)="p = $event"></pagination-controls>
-            </div>
-
-          </div>
+            <app-tabla [solicitudesVehiculo]="solicitudesVehiculo" [term]="term"></app-tabla>
           <!-- end table -->
         </div>
       </div>

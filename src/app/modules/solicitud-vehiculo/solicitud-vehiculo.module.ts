@@ -9,13 +9,15 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgxPaginationModule} from "ngx-pagination";
 import {Ng2SearchPipeModule} from "ng2-search-filter";
 import { ModalComponent } from './components/modal/modal.component';
+import { TablaComponent } from './components/tabla/tabla.component';
 
 
 @NgModule({
   declarations: [
     ListarComponent,
     MisSolicitudesComponent,
-    ModalComponent
+    ModalComponent,
+    TablaComponent
   ],
     imports: [
         CommonModule,

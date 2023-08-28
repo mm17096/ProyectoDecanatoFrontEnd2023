@@ -20,7 +20,7 @@ export class SolicitudVehiculoService {
 
   // Servicio para obtener todas las solicitudes de vehiculo
   public obtenerSolicitudes(page: number, size: number): Observable<any> {
-    return this.http.get<ISolicitudVehiculo2>((this.url)+ '/listapage');
+    return this.http.get<ISolicitudVehiculo2>((this.url)+ `/listapage?page=${page}&size=${size}`);
   }
 
   /*getSolicitudesVehiculo() {
@@ -45,6 +45,6 @@ export class SolicitudVehiculoService {
 
   // Servicio para filtrar las solicitudes por estado
   public obtenerSoliVePorEstado(estado: number): Observable<any> {
-    return  this.http.get<ISolicitudVehiculo>( (this.url) + `/listadtoestado/${estado}` );
+    return  this.http.get<ISolicitudVehiculo2>( (this.url) + `/listapage/${estado}` );// falta agregar paginacion
   }
 }

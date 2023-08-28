@@ -38,7 +38,7 @@ export class MisSolicitudesComponent implements OnInit {
 
   getSolicitudesEstado(estado: number) {
     this.soliVeService.obtenerSoliVePorEstado(estado).subscribe((resp) => {
-      this.solicitudesVehiculo = resp;
+      this.solicitudesVehiculo = resp.content;
     });
   }
 

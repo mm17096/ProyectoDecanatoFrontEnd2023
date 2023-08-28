@@ -31,7 +31,7 @@
           {{ data.precio_unitario | currency : "USD" : "symbol" : "1.2-2" }}
         </td>
         <td>{{ data.total_compra | currency : "USD" : "symbol" : "1.2-2" }}</td>
-        <td class="d-flex justify-content-center gap-1">
+        <td class="justify-content-center">
           <app-modal [compra]="data" [leyenda]="'Editar'"></app-modal>
           <!-- Button trigger modal
           <button

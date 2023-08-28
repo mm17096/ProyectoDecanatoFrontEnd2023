@@ -5,10 +5,10 @@ export interface ICompra {
   factura:         string;
   proveedor:       IProveedor;
   descripcion:     string;
-  cantidad:        number;
-  cod_inicio:      number;
-  cod_fin:         number;
-  fecha:           string;
-  precio_unitario: number;
-  total_compra:    number;
+  cantidad?:        number;
+  cod_inicio?:      number;
+  cod_fin?:         number;
+  fecha?:           string;
+  precio_unitario?: number;
+  total_compra?:    number;
 }

@@ -1,0 +1,28 @@
+.excel-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.excel-table th,
+.excel-table td {
+  border: 1px solid #ccc;
+  padding: 4px;
+  text-align: left;
+}
+
+.excel-cell {
+  border: none;
+  box-shadow: none;
+  padding: 0.375rem 0.75rem;
+  line-height: 1.5;
+}
+
+i {
+  font-size: 17px;
+}
+
+/* Agrega una clase para aplicar el estilo de "solo lectura" al select */
+.select-readonly {
+  background-color: #eff2f7; /* Cambia el color de fondo para indicar que está en modo "solo lectura" */
+  pointer-events: none; /* Evita que se capturen eventos en el select */
+}

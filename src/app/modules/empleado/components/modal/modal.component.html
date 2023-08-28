@@ -1,0 +1,311 @@
+<span *ngIf="leyenda !== titulo">
+    <div class="text-sm-end">
+        <button type="button" class="btn btn-primary btn-rounded" (click)="openModal(content)">
+            {{ titulo }}
+        </button>
+    </div>
+</span>
+
+
+<span *ngIf="leyenda === titulo && titulo == 'Detalle'">
+    <button type="button" class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1" (click)="openModal(content)"
+        ngbTooltip="Detalle de empleado">
+        <i class="mdi mdi-18px mdi-eye-outline"></i></button>
+</span>
+
+<span *ngIf="leyenda === titulo && titulo == 'Editar'">
+    <button type="button" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1" (click)="openModal(content)"
+        ngbTooltip="Modificar empleado">
+        <i class="mdi mdi-18px mdi-book-edit-outline"></i></button>
+</span>
+
+
+<!-- Modal -->
+
+<div class="modal modal-fullscreen-xl-down fade" id="modalEmpleado" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <ng-template #content role="document" let-modal>
+        <div class="modal-header color-top-modal">
+            <h5 class="modal-title mt-0">{{leyenda}} Empleado</h5>
+            <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+
+            <form (ngSubmit)="guardar()" [formGroup]="formBuilder" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-6">
+
+                        <!-- inicio de foto Empleado -->
+                        <div class="form-group row">
+
+                            <div class="col-md-7" *ngIf="titulo !== 'Detalle'">
+                                <div class="form-group row m-4">
+                                    <label class="control-label" for="file">Foto: </label>
+                                    <input id="file" type="file" multiple class="form-control"
+                                        (change)="onFileSelected($event)" />
+                                </div>
+                            </div>
+
+                            <span class="align-text-top col-md-4" style="display: flex; left: 10%;"
+                                *ngIf="titulo === 'Detalle' && !imgTemp"><strong>Foto de Perfil :</strong></span>
+
+                            <div class="col-md-4">
+                                <img class="rounded-circle custom-border"
+                                    *ngIf="leyenda === titulo && !imgTemp && empleadOd.urlfoto != ''"
+                                    src="{{empleadOd.nombrefoto}}" alt="">
+
+                                <img class="rounded-circle custom-border"
+                                    *ngIf="leyenda === titulo && !imgTemp && empleadOd.urlfoto == ''"
+                                    src="../../../../../assets/images/Default-Avatar.png" alt="">
+
+                                <img class="rounded-circle custom-border" *ngIf="imgTemp" [src]="imgTemp" alt="">
+                            </div>
+
+                        </div>
+                        <!-- fin de foto Empleado -->
+
+                        <!-- inicio de dui Empleado -->
+                        <div class="form-group row m-4">
+                            <label class="control-label">Dui:</label>
+                            <input type="text" formControlName="dui" class="form-control" id="dui" name="dui"
+                                placeholder="Ingrese DUI - ej: 00000000-0"
+                                [readonly]="empleadOd != null && titulo == 'Detalle'" [class]="esCampoValido('dui')"
+                                [ngModel]="empleadOd !=null ? empleadOd.dui : ''" mask="00000000-0" />
+                            <div class="invalid-feedback">
+                                <span *ngIf="formBuilder.get('dui')?.errors?.['required']">
+                                    Requiere un DUI</span>
+                                <span *ngIf="!formBuilder.get('dui').valid">
+                                    Debe cumplir con el formato correcto</span>
+                            </div>
+                        </div>
+                        <!-- fin de licencia Empleado -->
+
+                        <!-- inicio de nombre Empleado -->
+                        <div class="form-group row m-4">
+                            <label class="control-label">Nombre:</label>
+                            <input type="text" formControlName="nombre" class="form-control" id="nombre" name="nombre"
+                                placeholder="Ingrese nombre" [readonly]="empleadOd != null && titulo == 'Detalle'"
+                                [class]="esCampoValido('nombre')" [ngModel]="empleadOd!=null ? empleadOd.nombre : ''" />
+                            <div class="invalid-feedback">
+                                <span *ngIf="formBuilder.get('nombre')?.errors?.['required']">
+                                    Requiere un nombre</span>
+                                <span *ngIf="formBuilder.get('nombre')?.errors?.['pattern']">
+                                    No debe contener numeros</span>
+                            </div>
+                        </div>
+                        <!-- fin de nombre Empleado -->
+
+                        <!-- inicio de apellido Empleado -->
+                        <div class="form-group row m-4">
+                            <label class="control-label">Apellido:</label>
+                            <input type="text" formControlName="apellido" class="form-control" id="apellido"
+                                name="apellido" placeholder="Ingrese apellido"
+                                [readonly]="empleadOd != null && titulo == 'Detalle'"
+                                [class]="esCampoValido('apellido')"
+                                [ngModel]="empleadOd!=null ? empleadOd.apellido : ''" />
+                            <div class="invalid-feedback">
+                                <span *ngIf="formBuilder.get('apellido')?.errors?.['required']">
+                                    Requiere un apellido</span>
+                                <span *ngIf="formBuilder.get('apellido')?.errors?.['pattern']">
+                                    No debe contener numeros</span>
+                            </div>
+                        </div>
+                        <!-- fin de apellido Empleado -->
+
+                        <!-- inicio de telefono Empleado -->
+                        <div class="form-group row m-4" *ngIf="esMotorista || motoristaOd">
+                            <label class="control-label">Telefono:</label>
+                            <input type="text" formControlName="telefono" class="form-control" id="telefono"
+                                name="telefono" placeholder="Ingrese telefono - ej: 0000-0000"
+                                [readonly]="empleadOd != null && titulo == 'Detalle'" mask="0000-0000"
+                                [class]="esCampoValido('telefono')"
+                                [ngModel]="empleadOd!=null ? empleadOd.telefono : ''" />
+                            <div class="invalid-feedback">
+                                <span *ngIf="formBuilder.get('telefono')?.errors?.['required']">
+                                    Requiere un telefono</span>
+                                <span *ngIf="!formBuilder.get('telefono').valid">
+                                    Debe cumplir con el formato correcto</span>
+                            </div>
+                        </div>
+                        <!-- fin de telefono Empleado -->
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <!-- inicio de telefono Empleado -->
+                        <div class="form-group row m-4" *ngIf="!esMotorista && !motoristaOd">
+                            <label class="control-label">Telefono:</label>
+                            <input type="text" formControlName="telefono" class="form-control" id="telefono"
+                                name="telefono" placeholder="Ingrese telefono - ej: 0000-0000"
+                                [readonly]="empleadOd != null && titulo == 'Detalle'" mask="0000-0000"
+                                [class]="esCampoValido('telefono')"
+                                [ngModel]="empleadOd!=null ? empleadOd.telefono : ''" />
+                            <div class="invalid-feedback">
+                                <span *ngIf="formBuilder.get('telefono')?.errors?.['required']">
+                                    Requiere un telefono</span>
+                                <span *ngIf="!formBuilder.get('telefono').valid">
+                                    Debe cumplir con el formato correcto</span>
+                            </div>
+                        </div>
+                        <!-- fin de telefono Empleado -->
+
+                        <!-- inicio de correo Empleado -->
+                        <div class="form-group row m-4">
+                            <label class="control-label">Correo:</label>
+                            <input type="text" formControlName="correo" class="form-control" id="correo" name="correo"
+                                placeholder="Ingrese correo" [readonly]="empleadOd != null && titulo == 'Detalle'"
+                                [class]="esCampoValido('correo')" [ngModel]="empleadOd!=null ? empleadOd.correo : ''" />
+                            <div class="invalid-feedback">
+                                <span *ngIf="formBuilder.get('correo')?.errors?.['required']">
+                                    Requiere un correo</span>
+                                <span *ngIf="formBuilder.get('correo')?.errors?.['pattern']">
+                                    Email no válido, debe ser '@ues.edu.sv'</span>
+                            </div>
+                        </div>
+                        <!-- fin de correo Empleado -->
+
+                        <!-- inicio de cargo Empleado -->
+                        <div class="form-group row m-4">
+                            <label class="control-label">Cargo:</label>
+                            <select class="form-control form-select"
+                                (change)="SelectCargo(formBuilder.get('telefono').value)" id="selectCargo"
+                                name="selectCargo" formControlName="cargo"
+                                [ngClass]="{'select-readonly': empleadOd != null && titulo == 'Detalle'}"
+                                [class]="esCampoValido('cargo')"
+                                [ngModel]="empleadOd != null ? empleadOd.cargo.codigoCargo : ''">
+                                <option value="">Seleccione Cargo</option>
+                                <option *ngFor="let cargodata of cargos" [ngValue]="cargodata.codigoCargo">
+                                    {{cargodata.nombreCargo}}
+                                </option>
+                            </select>
+                            <div class="invalid-feedback">
+                                <span *ngIf="formBuilder.get('cargo')?.errors?.['required']">
+                                    Requiere un cargo</span>
+                            </div>
+                        </div>
+                        <!-- fin de cargo Empleado -->
+
+                        <!-- inicio de licencia Empleado -->
+                        <div class="form-group row m-4" *ngIf="esMotorista || motoristaOd">
+                            <label class="control-label">Licencia:</label>
+                            <input type="text" formControlName="licencia" class="form-control" id="licencia"
+                                name="licencia" placeholder="Ingrese licencia"
+                                [readonly]="empleadOd != null && titulo == 'Detalle'" mask="00000000-0"
+                                [class]="esCampoValido('licencia')"
+                                [ngModel]="empleadOd!=null ? empleadOd.licencia : (esMotorista ? formBuilder.get('dui').value : '')" />
+                            <div class="invalid-feedback">
+                                <span *ngIf="formBuilder.get('licencia')?.errors?.['required']">
+                                    Requiere un numero de licencia</span>
+                            </div>
+                        </div>
+                        <!-- fin de licencia Empleado -->
+
+                        <!-- inicio de tipolicencia & fecha de expiracion Empleado -->
+                        <div class="form-group row m-3" *ngIf="esMotorista || motoristaOd">
+
+                            <div class="col-md-6">
+                                <label class="control-label">Tipo de Licencia:</label>
+                                <select class="form-control form-select" id="selectTipoLicencia"
+                                    name="selectTipoLicencia" formControlName="tipolicencia"
+                                    [ngClass]="{'select-readonly': empleadOd != null && titulo == 'Detalle'}"
+                                    [class]="esCampoValido('tipolicencia')"
+                                    [ngModel]="empleadOd != null ? empleadOd.tipo_licencia : ''">
+                                    <option value="">Seleccione Tipo</option>
+                                    <option value="Liviana">Liviana</option>
+                                    <option value="Pesada">Pesada</option>
+                                    <option value="Motocicleta">Motocicleta</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    <span *ngIf="formBuilder.get('tipolicencia')?.errors?.['required']">
+                                        Requiere un tipo de licencia</span>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <label class="control-label">Fecha de expiracion:</label>
+                                <input type="date" formControlName="fechalicencia" class="form-control"
+                                    id="fechalicencia" name="fechalicencia" placeholder="Ingrese fechalicencia"
+                                    [readonly]="empleadOd != null && titulo == 'Detalle'" (change)="validarfecha()"
+                                    [class]="esCampoValido('fechalicencia')"
+                                    [ngModel]="empleadOd!=null ? empleadOd.fecha_licencia : ''" />
+                                <div class="invalid-feedback">
+                                    <span *ngIf="formBuilder.get('fechalicencia')?.errors?.['required']">
+                                        Requiere una fecha de expiracion</span>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- fin de tipolicencia & fecha de expiracion Empleado -->
+
+
+                        <!-- inicio de departamento & es jefe Empleado -->
+                        <div class="form-group row m-3 align-items-center">
+                            <div class="col-md-6">
+                                <label class="control-label">Departamento:</label>
+                                <select class="form-control form-select" id="selectDepartamento"
+                                    name="selectDepartamento" formControlName="departamento"
+                                    [ngClass]="{'select-readonly': empleadOd != null && titulo == 'Detalle'}"
+                                    [class]="esCampoValido('departamento')"
+                                    [ngModel]="empleadOd != null ? empleadOd.departamento.codigoDepto : ''">
+                                    <option value="">Seleccione Departamento</option>
+                                    <option *ngFor="let departamentodata of departamentos"
+                                        [ngValue]="departamentodata.codigoDepto">
+                                        {{departamentodata.nombre}}
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    <span *ngIf="formBuilder.get('departamento')?.errors?.['required']">
+                                        Requiere un departamento</span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 form-check form-switch form-switch-md" style="top: 15px;">
+                                <input class="form-check-input" type="checkbox" formControlName="jefe" id="jefe"
+                                    name="jefe"
+                                    [ngClass]="{'select-readonly-check': empleadOd != null && titulo == 'Detalle'}"
+                                    [ngModel]="empleadOd!=null ? empleadOd.jefe : ''">
+                                <label class="form-check-label" for="jefe">Es Jefe de
+                                    Departamento</label>
+                            </div>
+                        </div>
+
+                        <!-- fin de departamento & es jefe Empleado -->
+
+                    </div>
+                </div>
+
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-primary me-2" id="btn-save" name="btn-save"
+                        *ngIf="titulo !== 'Detalle'">
+                        {{ titulo !== 'Editar' ? 'Guardar' : 'Modificar' }}
+                    </button>
+
+                    <button type="button" class="btn btn-dark" id="btn-cancel" name="btn-cancel" aria-hidden="true"
+                        (click)="modal.dismiss('Cross click')">
+                        {{ titulo !== 'Detalle' ? 'Cancelar' : 'Cerrar' }}
+                    </button>
+
+                </div>
+
+            </form>
+        </div>
+    </ng-template>
+</div>
+<!-- Modal -->
+
+<script>
+    // Deshabilitar el cursor en el campo de entrada
+    const readonlyInput = document.getElementById("readonlyInput");
+
+    readonlyInput.addEventListener("mousedown", (event) => {
+        event.preventDefault();
+    });
+
+    readonlyInput.addEventListener("keydown", (event) => {
+        event.preventDefault();
+    });
+</script>

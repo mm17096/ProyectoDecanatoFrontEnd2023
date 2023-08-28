@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 import {IEstados} from "../../interfaces/estados.interface";
-import {ISolicitudVehiculo, IVehiculo} from "../../interfaces/data.interface";
+import {ISolicitudVehiculo} from "../../interfaces/data.interface";
+import {IVehiculos} from "../../../vehiculo/interfaces/vehiculo-interface";
 
 @Component({
   selector: 'app-mis-solicitudes',
@@ -20,7 +21,7 @@ export class MisSolicitudesComponent implements OnInit {
 
   solicitudesVehiculo: ISolicitudVehiculo [] = [];
   estadosSoliVe: IEstados [] = [];
-  vehiculos: IVehiculo [] = [];
+  vehiculos: IVehiculos [] = [];
 
   constructor( private soliVeService: SolicitudVehiculoService ) { }
 
@@ -48,15 +49,6 @@ export class MisSolicitudesComponent implements OnInit {
     this.soliVeService.obtenerEstados().subscribe((resp) => {
       this.estadosSoliVe = resp;
     });
-  }
-
-
-  obtenerVehiculos(){
-    this.soliVeService.obtenerTipoVehiculo().subscribe(
-      (resp) =>{
-        console.log(resp);
-        this.vehiculos = resp;
-      });
   }
 
 }

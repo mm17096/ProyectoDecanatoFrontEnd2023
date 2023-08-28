@@ -1,9 +1,11 @@
+import {IVehiculos} from "../../vehiculo/interfaces/vehiculo-interface";
+
 export interface ISolicitudVehiculo {
   codigoSolicitudVehiculo: string;
   fechaSolicitud: Date;
   fechaSalida: Date;
   unidadSolicitante: string;
-  vehiculo: IVehiculo;
+  vehiculo: IVehiculos;
   objetivoMision: string;
   lugarMision: string;
   direccion: string;
@@ -18,25 +20,6 @@ export interface ISolicitudVehiculo {
   estadoString: string;
   motorista: IMotorista;
   listDocumentos: IDocumento[];
-}
-
-export interface IVehiculo {
-  codigoVehiculo: string;
-  placa: string;
-  modelo: string;
-  marca: string;
-  clase: string;
-  color: string;
-  year: number;
-  fecha_tarjeta: Date;
-  capacidad: number;
-  capacidadTanque: number;
-  estado: number;
-  n_chasis: string;
-  n_motor: string;
-  tipo_gas: string;
-  nombrefoto: string;
-  urlfoto: string;
 }
 
 interface ISolicitante {

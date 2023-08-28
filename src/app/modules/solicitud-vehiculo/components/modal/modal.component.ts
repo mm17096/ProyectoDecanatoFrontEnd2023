@@ -2,8 +2,8 @@ import {Component, Input, OnInit} from '@angular/core';
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
-import {ISolicitudVehiculo, IVehiculo} from "../../interfaces/data.interface";
-import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
+import {ISolicitudVehiculo} from "../../interfaces/data.interface";
+import {VehiculoService} from "../../../vehiculo/service/vehiculo.service";
 
 @Component({
   selector: 'app-modal',
@@ -15,7 +15,6 @@ export class ModalComponent implements OnInit {
   @Input() leyenda!: string;
   @Input() titulo!: string;
   @Input() soliVeOd!: ISolicitudVehiculo;
-  @Input() vehiculos!: IVehiculo;
 
   formularioSoliVe!: FormGroup;
   pasajeros: any[] = [{ nombre: ''}];
@@ -24,13 +23,11 @@ export class ModalComponent implements OnInit {
   mostrarArchivoAdjunto: boolean = false;
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router,
-              private solicitudVehiculoService: SolicitudVehiculoService) { }
+              private vehiculoService: VehiculoService) { }
 
   ngOnInit(): void {
-    console.log(this.vehiculos);
     this.iniciarFormulario();
   }
-
 
 
   iniciarFormulario(){

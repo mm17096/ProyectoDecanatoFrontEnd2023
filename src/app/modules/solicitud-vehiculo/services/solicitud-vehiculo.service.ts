@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {ISolicitudVehiculo, IVehiculo} from "../interfaces/data.interface";
+import {ISolicitudVehiculo} from "../interfaces/data.interface";
 import {IEstados} from "../interfaces/estados.interface";
 import {environment} from "../../../../environments/environment";
 import {map} from "rxjs/operators";
@@ -53,10 +53,6 @@ export class SolicitudVehiculoService {
   // Servicio para obtener los estados
   public obtenerEstados(): Observable<any> {
     return this.http.get<IEstados>((this.url)+ '/solicitudvehiculo/estados');
-  }
-
-  public obtenerTipoVehiculo():Observable<any>{
-    return this.http.get((this.url)+ `/api/vehiculo/listasinpagina`);
   }
 
   public registrarSoliVe(solicitudVehiculo: ISolicitudVehiculo): Observable<ISolicitudVehiculo>{

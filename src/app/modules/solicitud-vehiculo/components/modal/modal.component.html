@@ -1,14 +1,14 @@
-<!--<span *ngIf="leyenda !== titulo">-->
-<!--    <div class="text-sm-end">-->
-<!--        <button type="button" class="btn btn-primary btn-rounded" (click)="openModal(content)">{{titulo}}-->
-<!--        </button>-->
-<!--    </div>-->
-<!--</span>-->
+<span *ngIf="leyenda !== titulo">
+   <div class="text-sm-end">
+       <button type="button" class="btn btn-primary btn-rounded" (click)="openModal(content)">{{titulo}}
+       </button>
+   </div>
+</span>
 
-<!--<span *ngIf="leyenda === titulo && titulo == 'Detalle'">-->
-<!--    <button type="button" class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1" (click)="openModal(content)"><i-->
-<!--      class="mdi mdi-eye-outline"></i></button>-->
-<!--</span>-->
+<span *ngIf="leyenda === titulo && titulo == 'Detalle'">
+  <button type="button" class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1" (click)="openModal(content)"><i
+  class="mdi mdi-eye-outline"></i></button>
+</span>
 
 
 <!-- Modal -->
@@ -48,21 +48,38 @@
               <div class="col-md-6">
                 <div class="mt-2">
                   <label for="tipo-vehiculo">Tipo de vehículo</label>
-                  <select class="form-control" id="tipo-vehiculo"
-                  formControlName="tipoVehiculo"
-                  [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
-                    <option selected>Selecione...</option>
-                  </select>
+
+                  <ng-select
+                    formControlName="tipoVehiculo"
+                    placeholder="Escriba o seleccione"
+                    [selectOnTab]="true"
+                    labelForId="tipoVehiculo"
+                    [ngClass]="{ 'select-readonly': titulo=='Detalle'}"
+                  >
+                    <ng-option
+                      *ngFor="let x of vehiculos"
+                      [value]="x.codigoVehiculo"
+                    >{{ x.clase }}</ng-option
+                    >
+                  </ng-select>
+
+
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="mt-2">
-                  <label for="placa">Placa</label>
-                  <select class="form-control" id="placa"
-                          formControlName="vehiculo"
-                          [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
-                    <option selected>Selecione...</option>
-                  </select>
+                  <label for="vehiculo">Placa</label>
+
+                  <ng-select
+                    formControlName="vehiculo"
+                    placeholder="Escriba o seleccione"
+                    [selectOnTab]="true"
+                    labelForId="vehiculo"
+                    [ngClass]="{ 'select-readonly': titulo=='Detalle'}"
+                  >
+                    <ng-option>Seleccione...</ng-option>
+                  </ng-select>
+
                 </div>
               </div>
             </div>
@@ -80,21 +97,30 @@
             <div class="col-md-6">
               <div class="mt-2">
                 <label for="detpto">Departamento</label>
-                <select class="form-control" id="detpto"
-                        formControlName="depto"
-                        [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
-                  <option selected>Selecione...</option>
-                </select>
+
+                <ng-select
+                  formControlName="depto"
+                  placeholder="Escriba o seleccione"
+                  [selectOnTab]="true"
+                  labelForId="depto"
+                  [ngClass]="{ 'select-readonly': titulo=='Detalle'}"
+                >
+                  <ng-option>Seleccione...</ng-option>
+                </ng-select>
               </div>
             </div>
             <div class="col-md-6">
               <div class="mt-2">
                 <label for="municipio">Municipio</label>
-                <select class="form-control" id="municipio"
-                        formControlName="municipio"
-                        [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
-                  <option selected>Selecione...</option>
-                </select>
+                <ng-select
+                  formControlName="municipio"
+                  placeholder="Escriba o seleccione"
+                  [selectOnTab]="true"
+                  labelForId="municipio"
+                  [ngClass]="{ 'select-readonly': titulo=='Detalle'}"
+                >
+                  <ng-option>Seleccione...</ng-option>
+                </ng-select>
               </div>
             </div>
           </div>
@@ -102,21 +128,30 @@
             <div class="col-md-6">
               <div class="mt-2">
                 <label for="distrito">Distrito</label>
-                <select class="form-control" id="distrito"
-                        formControlName="distrito"
-                        [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
-                  <option selected>Selecione...</option>
-                </select>
+                <ng-select
+                  formControlName="distrito"
+                  placeholder="Escriba o seleccione"
+                  [selectOnTab]="true"
+                  labelForId="distrito"
+                  [ngClass]="{ 'select-readonly': titulo=='Detalle'}"
+                >
+                  <ng-option>Seleccione...</ng-option>
+                </ng-select>
               </div>
             </div>
             <div class="col-md-6">
               <div class="mt-2">
                 <label for="canton">Cantón</label>
-                <select class="form-control" id="canton"
-                        formControlName="canton"
-                        [ngClass]="{ 'select-readonly': titulo=='Detalle'}">
-                  <option selected>Selecione...</option>
-                </select>
+
+                <ng-select
+                  formControlName="canton"
+                  placeholder="Escriba o seleccione"
+                  [selectOnTab]="true"
+                  labelForId="canton"
+                  [ngClass]="{ 'select-readonly': titulo=='Detalle'}"
+                >
+                  <ng-option>Seleccione...</ng-option>
+                </ng-select>
               </div>
             </div>
           </div>

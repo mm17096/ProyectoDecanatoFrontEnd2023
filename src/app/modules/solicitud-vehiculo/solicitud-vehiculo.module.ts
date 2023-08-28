@@ -10,6 +10,7 @@ import {NgxPaginationModule} from "ngx-pagination";
 import {Ng2SearchPipeModule} from "ng2-search-filter";
 import { ModalComponent } from './components/modal/modal.component';
 import { TablaComponent } from './components/tabla/tabla.component';
+import {NgSelectModule} from "@ng-select/ng-select";
 
 
 @NgModule({
@@ -19,14 +20,15 @@ import { TablaComponent } from './components/tabla/tabla.component';
     ModalComponent,
     TablaComponent
   ],
-    imports: [
-        CommonModule,
-        SolicitudVehiculoRoutingModule,
-        UIModule,
-        FormsModule,
-        NgxPaginationModule, // para paginar
-        Ng2SearchPipeModule,
-        ReactiveFormsModule,
-    ]
+  imports: [
+    CommonModule,
+    SolicitudVehiculoRoutingModule,
+    UIModule,
+    FormsModule,
+    NgxPaginationModule, // para paginar
+    Ng2SearchPipeModule,
+    ReactiveFormsModule,
+    NgSelectModule,
+  ]
 })
 export class SolicitudVehiculoModule { }

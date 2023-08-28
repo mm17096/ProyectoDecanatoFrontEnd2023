@@ -5,7 +5,11 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CompraService } from "../../services/compra.service";
 
 import { MensajesService } from "src/app/shared/global/mensajes.service";
-import { DECIMAL_VALIDATE, INTEGER_VALIDATE } from "src/app/modules/constants/constants";
+import {
+  DECIMAL_VALIDATE,
+  INTEGER_VALIDATE,
+} from "src/app/modules/constants/constants";
+import Swal from "sweetalert2";
 
 @Component({
   selector: "app-modal",
@@ -179,7 +183,51 @@ export class ModalComponent implements OnInit {
     }
   }
 
-  registrando() {
+  registrando(): Promise<void> {
+    const compra = this.formularioGeneral.value;
+
+    // Mostrar SweetAlert de carga
+    const loadingAlert = Swal.fire({
+      title: "Espere",
+      text: "Realizando la acción...",
+      icon: "info",
+      didOpen: () => {
+        Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+      },
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showCancelButton: false,
+      showConfirmButton: false,
+    });
+
+    return new Promise<void>((resolve, reject) => {
+      this.compraService.guardar(compra).subscribe({
+        next: (resp: any) => {
+          // Cerrar SweetAlert de carga
+          Swal.close();
+          resolve(); // Resuelve la promesa sin argumentos
+          this.compraService.getCompras();
+          this.modalService.dismissAll();
+          this.limpiarCampos();
+          this.mensajesService.mensajesToast("success", "Registro agregado");
+        },
+        error: (err) => {
+          this.mensajesService.mensajesSweet(
+            "error",
+            "Ups... Algo salió mal",
+            err
+          );
+
+          // Cerrar SweetAlert de carga
+          Swal.close();
+          reject(); // Rechaza la promesa
+        },
+      });
+    });
+  }
+
+  /*registrando() {
     const compra = this.formularioGeneral.value;
     this.compraService.guardar(compra).subscribe({
       next: (resp: any) => {
@@ -196,7 +244,7 @@ export class ModalComponent implements OnInit {
         );
       },
     });
-  }
+  }*/
 
   editando() {
     const compra = this.formularioGeneral.value;
@@ -259,6 +307,7 @@ export class ModalComponent implements OnInit {
     const modalOptions = {
       centered: true,
       size: "lg", // 'lg' para modal grande, 'sm' para modal pequeño
+      backdrop: "static" as "static", // Configura backdrop como 'static'
     };
     this.modalService.open(content, modalOptions);
   }

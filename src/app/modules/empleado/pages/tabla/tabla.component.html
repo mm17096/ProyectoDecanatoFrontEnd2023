@@ -1,0 +1,50 @@
+<div class="table-responsive mb-0">
+    <table class="table table-centered table-nowrap">
+        <thead class="table-light">
+            <tr>
+                <th class="align-middle text-center">DUI</th>
+                <th class="align-middle text-center">Nombre</th>
+                <th class="align-middle text-center">Cargo</th>
+                <th class="align-middle text-center">Departamento</th>
+                <th class="align-middle text-center">Jefe</th>
+                <th class="align-middle text-center">Correo</th>
+                <th class="align-middle text-center">Estado</th>
+                <th class="align-middle text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let empleado of empleados">
+                <td class="align-middle text-center">{{ empleado.dui }}</td>
+                <td class="align-middle text-center">{{ empleado.nombre + ' ' + empleado.apellido }}</td>
+                <td class="align-middle text-center">{{ empleado.cargo.nombreCargo }}</td>
+                <td class="align-middle text-center">{{ empleado.departamento.nombre }}</td>
+                <td class="align-middle text-center">{{ empleado.jefe ? 'SI' : 'NO' }}</td>
+                <td class="align-middle text-center">{{ empleado.correo }}</td>
+                <td class="align-middle text-center">{{ empleado.estado === 8 ? 'Activo' : 'Inactivo' }}</td>
+                <td class="align-middle text-center text-center">
+
+                    <!--       botones para detalle -->
+                    <app-modal [leyenda]="'Detalle'" [titulo]="'Detalle'" [empleadOd]="empleado" [motoristaOd]="false"
+                        *ngIf="empleado.cargo.nombreCargo != 'Motorista'"></app-modal>
+
+                    <app-modal [leyenda]="'Detalle'" [titulo]="'Detalle'" [empleadOd]="empleado" [motoristaOd]="true"
+                        *ngIf="empleado.cargo.nombreCargo == 'Motorista'"></app-modal>
+                    <!--       botones para editar -->
+                    <app-modal [leyenda]="'Editar'" [titulo]="'Editar'" [empleadOd]="empleado" [motoristaOd]="false"
+                        *ngIf="empleado.cargo.nombreCargo != 'Motorista'"></app-modal>
+
+                    <app-modal [leyenda]="'Editar'" [titulo]="'Editar'" [empleadOd]="empleado" [motoristaOd]="true"
+                        *ngIf="empleado.cargo.nombreCargo == 'Motorista'"></app-modal>
+
+                    <button type="button" class="btn btn-warning btn-sm btn-rounded mx-1"
+                        (click)="cambiarEstado(empleado, empleado.estado)" ngbTooltip="Cambiar a {{empleado.estado === 9 ? 'Activo' : 'Inactivo'}}">
+                        <i [ngClass]="empleado.estado === 8 ? 'mdi mdi-18px mdi-lock-outline' : 'mdi mdi-18px mdi-key-outline'"></i>
+                       <!-- <i class="mdi mdi-account-lock-outline"></i>
+                         mdi-account-check-outline -->
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<!-- end table -->

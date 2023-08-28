@@ -19,8 +19,8 @@ export class SolicitudVehiculoService {
   constructor(private http: HttpClient) { }
 
   // Servicio para obtener todas las solicitudes de vehiculo
-  public obtenerSolicitudes(): Observable<any> {
-    return this.http.get<ISolicitudVehiculo2>((this.url)+ '/listadto');
+  public obtenerSolicitudes(page: number, size: number): Observable<any> {
+    return this.http.get<ISolicitudVehiculo2>((this.url)+ '/listapage');
   }
 
   /*getSolicitudesVehiculo() {

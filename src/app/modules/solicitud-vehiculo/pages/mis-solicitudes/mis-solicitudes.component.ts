@@ -15,6 +15,9 @@ export class MisSolicitudesComponent implements OnInit {
   term: any; // para buscar
   p: any; // paginacion
 
+  page:number = 0;
+  size:number = 10;
+
   solicitudesVehiculo: ISolicitudVehiculo2 [] = [];
   estadosSoliVe: IEstados [] = [];
 
@@ -28,9 +31,8 @@ export class MisSolicitudesComponent implements OnInit {
 
   // Metodo para obtener todas las solicitudes de vehiculo
   getSolicitudes() {
-    this.soliVeService.obtenerSolicitudes().subscribe( (resp) => {
-      console.log(resp);
-      this.solicitudesVehiculo = resp;
+    this.soliVeService.obtenerSolicitudes(this.page, this.size).subscribe( (resp) => {
+      this.solicitudesVehiculo = resp.content;
     });
   }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 import {IEstados} from "../../interfaces/estados.interface";
-import {ISolicitudVehiculo2} from "../../interfaces/solive.interface";
+import {ISolicitudVehiculo, IVehiculo} from "../../interfaces/data.interface";
 
 @Component({
   selector: 'app-mis-solicitudes',
@@ -18,36 +18,28 @@ export class MisSolicitudesComponent implements OnInit {
   page:number = 0;
   size:number = 10;
 
-  solicitudesVehiculo: ISolicitudVehiculo2 [] = [];
+  solicitudesVehiculo: ISolicitudVehiculo [] = [];
   estadosSoliVe: IEstados [] = [];
+  vehiculos: IVehiculo [] = [];
 
   constructor( private soliVeService: SolicitudVehiculoService ) { }
 
   ngOnInit(): void {
     this.breadCrumbItems = [{ label: 'Solicitud de Vehículo' }, { label: 'Mis Solicitudes', active: true }]; // miga de pan
-    this.getSolicitudes();
+    this.soliVeService.getSolicitudesVehiculo(null);
     this.getEstados();
   }
 
-  // Metodo para obtener todas las solicitudes de vehiculo
-  getSolicitudes() {
-    this.soliVeService.obtenerSolicitudes(this.page, this.size).subscribe( (resp) => {
-      this.solicitudesVehiculo = resp.content;
-    });
-  }
-
-  getSolicitudesEstado(estado: number) {
-    this.soliVeService.obtenerSoliVePorEstado(estado).subscribe((resp) => {
-      this.solicitudesVehiculo = resp.content;
-    });
+  get listSoliVeData(){
+    return this.soliVeService.listSoliVehiculo;
   }
 
   onEstadoSeleccionado(event: any) {
     const estadoSeleccionado = event.target.value;
     if (estadoSeleccionado == 0) {
-      this.getSolicitudes();
+      this.soliVeService.getSolicitudesVehiculo(null);
     } else {
-      this.getSolicitudesEstado(Number(estadoSeleccionado));
+      this.soliVeService.getSolicitudesVehiculo(estadoSeleccionado);
     }
   }
 
@@ -58,12 +50,13 @@ export class MisSolicitudesComponent implements OnInit {
     });
   }
 
-  calcularNumeroCorrelativo(index: number): number {
-    if (typeof this.p === 'number') {
-      return (this.p - 1) * 10 + index + 1;
-    } else {
-      return index + 1; // Si no es numérico, solo regresamos el índice + 1
-    }
+
+  obtenerVehiculos(){
+    this.soliVeService.obtenerTipoVehiculo().subscribe(
+      (resp) =>{
+        console.log(resp);
+        this.vehiculos = resp;
+      });
   }
 
 }

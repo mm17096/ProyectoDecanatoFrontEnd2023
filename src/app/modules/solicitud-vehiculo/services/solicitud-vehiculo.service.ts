@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {ISolicitudVehiculo} from "../interfaces/data.interface";
-import {ISolicitudVehiculo2} from "../interfaces/solive.interface";
+import {ISolicitudVehiculo, IVehiculo} from "../interfaces/data.interface";
 import {IEstados} from "../interfaces/estados.interface";
 import {environment} from "../../../../environments/environment";
 import {map} from "rxjs/operators";
@@ -12,39 +11,55 @@ import {map} from "rxjs/operators";
 })
 export class SolicitudVehiculoService {
 
-  private url= environment.baseUrl+'/solicitudvehiculo';
+  private url= environment.baseUrl;
 
-  listSoliVehiculo : ISolicitudVehiculo2 [] = [];
+  listSoliVehiculo : ISolicitudVehiculo [] = [];
 
   constructor(private http: HttpClient) { }
 
   // Servicio para obtener todas las solicitudes de vehiculo
-  public obtenerSolicitudes(page: number, size: number): Observable<any> {
-    return this.http.get<ISolicitudVehiculo2>((this.url)+ `/listapage?page=${page}&size=${size}`);
-  }
 
-  /*getSolicitudesVehiculo() {
-    this.http
-      .get(`${this.url}/listapage`)
-      .pipe(map((resp: any) => resp.content as ISolicitudVehiculo2[]))
-      .subscribe(
-        (soliVe: ISolicitudVehiculo2[]) => {
-          //console.log(soliVe);
-          this.listSoliVehiculo = soliVe;
-        },
-        (error) => {
-          console.log("Error al obtener las solicitudes de vehiculo", error);
-        }
-      )
-  }*/
+  getSolicitudesVehiculo(estado: number) {
+    console.log(estado);
+    if (estado != null){
+      this.http
+        .get(`${this.url}/solicitudvehiculo/listapage/${estado}`)
+        .pipe(map((resp: any) => resp.content as ISolicitudVehiculo[]))
+        .subscribe(
+          (soliVe: ISolicitudVehiculo[]) => {
+            console.log("filtro:", soliVe);
+            this.listSoliVehiculo = soliVe;
+          },
+          (error) => {
+            console.log("Error al obtener las solicitudes de vehiculo", error);
+          }
+        )
+    }else {
+      this.http
+        .get(`${this.url}/solicitudvehiculo/listapage`)
+        .pipe(map((resp: any) => resp.content as ISolicitudVehiculo[]))
+        .subscribe(
+          (soliVe: ISolicitudVehiculo[]) => {
+            //console.log(soliVe);
+            this.listSoliVehiculo = soliVe;
+          },
+          (error) => {
+            console.log("Error al obtener las solicitudes de vehiculo", error);
+          }
+        );
+    }
+  }
 
   // Servicio para obtener los estados
   public obtenerEstados(): Observable<any> {
-    return this.http.get<IEstados>((this.url)+ '/estados');
+    return this.http.get<IEstados>((this.url)+ '/solicitudvehiculo/estados');
   }
 
-  // Servicio para filtrar las solicitudes por estado
-  public obtenerSoliVePorEstado(estado: number): Observable<any> {
-    return  this.http.get<ISolicitudVehiculo2>( (this.url) + `/listapage/${estado}` );// falta agregar paginacion
+  public obtenerTipoVehiculo():Observable<any>{
+    return this.http.get((this.url)+ `/api/vehiculo/listasinpagina`);
+  }
+
+  public registrarSoliVe(solicitudVehiculo: ISolicitudVehiculo): Observable<ISolicitudVehiculo>{
+    return this.http.post<ISolicitudVehiculo>(this.url + `/solicitudvehiculo/insert`, solicitudVehiculo);
   }
 }

@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Input, OnInit} from '@angular/core';
-import {ISolicitudVehiculo2} from "../../interfaces/solive.interface";
-import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 import {ISolicitudVehiculo} from "../../interfaces/data.interface";
+import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 import {Observable} from "rxjs";
 
 @Component({
@@ -10,8 +9,8 @@ import {Observable} from "rxjs";
   styleUrls: ['./tabla.component.scss']
 })
 export class TablaComponent implements OnInit {
-  @Input() solicitudesVehiculo: ISolicitudVehiculo2[] = [];
-  @Input() term: any; // para buscar
+  @Input() solicitudesVehiculo!: ISolicitudVehiculo[];
+  @Input() term!: any; // para buscar
   p: any; // paginacion
   constructor() { }
 

@@ -30,14 +30,15 @@
 
             <div class="col-sm-5">
               <div class="text-sm-end">
-                <app-modal [leyenda]="'Nueva'" [titulo]="'Agregar'"></app-modal>
+                <app-modal [leyenda]="'Nueva'" [titulo]="'Agregar'"
+                [vehiculos]="vehiculos"></app-modal>
               </div>
             </div>
             <!-- end col-->
           </div>
 
           <!-- Table data -->
-            <app-tabla [solicitudesVehiculo]="solicitudesVehiculo" [term]="term"></app-tabla>
+            <app-tabla [solicitudesVehiculo]="listSoliVeData" [term]="term"></app-tabla>
           <!-- end table -->
         </div>
       </div>

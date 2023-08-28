@@ -2,7 +2,8 @@ import {Component, Input, OnInit} from '@angular/core';
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
-import {ISolicitudVehiculo} from "../../interfaces/data.interface";
+import {ISolicitudVehiculo, IVehiculo} from "../../interfaces/data.interface";
+import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 
 @Component({
   selector: 'app-modal',
@@ -14,6 +15,7 @@ export class ModalComponent implements OnInit {
   @Input() leyenda!: string;
   @Input() titulo!: string;
   @Input() soliVeOd!: ISolicitudVehiculo;
+  @Input() vehiculos!: IVehiculo;
 
   formularioSoliVe!: FormGroup;
   pasajeros: any[] = [{ nombre: ''}];
@@ -21,17 +23,21 @@ export class ModalComponent implements OnInit {
   mostrarTabla: boolean = true;
   mostrarArchivoAdjunto: boolean = false;
 
-  constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router) { }
+  constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router,
+              private solicitudVehiculoService: SolicitudVehiculoService) { }
 
   ngOnInit(): void {
+    console.log(this.vehiculos);
     this.iniciarFormulario();
   }
+
+
 
   iniciarFormulario(){
     this.formularioSoliVe = this.fb.group({
       fechaSolicitud: [this.obtenerFechaActual(new Date()), [Validators.required]],
       fechaSalida: ['', [Validators.required]],
-      unidadSolicitante: ['', [Validators.required]],
+      unidadSolicitante: ['Departamento de Informática', [Validators.required]],
       tipoVehiculo: ['', [Validators.required]],
       vehiculo: ['', [Validators.required]],
       objetivoMision: ['', [Validators.required]],

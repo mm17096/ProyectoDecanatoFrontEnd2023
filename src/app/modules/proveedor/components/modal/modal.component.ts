@@ -162,6 +162,7 @@ export class ModalComponent implements OnInit {
     const modalOptions = {
       centered: true,
       size: "sm", // 'lg' para modal grande, 'sm' para modal pequeño
+      backdrop: "static" as "static", // Configura backdrop como 'static'
     };
     this.modalService.open(content, modalOptions);
   }

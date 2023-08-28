@@ -21,7 +21,6 @@ export class MisSolicitudesComponent implements OnInit {
 
   solicitudesVehiculo: ISolicitudVehiculo [] = [];
   estadosSoliVe: IEstados [] = [];
-  vehiculos: IVehiculos [] = [];
 
   constructor( private soliVeService: SolicitudVehiculoService ) { }
 

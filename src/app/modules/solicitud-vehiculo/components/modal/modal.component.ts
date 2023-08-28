@@ -5,6 +5,7 @@ import {Router} from "@angular/router";
 import {ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {VehiculoService} from "../../../vehiculo/service/vehiculo.service";
 import {IVehiculos} from "../../../vehiculo/interfaces/vehiculo-interface";
+import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 
 @Component({
   selector: 'app-modal',
@@ -17,6 +18,7 @@ export class ModalComponent implements OnInit {
   @Input() titulo!: string;
   @Input() soliVeOd!: ISolicitudVehiculo;
   vehiculos: IVehiculos[] = [];
+  placasPorTipo = {};
 
   formularioSoliVe!: FormGroup;
   pasajeros: any[] = [{ nombre: ''}];
@@ -25,20 +27,21 @@ export class ModalComponent implements OnInit {
   mostrarArchivoAdjunto: boolean = false;
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router,
-              private vehiService: VehiculoService) { }
+              private soliVeService: SolicitudVehiculoService) { }
 
   ngOnInit(): void {
     this.iniciarFormulario();
-    this.obtenerVehiculos();
+    this.soliVeService.obtenerVehiculos();
   }
 
-  obtenerVehiculos(){
-    this.vehiService.getVehiculos().subscribe((resp) => {
-      this.vehiculos = resp;
-      console.log(this.vehiculos);
-    });
+  get listVehiculos() {
+    return this.soliVeService.listVehiculos;
   }
 
+  cargarPlacas(tipoVehiculo: string) {
+    const vehiculoSeleccionado = this.listVehiculos.find(vehiculo => vehiculo.clase === tipoVehiculo);
+    this.formularioSoliVe.get('vehiculo')?.setValue(vehiculoSeleccionado?.placa || '');
+  }
 
   iniciarFormulario(){
     this.formularioSoliVe = this.fb.group({

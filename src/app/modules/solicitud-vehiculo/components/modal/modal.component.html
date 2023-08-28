@@ -54,11 +54,12 @@
                     placeholder="Escriba o seleccione"
                     [selectOnTab]="true"
                     labelForId="tipoVehiculo"
+                    (change)="cargarPlacas(formularioSoliVe.get('tipoVehiculo').value)"
                     [ngClass]="{ 'select-readonly': titulo=='Detalle'}"
                   >
                     <ng-option
-                      *ngFor="let x of vehiculos"
-                      [value]="x.codigoVehiculo"
+                      *ngFor="let x of listVehiculos"
+                      [value]="x.clase"
                     >{{ x.clase }}</ng-option
                     >
                   </ng-select>
@@ -77,7 +78,8 @@
                     labelForId="vehiculo"
                     [ngClass]="{ 'select-readonly': titulo=='Detalle'}"
                   >
-                    <ng-option>Seleccione...</ng-option>
+                    <ng-option *ngFor="let vehiculo of listVehiculos"
+                    [value]="vehiculo.placa">{{vehiculo.placa}}</ng-option>
                   </ng-select>
 
                 </div>

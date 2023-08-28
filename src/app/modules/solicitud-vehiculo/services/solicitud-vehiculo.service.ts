@@ -5,6 +5,7 @@ import {ISolicitudVehiculo} from "../interfaces/data.interface";
 import {IEstados} from "../interfaces/estados.interface";
 import {environment} from "../../../../environments/environment";
 import {map} from "rxjs/operators";
+import {IVehiculos} from "../../vehiculo/interfaces/vehiculo-interface";
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,7 @@ export class SolicitudVehiculoService {
   private url= environment.baseUrl;
 
   listSoliVehiculo : ISolicitudVehiculo [] = [];
+  listVehiculos: IVehiculos [] = [];
 
   constructor(private http: HttpClient) { }
 
@@ -53,6 +55,20 @@ export class SolicitudVehiculoService {
   // Servicio para obtener los estados
   public obtenerEstados(): Observable<any> {
     return this.http.get<IEstados>((this.url)+ '/solicitudvehiculo/estados');
+  }
+
+  obtenerVehiculos() {
+    this.http
+      .get(`${this.url}/api/vehiculo/listasinpagina`)
+      .pipe(map((resp: any) => resp as IVehiculos[]))
+      .subscribe(
+        (vehiculo: IVehiculos[])=> {
+          this.listVehiculos = vehiculo;
+        },
+        (error) => {
+          console.log("Error al obtener las solicitudes de vehiculo", error);
+          }
+        );
   }
 
   public registrarSoliVe(solicitudVehiculo: ISolicitudVehiculo): Observable<ISolicitudVehiculo>{

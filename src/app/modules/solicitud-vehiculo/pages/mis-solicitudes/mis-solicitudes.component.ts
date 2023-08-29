@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 import {IEstados} from "../../interfaces/estados.interface";
 import {ISolicitudVehiculo} from "../../interfaces/data.interface";
+import {ModalComponent} from "../../components/modal/modal.component";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-mis-solicitudes',
@@ -21,12 +23,17 @@ export class MisSolicitudesComponent implements OnInit {
   solicitudesVehiculo: ISolicitudVehiculo [] = [];
   estadosSoliVe: IEstados [] = [];
 
-  constructor( private soliVeService: SolicitudVehiculoService ) { }
+  constructor( private soliVeService: SolicitudVehiculoService, private modalService: NgbModal ) { }
 
   ngOnInit(): void {
     this.breadCrumbItems = [{ label: 'Solicitud de Vehículo' }, { label: 'Mis Solicitudes', active: true }]; // miga de pan
     this.soliVeService.getSolicitudesVehiculo(null);
     this.getEstados();
+  }
+
+  abrirModal(leyenda: string) {
+    const modalRef = this.modalService.open(ModalComponent, {size: 'lg'});
+    modalRef.componentInstance.leyenda = leyenda;
   }
 
   get listSoliVeData(){

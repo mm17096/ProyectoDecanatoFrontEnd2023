@@ -1,9 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {ISolicitudVehiculo} from "../../interfaces/data.interface";
-import {VehiculoService} from "../../../vehiculo/service/vehiculo.service";
 import {IVehiculos} from "../../../vehiculo/interfaces/vehiculo-interface";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 
@@ -28,7 +27,7 @@ export class ModalComponent implements OnInit {
   cantidadPersonas: number = 0;
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router,
-              private soliVeService: SolicitudVehiculoService) { }
+              private soliVeService: SolicitudVehiculoService, public activeModal: NgbActiveModal) { }
 
   ngOnInit(): void {
     this.iniciarFormulario();

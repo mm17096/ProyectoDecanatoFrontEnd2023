@@ -26,7 +26,10 @@
         <td style="text-align: center">{{data.cantidadPersonas}}</td>
         <td style="text-align: center">{{data.estadoString}}</td>
         <td style="text-align: center">
-          <app-modal [leyenda]="'Detalle'" [titulo]="'Detalle'" [soliVeOd]="data" ></app-modal>
+          <button type="button" class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1"
+                  (click)="abrirModal('Detalle', data)"
+                  ngbTooltip="Más información">
+            <i class="mdi mdi-18px mdi-eye-outline"></i></button>
         </td>
 
       </tr>

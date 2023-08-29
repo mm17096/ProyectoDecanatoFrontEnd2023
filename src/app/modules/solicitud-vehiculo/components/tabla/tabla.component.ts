@@ -1,7 +1,7 @@
-import {Component, EventEmitter, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ISolicitudVehiculo} from "../../interfaces/data.interface";
-import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
-import {Observable} from "rxjs";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {ModalComponent} from "../modal/modal.component";
 
 @Component({
   selector: 'app-tabla',
@@ -12,10 +12,18 @@ export class TablaComponent implements OnInit {
   @Input() solicitudesVehiculo!: ISolicitudVehiculo[];
   @Input() term!: any; // para buscar
   p: any; // paginacion
-  constructor() { }
+  selectedData: any; // Almacena los datos del registro seleccionado
+  constructor(private modalService: NgbModal) { }
 
   ngOnInit(): void {
 
+  }
+
+  abrirModal(leyenda: string, data: any) {
+    this.selectedData = data; // Almacena los datos del registro seleccionado
+    const modalRef = this.modalService.open(ModalComponent, {size:'lg'});
+    modalRef.componentInstance.leyenda = leyenda; // Pasa la leyenda al componente modal
+    modalRef.componentInstance.data = data; // Pasa la data al componente modal
   }
 
   calcularNumeroCorrelativo(index: number): number {

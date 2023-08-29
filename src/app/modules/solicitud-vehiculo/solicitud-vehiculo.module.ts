@@ -11,6 +11,7 @@ import {Ng2SearchPipeModule} from "ng2-search-filter";
 import { ModalComponent } from './components/modal/modal.component';
 import { TablaComponent } from './components/tabla/tabla.component';
 import {NgSelectModule} from "@ng-select/ng-select";
+import {NgbActiveModal, NgbModule, NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
 
 
 @NgModule({
@@ -29,6 +30,9 @@ import {NgSelectModule} from "@ng-select/ng-select";
     Ng2SearchPipeModule,
     ReactiveFormsModule,
     NgSelectModule,
-  ]
+    NgbTooltipModule,
+    NgbModule
+  ],
+  providers: [NgbActiveModal],
 })
 export class SolicitudVehiculoModule { }

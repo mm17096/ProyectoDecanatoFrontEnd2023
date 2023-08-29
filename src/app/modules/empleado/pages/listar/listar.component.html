@@ -9,7 +9,7 @@
               <div class="col-sm-4">
                 <div class="search-box me-2 mb-2 d-inline-block">
                   <div class="position-relative">
-                    <input type="text" class="form-control" placeholder="Search..." [(ngModel)]="term">
+                    <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="term">
                     <i class="bx bx-search-alt search-icon"></i>
                   </div>
                 </div>
@@ -22,7 +22,7 @@
             </div>
   
             <!-- Table data -->
-            <app-tabla></app-tabla>
+            <app-tabla [empleados]="listaEmpleados"  [queryString]="term"></app-tabla>
             
 
           </div>

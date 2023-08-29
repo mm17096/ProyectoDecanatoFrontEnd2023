@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  baseUrl:'http://localhost:8081',
   defaultauth: 'fackbackend',
   firebaseConfig: {
     apiKey: '',

@@ -47,8 +47,8 @@ export interface Empleado {
   apellido: string
   telefono: string
   licencia: any
-  tipo_licencia: any
-  fecha_licencia: any
+  tipolicencia: any
+  fechalicencia: any
   estado: any
   jefe: boolean
   correo: string

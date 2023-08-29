@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { IEmpleado } from '../../interface/empleado.interface';
 import { EmpleadoService } from '../../service/empleado.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { MensajesService } from 'src/app/shared/global/mensajes.service';
 
 @Component({
   selector: 'app-tabla',
@@ -13,104 +14,116 @@ import { EmpleadoService } from '../../service/empleado.service';
 })
 export class TablaComponent implements OnInit {
 
-  empleados: IEmpleado[] = [];
-  empleado: IEmpleado;
+  @Input() empleados!: IEmpleado[];
+  @Input() queryString!: string;
+
   cambio: string;
 
-  constructor(private empleadosService: EmpleadoService, private router: Router) { }
+  formularioEmpleado: FormGroup;
 
-  ngOnInit() {
-    this.getEmpleados();
-
-    this.empleado = {
-      dui: "",
-      nombre: "",
-      apellido: "",
-      telefono: "",
-      licencia: "",
-      tipo_licencia: "",
-      fecha_licencia: new Date(),
-      estado: 7,
-      jefe: false,
-      correo: "",
-      nombrefoto: "",
-      urlfoto: "",
-      cargo: null,
-      departamento: null
-    }
+  constructor(
+    private empleadosService: EmpleadoService,
+    private router: Router,
+    private fb: FormBuilder
+  ) {
+    this.formularioEmpleado = this.Iniciarformulario();
   }
 
+  ngOnInit() { }
 
-  getEmpleados() {
-       this.empleadosService
-      .getEmpleados()
-      .subscribe((res) => {
-        this.empleados = [...this.empleados, ...res];
-      });
+
+  private Iniciarformulario(): FormGroup {
+    return this.fb.group({
+      codigoEmpleado: [''],
+      dui: [''],
+      nombre: [''],
+      apellido: [''],
+      telefono: [''],
+      licencia: [''],
+      tipolicencia: [''],
+      fechalicencia: [''],
+      jefe: [],
+      estado: [],
+      nombrefoto: [''],
+      urlfoto: [''],
+      correo: [''],
+      cargo: [''],
+      departamento: [''],
+    });
   }
 
-  
   cambiarEstado(empleadoED: IEmpleado, estado: number) {
 
+    this.formularioEmpleado.patchValue(empleadoED);
+    this.formularioEmpleado.patchValue({
+      cargo: empleadoED.cargo.codigoCargo,
+    });
+    this.formularioEmpleado.patchValue({
+      departamento: empleadoED.departamento.codigoDepto,
+    });
+
     if (estado == 8) {
-      this.empleado.estado = 9;
+      this.formularioEmpleado.patchValue({
+        estado: 9,
+      });
       this.cambio = 'Inactivo';
     } else {
-      this.empleado.estado = 8;
+      this.formularioEmpleado.patchValue({
+        estado: 8,
+      });
       this.cambio = 'Activo';
     }
 
-    this.empleado.dui =  empleadoED.dui;
+    const empleado = this.formularioEmpleado.value;
 
-      Swal.fire({
-        icon: 'question',
-        title: "¿Cambiar el estado a " + this.cambio + "?",
-        showDenyButton: true,
-        showCancelButton: true,
-        confirmButtonText: "Cambiar",
-        denyButtonText: `No cambiar`,
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.empleadosService.cambiarEstado(empleadoED.dui).subscribe((resp: any) => {
-            if (resp) {
-              const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                //timerProgressBar: true,
-                didOpen: (toast) => {
-                  toast.addEventListener('mouseenter', Swal.stopTimer)
-                  toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-              })
-              
-              Toast.fire({
-                icon: 'success',
-                text: 'Modificación exitosa'
-              })
+    Swal.fire({
+      icon: 'question',
+      title: "¿Cambiar el estado a " + this.cambio + "?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Cambiar",
+      denyButtonText: `No cambiar`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.empleadosService.putEmpleado(empleado).subscribe((resp: any) => {
+          if (resp) {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              //timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+            })
 
-              this.recargar();
-            }
-          }, (err: any) => {
-            console.log(err);
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'Algo paso, hable con el administrador',
-            });
+            Toast.fire({
+              icon: 'success',
+              text: 'Modificación exitosa'
+            })
+
+            this.recargar();
+          }
+        }, (err: any) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Algo paso, hable con el administrador',
           });
-        } else if (result.isDenied) {
-          Swal.fire("Cambios no aplicados", "", "info");
-        }
-      });
-    }
+        });
+      } else if (result.isDenied) {
+        Swal.fire("Cambios no aplicados", "", "info");
+      }
+    });
+  }
 
-    recargar() {
-      let currentUrl = this.router.url;
-      this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-      this.router.onSameUrlNavigation = "reload";
-      this.router.navigate([currentUrl]);
-    }
+  recargar() {
+    let currentUrl = this.router.url;
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.router.onSameUrlNavigation = "reload";
+    this.router.navigate([currentUrl]);
+  }
 
 }

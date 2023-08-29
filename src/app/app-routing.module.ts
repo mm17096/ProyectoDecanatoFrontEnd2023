@@ -7,8 +7,11 @@ import { CyptolandingComponent } from './cyptolanding/cyptolanding.component';
 import { Page404Component } from './extrapages/page404/page404.component';
 
 const routes: Routes = [
+  { path: 'solicitudes', component: LayoutComponent, loadChildren: () => import('./modules/solicitudes/solicitudes.module').then(m => m.SolicitudesModule)},//canActivate: [AuthGuard]
   { path: 'account', loadChildren: () => import('./account/account.module').then(m => m.AccountModule) },
   // tslint:disable-next-line: max-line-length
+
+
 
   // Ruta hacia los modulos
   { path: '', component: LayoutComponent, loadChildren: () => import('./modules/modules.module').then(m => m.ModulesModule), canActivate: [AuthGuard] },

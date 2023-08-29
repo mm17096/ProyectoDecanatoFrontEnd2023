@@ -16,7 +16,6 @@ export class TablaComponent implements OnInit {
   constructor(private modalService: NgbModal) { }
 
   ngOnInit(): void {
-
   }
 
   abrirModal(leyenda: string, data: any) {

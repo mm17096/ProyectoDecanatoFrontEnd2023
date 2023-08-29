@@ -210,11 +210,11 @@ export class ModalComponent implements OnInit {
           this.modalService.dismissAll();
         }
       }, (err: any) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Algo paso, hable con el administrador',
-        });
+        this.mensajesService.mensajesSweet(
+          "error",
+          "Ups... Algo salió mal",
+          err
+        )
       });
     } else {
       this.empleadoService.putEmpleadoImagen(empleado, this.file).subscribe((resp: any) => {
@@ -241,11 +241,11 @@ export class ModalComponent implements OnInit {
           this.modalService.dismissAll();
         }
       }, (err: any) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Algo paso, hable con el administrador',
-        });
+        this.mensajesService.mensajesSweet(
+          "error",
+          "Ups... Algo salió mal",
+          err
+        )
       });
     }
   }

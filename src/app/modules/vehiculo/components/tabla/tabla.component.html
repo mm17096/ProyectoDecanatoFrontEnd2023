@@ -1,0 +1,32 @@
+<div class="table-responsive mb-0">
+  <table class="table table-centered table-nowrap">
+      <thead class="table-light">
+          <tr>
+              <th class="align-middle text-center">Placa</th>
+              <th class="align-middle text-center">Clase</th>
+              <th class="align-middle text-center">Modelo</th>
+              <th class="align-middle text-center">Año</th>
+              <th class="align-middle text-center">Fecha Vence Tarjeta</th>
+              <th class="align-middle text-center">Estado</th>
+              <th class="align-middle text-center">Acciones</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let obj of vehiculos">
+              <td class="align-middle text-center">{{ obj.placa }}</td>
+              <td class="align-middle text-center">{{ obj.clase }}</td>
+              <td class="align-middle text-center">{{ obj.modelo }}</td>
+              <td class="align-middle text-center">{{ obj.year }}</td>
+              <td class="align-middle text-center">{{ obj.fecha_tarjeta}}</td>
+              <td class="align-middle text-center">{{ obj.estado === 7 ? 'Activo' : 'Inactivo' }}</td>
+              <td class="align-middle text-center text-center">
+                <!--       botones para detalle -->
+                <app-modal [leyenda]="'Detalle'" [titulo]="'Detalle'" [objVehiculo]="obj"></app-modal>
+                <!--       botones para editar -->
+                <app-modal [leyenda]="'Editar'" [titulo]="'Editar'" [objVehiculo]="obj"></app-modal>
+              </td>
+          </tr>
+      </tbody>
+  </table>
+</div>
+<!-- end table -->

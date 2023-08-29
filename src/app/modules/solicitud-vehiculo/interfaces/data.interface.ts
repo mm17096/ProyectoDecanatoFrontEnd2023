@@ -47,6 +47,7 @@ interface IEmpleado {
   departamento: IDepartamento;
 }
 
+
 interface ICargo {
   codigoCargo: string;
   nombreCargo: string;

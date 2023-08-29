@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 import {IEstados} from "../../interfaces/estados.interface";
 import {ISolicitudVehiculo} from "../../interfaces/data.interface";
-import {IVehiculos} from "../../../vehiculo/interfaces/vehiculo-interface";
 
 @Component({
   selector: 'app-mis-solicitudes',

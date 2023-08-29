@@ -21,10 +21,11 @@ export class ModalComponent implements OnInit {
   placasPorTipo = {};
 
   formularioSoliVe!: FormGroup;
-  pasajeros: any[] = [{ nombre: ''}];
-  username: string = 'NombreDeUsuario';
+  pasajeros: any[] = [];
+  username: string = 'Usuario que inicia';
   mostrarTabla: boolean = true;
   mostrarArchivoAdjunto: boolean = false;
+  cantidadPersonas: number = 0;
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router,
               private soliVeService: SolicitudVehiculoService) { }
@@ -60,6 +61,7 @@ export class ModalComponent implements OnInit {
       horaRegreso: ['', [Validators.required]],
       cantidadPersonas: [1, [Validators.required, Validators.min(1)]],
       nombre: ['', ],
+      username: [[this.username],],
       responsableName: ['', [Validators.required]],
     });
   }
@@ -78,16 +80,18 @@ export class ModalComponent implements OnInit {
 
   // metodo para generar la filas de la tabla
   actualizarFilas() {
-    let cantidadPersonas  = this.formularioSoliVe.get('cantidadPersonas').value;
-    if (cantidadPersonas > this.pasajeros.length && this.pasajeros.length < 5){
-      let cantidaFilasNuevas = cantidadPersonas - this.pasajeros.length;
+    this.cantidadPersonas  = this.formularioSoliVe.get('cantidadPersonas').value;
+
+    if (this.cantidadPersonas > this.pasajeros.length && this.pasajeros.length < 4){
+      let cantidaFilasNuevas = this.cantidadPersonas - this.pasajeros.length - 1;
       for (let i = 0; i < cantidaFilasNuevas; i++){
-        this.pasajeros.push({ nombre: ''})
+        this.pasajeros.push({ nombre: ''});
       }
-    } else if (cantidadPersonas < this.pasajeros.length) {
-      this.pasajeros.splice(cantidadPersonas);
+    } else if (this.cantidadPersonas < this.pasajeros.length) {
+      this.pasajeros.splice(this.cantidadPersonas);
     }
-    if (cantidadPersonas > 5) {
+
+    else if (this.cantidadPersonas > 5) {
       this.mostrarTabla = false; // Ocultar la tabla
       this.mostrarArchivoAdjunto = true; // Mostrar el campo de entrada de archivo
     } else {

@@ -5,6 +5,7 @@ import { UIModule } from 'src/app/shared/ui/ui.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { AsignacionValesRoutingModule } from './asignacion-vales-routing.module';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [],
@@ -13,6 +14,7 @@ import { AsignacionValesRoutingModule } from './asignacion-vales-routing.module'
     AsignacionValesRoutingModule,
     FormsModule,
     UIModule,
+    NgbPaginationModule,
     Ng2SearchPipeModule
   ]
 })

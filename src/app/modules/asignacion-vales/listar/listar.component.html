@@ -13,7 +13,12 @@
         <div class="col-sm-4">
           <div class="search-box me-2 mb-2 d-inline-block">
             <div class="position-relative">
-              <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="term"/>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Buscar..."
+                [(ngModel)]="term"
+              />
               <i class="bx bx-search-alt search-icon"></i>
             </div>
           </div>
@@ -29,64 +34,53 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="align-middle text-center">
-                <td>
-                  <a href="javascript: void(0);" class="text-body fw-bold">
-                    1
-                  </a>
-                </td>
-                <td>15/08/2023</td>
-                <td>Salida UES Central, estudiantes Profesorado</td>
-                <td class="d-flex justify-content-center gap-1">
-                  <button class="btn btn-danger btn-sm btn-rounded">
-                    <i class="bi bi-eye"></i>
-                    Detalles
-                  </button>
-                </td>
-                <!--  *ngFor="
-                  let data of salidas
-                    | paginate : { itemsPerPage: 10, currentPage: p };
-                  let i = index
-                "
+              <tr
+                class="align-middle text-center"
+                *ngFor="let data of listDetalle.content; let i = index"
+              >
                 <td>
                   <a href="javascript: void(0);" class="text-body fw-bold">{{
                     i + 1
                   }}</a>
                 </td>
                 <td>
-                  No. {{ data.venta.id }} -
-                  {{ data.venta.fechaVenta | date : "dd/MM/yyyy" }}
+                  {{ data.codigoAsignacionVale }}
                 </td>
                 <td>
-                  {{ data.vehiculo.marca }} / {{ data.vehiculo.modelo }} ({{
-                    data.vehiculo.placa
-                  }}) [{{ data.vehiculo.anio | date : "yyyy" }}]
+                  {{ data.fechaAsigancion }}
                 </td>
                 <td>
-                  {{ data.municipio.nombre }} ({{ data.municipio.zona.nombre }})
+                  {{ data.codigoVale }}
                 </td>
-                <td class="d-flex justify-content-center gap-1">
-                  <Button trigger modal
-                  <app-modal [salida]="data" [leyenda]="'Editar'"></app-modal>
+                <td class="d-flex justify-content-center gap-1"></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- ! PAGINACION
+            <app-modal [salida]="data" [leyenda]="'Editar'"></app-modal>
+          <div class="pagination pagination-rounded justify-content-end mb-2">
+              <Button trigger modal
+
                   <button
                     (click)="eliminar(data)"
                     class="btn btn-danger btn-sm btn-rounded"
                   >
                     <i class="bi bi-trash"></i>
                   </button>
-                </td>-->
-              </tr>
-            </tbody>
-          </table>
-
-          <!-- ! PAGINACION
-          <div class="pagination pagination-rounded justify-content-end mb-2">
             <pagination-controls
               (pageChange)="p = $event"
             ></pagination-controls>
           </div>-->
         </div>
         <!-- end table -->
+        <ngb-pagination
+          [pageSize]="listDetalle.pageable.pageSize"
+          [collectionSize]="listDetalle.totalElements"
+          (pageChange)="pageChange($event)"
+          [(page)]="currentPage"
+        >
+        </ngb-pagination>
       </div>
     </div>
   </div>

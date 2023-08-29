@@ -7,8 +7,8 @@ export interface Empleado{
     apellido?:string;
     telefono?:string;
     licencia?:string;
-    tipo_licencia?:string;
-    fecha_licencia?: Date;
+    tipolicencia?:string;
+    fechalicencia?: Date;
     estado?: number;
     jefe?: boolean;
     correo?: string;

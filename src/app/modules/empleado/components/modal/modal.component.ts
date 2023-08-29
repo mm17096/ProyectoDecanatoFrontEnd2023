@@ -5,9 +5,9 @@ import { EmpleadoService } from '../../service/empleado.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 import { ICargo, IDepartamento, IEmpleado } from '../../interface/empleado.interface';
-import { EMAIL_VALIDATE, TEXT_VALIDATE } from '../../../constants/constants';
 
-import { FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
+import { EMAIL_VALIDATE_UES, NAME_VALIDATE } from 'src/app/constants/constants';
+import { MensajesService } from 'src/app/shared/global/mensajes.service';
 
 @Component({
   selector: 'app-modal',
@@ -24,17 +24,14 @@ export class ModalComponent implements OnInit {
 
   public imgTemp: string | ArrayBuffer = null;
 
-  private isEmail: string = EMAIL_VALIDATE;
-  private isText: string = TEXT_VALIDATE;
+  private isEmail: string = EMAIL_VALIDATE_UES;
+  private isText: string = NAME_VALIDATE;
 
   cargos: ICargo[] = [];
   departamentos: IDepartamento[] = [];
 
   formBuilder!: FormGroup;
 
-  cargo: ICargo;
-  departamento: IDepartamento;
-  empleado: IEmpleado;
   esMotorista: boolean = false;
   private file!: File;
 
@@ -43,85 +40,60 @@ export class ModalComponent implements OnInit {
   hovered: boolean = false; // Inicializamos hovered como falso
 
 
-  constructor(private empleadoService: EmpleadoService, private modalService: NgbModal, private fb: FormBuilder, private router: Router) { }
+  constructor(
+    private empleadoService: EmpleadoService,
+    private modalService: NgbModal,
+    private fb: FormBuilder,
+    private router: Router,
+    private mensajesService: MensajesService
+  ) {
+    this.formBuilder = this.Iniciarformulario();
+  }
 
   ngOnInit(): void {
-    this.formBuilder = this.Iniciarformulario();
-
-    this.empleado = {
-      dui: "",
-      nombre: "",
-      apellido: "",
-      telefono: "",
-      licencia: "",
-      tipo_licencia: "",
-      fecha_licencia: new Date(),
-      estado: 7,
-      jefe: false,
-      correo: "",
-      nombrefoto: "",
-      urlfoto: "",
-      cargo: null,
-      departamento: null
+    if (this.leyenda == "Editar") {
+      this.formBuilder = this.Iniciarformulario();
     }
 
-    this.cargo = {
-      codigoCargo: 0,
-      nombreCargo: "",
-      descripcion: "",
-      estado: 0
-    }
-
-    this.departamento = {
-      codigoDepto: 0,
-      nombre: "",
-      estado: 0
-    }
-
-    this.getCargos();
-    this.getDepartamentos();
+    this.empleadoService.getCargos();
+    this.empleadoService.getDepartamentos();
   }
 
   private Iniciarformulario(): FormGroup {
     return this.fb.group({
+      codigoEmpleado: [''],
       dui: ['', [Validators.required]],
       nombre: ['', [Validators.required, Validators.pattern(this.isText)]],
       apellido: ['', [Validators.required, Validators.pattern(this.isText)]],
       telefono: ['', [Validators.required]],
-      licencia: ['', [Validators.required]],
-      tipolicencia: ['', [Validators.required]],
-      fechalicencia: ['', [Validators.required]],
+      licencia: ['', this.motoristaOd ? [Validators.required] : []],
+      tipolicencia: ['', this.motoristaOd ? [Validators.required] : []],
+      fechalicencia: ['', this.motoristaOd ? [Validators.required] : []],
       jefe: [false, [Validators.required]],
+      estado: [8],
+      nombrefoto: [''],
+      urlfoto: [''],
       correo: ['', [Validators.required, Validators.pattern(this.isEmail)]],
       cargo: ['', [Validators.required]],
       departamento: ['', [Validators.required]],
     });
   }
 
-  getCargos() {
-    this.empleadoService
-      .getCargos()
-      .subscribe((res) => {
-        this.cargos = [...this.cargos, ...res];
-      });
+  ////////////// >>>>> metodos primarios <<<<<   /////////////
 
+  //// metodo para obtener los cargos /////
+  get Cargos() {
+    return this.empleadoService.listCargos;
   }
 
-  getDepartamentos() {
-    this.empleadoService
-      .getDepartamentos()
-      .subscribe((res) => {
-        this.departamentos = [...this.departamentos, ...res];
-      });
+  //// metodo para obtener los departamentos /////
+  get Departamentos() {
+    return this.empleadoService.listDepartamentos;
   }
 
-  openModal(content: any) {
-    this.modalService.open(content, { size: 'xl', centered: true });
-  }
-
+  ////// metodo para tomar la desicion si es registro o actualizacion /////
   guardar() {
-    
-    if (this.formBuilder.valid || this.motoristaOd) {
+    if (this.formBuilder.valid) {
       if (this.empleadOd != null) {
         this.editando();
       } else {
@@ -137,98 +109,11 @@ export class ModalComponent implements OnInit {
     }
   }
 
+  /////////// metodo para registrar empleado ///////////
   registrando() {
-
-    this.empleado.dui = this.formBuilder.get('dui').value;
-    this.empleado.nombre = this.formBuilder.get('nombre').value;
-    this.empleado.apellido = this.formBuilder.get('apellido').value;
-    this.empleado.telefono = this.formBuilder.get('telefono').value;
-    this.empleado.licencia = this.formBuilder.get('licencia').value;
-    this.empleado.tipo_licencia = this.formBuilder.get('tipolicencia').value;
-    this.empleado.fecha_licencia = this.formBuilder.get('fechalicencia').value;
-    this.empleado.jefe = this.formBuilder.get('jefe').value;
-    this.empleado.correo = this.formBuilder.get('correo').value;
-
-    //asignar cargo
-    this.cargo.codigoCargo = this.formBuilder.get('cargo').value;
-
-    this.empleado.cargo = this.cargo;
-
-    //asignar departamento
-    this.departamento.codigoDepto = this.formBuilder.get('departamento').value;
-
-    this.empleado.departamento = this.departamento;
-
-    this.empleadoService.postEmpleado(this.empleado, this.file).subscribe((resp: any) => {
-      if (resp) {
-        const Toast = Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 3000,
-          //timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-          }
-        });
-
-        Toast.fire({
-          icon: 'success',
-          text: 'Almacenamiento exitoso'
-        });
-
-        this.formBuilder.reset();
-        this.recargar();
-        this.modalService.dismissAll();
-      }
-    }, (err: any) => {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Algo paso, hable con el administrador',
-      });
-    });
-
-  }
-
-  SelectCargo(newValue: string) {
-    // Lógica para determinar si el cargo seleccionado es "Motorista"
-
-    //obtenemos el objeto que tenga como nombreCargo Motorista
-    const motoristaOb = this.cargos.find(cargo => cargo.nombreCargo === "Motorista");
-    //Comparamos que el ID sea igual al seleccionado y cambiamos la variable para mostrar los demas campos
-    this.esMotorista = (this.formBuilder.get('cargo').value === motoristaOb.codigoCargo);
-    this.motoristaOd = this.esMotorista;
-
-    // Retrasamos la actualización del teléfono en 3 segundos
-    setTimeout(() => {
-      this.formBuilder.get('telefono').setValue(newValue); // Función para cambiar teléfono
-    }, 50); // 1000 milisegundos = 1 segundos
-
-  }
-
-
-  editando() {
-
-    this.empleadOd.dui = this.formBuilder.get('dui').value;
-    this.empleadOd.nombre = this.formBuilder.get('nombre').value;
-    this.empleadOd.apellido = this.formBuilder.get('apellido').value;
-    this.empleadOd.telefono = this.formBuilder.get('telefono').value;
-
-    this.empleadOd.licencia = this.esMotorista || this.motoristaOd ? this.formBuilder.get('licencia').value : '';
-    this.empleadOd.tipo_licencia = this.esMotorista || this.motoristaOd ? this.formBuilder.get('tipolicencia').value : '';
-    this.empleadOd.fecha_licencia = this.esMotorista || this.motoristaOd ? this.formBuilder.get('fechalicencia').value : null;
-
-    this.empleadOd.jefe = this.formBuilder.get('jefe').value;
-    this.empleadOd.correo = this.formBuilder.get('correo').value;
-    //asignar cargo
-    this.empleadOd.cargo.codigoCargo = this.formBuilder.get('cargo').value;
-    //asignar departamento
-    this.empleadOd.departamento.codigoDepto = this.formBuilder.get('departamento').value;
-
+    const empleado = this.formBuilder.value;
     if (this.imagen === 'no hay') {
-      this.empleadoService.putEmpleado(this.empleadOd).subscribe((resp: any) => {
+      this.empleadoService.postEmpleado(empleado).subscribe((resp: any) => {
         if (resp) {
           const Toast = Swal.mixin({
             toast: true,
@@ -244,7 +129,7 @@ export class ModalComponent implements OnInit {
 
           Toast.fire({
             icon: 'success',
-            text: 'Modificación exitosa'
+            text: 'Almacenamiento exitoso'
           });
 
           this.formBuilder.reset();
@@ -252,14 +137,56 @@ export class ModalComponent implements OnInit {
           this.modalService.dismissAll();
         }
       }, (err: any) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Algo paso, hable con el administrador',
-        });
+        this.mensajesService.mensajesSweet(
+          "error",
+          "Ups... Algo salió mal",
+          err
+        )
       });
     } else {
-      this.empleadoService.putEmpleadoImagen(this.empleadOd, this.file).subscribe((resp: any) => {
+
+      this.empleadoService.postEmpleadoImagen(empleado, this.file).subscribe((resp: any) => {
+        if (resp) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            //timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+          });
+
+          Toast.fire({
+            icon: 'success',
+            text: 'Almacenamiento exitoso'
+          });
+
+          this.formBuilder.reset();
+          this.recargar();
+          this.modalService.dismissAll();
+        }
+      }, (err: any) => {
+        this.mensajesService.mensajesSweet(
+          "error",
+          "Ups... Algo salió mal",
+          err
+        )
+      });
+    }
+
+  }
+
+  ///////// metodo para editar empleado con imagen o sin imagen ///////
+  editando() {
+    const empleado = this.formBuilder.value;
+    empleado.nombrefoto = this.empleadOd.nombrefoto;
+    empleado.urlfoto = this.empleadOd.urlfoto;
+    console.log(empleado);
+    if (this.imagen === 'no hay') {
+      this.empleadoService.putEmpleado(empleado).subscribe((resp: any) => {
         if (resp) {
           const Toast = Swal.mixin({
             toast: true,
@@ -283,49 +210,49 @@ export class ModalComponent implements OnInit {
           this.modalService.dismissAll();
         }
       }, (err: any) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Algo paso, hable con el administrador',
-        });
+        this.mensajesService.mensajesSweet(
+          "error",
+          "Ups... Algo salió mal",
+          err
+        )
+      });
+    } else {
+      this.empleadoService.putEmpleadoImagen(empleado, this.file).subscribe((resp: any) => {
+        if (resp) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            //timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+          });
+
+          Toast.fire({
+            icon: 'success',
+            text: 'Modificación exitosa'
+          });
+
+          this.formBuilder.reset();
+          this.recargar();
+          this.modalService.dismissAll();
+        }
+      }, (err: any) => {
+        this.mensajesService.mensajesSweet(
+          "error",
+          "Ups... Algo salió mal",
+          err
+        )
       });
     }
   }
 
-  recargar() {
-    let currentUrl = this.router.url;
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-    this.router.onSameUrlNavigation = "reload";
-    this.router.navigate([currentUrl]);
-  }
+  ////////////// >>>>> metodos secundarios de validacion y acciones  <<<<<   /////////////
 
-  esCampoValido(campo: string) {
-    const validarCampo = this.formBuilder.get(campo);
-    return !validarCampo?.valid && validarCampo?.touched
-      ? 'is-invalid' : validarCampo?.touched ? 'is-valid' : '';
-  }
-
-
-  onFileSelected(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.file = (target.files as FileList)[0];
-    this.imagen = 'seleccioanda';
-    this.preVisualizarImagen(event);
-  }
-
-  preVisualizarImagen(event: any) {
-    this.file = event.target.files[0];
-    //cambia a imagen previa
-    if (!this.file) {
-      this.imgTemp = null;
-    }
-    const reader = new FileReader();
-    reader.readAsDataURL(event.target.files[0]);
-    reader.onloadend = () => {
-      this.imgTemp = reader.result;
-    };
-  }
-
+  //// Metodo para validacion de fecha /////
   validarfecha() {
     const currentDate = new Date();
     const fechaString = this.formBuilder.get('fechalicencia').value; // Debe ser un string en formato 'yyyy-MM-dd'
@@ -338,7 +265,6 @@ export class ModalComponent implements OnInit {
           position: 'top-end',
           showConfirmButton: false,
           timer: 3000,
-          //timerProgressBar: true,
           didOpen: (toast) => {
             toast.addEventListener('mouseenter', Swal.stopTimer)
             toast.addEventListener('mouseleave', Swal.resumeTimer)
@@ -355,5 +281,91 @@ export class ModalComponent implements OnInit {
     }
   }
 
+  /////// metodo para modificacion de validaciones y estados cambiando el formulario a comveniencia si el empleado es motorista o no //////
+
+  SelectCargo(newValue: string) {
+    // Lógica para determinar si el cargo seleccionado es "Motorista"
+
+    //obtenemos el objeto que tenga como nombreCargo Motorista
+    const motoristaOb = this.Cargos.find(cargo => cargo.nombreCargo === "Motorista");
+    //Comparamos que el ID sea igual al seleccionado y cambiamos la variable para mostrar los demas campos
+    this.esMotorista = (this.formBuilder.get('cargo').value === motoristaOb.codigoCargo);
+    this.motoristaOd = this.esMotorista;
+
+    // Retrasamos la actualización del teléfono en 3 segundos
+    setTimeout(() => {
+      this.formBuilder.get('telefono').setValue(newValue); // Función para cambiar teléfono
+    }, 50); // 1000 milisegundos = 1 segundos
+
+    // Asignar o quitar validadores según el valor de esmotorista
+    const licenciaControl = this.formBuilder.get('licencia');
+    const tipolicenciaControl = this.formBuilder.get('tipolicencia');
+    const fechalicenciaControl = this.formBuilder.get('fechalicencia');
+
+    if (this.esMotorista) {
+      licenciaControl.setValidators([Validators.required]);
+      tipolicenciaControl.setValidators([Validators.required]);
+      fechalicenciaControl.setValidators([Validators.required]);
+    } else {
+      licenciaControl.clearValidators();
+      tipolicenciaControl.clearValidators();
+      fechalicenciaControl.clearValidators();
+
+      licenciaControl.setValue('');
+      tipolicenciaControl.setValue('');
+      fechalicenciaControl.setValue('');
+
+      this.empleadOd.licencia = "";
+      this.empleadOd.tipolicencia = "";
+      this.empleadOd.fechalicencia = new Date();
+    }
+    licenciaControl.updateValueAndValidity();
+    tipolicenciaControl.updateValueAndValidity();
+    fechalicenciaControl.updateValueAndValidity();
+
+  }
+
+  //// metodo par abrir la modal ////
+  openModal(content: any) {
+    this.modalService.open(content, { size: 'xl', centered: true });
+  }
+
+
+  ///// Metodo para recargar la pagina /////
+  recargar() {
+    let currentUrl = this.router.url;
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.router.onSameUrlNavigation = "reload";
+    this.router.navigate([currentUrl]);
+  }
+
+  //// metodo para validar el campo si es valido o no ////
+  esCampoValido(campo: string) {
+    const validarCampo = this.formBuilder.get(campo);
+    return !validarCampo?.valid && validarCampo?.touched
+      ? 'is-invalid' : validarCampo?.touched ? 'is-valid' : '';
+  }
+
+  ///// metodo que extrae la informacion de la imagen /////
+  onFileSelected(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.file = (target.files as FileList)[0];
+    this.imagen = 'seleccioanda';
+    this.preVisualizarImagen(event);
+  }
+
+  ///// metodo para previsualizar la imagen /////
+  preVisualizarImagen(event: any) {
+    this.file = event.target.files[0];
+    //cambia a imagen previa
+    if (!this.file) {
+      this.imgTemp = null;
+    }
+    const reader = new FileReader();
+    reader.readAsDataURL(event.target.files[0]);
+    reader.onloadend = () => {
+      this.imgTemp = reader.result;
+    };
+  }
 
 }

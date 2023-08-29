@@ -5,11 +5,9 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CompraService } from "../../services/compra.service";
 
 import { MensajesService } from "src/app/shared/global/mensajes.service";
-import {
-  DECIMAL_VALIDATE,
-  INTEGER_VALIDATE,
-} from "src/app/modules/constants/constants";
+
 import Swal from "sweetalert2";
+import { DECIMAL_VALIDATE, INTEGER_VALIDATE } from "src/app/constants/constants";
 
 @Component({
   selector: "app-modal",

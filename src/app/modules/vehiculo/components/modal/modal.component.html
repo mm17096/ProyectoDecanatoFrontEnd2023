@@ -1,0 +1,143 @@
+<span *ngIf="leyenda !== titulo">
+  <div class="text-sm-end">
+      <button type="button" class="btn btn-primary btn-rounded" (click)="openModal(content)">{{titulo}}
+      </button>
+  </div>
+</span>
+
+<span *ngIf="leyenda === titulo && titulo == 'Detalle'">
+  <button type="button" class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1" (click)="openModal(content)"><i
+          class="mdi mdi-account-details-outline"></i></button>
+</span>
+
+<span *ngIf="leyenda === titulo && titulo == 'Editar'">
+  <button type="button" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1" (click)="openModal(content)"><i
+          class="mdi mdi-account-edit-outline"></i></button>
+</span>
+
+<!-- Modal -->
+<div class="modal modal-fullscreen-xl-down fade" id="modalEmpleado" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <ng-template #content role="document" let-modal>
+        <div class="modal-header">
+            <h5 class="modal-title mt-0">{{leyenda}} Vehiculo</h5>
+            <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+            <form (ngSubmit)="guardar()" [formGroup]="formVehiculo" enctype="multipart/form-data">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group row m-4">
+                    <div class="col-md-7" *ngIf="titulo !== 'Detalle'">
+                        <div class="form-group row">
+                            <label class="control-label" for="file">Foto: </label>
+                            <input formControlName="file" id="file" type="file" multiple class="form-control"
+                                (change)="onFileSelected($event)" />
+                        </div>
+                    </div>
+                    <span class="align-text-top col-md-4" style="display: flex; left: 10%;" *ngIf="titulo === 'Detalle' && !imgTemp"><strong>Foto de Perfil :</strong></span>
+                    <div class="col-md-4" >
+                        <img class="rounded-circle custom-border"  *ngIf="leyenda === titulo && !imgTemp" src="{{objVehiculo.nombrefoto}}" alt="">
+
+                        <img class="rounded-circle custom-border" *ngIf="imgTemp" [src]="imgTemp" alt="">
+                    </div>
+                  </div>
+
+                  <div class="form-group row m-4">
+                    <label class="control-label">Modelo:</label>
+                    <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                  </div>
+
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group row m-4">
+                    <label class="control-label">Número Placa:</label>
+                    <input type="text" formControlName="placa" class="form-control" id="placa" name="placa"
+                        placeholder="Ingrese Placa" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [ngModel]="objVehiculo !=null ? objVehiculo.placa: ''" />
+                  </div>
+
+                  <div class="form-group row m-4">
+                    <label class="control-label">Marca:</label>
+                    <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group row m-4">
+                    <div class="col-md-3">
+                      <label class="control-label">Número Motor:</label>
+                      <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                    </div>
+                    <div class="col-md-3">
+                      <label class="control-label">Número Chasis:</label>
+                      <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                    </div>
+                    <div class="col-md-3">
+                      <label class="control-label">Clase:</label>
+                      <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                    </div>
+                    <div class="col-md-3">
+                      <label class="control-label">Color:</label>
+                      <input type="date" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group row m-4">
+                    <div class="col-md-3">
+                      <label class="control-label">Capacidad Personas:</label>
+                      <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                    </div>
+                    <div class="col-md-3">
+                      <label class="control-label">Capacidad Tanque:</label>
+                      <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                    </div>
+                    <div class="col-md-3">
+                      <label class="control-label">Tipo de Gas:</label>
+                      <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                    </div>
+                    <div class="col-md-3">
+                      <label class="control-label">Año Vehiculo:</label>
+                      <input type="date" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="d-flex justify-content-end mt-4">
+                  <button type="submit" class="btn btn-primary me-2" id="btn-save" name="btn-save">
+                      Guardar
+                  </button>
+                  <button type="button" class="btn btn-dark" id="btn-cancel" name="btn-cancel" aria-hidden="true"
+                      (click)="modal.dismiss('Cross click')">
+                      Cancelar
+                  </button>
+              </div>
+            </form>
+        </div>
+    </ng-template>
+</div>
+<!-- Modal -->

@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { IProveedor } from "../../interfaces/proveedor.interface";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { EMAIL_VALIDATE } from "src/app/constants/constants";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ProveedorService } from "../../services/proveedor.service";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
+import { EMAIL_VALIDATE } from "src/app/constants/constants";
 
 @Component({
   selector: "app-modal",
@@ -162,6 +162,7 @@ export class ModalComponent implements OnInit {
     const modalOptions = {
       centered: true,
       size: "sm", // 'lg' para modal grande, 'sm' para modal pequeño
+      backdrop: "static" as "static", // Configura backdrop como 'static'
     };
     this.modalService.open(content, modalOptions);
   }

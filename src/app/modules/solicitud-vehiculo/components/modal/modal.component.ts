@@ -23,8 +23,6 @@ export class ModalComponent implements OnInit {
   distritos!: IPais[];
   cantones!: IPais[];
 
-
-
   formularioSoliVe!: FormGroup;
   pasajeros: any[] = [];
   username: string = 'Usuario que inicia';
@@ -54,6 +52,7 @@ export class ModalComponent implements OnInit {
     this.formularioSoliVe = this.fb.group({
       fechaSolicitud: [this.obtenerFechaActual(new Date()), [Validators.required]],
       fechaSalida: ['', [Validators.required]],
+      fechaEntrada: ['', [Validators.required]],
       unidadSolicitante: ['Departamento de Informática', [Validators.required]],
       tipoVehiculo: ['', [Validators.required]],
       vehiculo: ['', [Validators.required]],
@@ -70,9 +69,6 @@ export class ModalComponent implements OnInit {
       username: [[this.username],],
       responsableName: ['', [Validators.required]],
     });
-  }
-  openModal(content: any) {
-    this.modalService.open(content, {size: 'lg', backdrop: 'static'});
   }
 
   obtenerFechaActual(date: Date): string {
@@ -96,7 +92,7 @@ export class ModalComponent implements OnInit {
     this.soliVeService.getDepa()
       .pipe(map((dp) => dp.filter((depa)=> depa.codigo.length === 2)))
       .subscribe((resp) => {
-        this.departamentos = resp;
+        this.departamentos = this.sortItemsByCodigo(resp);
       });
   }
 
@@ -113,7 +109,7 @@ export class ModalComponent implements OnInit {
     this.soliVeService.getDepa()
       .pipe(map(dp => dp.filter(muni => muni.codigo.startsWith(id) && muni.codigo.length === 4)))
       .subscribe(resp => {
-        this.municipios = resp;
+        this.municipios = this.sortItemsByCodigo(resp);
       });
   }
 
@@ -127,7 +123,7 @@ export class ModalComponent implements OnInit {
     this.soliVeService.getDepa()
       .pipe(map(dp => dp.filter(disti => disti.codigo.startsWith(id) && disti.codigo.length === 6)))
       .subscribe(resp => {
-        this.distritos = resp;
+        this.distritos = this.sortItemsByCodigo(resp);
       });
   }
 
@@ -139,7 +135,7 @@ export class ModalComponent implements OnInit {
     this.soliVeService.getDepa()
       .pipe(map(dp => dp.filter(canton => canton.codigo.startsWith(id) && canton.codigo.length === 8)))
       .subscribe(resp => {
-        this.cantones = resp;
+        this.cantones = this.sortItemsByCodigo(resp);
         console.log(this.cantones)
       });
   }

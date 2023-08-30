@@ -20,7 +20,7 @@ export class TablaComponent implements OnInit {
 
   abrirModal(leyenda: string, data: any) {
     this.selectedData = data; // Almacena los datos del registro seleccionado
-    const modalRef = this.modalService.open(ModalComponent, {size:'lg'});
+    const modalRef = this.modalService.open(ModalComponent, {size:'xl', backdrop: 'static'});
     modalRef.componentInstance.leyenda = leyenda; // Pasa la leyenda al componente modal
     modalRef.componentInstance.data = data; // Pasa la data al componente modal
   }

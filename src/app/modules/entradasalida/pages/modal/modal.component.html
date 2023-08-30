@@ -1,0 +1,117 @@
+<span *ngIf="leyenda !== titulo">
+    <div class="text-sm-end">
+        <button type="button" class="btn btn-primary btn-rounded" (click)="openModal(content)">{{titulo}}
+        </button>
+    </div>
+</span>
+<span *ngIf="leyenda === titulo && titulo == 'Editar'">
+    <button type="button" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1" (click)="openModal(content)"><i
+            class="mdi mdi-account-edit-outline"></i></button>
+</span>
+
+<!-- Modal -->
+
+<div class="modal modal-fullscreen-xl-down fade" id="modalEmpleado" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <ng-template #content role="document" let-modal>
+        <div class="modal-header">
+            <h5 class="modal-title mt-1">{{leyenda}} registro de {{leyendas}} </h5>
+            <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+
+            <form (ngSubmit)="guardar()" [formGroup]="formBuilder" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                          <label>Misión</label><span class="text-danger"> *</span>
+                          <input type="text" class="form-control" id="tipo" name="tipo" placeholder="Escribe tipo de misión"
+                            formControlName="tipo" [class]="esCampoValido('tipo')" />
+                            <div class="invalid-feedback">
+                              <!-- aqui la validación-->
+                              <span *ngIf="formBuilder.get('tipo')?.errors?.['required']">Requiere un nombre para el campo</span>
+                              <span *ngIf="formBuilder.get('tipo')?.errors?.['pattern']">nombre no valido</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                              <label>Fecha</label><span class="text-danger"> *</span>
+                              <input type="date" class="form-control" id="fecha" name="fecha"
+                                formControlName="fecha" autocomplete="off" [class]="esCampoValido('fecha')" />
+                                <div class="invalid-feedback">
+                                  <!-- aqui la validación-->
+                                  <span *ngIf="formBuilder.get('tipo')?.errors?.['required']">Requiere un fecha</span>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label>Hora</label><span class="text-danger"> *</span>
+                                <input type="time" class="form-control" id="hora" name="hora"
+                                  formControlName="hora" autocomplete="off" [class]="esCampoValido('hora')"/>
+                                <div class="invalid-feedback">
+                                    <!-- aqui la validación-->
+                                    <span *ngIf="formBuilder.get('hora')?.errors?.['required']">Requiere una hora</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                              <label>Kilometraje</label><span class="text-danger"> *</span>
+                              <input type="text" class="form-control" id="kilometraje" name="kilometraje"
+                                formControlName="kilometraje" autocomplete="off" [class]="esCampoValido('kilometraje')" pattern="" (keypress)="OnlyNumbersAllowed($event)" placeholder="Escribe el kilometraje"/>
+                                <div class="invalid-feedback">
+                                  <!-- aqui la validación-->
+                                  <span *ngIf="formBuilder.get('kilometraje')?.errors?.['required']">Requiere datos en el campo</span>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                              <label>Combustible</label><span class="text-danger"> *</span>
+                              <input type="text" class="form-control" id="combustible" name="combustible"
+                                formControlName="combustible" autocomplete="off" [class]="esCampoValido('combustible')" placeholder="Escribe el tipo de combustible"/>
+                                <div class="invalid-feedback">
+                                  <!-- aqui la validación-->
+                                  <span *ngIf="formBuilder.get('combustible')?.errors?.['required']">Requiere datos en el campo</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-primary me-2" id="btn-save" name="btn-save">
+                        Guardar
+                    </button>
+
+                    <button type="button" class="btn btn-dark" id="btn-cancel" name="btn-cancel" aria-hidden="true"
+                        (click)="modal.dismiss('Cross click')">
+                        Cancelar
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </ng-template>
+</div>
+<!-- Modal -->
+
+<script>
+    // Deshabilitar el cursor en el campo de entrada
+    const readonlyInput = document.getElementById("readonlyInput");
+
+    readonlyInput.addEventListener("mousedown", (event) => {
+        event.preventDefault();
+    });
+
+    readonlyInput.addEventListener("keydown", (event) => {
+        event.preventDefault();
+    });
+</script>

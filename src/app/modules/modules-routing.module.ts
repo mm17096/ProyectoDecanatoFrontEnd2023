@@ -8,6 +8,10 @@ const routes: Routes = [
 
   { path: 'asignacionVale', loadChildren: () => import('./asignacion-vales/asignacion-vales.module').then(m => m.AsignacionValesModule), canActivate: [AuthGuard] },
 
+  { path: 'entrasalida', loadChildren: () => import('./entradasalida/entradasalida.module').then(m => m.EntradasalidaModule), canActivate: [AuthGuard] },
+  { path: 'document', loadChildren: () => import('./documentosolcitud-vale/documentosolcitud-vale.module').then(m => m.DocumentosolcitudValeModule), canActivate: [AuthGuard] },
+  
+
   //Ruta de empleado //
   { path: 'empleados', loadChildren: () => import('./empleado/empleado.module').then(m => m.EmpleadoModule), canActivate: [AuthGuard] },
 ];

@@ -1,34 +1,31 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
-
-import { EntradasalidaRoutingModule } from './entradasalida-routing.module';
-import { VistaentradasalidaComponent } from './pages/vistaentradasalida/vistaentradasalida.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+
+import { DocumentosolcitudValeRoutingModule } from './documentosolcitud-vale-routing.module';
+import { ListardocumentovaleComponent } from './pages/listardocumentovale/listardocumentovale.component';
+import { TabladocumentovaleComponent } from './pages/tabladocumentovale/tabladocumentovale.component';
+import { ModulodocumentovaleComponent } from './pages/modulodocumentovale/modulodocumentovale.component';
+import { DocumentovaleService } from './service/documentovale.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { UIModule } from 'src/app/shared/ui/ui.module';
-import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChartsModule } from 'ng2-charts';
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
-import { ListaentradasalidaService } from './service/listaentradasalida.service';
-import { ListarComponent } from './pages/listar/listar.component';
-import { TablaComponent } from './pages/tabla/tabla.component';
-import { ModalComponent } from './pages/modal/modal.component';
-
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 
 @NgModule({
   declarations: [
-    VistaentradasalidaComponent,
-    ListarComponent,
-    TablaComponent,
-    ModalComponent,
+    ListardocumentovaleComponent,
+    TabladocumentovaleComponent,
+    ModulodocumentovaleComponent
   ],
   imports: [
     CommonModule,
-    EntradasalidaRoutingModule,
+    DocumentosolcitudValeRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,//para las peticiones
     InfiniteScrollModule,//para scroll infinito
@@ -42,10 +39,8 @@ import { ModalComponent } from './pages/modal/modal.component';
     //BrowserModule
   ],
   providers:[
-    ListaentradasalidaService,
+    DocumentovaleService,
     //DatePipe
   ],
-  //bootstrap:[AppComponent]
-
 })
-export class EntradasalidaModule { }
+export class DocumentosolcitudValeModule { }

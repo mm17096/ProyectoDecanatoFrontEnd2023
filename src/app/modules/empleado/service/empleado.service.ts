@@ -8,7 +8,7 @@ import { ICargo, IDepartamento, IEmpleado, IEmpleadoTabala } from '../interface/
 })
 export class EmpleadoService {
 
-  url = "http://localhost:8081/";
+  url = "http://localhost:8080/";
 
   constructor(private http: HttpClient) { }
 

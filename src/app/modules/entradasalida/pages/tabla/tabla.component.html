@@ -1,0 +1,33 @@
+<div class="table-responsive mb-0">
+    <table class="table table-centered table-nowrap">
+        <thead class="table-light">
+            <tr>
+                <th class="align-middle">Misión</th>
+                    <th class="align-middle">Fecha</th>
+                    <th class="align-middle">Hora</th>
+                    <th class="align-middle">Combustible</th>
+                    <th class="align-middle">Kilometraje</th>
+                    <th class="align-middle">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of entradasalidas |  filter:queryString | paginate: { itemsPerPage: 5, currentPage: p }">
+                <td>{{data.tipo}}</td>
+                <td>{{data.fecha}}</td>
+                <td>{{data.hora}}</td>
+                <td>{{data.combustible}}</td>
+                <td>{{data.kilometraje}}Km</td>
+                <td class="align-middle text-center text-center">
+
+                    <!--       botones para editar -->
+                    <app-modal [leyenda]="'Editar'" [titulo]="'Editar'" [leyendas]="'entrada y salida'"[entradasalidaOd]="data"
+                    *ngIf="data.tipo != 'Motorista'"></app-modal>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="pagination pagination-rounded justify-content-end mb-2">
+    <pagination-controls (pageChange)="p = $event" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+</div>
+<!-- end table -->

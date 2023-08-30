@@ -23,7 +23,7 @@ export const MENU: MenuItem[] = [
         icon: "bx-user-circle",
         subItems: [
             {
-                id: ,
+                id: 7,
                 label: "Lista",
                 link: "/empleados/listar",
                 parentId: 6,
@@ -81,7 +81,7 @@ export const MENU: MenuItem[] = [
           },
       ],
   },
-    {
+   {
         id: 10,
         label: "Entradas y Salidas",
         icon: "dripicons-document-edit",
@@ -89,27 +89,16 @@ export const MENU: MenuItem[] = [
           {
             id: 11,
             label: "VER",
-            link: "/entrasalida/vista_es",
+            link: "/entrasalida/listar",
             parent: 10,
           },
           {
-        id: 20,
-        label: "MENUITEMS.MAPS.TEXT",
-        icon: "bx-map",
-        subItems: [
-            {
-                id: 21,
-                label: "Solicitudes",
-                link: "/empleados",
-                parentId: 20,
-            },
-            {
-                id: 22,
-                label: "Asignaciones",
-                link: "/asignacionVale/asignaciones",
-                parentId: 20,
-            },
-        ],
+            id: 12,
+            label: "Documento",
+            link: "/document/vale",
+            parent: 10,
+          }
+        ]
     }
 ];
 

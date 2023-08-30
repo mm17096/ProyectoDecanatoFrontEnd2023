@@ -1,0 +1,46 @@
+<div class="table-responsive mb-0">
+  <table class="table table-centered table-nowrap">
+    <thead class="table-light">
+      <tr>
+        <th class="align-middle">Nombre</th>
+        <th class="align-middle">Teléfono</th>
+        <th class="align-middle">Dirección</th>
+        <th class="align-middle">Email</th>
+        <th class="align-middle text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let data of proveedores | filter : queryString; let i = index"
+      >
+        <td>
+          <a class="text-body fw-bold">
+            {{ data.nombre }}
+          </a>
+        </td>
+        <td>
+          {{ data.telefono | slice : 0 : 4 }}-{{ data.telefono | slice : 4 }}
+        </td>
+        <td>{{ data.direccion }}</td>
+        <td>{{ data.email }}</td>
+        <td class="d-flex justify-content-center gap-1">
+          <app-modal [proveedor]="data" [leyenda]="'Editar'"></app-modal>
+          <!-- Button trigger modal
+          <button
+            (click)="eliminar(data)"
+            class="btn btn-danger btn-sm btn-rounded"
+          >
+            Eliminar
+          </button> -->
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ! PAGINACION
+  <div class="pagination pagination-rounded justify-content-end mb-2">
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
+  -->
+</div>
+<!-- end table -->

@@ -1,11 +1,12 @@
 export interface IEmpleado {
+    codigoEmpleado: string,
     dui: string,
     nombre: string,
     apellido: string,
     telefono: string,
     licencia: string,
-    tipo_licencia: string,
-    fecha_licencia: Date,
+    tipolicencia: string,
+    fechalicencia: Date,
     estado: number,
     jefe: boolean,
     correo: string,
@@ -27,14 +28,15 @@ export interface IDepartamento {
     nombre: string,
     estado: number
 }
+
 export interface IEmpleadoTabala {
     dui: string,
     nombre: string,
     apellido: string,
     telefono: string,
     licencia: string,
-    tipo_licencia: string,
-    fecha_licencia: Date,
+    tipolicencia: string,
+    fechalicencia: Date,
     estado: string,
     jefeB: boolean,
     jefe: string,

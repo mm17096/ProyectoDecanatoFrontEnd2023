@@ -99,6 +99,6 @@ export const MENU: MenuItem[] = [
             parent: 10,
           }
         ]
-    }
+  }
 ];
 

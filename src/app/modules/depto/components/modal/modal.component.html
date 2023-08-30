@@ -1,0 +1,63 @@
+<div *ngIf="leyenda=='Agregar'; else templateElse">
+  <button type="button"  class="btn btn-primary btn-rounded" data-bs-toggle="modal" data-bs-target="#modalDepto"
+  (click)="openModal(content)">
+  {{leyenda}}
+   </button>
+</div>
+<ng-template #templateElse>
+  <button type="button"  class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1" data-bs-toggle="modal" data-bs-target="#modalDepto"
+  ngbTooltip="editar" (click)="openModal(content)">
+  <i class="bx bx-edit-alt"></i>
+   </button>
+</ng-template>
+
+
+
+ <!-- Modal -->
+ <ng-template #content role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Departamentos</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"
+    (click)="this.formDepto.reset()"></button>
+  </div>
+
+    <form (ngSubmit)="guardar()" [formGroup]="formDepto">
+      <div class="modal-body">
+<div class="row">
+  <div class="col-md-12">
+    <!--inicio del campo nombre-->
+    <div class="form-group row m-4">
+      <label class="control-label">Nombre:</label>
+      <input type="text"
+      class="form-control"
+      formControlName="nombre"
+      placeholder="Nombre"
+      [class]="esCampoValido('nombre')">
+      <div *ngIf="nombre?.errors?.['required'] && nombre?.touched">
+        <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*El campo Nombre es obligatorio</span>
+        </div>
+        <div *ngIf="nombre?.errors?.['pattern'] && nombre?.touched">
+          <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*Solo letras Mayusculas</span>
+          </div>
+    </div>
+
+    <!--fin del campo nombre-->
+
+
+  </div>
+</div>
+ </div>
+
+  <div class="modal-footer">
+
+   <button type="submit" class="btn btn-primary">Guardar</button>
+
+   <button type="button" class="btn btn-dark" (click)="modal.close('Close click')"
+   (click)="this.formDepto.reset()">Close</button>
+  </div>
+
+  </form>
+
+
+</ng-template>
+

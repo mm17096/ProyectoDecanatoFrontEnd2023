@@ -1,0 +1,25 @@
+/* Estilos para el footer */
+.footer {
+    position: fixed; /* Posicionamiento fijo */
+    bottom: 0; /* Alinear al fondo */
+    width: 100%; /* Ancho completo */
+}
+
+/* Media query para pantallas con ancho máximo de 500px */
+@media (max-width: 500px) {
+    .footer {
+        font-size: 12px; /* Tamaño de fuente más pequeño */
+    }
+}
+
+@media (max-width: 380px) {
+    .footer {
+        font-size: 10px; /* Tamaño de fuente más pequeño */
+    }
+}
+
+@media (max-width: 320px) {
+    .footer {
+        font-size: 9.5px; /* Tamaño de fuente más pequeño */
+    }
+}

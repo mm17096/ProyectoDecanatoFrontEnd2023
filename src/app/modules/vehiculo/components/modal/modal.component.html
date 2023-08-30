@@ -1,27 +1,7 @@
-<span *ngIf="leyenda !== titulo">
-  <div class="text-sm-end">
-      <button type="button" class="btn btn-primary btn-rounded" (click)="openModal(content)">{{titulo}}
-      </button>
-  </div>
-</span>
 
-<span *ngIf="leyenda === titulo && titulo == 'Detalle'">
-  <button type="button" class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1" (click)="openModal(content)"><i
-          class="mdi mdi-account-details-outline"></i></button>
-</span>
-
-<span *ngIf="leyenda === titulo && titulo == 'Editar'">
-  <button type="button" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1" (click)="openModal(content)"><i
-          class="mdi mdi-account-edit-outline"></i></button>
-</span>
-
-<!-- Modal -->
-<div class="modal modal-fullscreen-xl-down fade" id="modalEmpleado" tabindex="-1" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <ng-template #content role="document" let-modal>
         <div class="modal-header">
             <h5 class="modal-title mt-0">{{leyenda}} Vehiculo</h5>
-            <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+            <button type="button" class="btn-close" aria-hidden="true" (click)="activeModal.dismiss('Cross click')"></button>
         </div>
         <div class="modal-body">
             <form (ngSubmit)="guardar()" [formGroup]="formVehiculo" enctype="multipart/form-data">
@@ -47,7 +27,12 @@
                     <label class="control-label">Modelo:</label>
                     <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
                         placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                        [class]="esCampoValido('modelo')"/>
+                    <div class="invalid-feedback">
+                      <span *ngIf="formVehiculo.get('modelo')?.errors?.['required']">
+                          Requiere un modelo</span>
+                    </div>
+
                   </div>
 
                 </div>
@@ -57,14 +42,14 @@
                     <label class="control-label">Número Placa:</label>
                     <input type="text" formControlName="placa" class="form-control" id="placa" name="placa"
                         placeholder="Ingrese Placa" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [ngModel]="objVehiculo !=null ? objVehiculo.placa: ''" />
+                        [class]="esCampoValido('placa')"/>
                   </div>
 
                   <div class="form-group row m-4">
                     <label class="control-label">Marca:</label>
-                    <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                    <input type="text" formControlName="marca" class="form-control" id="marca" name="marca"
                         placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                        [class]="esCampoValido('marca')"/>
                   </div>
                 </div>
 
@@ -72,27 +57,43 @@
                   <div class="form-group row m-4">
                     <div class="col-md-3">
                       <label class="control-label">Número Motor:</label>
-                      <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                      <input type="text" formControlName="motor" class="form-control" id="motor" name="motor"
                         placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                        [class]="esCampoValido('motor')"/>
                     </div>
                     <div class="col-md-3">
                       <label class="control-label">Número Chasis:</label>
-                      <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                      <input type="text" formControlName="chasis" class="form-control" id="chasis" name="chasis"
                         placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                        [class]="esCampoValido('chasis')"/>
                     </div>
                     <div class="col-md-3">
                       <label class="control-label">Clase:</label>
-                      <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                      <input type="text" formControlName="clase" class="form-control" id="clase" name="clase"
                         placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                        [class]="esCampoValido('clase')"/>
+                        <div class="invalid-feedback">
+                          <span *ngIf="formVehiculo.get('clase')?.errors?.['required']">
+                              Requiere una Clase
+                          </span>
+                          <span *ngIf="formVehiculo.get('clase')?.errors?.['pattern']">
+                              Ingreso solo texto
+                          </span>
+                        </div>
                     </div>
                     <div class="col-md-3">
                       <label class="control-label">Color:</label>
-                      <input type="date" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                      <input type="text" formControlName="color" class="form-control" id="color" name="color"
                         placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                        [class]="esCampoValido('color')"/>
+                        <div class="invalid-feedback">
+                          <span *ngIf="formVehiculo.get('color')?.errors?.['required']">
+                              Requiere un Color
+                          </span>
+                          <span *ngIf="formVehiculo.get('color')?.errors?.['pattern']">
+                              Ingreso solo texto
+                          </span>
+                        </div>
                     </div>
                   </div>
                 </div>
@@ -101,27 +102,56 @@
                   <div class="form-group row m-4">
                     <div class="col-md-3">
                       <label class="control-label">Capacidad Personas:</label>
-                      <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                      <input type="number" formControlName="capacidad" class="form-control" id="capacidad" name="capacidad"
                         placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                        [class]="esCampoValido('capacidad')"/>
+                        <div class="invalid-feedback">
+                          <span *ngIf="formVehiculo.get('capacidad')?.errors?.['required']">
+                              Requiere  Capacidad
+                          </span>
+                          <span *ngIf="formVehiculo.get('capacidad')?.errors?.['min']">
+                            Tamano minimo >= {{formVehiculo.get('capacidad')?.errors?.['min']?.min }}
+                          </span>
+                        </div>
                     </div>
                     <div class="col-md-3">
                       <label class="control-label">Capacidad Tanque:</label>
-                      <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                      <input type="text" formControlName="ctanque" class="form-control" id="ctanque" name="ctanque"
                         placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                        [class]="esCampoValido('ctanque')"/>
+                        <div class="invalid-feedback">
+                          <span *ngIf="formVehiculo.get('ctanque')?.errors?.['required']">
+                              Requiere  Capacidad
+                          </span>
+                        </div>
                     </div>
                     <div class="col-md-3">
                       <label class="control-label">Tipo de Gas:</label>
-                      <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
-                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                      <select type="text" formControlName="tipoGas" class="form-select" id="tipoGas" name="tipoGas"
+                        [disabled]="objVehiculo != null && titulo == 'Detalle'"
+                        [class]="esCampoValido('tipoGas')">
+                          <option value="Diesel" selected>Diesel</option>
+                          <option value="Gasolina">Gasolina</option>
+                      </select>
+                      <div class="invalid-feedback">
+                        <span *ngIf="formVehiculo.get('tipoGas')?.errors?.['required']">
+                            Requiere un Tipo
+                        </span>
+                      </div>
                     </div>
                     <div class="col-md-3">
                       <label class="control-label">Año Vehiculo:</label>
-                      <input type="date" formControlName="modelo" class="form-control" id="modelo" name="modelo"
-                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [ngModel]="objVehiculo !=null ? objVehiculo.placa : ''" />
+                      <input type="number" formControlName="year" class="form-control" id="year" name="year"
+                        placeholder="Ingrese Año" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [class]="esCampoValido('year')"/>
+                        <div class="invalid-feedback">
+                          <span *ngIf="formVehiculo.get('year')?.errors?.['required']">
+                              Requiere un modelo
+                          </span>
+                          <span *ngIf="formVehiculo.get('year')?.errors?.['invalidYear']">
+                            Año fuera de rango
+                          </span>
+                        </div>
                     </div>
                   </div>
                 </div>
@@ -132,12 +162,11 @@
                       Guardar
                   </button>
                   <button type="button" class="btn btn-dark" id="btn-cancel" name="btn-cancel" aria-hidden="true"
-                      (click)="modal.dismiss('Cross click')">
+                  (click)="activeModal.dismiss('Cross click')">
                       Cancelar
                   </button>
               </div>
             </form>
         </div>
-    </ng-template>
-</div>
+
 <!-- Modal -->

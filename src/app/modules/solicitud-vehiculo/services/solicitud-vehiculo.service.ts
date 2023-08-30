@@ -6,6 +6,7 @@ import {IEstados} from "../interfaces/estados.interface";
 import {environment} from "../../../../environments/environment";
 import {map} from "rxjs/operators";
 import {IVehiculos} from "../../vehiculo/interfaces/vehiculo-interface";
+import {IPais} from "../interfaces/pais.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -70,6 +71,11 @@ export class SolicitudVehiculoService {
           }
         );
   }
+
+  public getDepa(): Observable<IPais[]>{
+    return this.http.get<IPais[]>("assets/pais/ubicacionPaisSV2023.json");
+  }
+
 
   public registrarSoliVe(solicitudVehiculo: ISolicitudVehiculo): Observable<ISolicitudVehiculo>{
     return this.http.post<ISolicitudVehiculo>(this.url + `/solicitudvehiculo/insert`, solicitudVehiculo);

@@ -94,9 +94,12 @@
                 placeholder="Escriba o seleccione"
                 [selectOnTab]="true"
                 labelForId="depto"
+                (ngModelChange)="deptoChange($event)"
                 [ngClass]="{ 'select-readonly': titulo=='Detalle'}"
               >
-                <ng-option>Seleccione...</ng-option>
+                <ng-option *ngFor="let dpt of sortItemsByCodigo(departamentos)" [value]="dpt.codigo">
+                  {{dpt.na2}}
+                </ng-option>
               </ng-select>
             </div>
           </div>
@@ -108,9 +111,14 @@
                 placeholder="Escriba o seleccione"
                 [selectOnTab]="true"
                 labelForId="municipio"
+                (ngModelChange)="distChange($event)"
                 [ngClass]="{ 'select-readonly': titulo=='Detalle'}"
+                [notFoundText]="'Datos no econtrados'"
+
               >
-                <ng-option>Seleccione...</ng-option>
+                <ng-option *ngFor="let muni of sortItemsByCodigo(municipios)" [value]="muni.codigo">
+                  {{muni.nam}}
+                </ng-option>
               </ng-select>
             </div>
           </div>
@@ -124,9 +132,12 @@
                 placeholder="Escriba o seleccione"
                 [selectOnTab]="true"
                 labelForId="distrito"
+                (ngModelChange)="muniChange($event)"
                 [ngClass]="{ 'select-readonly': titulo=='Detalle'}"
               >
-                <ng-option>Seleccione...</ng-option>
+                <ng-option *ngFor="let dist of sortItemsByCodigo(distritos)" [value]="dist.codigo">
+                {{dist.nam}}
+                </ng-option>
               </ng-select>
             </div>
           </div>
@@ -141,7 +152,9 @@
                 labelForId="canton"
                 [ngClass]="{ 'select-readonly': titulo=='Detalle'}"
               >
-                <ng-option>Seleccione...</ng-option>
+                <ng-option *ngFor="let cton of sortItemsByCodigo(cantones)" [value]="cton.codigo">
+                  {{cton.nam}}
+                </ng-option>
               </ng-select>
             </div>
           </div>

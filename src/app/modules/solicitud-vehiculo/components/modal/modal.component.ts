@@ -3,8 +3,9 @@ import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {ISolicitudVehiculo} from "../../interfaces/data.interface";
-import {IVehiculos} from "../../../vehiculo/interfaces/vehiculo-interface";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
+import {IPais} from "../../interfaces/pais.interface";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-modal',
@@ -16,8 +17,13 @@ export class ModalComponent implements OnInit {
   @Input() leyenda!: string;
   @Input() titulo!: string;
   @Input() soliVeOd!: ISolicitudVehiculo;
-  vehiculos: IVehiculos[] = [];
-  placasPorTipo = {};
+
+  departamentos!: IPais[];
+  municipios!: IPais[];
+  distritos!: IPais[];
+  cantones!: IPais[];
+
+
 
   formularioSoliVe!: FormGroup;
   pasajeros: any[] = [];
@@ -31,6 +37,7 @@ export class ModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.iniciarFormulario();
+    this.llenarComboDepartamentos();
     this.soliVeService.obtenerVehiculos();
   }
 
@@ -76,6 +83,71 @@ export class ModalComponent implements OnInit {
       padStart(2, '0');
     return `${year}-${mes}-${dia}`;
   }
+
+  llenarComboDepartamentos(){
+    // Reiniciar las selecciones y opciones para los selectores subsiguientes
+    this.formularioSoliVe.get('depto').setValue(null);
+    this.formularioSoliVe.get('municipio').setValue(null);
+    this.formularioSoliVe.get('distrito').setValue(null);
+    this.formularioSoliVe.get('canton').setValue(null);
+    this.municipios = [];
+    this.distritos = [];
+    this.cantones = [];
+    this.soliVeService.getDepa()
+      .pipe(map((dp) => dp.filter((depa)=> depa.codigo.length === 2)))
+      .subscribe((resp) => {
+        this.departamentos = resp;
+      });
+  }
+
+  /**Cargar municipio segun dpto */
+  deptoChange(id: string): void {
+    this.formularioSoliVe.get('municipio').setValue(null);
+    this.formularioSoliVe.get('distrito').setValue(null);
+    this.formularioSoliVe.get('canton').setValue(null);
+    this.municipios = [];
+    this.distritos = [];
+    this.cantones = [];
+
+    // Obtener las opciones correspondientes al departamento seleccionado
+    this.soliVeService.getDepa()
+      .pipe(map(dp => dp.filter(muni => muni.codigo.startsWith(id) && muni.codigo.length === 4)))
+      .subscribe(resp => {
+        this.municipios = resp;
+      });
+  }
+
+  distChange(id: string): void {
+    this.formularioSoliVe.get('distrito').setValue(null);
+    this.formularioSoliVe.get('canton').setValue(null);
+    this.distritos = [];
+    this.cantones = [];
+
+    // Obtener las opciones correspondientes al distrito seleccionado
+    this.soliVeService.getDepa()
+      .pipe(map(dp => dp.filter(disti => disti.codigo.startsWith(id) && disti.codigo.length === 6)))
+      .subscribe(resp => {
+        this.distritos = resp;
+      });
+  }
+
+  muniChange(id: string): void {
+    this.formularioSoliVe.get('canton').setValue(null);
+    this.cantones = [];
+
+    // Obtener las opciones correspondientes al municipio seleccionado
+    this.soliVeService.getDepa()
+      .pipe(map(dp => dp.filter(canton => canton.codigo.startsWith(id) && canton.codigo.length === 8)))
+      .subscribe(resp => {
+        this.cantones = resp;
+        console.log(this.cantones)
+      });
+  }
+
+  sortItemsByCodigo(items: any[]): any[] {
+    return items.sort((a, b) => a.codigo.localeCompare(b.codigo));
+  }
+
 
   // metodo para generar la filas de la tabla
   actualizarFilas() {

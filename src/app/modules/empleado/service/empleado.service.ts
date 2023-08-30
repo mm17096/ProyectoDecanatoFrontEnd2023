@@ -10,12 +10,12 @@ import { map } from "rxjs/operators";
 })
 export class EmpleadoService {
 
+
   private baseUrl: string = environment.baseUrl;
 
   listDepartamentos: IDepartamento[] = [];
   listEmpleados: IEmpleado[] = [];
   listCargos: ICargo[] = [];
-
 
   constructor(private http: HttpClient) { }
 

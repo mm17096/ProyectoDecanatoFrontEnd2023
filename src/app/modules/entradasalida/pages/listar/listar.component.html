@@ -1,0 +1,34 @@
+<div class="container-fluid">
+    <app-page-title title="ENTRADAS Y SALIDAS DE VEHICULOS" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+  
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="row mb-2">
+              <div class="col-sm-4">
+                <div class="search-box me-2 mb-2 d-inline-block">
+                  <div class="position-relative">
+                    <input type="search" class="form-control" placeholder="Buscar..." [(ngModel)]="term">
+                    <i class="bx bx-search-alt search-icon"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-8">
+              <div class="row">
+                <div class="col-sm-9">
+                  <app-modal [leyenda]="'Nuevo'" [titulo]="'Entradas'" [leyendas]="'entrada'" ></app-modal>
+                </div>
+                <div class="col-sm-1">
+                  <app-modal [leyenda]="'Nuevo'" [titulo]="'Salidas'" [leyendas]="'salida'" ></app-modal>
+                </div>
+              </div>
+              </div><!-- end col-->
+            </div>
+            <!-- Table data -->
+            <app-tabla [entraoOd]="entradasalidas" [queryString]="term"></app-tabla>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

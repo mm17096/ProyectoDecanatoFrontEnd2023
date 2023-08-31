@@ -6,59 +6,78 @@
         <div class="modal-body">
             <form (ngSubmit)="guardar()" [formGroup]="formVehiculo" enctype="multipart/form-data" autocomplete="off">
               <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group row m-4">
-                    <div class="col-md-7" *ngIf="titulo !== 'Detalle'">
-                        <div class="form-group row">
-                            <label class="control-label" for="file">Foto: </label>
-                            <input formControlName="file" id="file" type="file" multiple class="form-control"
-                                (change)="onFileSelected($event)" />
+                <div class="col-md-12">
+                  <div class="form-group row m-3">
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <div class="col-md-7" *ngIf="titulo !== 'Detalle'">
+                          <div class="form-group row">
+                              <label class="control-label" for="file">Foto: </label>
+                              <input formControlName="file" id="file" type="file" multiple class="form-control"
+                                  (change)="onFileSelected($event)" />
+                          </div>
                         </div>
-                    </div>
-                    <span class="align-text-top col-md-4" style="display: flex; left: 10%;" *ngIf="titulo === 'Detalle' && !imgTemp"><strong>Foto de Perfil :</strong></span>
-                    <div class="col-md-4" >
-                        <img class="rounded-circle custom-border"  *ngIf="leyenda === titulo && !imgTemp" src="{{objVehiculo.nombrefoto}}" alt="">
+                        <span class="align-text-top col-md-4" style="display: flex; left: 10%;" *ngIf="titulo === 'Detalle' && !imgTemp"><strong>Foto Vehiclo:</strong></span>
+                        <div class="col-md-5 imgcontent">
+                            <img class="rounded-circle custom-border"  *ngIf="leyenda === titulo && !imgTemp" src="{{objVehiculo.nombrefoto}}" alt="">
 
-                        <img class="rounded-circle custom-border" *ngIf="imgTemp" [src]="imgTemp" alt="">
-                    </div>
-                  </div>
-
-                  <div class="form-group row m-4">
-                    <label class="control-label">Modelo:</label>
-                    <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
-                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [class]="esCampoValido('modelo')"/>
-                    <div class="invalid-feedback">
-                      <div class="invalid-feedback">
-                        <span *ngIf="formVehiculo.get('modelo')?.errors?.['required']">
-                            Requiere una Modelo
-                        </span>
-                        <span *ngIf="formVehiculo.get('modelo')?.errors?.['pattern']">
-                            Ingreso solo texto
-                        </span>
+                            <img class="rounded-circle custom-border" *ngIf="imgTemp" [src]="imgTemp" alt="">
+                        </div>
                       </div>
                     </div>
+                    <div class="col-md-6">
 
-                  </div>
-
-                </div>
-
-                <div class="col-md-6">
-                  <div class="form-group row m-4">
-                    <label class="control-label">Número Placa:</label>
-                    <input type="text" formControlName="placa" class="form-control" id="placa" name="placa"
-                        placeholder="Ingrese Placa" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                      <label class="control-label">Número Placa:</label>
+                      <input type="text" formControlName="placa" class="form-control" id="placa" name="placa"
+                        placeholder="Ingrese Placa"
+                        [readonly]="objVehiculo != null && titulo == 'Detalle'"
                         [class]="esCampoValido('placa')"/>
                         <div class="invalid-feedback">
                           <span *ngIf="formVehiculo.get('placa')?.errors?.['required']">
-                              Requiere Placa
+                            Requiere Placa
+                          </span>
+                          <span *ngIf="formVehiculo.get('placa')?.errors?.['pattern']">
+                            Formato no aceptado
                           </span>
                         </div>
-                  </div>
 
-                  <div class="form-group row m-4">
-                    <label class="control-label">Marca:</label>
-                    <input type="text" list="datalistOptions" formControlName="marca" class="form-control" id="marca" name="marca"
+                        <div class="mt-4">
+                          <label class="control-label">Fecha Vencimiento Tarjeta:</label>
+                          <input type="date" formControlName="fecha_tarjeta" class="form-control" id="fecha_tarjeta" name="fecha_tarjeta"
+                            placeholder="Ingrese Placa"
+                            [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                            [class]="esCampoValido('placa')"/>
+                            <div class="invalid-feedback">
+                              <span *ngIf="formVehiculo.get('fecha_tarjeta')?.errors?.['required']">
+                                Requiere Fecha Tarjeta
+                              </span>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group row m-3">
+                    <div class="col-md-6">
+                      <label class="control-label">Modelo:</label>
+                      <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
+                          placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                          [class]="esCampoValido('modelo')"/>
+                      <div class="invalid-feedback">
+                        <div class="invalid-feedback">
+                          <span *ngIf="formVehiculo.get('modelo')?.errors?.['required']">
+                              Requiere una Modelo
+                          </span>
+                          <span *ngIf="formVehiculo.get('modelo')?.errors?.['pattern']">
+                              Ingreso solo texto
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="control-label">Marca:</label>
+                      <input type="text" list="datalistOptions" formControlName="marca" class="form-control" id="marca" name="marca"
                         placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
                         [class]="esCampoValido('marca')"/>
                         <datalist id="datalistOptions">
@@ -76,11 +95,12 @@
                               Ingreso solo texto
                           </span>
                         </div>
+                    </div>
                   </div>
                 </div>
 
                 <div class="col-md-12">
-                  <div class="form-group row m-4">
+                  <div class="form-group row m-3">
                     <div class="col-md-3">
                       <label class="control-label">Número Motor:</label>
                       <input type="text" formControlName="n_motor" class="form-control" id="n_motor" name="n_motor"
@@ -141,7 +161,7 @@
                 </div>
 
                 <div class="col-md-12">
-                  <div class="form-group row m-4">
+                  <div class="form-group row m-3">
                     <div class="col-md-3">
                       <label class="control-label">Capacidad Personas:</label>
                       <input type="number" formControlName="capacidad" class="form-control" id="capacidad" name="capacidad"
@@ -197,8 +217,8 @@
                     </div>
                   </div>
                 </div>
-
               </div>
+
               <div class="d-flex justify-content-end mt-4">
                   <button type="submit" class="btn btn-primary me-2" id="btn-save" name="btn-save">
                       Guardar

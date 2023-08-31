@@ -31,7 +31,7 @@ export const EMAIL_VALIDATE_GENERAL = '^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A
 
 export const TEXTO_CARACTER_ESPECIAL = '^([A-Za-z/-_*.]+[ ]?){1,5}$';
 
-
+export const TEXTO_PLACA = '[a-zA-Z]{1,2}[a-zA-Z0-9]{0,3}[a-zA-Z0-9]{3}';
 
 
 

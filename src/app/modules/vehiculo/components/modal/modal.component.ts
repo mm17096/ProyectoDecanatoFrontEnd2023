@@ -3,7 +3,7 @@ import { IVehiculos } from "../../interfaces/vehiculo-interface";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
-import { INTEGER_VALIDATE, STRING_VALIDATE, TEXTO_CARACTER_ESPECIAL } from "src/app/constants/constants";
+import { INTEGER_VALIDATE, STRING_VALIDATE, TEXTO_CARACTER_ESPECIAL, TEXTO_PLACA } from "src/app/constants/constants";
 import { VehiculoService } from "../../service/vehiculo.service";
 
 @Component({
@@ -17,11 +17,18 @@ export class ModalComponent implements OnInit {
   @Input() titulo!: string;
   @Input() objVehiculo!: IVehiculos;
 
+  //mascara
+  public customPatterns = {
+    'S': { pattern: new RegExp('[A-Za-z]') },
+    'A': { pattern: new RegExp('[A-Za-z0-9]') }
+  };
+
   //var
   formVehiculo!: FormGroup;
   private isInteger: string = INTEGER_VALIDATE;
   private isTexto: string = TEXTO_CARACTER_ESPECIAL;
   private isPalabra:string = STRING_VALIDATE;
+  private isPlaca:string = TEXTO_PLACA;
 
 
   //var para img
@@ -45,7 +52,7 @@ export class ModalComponent implements OnInit {
 
   iniciarFormulario(): FormGroup {
     return this.fb.group({
-      placa: ['', [Validators.required]],
+      placa: ['', [Validators.required, Validators.pattern(this.isPlaca)]],
       modelo: ['', [Validators.required,Validators.pattern(this.isPalabra)]],
       marca: ['', [Validators.required,Validators.pattern(this.isPalabra)]],
       clase: ['', [Validators.required, Validators.pattern(this.isPalabra)]],

@@ -14,15 +14,20 @@
         </thead>
         <tbody>
             <tr *ngFor="let empleado of empleados | filter : queryString; let i = index">
-                <td class="align-middle text-center">{{ empleado.dui }}</td>
+                <td class="align-middle text-center">{{ InsertarGuion(empleado.dui) }}</td>
                 <td class="align-middle text-center">{{ empleado.nombre + ' ' + empleado.apellido }}</td>
                 <td class="align-middle text-center">{{ empleado.cargo.nombreCargo }}</td>
                 <td class="align-middle text-center">{{ empleado.departamento.nombre }}</td>
                 <td class="align-middle text-center">{{ empleado.jefe ? 'SI' : 'NO' }}</td>
                 <td class="align-middle text-center">{{ empleado.correo }}</td>
-                <td class="align-middle text-center">{{ empleado.estado === 8 ? 'Activo' : 'Inactivo' }}</td>
-                <td class="align-middle text-center text-center">
+                <td class="align-middle text-center">
+                    <span class="{{ empleado.estado === 8 ? 'activo' : 'inactivo' }}">
+                        {{ empleado.estado === 8 ? 'Activo' : 'Inactivo' }}
+                    </span>
+                </td>
 
+                <td class="align-middle text-center text-center">
+                    <!-- RetornarNombre(empleado.estado) -->
                     <!--       botones para detalle -->
                     <app-modal [leyenda]="'Detalle'" [titulo]="'Detalle'" [empleadOd]="empleado" [motoristaOd]="false"
                         *ngIf="empleado.cargo.nombreCargo != 'Motorista'"></app-modal>

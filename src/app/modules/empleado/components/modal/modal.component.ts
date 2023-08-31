@@ -327,7 +327,8 @@ export class ModalComponent implements OnInit {
 
   //// metodo par abrir la modal ////
   openModal(content: any) {
-    this.modalService.open(content, { size: 'xl', centered: true });
+    //hacer que la modal no se cierre al precionar fuera de ella -> backdrop: 'static', keyboard: false
+    this.modalService.open(content, { size: 'xl', centered: true, backdrop: 'static', keyboard: false });
   }
 
 

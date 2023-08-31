@@ -12,12 +12,12 @@ import { throwError } from 'rxjs';
 })
 export class EmpleadoService {
 
+
   private baseUrl: string = environment.baseUrl;
 
   listDepartamentos: IDepartamento[] = [];
   listEmpleados: IEmpleado[] = [];
   listCargos: ICargo[] = [];
-
 
   constructor(private http: HttpClient) { }
 

@@ -80,6 +80,25 @@ export const MENU: MenuItem[] = [
               parentId: 8,
           },
       ],
+  },
+   {
+        id: 10,
+        label: "Entradas y Salidas",
+        icon: "dripicons-document-edit",
+        subItems: [
+          {
+            id: 11,
+            label: "VER",
+            link: "/entrasalida/listar",
+            parent: 10,
+          },
+          {
+            id: 12,
+            label: "Documento",
+            link: "/document/vale",
+            parent: 10,
+          }
+        ]
   }
 ];
 

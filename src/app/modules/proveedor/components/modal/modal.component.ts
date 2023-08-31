@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ProveedorService } from "../../services/proveedor.service";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
-import { EMAIL_VALIDATE } from "src/app/constants/constants";
+import { EMAIL_VALIDATE_GENERAL } from "src/app/constants/constants";
 
 @Component({
   selector: "app-modal",
@@ -17,7 +17,16 @@ export class ModalComponent implements OnInit {
 
   formularioGeneral: FormGroup;
 
-  private isEmail: string = EMAIL_VALIDATE;
+  private isEmail: string = EMAIL_VALIDATE_GENERAL;
+
+  alerts = [
+    {
+      id: 1,
+      type: "info",
+      message: " Seleccione un tipo de proveedor y complete los campos obligatorios (*)",
+      show: true,
+    }
+  ];
 
   constructor(
     private modalService: NgbModal,
@@ -37,6 +46,7 @@ export class ModalComponent implements OnInit {
   private iniciarFormulario() {
     return this.fb.group({
       id: [""],
+      tipo: ["1", [Validators.required]],
       nombre: [
         "",
         [
@@ -45,15 +55,13 @@ export class ModalComponent implements OnInit {
           Validators.maxLength(200),
         ],
       ],
-      telefono: ["", [Validators.required]],
-      direccion: [
+      encargado: [
         "",
         [
-          Validators.required,
-          Validators.minLength(2),
-          Validators.maxLength(750),
+          Validators.maxLength(200),
         ],
       ],
+      telefono: ["", [Validators.required]],
       email: [
         "",
         [
@@ -61,6 +69,14 @@ export class ModalComponent implements OnInit {
           Validators.minLength(2),
           Validators.maxLength(100),
           Validators.pattern(this.isEmail),
+        ],
+      ],
+      direccion: [
+        "",
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(750),
         ],
       ],
     });
@@ -89,6 +105,7 @@ export class ModalComponent implements OnInit {
 
   registrando() {
     const proveedor = this.formularioGeneral.value;
+    proveedor.estado = 8;
     this.proveedorService.guardar(proveedor).subscribe({
       next: (resp: any) => {
         this.proveedorService.getProveedors();
@@ -108,6 +125,7 @@ export class ModalComponent implements OnInit {
 
   editando() {
     const proveedor = this.formularioGeneral.value;
+    proveedor.estado = this.proveedor.estado;
     this.proveedorService.modificar(proveedor).subscribe({
       next: (resp: any) => {
         this.proveedorService.getProveedors();
@@ -140,17 +158,31 @@ export class ModalComponent implements OnInit {
 
   getClassOf() {
     if (this.leyenda == "Editar") {
-      return "btn-dark btn-sm";
+      return "btn btn-info btn-sm btn-rounded boton-cuadrado mx-1";
     } else {
       return "btn-primary";
     }
   }
   getIconsOf() {
     if (this.leyenda == "Editar") {
-      return "<i class='bx bx-edit-alt'></i>";
+      return "<i class='mdi mdi-18px mdi-book-edit-outline'></i>";
     } else {
       return "Agregar";
     }
+  }
+
+  CambiarAlert(alert) {
+    alert.show = !alert.show;
+  }
+
+  restaurarAlerts() {
+    this.alerts.forEach((alert) => {
+      alert.show = true;
+    });
+  }
+
+  siMuestraAlertas() {
+    return this.alerts.every((alert) => alert.show);
   }
 
   openModal(content: any, proveedor: IProveedor) {
@@ -161,7 +193,7 @@ export class ModalComponent implements OnInit {
 
     const modalOptions = {
       centered: true,
-      size: "sm", // 'lg' para modal grande, 'sm' para modal pequeño
+      size: "", // 'lg' para modal grande, 'sm' para modal pequeño
       backdrop: "static" as "static", // Configura backdrop como 'static'
     };
     this.modalService.open(content, modalOptions);

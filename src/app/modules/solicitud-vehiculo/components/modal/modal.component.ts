@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
-import {ISolicitudVehiculo} from "../../interfaces/data.interface";
+import {IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 import {IPais} from "../../interfaces/pais.interface";
 import {map} from "rxjs/operators";
@@ -24,23 +24,73 @@ export class ModalComponent implements OnInit {
   cantones!: IPais[];
 
   formularioSoliVe!: FormGroup;
-  pasajeros: any[] = [];
+  pasajeros: IPasajero[] = [];
   username: string = 'Usuario que inicia';
   mostrarTabla: boolean = true;
   mostrarArchivoAdjunto: boolean = false;
   cantidadPersonas: number = 0;
 
+  pasajeroFormControls: FormControl[] = [];
+
+
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router,
               private soliVeService: SolicitudVehiculoService, public activeModal: NgbActiveModal) { }
 
   ngOnInit(): void {
+    console.log(this.leyenda);
+    console.log(this.soliVeOd);
     this.iniciarFormulario();
     this.llenarComboDepartamentos();
     this.soliVeService.obtenerVehiculos();
+    this.detalle(this.leyenda);
   }
 
   get listVehiculos() {
     return this.soliVeService.listVehiculos;
+  }
+
+  detalle(leyenda: string){
+    if (leyenda == 'Detalle'){
+      this.formularioSoliVe.get('fechaSolicitud')
+        .setValue(this.soliVeOd != null ? this.soliVeOd.fechaSolicitud: '');
+      this.formularioSoliVe.get('fechaSalida')
+        .setValue(this.soliVeOd != null ? this.soliVeOd.fechaSalida: '');
+      this.formularioSoliVe.get('unidadSolicitante')
+        .setValue(this.soliVeOd != null ? this.soliVeOd.unidadSolicitante: '');
+      this.formularioSoliVe.get('lugarMision')
+        .setValue(this.soliVeOd != null ? this.soliVeOd.lugarMision: '');
+      this.formularioSoliVe.get('depto')
+        .setValue(this.soliVeOd != null ? this.soliVeOd.unidadSolicitante: '');
+      this.formularioSoliVe.get('direccion')
+        .setValue(this.soliVeOd != null ? this.soliVeOd.direccion: '');
+      this.formularioSoliVe.get('fechaEntrada')
+        .setValue(this.soliVeOd != null ? this.soliVeOd.fechaEntrada: '');
+      this.formularioSoliVe.get('objetivoMision')
+        .setValue(this.soliVeOd != null ? this.soliVeOd.objetivoMision: '');
+      this.formularioSoliVe.get('tipoVehiculo')
+        .setValue(this.soliVeOd != null ? this.soliVeOd.vehiculo.clase: '');
+      this.formularioSoliVe.get('vehiculo')
+        .setValue(this.soliVeOd != null ? this.soliVeOd.vehiculo.placa: '');
+      this.formularioSoliVe.get('cantidadPersonas')
+        .setValue(this.soliVeOd != null ? this.soliVeOd.cantidadPersonas: '');
+      this.formularioSoliVe.get('horaSalida')
+        .setValue(this.soliVeOd != null ? this.soliVeOd.horaSalida: '');
+      this.formularioSoliVe.get('horaRegreso')
+        .setValue(this.soliVeOd != null ? this.soliVeOd.horaEntrada: '');
+      this.formularioSoliVe.get('solicitante')
+        .setValue(this.soliVeOd != null ? this.soliVeOd.solicitante.empleado.nombre+' '
+          + this.soliVeOd.solicitante.empleado.apellido: '');
+
+
+      for (const persona of this.soliVeOd.listaPasajeros) {
+        //console.log(persona);
+        this.pasajeros.push({id: persona.id, nombrePasajero: persona.nombrePasajero});
+
+        const control = new FormControl(this.soliVeOd != null ? persona.nombrePasajero : '');
+        this.pasajeroFormControls.push(control);
+      }
+      console.log(this.pasajeros);
+    }
   }
 
   cargarPlacas(tipoVehiculo: string) {
@@ -58,6 +108,7 @@ export class ModalComponent implements OnInit {
       vehiculo: ['', [Validators.required]],
       objetivoMision: ['', [Validators.required]],
       lugarMision: ['', [Validators.required]],
+      direccion: [''],
       depto: ['', [Validators.required]],
       municipio: ['', [Validators.required]],
       distrito: ['', []],
@@ -67,7 +118,8 @@ export class ModalComponent implements OnInit {
       cantidadPersonas: [1, [Validators.required, Validators.min(1)]],
       nombre: ['', ],
       username: [[this.username],],
-      responsableName: ['', [Validators.required]],
+      solicitante: ['', [Validators.required]],
+      pasajeros: this.fb.array([])
     });
   }
 
@@ -152,7 +204,7 @@ export class ModalComponent implements OnInit {
     if (this.cantidadPersonas > this.pasajeros.length && this.pasajeros.length < 4){
       let cantidaFilasNuevas = this.cantidadPersonas - this.pasajeros.length - 1;
       for (let i = 0; i < cantidaFilasNuevas; i++){
-        this.pasajeros.push({ nombre: ''});
+        this.pasajeros.push({id: "", nombrePasajero: ''});
       }
     } else if (this.cantidadPersonas < this.pasajeros.length) {
       this.pasajeros.splice(this.cantidadPersonas);

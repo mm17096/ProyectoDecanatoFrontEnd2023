@@ -61,10 +61,9 @@ interface IDepartamento {
   estado: number;
 }
 
-interface IPasajero {
-  codigoUsuario: string;
-  nombre: string;
-  apellido: string;
+export interface IPasajero {
+  id: string;
+  nombrePasajero: string;
 }
 
 interface IMotorista {

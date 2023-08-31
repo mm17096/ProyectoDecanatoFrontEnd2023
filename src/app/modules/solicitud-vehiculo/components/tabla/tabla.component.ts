@@ -22,7 +22,7 @@ export class TablaComponent implements OnInit {
     this.selectedData = data; // Almacena los datos del registro seleccionado
     const modalRef = this.modalService.open(ModalComponent, {size:'xl', backdrop: 'static'});
     modalRef.componentInstance.leyenda = leyenda; // Pasa la leyenda al componente modal
-    modalRef.componentInstance.data = data; // Pasa la data al componente modal
+    modalRef.componentInstance.soliVeOd = data; // Pasa la data al componente modal
   }
 
   calcularNumeroCorrelativo(index: number): number {

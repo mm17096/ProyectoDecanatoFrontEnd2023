@@ -4,6 +4,7 @@ import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
 import { INTEGER_VALIDATE, STRING_VALIDATE, TEXTO_CARACTER_ESPECIAL } from "src/app/constants/constants";
+import { VehiculoService } from "../../service/vehiculo.service";
 
 @Component({
   selector: "app-modal",
@@ -20,7 +21,8 @@ export class ModalComponent implements OnInit {
   formVehiculo!: FormGroup;
   private isInteger: string = INTEGER_VALIDATE;
   private isTexto: string = TEXTO_CARACTER_ESPECIAL;
-  private isPalabra:string = STRING_VALIDATE ;
+  private isPalabra:string = STRING_VALIDATE;
+
 
   //var para img
   public imgTemp: string | ArrayBuffer = null;
@@ -31,25 +33,28 @@ export class ModalComponent implements OnInit {
     public activeModal: NgbActiveModal,
     private modalService: NgbModal,
     private fb: FormBuilder,
-    private mensajeService: MensajesService
+    private vehiService:VehiculoService,
+    private mensajeService: MensajesService,
   ) {
     this.formVehiculo = this.iniciarFormulario();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.formVehiculo.patchValue(this.objVehiculo);
+  }
 
   iniciarFormulario(): FormGroup {
     return this.fb.group({
       placa: ['', [Validators.required]],
-      modelo: ['', [Validators.required]],
-      marca: ['', [Validators.required]],
+      modelo: ['', [Validators.required,Validators.pattern(this.isPalabra)]],
+      marca: ['', [Validators.required,Validators.pattern(this.isPalabra)]],
       clase: ['', [Validators.required, Validators.pattern(this.isPalabra)]],
       color: ['',[Validators.required, Validators.pattern(this.isTexto)]],
       year: ['',[Validators.required, Validators.pattern(this.isInteger), this.yearValidator]],
       capacidad: ['',[Validators.required, Validators.min(1)]],
-      ctanque: ['',[Validators.required]],
-      chasis: ['',[Validators.required]],
-      motor: ['', [Validators.required]],
+      capacidadTanque: ['',[Validators.required]],
+      n_chasis: ['',[Validators.required]],
+      n_motor: ['', [Validators.required]],
       tipoGas: ['Diesel',[Validators.required]],
       file: ['',]
     });
@@ -68,6 +73,10 @@ export class ModalComponent implements OnInit {
 
   openModal(content: any) {
     this.modalService.open(content, { size: "xl", centered: true });
+  }
+
+  convertirObjToForm(){
+
   }
 
   guardar() {
@@ -97,12 +106,38 @@ export class ModalComponent implements OnInit {
   }
 
   registrando(){
-    console.log("llega al registarra");
+    const formData = new FormData();
 
-    this.mensajeService.mensajesToast("success", "Registro agregado");
+    const envObj = {
+      codigoVehiculo:  '',
+      placa:           this.formVehiculo.get('placa')?.value,
+      modelo:          this.formVehiculo.get('modelo')?.value,
+      marca:           this.formVehiculo.get('marca')?.value,
+      clase:           this.formVehiculo.get('clase')?.value,
+      color:           this.formVehiculo.get('color')?.value,
+      year:            this.formVehiculo.get('year')?.value,
+      fecha_tarjeta:   '2023-09-05',
+      capacidad:       this.formVehiculo.get('capacidad')?.value,
+      capacidadTanque: this.formVehiculo.get('ctanque')?.value,
+      estado:          7,
+      n_chasis:        this.formVehiculo.get('chasis')?.value,
+      n_motor:         this.formVehiculo.get('motor')?.value,
+      tipo_gas:        this.formVehiculo.get('tipoGas')?.value,
+      nombrefoto:      '',
+      urlfoto:         ''
+    };
+
+    formData.append('vehiculo', new Blob([JSON.stringify(envObj)], {type: 'application/json'}));
+    formData.append('imagen', this.file!);
+
+    this.vehiService.guardarVehiculo(formData).subscribe( reps => {
+      this.mensajeService.mensajesToast("success", "Registro agregado");
+    });
+
+    //cerrar el modal
+    this.modalService.dismissAll();
 
   }
-
 
   preVisualizarImagen(event: any) {
     this.file = event.target.files[0];

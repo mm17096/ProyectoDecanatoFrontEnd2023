@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ModalComponent } from "../../components/modal/modal.component";
+import { VehiculoService } from "../../service/vehiculo.service";
+import { IVehiculos } from "../../interfaces/vehiculo-interface";
 
 @Component({
   selector: "app-listar",
@@ -12,13 +14,23 @@ export class ListarComponent implements OnInit {
   breadCrumbItems: Array<{}>;
   termBusca: string;
 
-  constructor(private serviModal: NgbModal) {}
+  //var
+  vehiculos:IVehiculos[] = [];
+
+  constructor(private vehiService:VehiculoService, private serviModal: NgbModal) {}
 
   ngOnInit(): void {
     this.breadCrumbItems = [
       { label: "Vehiculo" },
       { label: "Listar", active: true },
     ];
+    this.obtenerVehiculos();
+  }
+
+  obtenerVehiculos(){
+    this.vehiService.getVehiculos().subscribe((resp) => {
+      this.vehiculos = resp;
+    });
   }
 
   abrirModal(leyenda: string) {
@@ -27,6 +39,6 @@ export class ListarComponent implements OnInit {
       centered: true,
       backdrop: "static" as "static",
     });
-    modalRef.componentInstance.leyenda = leyenda;
+    modalRef.componentInstance.titulo = leyenda;
   }
 }

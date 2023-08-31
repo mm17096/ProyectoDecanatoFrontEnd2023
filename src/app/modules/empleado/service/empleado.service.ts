@@ -2,57 +2,87 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ICargo, IDepartamento, IEmpleado, IEmpleadoTabala } from '../interface/empleado.interface';
+import { environment } from 'src/environments/environment';
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmpleadoService {
 
-  url = "http://localhost:8081/";
+
+  private baseUrl: string = environment.baseUrl;
+
+  listDepartamentos: IDepartamento[] = [];
+  listEmpleados: IEmpleado[] = [];
+  listCargos: ICargo[] = [];
 
   constructor(private http: HttpClient) { }
 
   //Obtener empleados para la tabla
-  public getEmpleados(): Observable<IEmpleado[]> {
-    return this.http.get<IEmpleado[]>(this.url + "empleado/tabla");
+  getEmpleados() {
+    this.http
+      .get(`${this.baseUrl}/empleado/lista`)
+      .pipe(map((resp: any) => resp.content as IEmpleado[]))
+      .subscribe(
+        (empleados: IEmpleado[]) => {
+          console.log(empleados);
+          this.listEmpleados = empleados; // Actualiza la propiedad listEmpleados
+        },
+        (error) => {
+          console.error("Error al obtener las empleados:", error);
+        }
+      );
   }
 
-  public getCargos(): Observable<ICargo[]> {
-    return this.http.get<ICargo[]>(this.url + "cargo");
+  getCargos() {
+    this.http
+      .get(`${this.baseUrl}/cargo`)
+      .pipe(map((resp: any) => resp as ICargo[]))
+      .subscribe(
+        (cargos: ICargo[]) => {
+          this.listCargos = cargos;
+        },
+        (error) => {
+          console.error("Error al obtener los cargos:", error);
+        }
+      );
   }
 
-  public getDepartamentos(): Observable<IDepartamento[]> {
-    return this.http.get<IDepartamento[]>(this.url + "depto");
+  getDepartamentos() {
+    this.http
+      .get(`${this.baseUrl}/depto`)
+      .pipe(map((resp: any) => resp as IDepartamento[]))
+      .subscribe(
+        (departamentos: IDepartamento[]) => {
+          this.listDepartamentos = departamentos;
+        },
+        (error) => {
+          console.error("Error al obtener los departamentos:", error);
+        }
+      );
   }
 
-  public getCargo(nombre: string): Observable<ICargo> {
-    return this.http.get<ICargo>(this.url + "cargo/name/" + nombre);
+  public postEmpleado(empleado: IEmpleado): Observable<Object> {
+    return this.http.post(`${this.baseUrl}/empleado/insertar`, empleado);
   }
 
-  public postEmpleado(empleado: IEmpleado, file: File): Observable<Object> {
+  public postEmpleadoImagen(empleado: IEmpleado, file: File): Observable<Object> {
     const formData: FormData = new FormData();
     formData.append('imagen', file);
     formData.append('empleado', JSON.stringify(empleado));
-    return this.http.post(this.url + "empleado/insertar", empleado);
+    return this.http.post(`${this.baseUrl}/empleado/insertarconImagen`, formData);
   }
 
-  public putEmpleado(empleado: IEmpleado): Observable<Object> {
-    return this.http.put(this.url + "empleado/modificarsinImagen", empleado);
+  public putEmpleado(empleado: IEmpleado): any {
+    return this.http.put(`${this.baseUrl}/empleado/editar/${empleado.codigoEmpleado}`, empleado);
   }
 
   public putEmpleadoImagen(empleado: IEmpleado, file: File): Observable<Object> {
     const formData: FormData = new FormData();
     formData.append('imagen', file);
     formData.append('empleado', JSON.stringify(empleado));
-    return this.http.put(this.url + "empleado/modificarconImagen", formData);
-  }
-
-  //Cambiar estado de empleado
-  public cambiarEstado(empleadoId: string): Observable<Object> {
-    const formData: FormData = new FormData();
-    formData.append('id', empleadoId);
-
-    return this.http.put(this.url + "empleado/modificarestado", formData);
+    return this.http.put(`${this.baseUrl}/empleado/editarconImagen/${empleado.codigoEmpleado}`, formData);
   }
 
 }

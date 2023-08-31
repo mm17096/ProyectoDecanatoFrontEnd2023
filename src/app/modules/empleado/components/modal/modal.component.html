@@ -64,6 +64,20 @@
                         </div>
                         <!-- fin de foto Empleado -->
 
+                        <!-- Inicio de codigoEmpleado, campo por defecto de la DTO -->
+                        <div *ngIf="empleadOd?.codigoEmpleado">
+                            <input id="codigoEmpleado" name="codigoEmpleado" type="hidden" readonly="true" class="form-control"
+                                formControlName="codigoEmpleado" [ngModel]="empleadOd !=null ? empleadOd.codigoEmpleado : ''" />
+                        </div>
+                        <!-- Inicio de codigoEmpleado, campo por defecto de la DTO -->
+
+                         <!-- Inicio de codigoEmpleado, campo por defecto de la DTO -->
+                        <div *ngIf="empleadOd?.estado">
+                            <input id="estado" name="estado" type="hidden" readonly="true" class="form-control"
+                                formControlName="estado" [ngModel]="empleadOd !=null ? empleadOd.estado : 8" />
+                        </div>
+                        <!-- Inicio de codigoEmpleado, campo por defecto de la DTO -->
+
                         <!-- inicio de dui Empleado -->
                         <div class="form-group row m-4">
                             <label class="control-label">Dui:</label>
@@ -176,7 +190,7 @@
                                 [class]="esCampoValido('cargo')"
                                 [ngModel]="empleadOd != null ? empleadOd.cargo.codigoCargo : ''">
                                 <option value="">Seleccione Cargo</option>
-                                <option *ngFor="let cargodata of cargos" [ngValue]="cargodata.codigoCargo">
+                                <option *ngFor="let cargodata of Cargos" [ngValue]="cargodata.codigoCargo">
                                     {{cargodata.nombreCargo}}
                                 </option>
                             </select>
@@ -202,23 +216,23 @@
                         </div>
                         <!-- fin de licencia Empleado -->
 
-                        <!-- inicio de tipolicencia & fecha de expiracion Empleado -->
+                        <!-- inicio de tipo_licencia & fecha de expiracion Empleado -->
                         <div class="form-group row m-3" *ngIf="esMotorista || motoristaOd">
 
                             <div class="col-md-6">
                                 <label class="control-label">Tipo de Licencia:</label>
-                                <select class="form-control form-select" id="selectTipoLicencia"
-                                    name="selectTipoLicencia" formControlName="tipolicencia"
+                                <select class="form-control form-select" id="selecttipo_licencia"
+                                    name="selecttipo_licencia" formControlName="tipolicencia"
                                     [ngClass]="{'select-readonly': empleadOd != null && titulo == 'Detalle'}"
                                     [class]="esCampoValido('tipolicencia')"
-                                    [ngModel]="empleadOd != null ? empleadOd.tipo_licencia : ''">
+                                    [ngModel]="empleadOd != null ? empleadOd.tipolicencia : ''">
                                     <option value="">Seleccione Tipo</option>
                                     <option value="Liviana">Liviana</option>
                                     <option value="Pesada">Pesada</option>
                                     <option value="Motocicleta">Motocicleta</option>
                                 </select>
                                 <div class="invalid-feedback">
-                                    <span *ngIf="formBuilder.get('tipolicencia')?.errors?.['required']">
+                                    <span *ngIf="formBuilder.get('tipo_licencia')?.errors?.['required']">
                                         Requiere un tipo de licencia</span>
                                 </div>
                             </div>
@@ -230,7 +244,7 @@
                                     id="fechalicencia" name="fechalicencia" placeholder="Ingrese fechalicencia"
                                     [readonly]="empleadOd != null && titulo == 'Detalle'" (change)="validarfecha()"
                                     [class]="esCampoValido('fechalicencia')"
-                                    [ngModel]="empleadOd!=null ? empleadOd.fecha_licencia : ''" />
+                                    [ngModel]="empleadOd!=null ? empleadOd.fechalicencia : ''" />
                                 <div class="invalid-feedback">
                                     <span *ngIf="formBuilder.get('fechalicencia')?.errors?.['required']">
                                         Requiere una fecha de expiracion</span>
@@ -238,7 +252,7 @@
                             </div>
 
                         </div>
-                        <!-- fin de tipolicencia & fecha de expiracion Empleado -->
+                        <!-- fin de tipo_licencia & fecha de expiracion Empleado -->
 
 
                         <!-- inicio de departamento & es jefe Empleado -->
@@ -251,7 +265,7 @@
                                     [class]="esCampoValido('departamento')"
                                     [ngModel]="empleadOd != null ? empleadOd.departamento.codigoDepto : ''">
                                     <option value="">Seleccione Departamento</option>
-                                    <option *ngFor="let departamentodata of departamentos"
+                                    <option *ngFor="let departamentodata of Departamentos"
                                         [ngValue]="departamentodata.codigoDepto">
                                         {{departamentodata.nombre}}
                                     </option>
@@ -266,7 +280,7 @@
                                 <input class="form-check-input" type="checkbox" formControlName="jefe" id="jefe"
                                     name="jefe"
                                     [ngClass]="{'select-readonly-check': empleadOd != null && titulo == 'Detalle'}"
-                                    [ngModel]="empleadOd!=null ? empleadOd.jefe : ''">
+                                    [ngModel]="empleadOd!=null ? empleadOd.jefe : false">
                                 <label class="form-check-label" for="jefe">Es Jefe de
                                     Departamento</label>
                             </div>

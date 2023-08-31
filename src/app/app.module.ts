@@ -24,7 +24,6 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ErrorInterceptor } from './core/helpers/error.interceptor';
 import { JwtInterceptor } from './core/helpers/jwt.interceptor';
 import { FakeBackendInterceptor } from './core/helpers/fake-backend';
-import { ListarComponent } from './modules/asignacion-vales/listar/listar.component';
 import { UIModule } from "./shared/ui/ui.module";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -45,7 +44,6 @@ export function createTranslateLoader(http: HttpClient): any {
     declarations: [
         AppComponent,
         CyptolandingComponent,
-        ListarComponent,
     ],
     bootstrap: [AppComponent],
     providers: [

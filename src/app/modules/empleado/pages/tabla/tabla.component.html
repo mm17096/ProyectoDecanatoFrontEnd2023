@@ -13,7 +13,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let empleado of empleados">
+            <tr *ngFor="let empleado of empleados | filter : queryString; let i = index">
                 <td class="align-middle text-center">{{ empleado.dui }}</td>
                 <td class="align-middle text-center">{{ empleado.nombre + ' ' + empleado.apellido }}</td>
                 <td class="align-middle text-center">{{ empleado.cargo.nombreCargo }}</td>
@@ -37,9 +37,11 @@
                         *ngIf="empleado.cargo.nombreCargo == 'Motorista'"></app-modal>
 
                     <button type="button" class="btn btn-warning btn-sm btn-rounded mx-1"
-                        (click)="cambiarEstado(empleado, empleado.estado)" ngbTooltip="Cambiar a {{empleado.estado === 9 ? 'Activo' : 'Inactivo'}}">
-                        <i [ngClass]="empleado.estado === 8 ? 'mdi mdi-18px mdi-lock-outline' : 'mdi mdi-18px mdi-key-outline'"></i>
-                       <!-- <i class="mdi mdi-account-lock-outline"></i>
+                        (click)="cambiarEstado(empleado, empleado.estado)"
+                        ngbTooltip="Cambiar a {{empleado.estado === 9 ? 'Activo' : 'Inactivo'}}">
+                        <i
+                            [ngClass]="empleado.estado === 8 ? 'mdi mdi-18px mdi-lock-outline' : 'mdi mdi-18px mdi-key-outline'"></i>
+                        <!-- <i class="mdi mdi-account-lock-outline"></i>
                          mdi-account-check-outline -->
                     </button>
                 </td>

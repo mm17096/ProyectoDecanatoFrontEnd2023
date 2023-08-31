@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Component } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ListarComponent } from './listar/listar.component';
+import { EncabezadoComponent } from './pages/encabezado/encabezado.component';
 
-const routes: Routes = [{path: 'asignaciones', component: ListarComponent}];
+const routes: Routes = [{path: 'asignacion', component:EncabezadoComponent  }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

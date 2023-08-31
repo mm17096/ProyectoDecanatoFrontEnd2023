@@ -7,6 +7,7 @@ import { CompraService } from "../../services/compra.service";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
 
 import Swal from "sweetalert2";
+import { IProveedor } from "src/app/modules/proveedor/interfaces/proveedor.interface";
 import { DECIMAL_VALIDATE, INTEGER_VALIDATE } from "src/app/constants/constants";
 
 @Component({
@@ -32,6 +33,22 @@ export class ModalComponent implements OnInit {
   total_compra: number = 0;
 
   aplicarReadOnly: boolean = false;
+
+  alerts = [
+    {
+      id: 1,
+      type: "info",
+      message: " Complete los campos obligatorios (*)",
+      show: true,
+    },
+    {
+      id: 2,
+      type: "warning",
+      message:
+        " Tenga en cuenta que una vez almacenada la información algunas opciones no las podrá modificar y serán datos permanentes.",
+      show: true,
+    },
+  ];
 
   constructor(
     private modalService: NgbModal,
@@ -89,7 +106,14 @@ export class ModalComponent implements OnInit {
           Validators.pattern(this.isInteger),
         ],
       ],
-      fecha: ["", [Validators.required, Validators.pattern(this.isDate)]],
+      fecha_compra: [
+        "",
+        [Validators.required, Validators.pattern(this.isDate)],
+      ],
+      fecha_vencimiento: [
+        "",
+        [Validators.required, Validators.pattern(this.isDate)],
+      ],
       precio_unitario: [
         "",
         [
@@ -110,7 +134,25 @@ export class ModalComponent implements OnInit {
   }
 
   get listProveedor() {
-    return this.compraService.listProveedor;
+    const proveedores: IProveedor[] = [];
+
+    if (this.leyenda == "Editar") {
+      proveedores.push(this.compra.proveedor);
+    }
+
+    this.compraService.listProveedor.forEach((x) => {
+      if (this.leyenda == "Editar") {
+        if (x.estado == 8 && x.id != this.compra.proveedor.id) {
+          proveedores.push(x);
+        }
+      } else {
+        if (x.estado == 8) {
+          proveedores.push(x);
+        }
+      }
+    });
+
+    return proveedores;
   }
 
   getcantidad(): void {
@@ -119,10 +161,10 @@ export class ModalComponent implements OnInit {
 
     if (isNaN(this.cod_inicio) || isNaN(this.cod_fin)) {
       this.cantidad = null;
-    } else if (this.cod_fin == null) {
+    } else if (this.cod_inicio == null || this.cod_fin == null) {
       this.cantidad = null;
     } else {
-      this.cantidad = this.cod_fin - this.cod_inicio;
+      this.cantidad = this.cod_fin + 1 - this.cod_inicio;
     }
     this.formularioGeneral.controls["cantidad"].setValue(this.cantidad);
     this.getTotalCompra();
@@ -140,8 +182,8 @@ export class ModalComponent implements OnInit {
     this.formularioGeneral.controls["total_compra"].setValue(this.total_compra);
   }
 
-  validarfecha() {
-    const inputDate = new Date(this.formularioGeneral.get("fecha").value);
+  validarfecha(fecha: string) {
+    const inputDate = new Date(fecha);
 
     if (inputDate.getFullYear() > 999 && inputDate.getFullYear() < 10000) {
       // La fecha es válida y el año tiene 4 dígitos, puedes continuar
@@ -151,23 +193,55 @@ export class ModalComponent implements OnInit {
     }
   }
 
+  validarCodigos() {
+    const cod_inicio = this.formularioGeneral.get("cod_inicio").value;
+    const cod_fin = this.formularioGeneral.get("cod_fin").value;
+
+    if (cod_inicio > cod_fin) {
+      // Error
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   async guardar() {
     this;
     if (this.formularioGeneral.valid) {
-      if (this.validarfecha()) {
-        if (this.compra?.id) {
-          //Modificar
-          this.editando();
-        } else {
-          if ((await this.mensajesService.mensajesConfirmar()) == true) {
-            // Guardar
-            this.registrando();
+      if (this.validarCodigos()) {
+        if (
+          this.validarfecha(this.formularioGeneral.get("fecha_compra").value)
+        ) {
+          if (
+            this.validarfecha(
+              this.formularioGeneral.get("fecha_vencimiento").value
+            )
+          ) {
+            if (this.compra?.id) {
+              //Modificar
+              this.editando();
+            } else {
+              if ((await this.mensajesService.mensajesConfirmar()) == true) {
+                // Guardar
+                this.registrando();
+              }
+            }
+          } else {
+            this.mensajesService.mensajesToast(
+              "warning",
+              "Año de fecha de vencimiento incorrecto"
+            );
           }
+        } else {
+          this.mensajesService.mensajesToast(
+            "warning",
+            "Año de fecha de compra incorrecto"
+          );
         }
       } else {
         this.mensajesService.mensajesToast(
           "warning",
-          "Año de fecha incorrecto"
+          "El código de inicio debe ser inferior al código de fin"
         );
       }
     } else {
@@ -189,10 +263,6 @@ export class ModalComponent implements OnInit {
       title: "Espere",
       text: "Realizando la acción...",
       icon: "info",
-      didOpen: () => {
-        Swal.showLoading();
-        const b = Swal.getHtmlContainer().querySelector("b");
-      },
       allowOutsideClick: false,
       allowEscapeKey: false,
       showCancelButton: false,
@@ -204,45 +274,25 @@ export class ModalComponent implements OnInit {
         next: (resp: any) => {
           // Cerrar SweetAlert de carga
           Swal.close();
-          resolve(); // Resuelve la promesa sin argumentos
           this.compraService.getCompras();
           this.modalService.dismissAll();
           this.limpiarCampos();
           this.mensajesService.mensajesToast("success", "Registro agregado");
+          resolve(); // Resuelve la promesa sin argumentos
         },
         error: (err) => {
+          // Cerrar SweetAlert de carga
+          Swal.close();
           this.mensajesService.mensajesSweet(
             "error",
             "Ups... Algo salió mal",
             err
           );
-
-          // Cerrar SweetAlert de carga
-          Swal.close();
-          reject(); // Rechaza la promesa
+          reject(err); // Rechaza la promesa con el error
         },
       });
     });
   }
-
-  /*registrando() {
-    const compra = this.formularioGeneral.value;
-    this.compraService.guardar(compra).subscribe({
-      next: (resp: any) => {
-        this.compraService.getCompras();
-        this.mensajesService.mensajesToast("success", "Registro agregado");
-        this.modalService.dismissAll();
-        this.limpiarCampos();
-      },
-      error: (err) => {
-        this.mensajesService.mensajesSweet(
-          "error",
-          "Ups... Algo salió mal",
-          err
-        );
-      },
-    });
-  }*/
 
   editando() {
     const compra = this.formularioGeneral.value;
@@ -283,17 +333,31 @@ export class ModalComponent implements OnInit {
 
   getClassOf() {
     if (this.leyenda == "Editar") {
-      return "btn-dark btn-sm";
+      return "btn btn-info btn-sm btn-rounded boton-cuadrado mx-1";
     } else {
       return "btn-primary";
     }
   }
   getIconsOf() {
     if (this.leyenda == "Editar") {
-      return "<i class='bx bx-edit-alt'></i>";
+      return "<i class='mdi mdi-18px mdi-book-edit-outline'></i>";
     } else {
       return "Agregar";
     }
+  }
+
+  CambiarAlert(alert) {
+    alert.show = !alert.show;
+  }
+
+  restaurarAlerts() {
+    this.alerts.forEach((alert) => {
+      alert.show = true;
+    });
+  }
+
+  siMuestraAlertas() {
+    return this.alerts.every((alert) => alert.show);
   }
 
   openModal(content: any, compra: ICompra) {

@@ -13,12 +13,18 @@ import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { ListaentradasalidaService } from './service/listaentradasalida.service';
+import { ListarComponent } from './pages/listar/listar.component';
+import { TablaComponent } from './pages/tabla/tabla.component';
+import { ModalComponent } from './pages/modal/modal.component';
 
 
 
 @NgModule({
   declarations: [
     VistaentradasalidaComponent,
+    ListarComponent,
+    TablaComponent,
+    ModalComponent,
   ],
   imports: [
     CommonModule,

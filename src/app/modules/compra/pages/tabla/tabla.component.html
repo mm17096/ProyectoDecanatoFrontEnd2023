@@ -4,7 +4,8 @@
       <tr>
         <th class="align-middle">Factura</th>
         <th class="align-middle">Proveedor</th>
-        <th class="align-middle">Fecha</th>
+        <th class="align-middle">Fecha de compra</th>
+        <th class="align-middle">Fecha de vencimiento</th>
         <th class="align-middle">Descripción</th>
         <th class="align-middle">Cod. inicio</th>
         <th class="align-middle">Cod. fin</th>
@@ -22,7 +23,8 @@
           </a>
         </td>
         <td>{{ data.proveedor.nombre }}</td>
-        <td>{{ data.fecha | date : "dd/MM/yyyy h:mm a" }}</td>
+        <td>{{ data.fecha_compra | date : "dd/MM/yyyy h:mm a" }}</td>
+        <td>{{ data.fecha_vencimiento | date : "dd/MM/yyyy" }}</td>
         <td>{{ data.descripcion }}</td>
         <td>{{ data.cod_inicio }}</td>
         <td>{{ data.cod_fin }}</td>

@@ -9,7 +9,7 @@
 </button>
 
 <ng-template #content role="document" let-modal>
-  <div class="modal-header custom-header">
+  <div class="modal-header">
     <h5 class="modal-title mt-0">Proveedor</h5>
     <button
       type="button"
@@ -19,6 +19,26 @@
     ></button>
   </div>
   <div class="modal-body">
+
+    <div *ngIf="leyenda != 'Editar'">
+      <div *ngFor="let alert of alerts">
+        <div
+          class="alert alert-{{ alert.type }} alert-dismissible fade show"
+          role="alert"
+          *ngIf="alert.show"
+        >
+          <strong>Importante!</strong>
+          {{ alert.message }}
+          <button
+            type="button"
+            class="btn-close"
+            (click)="CambiarAlert(alert)"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    </div>
+
     <form
       id="formProveedor"
       name="formProveedor"
@@ -36,8 +56,49 @@
             formControlName="id"
           />
         </div>
-        <div class="mb-4 col-md-12">
-          <label for="nombre">Nombre:</label>
+        <div class="mb-4 mx-auto text-center">
+          <input
+            type="radio"
+            class="btn-check"
+            name="tipo"
+            id="tipo1"
+            autocomplete="off"
+            formControlName="tipo"
+            [class]="esCampoValido('tipo')"
+            [value]="13"
+            checked
+          />
+          <label
+            class="btn btn-outline-dark myconfig2"
+            style="width: 100px"
+            for="tipo1"
+            >Gasolinera</label
+          >
+          <input
+            type="radio"
+            class="btn-check"
+            name="tipo"
+            id="tipo2"
+            autocomplete="off"
+            formControlName="tipo"
+            [class]="esCampoValido('tipo')"
+            [value]="14"
+          />
+          <label
+            class="btn btn-outline-primary myconfig1"
+            for="tipo2"
+            style="width: 100px"
+            >UES</label
+          >
+          <div class="invalid-feedback">
+            <!-- aqui la validación-->
+            <span *ngIf="formularioGeneral.get('tipo')?.errors?.['required']"
+              >Requiere un tipo de proveedor</span
+            >
+          </div>
+        </div>
+        <div class="mb-4 col-md-6">
+          <label for="nombre">Nombre:*</label>
           <input
             id="nombre"
             name="nombre"
@@ -62,8 +123,28 @@
             </span>
           </div>
         </div>
-        <div class="mb-4 col-md-12">
-          <label for="telefono">Teléfono:</label>
+        <div class="mb-4 col-md-6">
+          <label for="encargado">Persona encargada:</label>
+          <input
+            id="encargado"
+            name="encargado"
+            maxlength="200"
+            minlength="2"
+            type="text"
+            class="form-control"
+            placeholder="Encargado"
+            formControlName="encargado"
+          />
+          <div class="invalid-feedback">
+            <span
+              *ngIf="formularioGeneral.get('encargado').hasError('maxlength')"
+            >
+              Limite 200 caracteres
+            </span>
+          </div>
+        </div>
+        <div class="mb-4 col-md-6">
+          <label for="telefono">Teléfono:*</label>
           <input
             id="telefono"
             name="telefono"
@@ -86,39 +167,8 @@
             </span>
           </div>
         </div>
-        <div class="mb-4 col-md-12">
-          <label for="direccion">Dirección:</label>
-          <input
-            id="direccion"
-            name="direccion"
-            maxlength="750"
-            type="text"
-            class="form-control"
-            placeholder="Dirección"
-            formControlName="direccion"
-            [class]="esCampoValido('direccion')"
-          />
-          <div class="invalid-feedback">
-            <span
-              *ngIf="formularioGeneral.get('direccion').hasError('required')"
-            >
-              Requiere una dirección
-            </span>
-            <span
-              *ngIf="formularioGeneral.get('direccion').hasError('minlength')"
-            >
-              Digite más de 2 caracteres
-            </span>
-
-            <span
-              *ngIf="formularioGeneral.get('direccion').hasError('maxlength')"
-            >
-              Limite 750 caracteres
-            </span>
-          </div>
-        </div>
-        <div class="mb-4 col-md-12">
-          <label for="email">Email:</label>
+        <div class="mb-4 col-md-6">
+          <label for="email">Email:*</label>
           <input
             id="email"
             name="email"
@@ -145,10 +195,46 @@
             </span>
           </div>
         </div>
+        <div class="mb-4 col-md-12">
+          <label for="direccion">Dirección:*</label>
+          <textarea
+            row="3"
+            maxlength="750"
+            class="form-control"
+            placeholder="Dirección"
+            formControlName="direccion"
+            [class]="esCampoValido('direccion')"
+          ></textarea>
+          <div class="invalid-feedback">
+            <span
+              *ngIf="formularioGeneral.get('direccion').hasError('required')"
+            >
+              Requiere una dirección
+            </span>
+            <span
+              *ngIf="formularioGeneral.get('direccion').hasError('minlength')"
+            >
+              Digite más de 2 caracteres
+            </span>
+
+            <span
+              *ngIf="formularioGeneral.get('direccion').hasError('maxlength')"
+            >
+              Limite 750 caracteres
+            </span>
+          </div>
+        </div>
       </div>
     </form>
   </div>
   <div class="modal-footer custom-modal">
+    <ng-container *ngIf="alerts">
+      <i
+        class="mdi mdi-18px mdi-help custom-cursor"
+        *ngIf="!siMuestraAlertas()"
+        (click)="restaurarAlerts()"
+      ></i>
+    </ng-container>
     <button class="btn btn-primary" type="submit" form="formProveedor">
       Guardar
     </button>

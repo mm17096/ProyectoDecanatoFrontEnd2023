@@ -9,6 +9,7 @@ import { UIModule } from 'src/app/shared/ui/ui.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { NgxMaskModule } from 'ngx-mask';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { NgxMaskModule } from 'ngx-mask';
     UIModule,
     Ng2SearchPipeModule,
     ReactiveFormsModule,
+    NgbModule,
     NgxMaskModule.forRoot()
   ]
 })

@@ -103,7 +103,7 @@ export class ModalComponent implements OnInit {
       Swal.fire({
         position: 'center',
         title: 'Faltan datos en el formuario',
-        text: 'Complete todos los campos requeridos',
+        text: 'Complete todos los campos requeridos (*)',
         icon: 'warning',
       });
     }

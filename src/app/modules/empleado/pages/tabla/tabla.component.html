@@ -21,9 +21,12 @@
                 <td class="align-middle text-center">{{ empleado.jefe ? 'SI' : 'NO' }}</td>
                 <td class="align-middle text-center">{{ empleado.correo }}</td>
                 <td class="align-middle text-center">
-                    <span class="{{ empleado.estado === 8 ? 'activo' : 'inactivo' }}">
-                        {{ empleado.estado === 8 ? 'Activo' : 'Inactivo' }}
-                    </span>
+                    <h5>
+                        <span
+                            class="{{ empleado.estado === 8 ? 'badge rounded-pill bg-success' : 'badge rounded-pill bg-danger' }}">
+                            {{ empleado.estado === 8 ? 'Activo' : 'Inactivo' }}
+                        </span>
+                    </h5>
                 </td>
 
                 <td class="align-middle text-center text-center">

@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { VistaentradasalidaComponent } from './pages/vistaentradasalida/vistaentradasalida.component';
+import { ListarComponent } from './pages/listar/listar.component';
 
 const routes: Routes = [
-  {path:'vista_es', component: VistaentradasalidaComponent}
+  {path:'listar', component:ListarComponent }
 ];
 
 @NgModule({

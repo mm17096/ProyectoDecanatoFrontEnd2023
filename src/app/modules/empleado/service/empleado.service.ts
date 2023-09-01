@@ -4,18 +4,20 @@ import { Observable } from 'rxjs';
 import { ICargo, IDepartamento, IEmpleado, IEmpleadoTabala } from '../interface/empleado.interface';
 import { environment } from 'src/environments/environment';
 import { map } from "rxjs/operators";
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmpleadoService {
 
+
   private baseUrl: string = environment.baseUrl;
 
   listDepartamentos: IDepartamento[] = [];
   listEmpleados: IEmpleado[] = [];
   listCargos: ICargo[] = [];
-
 
   constructor(private http: HttpClient) { }
 
@@ -61,6 +63,22 @@ export class EmpleadoService {
           console.error("Error al obtener los departamentos:", error);
         }
       );
+  }
+
+//Obtener estado por ID
+  ObtenerestadoporID(id): any {
+    return new Promise(resolve => {
+      this.http.get(`${this.baseUrl}/estados/PorID/${id}`).subscribe(data => {
+        return resolve(data);
+      }, err => {
+        console.log(err);
+      });
+
+    });
+  }
+
+  getEstadoNombre(nombre: string): Observable<Object> {
+    return this.http.get(`${this.baseUrl}/estados/PorID/${nombre}`);
   }
 
   public postEmpleado(empleado: IEmpleado): Observable<Object> {

@@ -8,7 +8,10 @@ import { MensajesService } from "src/app/shared/global/mensajes.service";
 
 import Swal from "sweetalert2";
 import { IProveedor } from "src/app/modules/proveedor/interfaces/proveedor.interface";
-import { DECIMAL_VALIDATE, INTEGER_VALIDATE } from "src/app/constants/constants";
+import {
+  DECIMAL_VALIDATE,
+  INTEGER_VALIDATE,
+} from "src/app/constants/constants";
 
 @Component({
   selector: "app-modal",
@@ -369,7 +372,8 @@ export class ModalComponent implements OnInit {
     const modalOptions = {
       centered: true,
       size: "lg", // 'lg' para modal grande, 'sm' para modal pequeño
-      backdrop: "static" as "static", // Configura backdrop como 'static'
+      backdrop: "static" as "static",
+      keyboard: false, // Configura backdrop como 'static'
     };
     this.modalService.open(content, modalOptions);
   }

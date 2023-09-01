@@ -10,7 +10,7 @@
 
 <ng-template #content role="document" let-modal>
   <div class="modal-header">
-    <h5 class="modal-title mt-0">Compra de vales</h5>
+    <h5 class="modal-title mt-0">{{ leyenda }} compra de vales</h5>
     <div class="btn-alerta" *ngIf="alerts">
       <i
         class="mdi mdi-18px mdi-lightbulb-on-outline custom-cursor"
@@ -27,24 +27,22 @@
     ></button>
   </div>
   <div class="modal-body">
-    <div *ngIf="leyenda != 'Editar'">
-      <div *ngFor="let alert of alerts">
-        <div
-          class="alert alert-{{ alert.type }} alert-dismissible fade show"
-          role="alert"
-          *ngIf="alert.show"
-        >
-          <strong>{{
-            alert.type === "info" ? "Importante!" : "Precaución!"
-          }}</strong>
-          {{ alert.message }}
-          <button
-            type="button"
-            class="btn-close"
-            (click)="CambiarAlert(alert)"
-            aria-label="Close"
-          ></button>
-        </div>
+    <div *ngFor="let alert of alerts">
+      <div
+        class="alert alert-{{ alert.type }} alert-dismissible fade show"
+        role="alert"
+        *ngIf="alert.show"
+      >
+        <strong>{{
+          alert.type === "info" ? "Importante!" : "Precaución!"
+        }}</strong>
+        {{ alert.message }}
+        <button
+          type="button"
+          class="btn-close"
+          (click)="CambiarAlert(alert)"
+          aria-label="Close"
+        ></button>
       </div>
     </div>
 
@@ -66,7 +64,9 @@
           />
         </div>
         <div class="mb-4 col-md-6">
-          <label for="proveedor">Proveedor:<span class="text-danger">*</span></label>
+          <label for="proveedor"
+            >Proveedor:<span class="text-danger">*</span></label
+          >
 
           <ng-select
             formControlName="proveedor"
@@ -89,7 +89,9 @@
           </div>
         </div>
         <div class="mb-4 col-md-6">
-          <label for="factura">Factura:<span class="text-danger">*</span></label>
+          <label for="factura"
+            >Factura:<span class="text-danger">*</span></label
+          >
           <input
             id="factura"
             name="factura"
@@ -109,7 +111,9 @@
           </div>
         </div>
         <div class="mb-4 col-md-6">
-          <label for="cod_inicio">Código de inicio:<span class="text-danger">*</span></label>
+          <label for="cod_inicio"
+            >Código de inicio:<span class="text-danger">*</span></label
+          >
           <input
             id="cod_inicio"
             name="cod_inicio"
@@ -140,7 +144,9 @@
           </div>
         </div>
         <div class="mb-4 col-md-6">
-          <label for="cod_fin">Código de fin:<span class="text-danger">*</span></label>
+          <label for="cod_fin"
+            >Código de fin:<span class="text-danger">*</span></label
+          >
           <input
             id="cod_fin"
             name="cod_inicio"
@@ -198,7 +204,9 @@
           </div>
         </div>
         <div class="mb-4 col-md-6">
-          <label for="fecha_compra">Fecha de compra:<span class="text-danger">*</span></label>
+          <label for="fecha_compra"
+            >Fecha de compra:<span class="text-danger">*</span></label
+          >
           <input
             id="fecha_compra"
             name="fecha_compra"
@@ -224,7 +232,11 @@
           </div>
         </div>
         <div class="mb-4 col-md-6">
-          <label for="fecha_vencimiento">Fecha de vencimiento de vales:<span class="text-danger">*</span></label>
+          <label for="fecha_vencimiento"
+            >Fecha de vencimiento de vales:<span class="text-danger"
+              >*</span
+            ></label
+          >
           <input
             id="fecha_vencimiento"
             name="fecha_vencimiento"
@@ -250,7 +262,9 @@
           </div>
         </div>
         <div class="mb-4 col-md-6">
-          <label for="precio_unitario">Precio unitario ($):<span class="text-danger">*</span></label>
+          <label for="precio_unitario"
+            >Precio unitario ($):<span class="text-danger">*</span></label
+          >
           <input
             id="precio_unitario"
             name="precio_unitario"
@@ -314,7 +328,9 @@
           </div>
         </div>
         <div class="mb-4 col-md-6">
-          <label for="descripcion">Descripción:<span class="text-danger">*</span></label>
+          <label for="descripcion"
+            >Descripción:<span class="text-danger">*</span></label
+          >
           <textarea
             row="3"
             maxlength="750"
@@ -341,11 +357,11 @@
     </form>
   </div>
   <div class="modal-footer custom-modal">
-    <button class="btn btn-primary" type="submit" form="formCompra">
-      Guardar
+    <button class="btn btn-primary w-sm me-2" type="submit" form="formCompra">
+      {{ leyenda !== "Editar" ? "Guardar" : "Modificar" }}
     </button>
-    <button class="btn btn-dark" (click)="modal.close('Close click')">
-      Cerrar
+    <button class="btn btn-dark w-sm" (click)="modal.close('Close click')">
+      {{ leyenda !== "Editar" ? "Cerrar" : "Cancelar" }}
     </button>
   </div>
 </ng-template>

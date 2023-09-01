@@ -10,7 +10,7 @@
 
 <ng-template #content role="document" let-modal>
   <div class="modal-header">
-    <h5 class="modal-title mt-0">Proveedor</h5>
+    <h5 class="modal-title mt-0">{{ leyenda }} Proveedor</h5>
 
     <div class="btn-alerta" *ngIf="alerts">
       <i
@@ -28,22 +28,20 @@
     ></button>
   </div>
   <div class="modal-body">
-    <div *ngIf="leyenda != 'Editar'">
-      <div *ngFor="let alert of alerts">
-        <div
-          class="alert alert-{{ alert.type }} alert-dismissible fade show"
-          role="alert"
-          *ngIf="alert.show"
-        >
-          <strong>Importante!</strong>
-          {{ alert.message }}
-          <button
-            type="button"
-            class="btn-close"
-            (click)="CambiarAlert(alert)"
-            aria-label="Close"
-          ></button>
-        </div>
+    <div *ngFor="let alert of alerts">
+      <div
+        class="alert alert-{{ alert.type }} alert-dismissible fade show"
+        role="alert"
+        *ngIf="alert.show"
+      >
+        <strong>Importante!</strong>
+        {{ alert.message }}
+        <button
+          type="button"
+          class="btn-close"
+          (click)="CambiarAlert(alert)"
+          aria-label="Close"
+        ></button>
       </div>
     </div>
 
@@ -152,7 +150,9 @@
           </div>
         </div>
         <div class="mb-4 col-md-6">
-          <label for="telefono">Teléfono:<span class="text-danger">*</span></label>
+          <label for="telefono"
+            >Teléfono:<span class="text-danger">*</span></label
+          >
           <input
             id="telefono"
             name="telefono"
@@ -204,7 +204,9 @@
           </div>
         </div>
         <div class="mb-4 col-md-12">
-          <label for="direccion">Dirección:<span class="text-danger">*</span></label>
+          <label for="direccion"
+            >Dirección:<span class="text-danger">*</span></label
+          >
           <textarea
             row="3"
             maxlength="750"
@@ -236,11 +238,15 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" type="submit" form="formProveedor">
-      Guardar
+    <button
+      class="btn btn-primary w-sm me-2"
+      type="submit"
+      form="formProveedor"
+    >
+      {{ leyenda !== "Editar" ? "Guardar" : "Modificar" }}
     </button>
-    <button class="btn btn-dark" (click)="modal.close('Close click')">
-      Cerrar
+    <button class="btn btn-dark w-sm" (click)="modal.close('Close click')">
+      {{ leyenda !== "Editar" ? "Cerrar" : "Cancelar" }}
     </button>
   </div>
 </ng-template>

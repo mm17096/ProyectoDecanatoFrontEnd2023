@@ -25,20 +25,16 @@
 
             <div class="col-sm-8">
               <div class="text-sm-end">
-               <app-modal [leyenda]="'Nueva Compra'"></app-modal>
+                <app-modal [leyenda]="'Agregar'"></app-modal>
               </div>
             </div>
             <!-- end col-->
           </div>
           <!-- Table data -->
 
-          <app-tabla
-            [compras]="listDatos"
-            [queryString]="term"
-          ></app-tabla>
+          <app-tabla [compras]="listDatos" [queryString]="term"></app-tabla>
         </div>
       </div>
     </div>
   </div>
 </div>
-

@@ -20,6 +20,7 @@ export class TablaComponent implements OnInit {
   cambio: string;
 
   formularioEmpleado: FormGroup;
+  estado: string;
 
   constructor(
     private empleadosService: EmpleadoService,
@@ -31,6 +32,17 @@ export class TablaComponent implements OnInit {
 
   ngOnInit() { }
 
+
+
+
+
+/*   public static function desencriptacion($string)
+    {
+        $key = hash('sha256', SECRET_KEY);
+        $iv = substr(hash('sha256', SECRET_IV), 0, 16);
+        $contra = openssl_decrypt(base64_decode($string), METHOD, $key, 0, $iv);
+        return $contra;
+    } */
 
   private Iniciarformulario(): FormGroup {
     return this.fb.group({
@@ -125,5 +137,18 @@ export class TablaComponent implements OnInit {
     this.router.onSameUrlNavigation = "reload";
     this.router.navigate([currentUrl]);
   }
+
+  // Método para agregar guion al número del DUI
+  InsertarGuion(dui: string): string {
+    return dui.slice(0, -1) + '-' + dui.slice(-1);
+  }
+
+  /*   RetornarNombre(id: number): string {
+      let estado: string = "";
+      this.empleadosService.ObtenerestadoporID(id).then(async result => {
+        estado = result.nombreEstado;
+      });
+      return estado;
+    } */
 
 }

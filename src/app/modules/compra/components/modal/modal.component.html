@@ -89,9 +89,7 @@
           </div>
         </div>
         <div class="mb-4 col-md-6">
-          <label for="factura"
-            >Factura: <span class="text-danger">*</span></label
-          >
+          <label for="factura">Factura:</label>
           <input
             id="factura"
             name="factura"
@@ -100,15 +98,7 @@
             class="form-control"
             placeholder="Factura"
             formControlName="factura"
-            [class]="esCampoValido('factura')"
           />
-          <div class="invalid-feedback">
-            <span
-              *ngIf="formularioGeneral.get('factura')?.errors?.['required']"
-            >
-              Requiere una factura</span
-            >
-          </div>
         </div>
         <div class="mb-4 col-md-6">
           <label for="cod_inicio"
@@ -175,7 +165,7 @@
           </div>
         </div>
         <div class="mb-4 col-md-6">
-          <label for="cantidad">Cantidad de vales:</label>
+          <label for="cantidad">Cantidad de vales: <span class="text-danger">*</span></label>
           <input
             id="cantidad"
             name="cantidad"
@@ -233,9 +223,8 @@
         </div>
         <div class="mb-4 col-md-6">
           <label for="fecha_vencimiento"
-            >Fecha de vencimiento de vales: <span class="text-danger"
-              >*</span
-            ></label
+            >Fecha de vencimiento de vales:
+            <span class="text-danger">*</span></label
           >
           <input
             id="fecha_vencimiento"
@@ -297,7 +286,7 @@
           </div>
         </div>
         <div class="mb-4 col-md-6">
-          <label for="total_compra">Total compra ($):</label>
+          <label for="total_compra">Total compra ($): <span class="text-danger">*</span></label>
           <input
             id="total_compra"
             name="total_compra"

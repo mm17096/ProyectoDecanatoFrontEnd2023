@@ -39,14 +39,14 @@ export class ModalComponent implements OnInit {
       id: 1,
       type: "info",
       message: " Complete los campos obligatorios (*)",
-      show: true,
+      show: false,
     },
     {
       id: 2,
       type: "warning",
       message:
         " Tenga en cuenta que una vez almacenada la información algunas opciones no las podrá modificar y serán datos permanentes.",
-      show: true,
+      show: false,
     },
   ];
 

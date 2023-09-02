@@ -196,8 +196,8 @@
                            [selectOnTab]="true"
                            labelForId="vehiculo"
                 >
-                  <ng-option *ngFor="let vehiculo of listVehiculos"
-                             [value]="vehiculo.placa">{{vehiculo.placa}}</ng-option>
+                  <ng-option *ngFor="let vehiculo of placas"
+                             [value]="vehiculo.codigoVehiculo">{{vehiculo.placa}}</ng-option>
                 </ng-select>
               </ng-template>
 
@@ -246,7 +246,7 @@
             <div class="mt-2">
               <label for="hora-regreso">Hora de regreso</label>
               <input type="time" id="hora-regreso"
-                     class="form-control" formControlName="horaRegreso"
+                     class="form-control" formControlName="horaEntrada"
                      [readOnly]="leyenda == 'Detalle' && soliVeOd != null">
             </div>
           </div>

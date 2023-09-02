@@ -67,17 +67,25 @@ export class SolicitudVehiculoService {
           this.listVehiculos = vehiculo;
         },
         (error) => {
-          console.log("Error al obtener las solicitudes de vehiculo", error);
+          console.log("Error al obtener los vehiculos", error);
           }
         );
   }
+
+  filtroPlacasVehiculo(clase: string): Observable<IVehiculos[]> {
+    return this.http
+      .get(`${this.url}/api/vehiculo/clase/${clase}`)
+      .pipe(map((resp: any) => resp as IVehiculos[]));
+  }
+
 
   public getDepa(): Observable<IPais[]>{
     return this.http.get<IPais[]>("assets/pais/ubicacionPaisSV2023.json");
   }
 
 
-  public registrarSoliVe(solicitudVehiculo: ISolicitudVehiculo): Observable<ISolicitudVehiculo>{
-    return this.http.post<ISolicitudVehiculo>(this.url + `/solicitudvehiculo/insert`, solicitudVehiculo);
+  registrarSoliVe(solicitudVehiculo: ISolicitudVehiculo){
+    console.log("regist", solicitudVehiculo);
+    return this.http.post<ISolicitudVehiculo>( `${this.url}/solicitudvehiculo/insert`, solicitudVehiculo);
   }
 }

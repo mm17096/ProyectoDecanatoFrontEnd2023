@@ -4,9 +4,12 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
-import {IPais} from "../../interfaces/pais.interface";
+
 import {map} from "rxjs/operators";
 import Swal from "sweetalert2";
+import {IPais} from "../../interfaces/pais.interface";
+import {MensajesService} from "../../../../shared/global/mensajes.service";
+import {IVehiculos} from "../../../vehiculo/interfaces/vehiculo-interface";
 
 @Component({
   selector: 'app-modal',
@@ -24,6 +27,8 @@ export class ModalComponent implements OnInit {
   distritos!: IPais[];
   cantones!: IPais[];
 
+  placas!: IVehiculos[];
+
   formularioSoliVe!: FormGroup;
   pasajeros: IPasajero[] = [];
   username: string = 'Usuario que inicia';
@@ -35,7 +40,8 @@ export class ModalComponent implements OnInit {
 
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router,
-              private soliVeService: SolicitudVehiculoService, public activeModal: NgbActiveModal) { }
+              private soliVeService: SolicitudVehiculoService, public activeModal: NgbActiveModal,
+              private mensajesService: MensajesService) { }
 
   ngOnInit(): void {
     console.log(this.leyenda);
@@ -52,6 +58,9 @@ export class ModalComponent implements OnInit {
 
   detalle(leyenda: string){
     if (leyenda == 'Detalle'){
+
+      const solicitudVehiculo = this.soliVeOd;
+
       this.formularioSoliVe.get('fechaSolicitud')
         .setValue(this.soliVeOd != null ? this.soliVeOd.fechaSolicitud: '');
       this.formularioSoliVe.get('fechaSalida')
@@ -76,7 +85,7 @@ export class ModalComponent implements OnInit {
         .setValue(this.soliVeOd != null ? this.soliVeOd.cantidadPersonas: '');
       this.formularioSoliVe.get('horaSalida')
         .setValue(this.soliVeOd != null ? this.soliVeOd.horaSalida: '');
-      this.formularioSoliVe.get('horaRegreso')
+      this.formularioSoliVe.get('horaEntrada')
         .setValue(this.soliVeOd != null ? this.soliVeOd.horaEntrada: '');
       this.formularioSoliVe.get('solicitante')
         .setValue(this.soliVeOd != null ? this.soliVeOd.solicitante.empleado.nombre+' '
@@ -154,42 +163,113 @@ export class ModalComponent implements OnInit {
 
     solicitudVehiculo.direccion = nombreDepartamento+', '+nombreMunicipio+', '+
     nombreDistrito+', '+nombreCanton;
-    /* fin de la direccion */
+    solicitudVehiculo.solicitante.codigoUsuario = '4937c750-13f7-4041-990a-f2de7fdf8cae';
 
-    console.log(solicitudVehiculo);
+    /* fin de la direccion */
+    //console.log(solicitudVehiculo);
+    this.soliVeService.registrarSoliVe(solicitudVehiculo).subscribe( (resp: any) => {
+      if (resp) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          //timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        });
+
+        Toast.fire({
+          icon: 'success',
+          text: 'Almacenamiento exitoso'
+        });
+
+        this.formularioSoliVe.reset();
+        this.listVehiculos;
+        this.modalService.dismissAll();
+      }
+    },
+      (err: any) => {
+        this.mensajesService.mensajesSweet(
+          "error",
+          "Ups... Algo salió mal",
+          err
+        )
+      });
   }
 
 
   editarSoliVe(){}
 
   cargarPlacas(tipoVehiculo: string) {
-    const vehiculoSeleccionado = this.listVehiculos.find(vehiculo => vehiculo.clase === tipoVehiculo);
-    this.formularioSoliVe.get('vehiculo')?.setValue(vehiculoSeleccionado?.placa || '');
+    this.soliVeService.filtroPlacasVehiculo(tipoVehiculo).subscribe(
+      (vehiculosData: IVehiculos[]) => {
+        if (vehiculosData && vehiculosData.length > 0) {
+          this.placas = vehiculosData;
+        } else {
+          console.error('No se recibieron datos válidos de vehículos desde el backend.');
+        }
+      },
+      (error: any) => {
+        console.error('Error al obtener opciones de vehículos desde el backend:', error);
+      }
+    );
   }
 
+
   iniciarFormulario(){
-    this.formularioSoliVe = this.fb.group({
-      fechaSolicitud: [this.obtenerFechaActual(new Date()), []],
-      fechaSalida: ['', []],
-      fechaEntrada: ['', []],
-      unidadSolicitante: ['Departamento de Informática', []],
-      tipoVehiculo: ['', []],
-      vehiculo: ['', []],
-      objetivoMision: ['', []],
-      lugarMision: ['', []],
-      direccion: [''],
-      depto: ['', []],
-      municipio: ['', []],
-      distrito: ['', []],
-      canton: ['', []],
-      horaSalida: ['', []],
-      horaRegreso: ['', []],
-      cantidadPersonas: [1, [ Validators.min(1)]],
-      nombre: ['', ],
-      username: [[this.username],],
-      solicitante: ['', []],
-      pasajeros: this.fb.array([])
-    });
+    if (this.leyenda == 'Detalle' && this.soliVeOd != null){
+      this.formularioSoliVe = this.fb.group({
+        fechaSolicitud: [this.obtenerFechaActual(new Date()), []],
+        fechaSalida: ['', []],
+        fechaEntrada: ['', []],
+        unidadSolicitante: ['Informática', []],
+        tipoVehiculo: ['', []],
+        vehiculo: ['', []],
+        objetivoMision: ['', []],
+        lugarMision: ['', []],
+        direccion: [''],
+        depto: ['', []],
+        municipio: ['', []],
+        distrito: ['', []],
+        canton: ['', []],
+        horaSalida: ['', []],
+        horaEntrada: ['', []],
+        cantidadPersonas: [1, [ Validators.min(1)]],
+        nombre: ['', ],
+        username: [[this.username],],
+        solicitante: ['', []], // Aquí definimos el FormControl para codigoUsuario
+        pasajeros: this.fb.array([])
+      });
+    }else{
+      this.formularioSoliVe = this.fb.group({
+        fechaSolicitud: [this.obtenerFechaActual(new Date()), []],
+        fechaSalida: ['', []],
+        fechaEntrada: ['', []],
+        unidadSolicitante: ['Informática', []],
+        tipoVehiculo: ['', []],
+        vehiculo: ['', []],
+        objetivoMision: ['', []],
+        lugarMision: ['', []],
+        direccion: [''],
+        depto: ['', []],
+        municipio: ['', []],
+        distrito: ['', []],
+        canton: ['', []],
+        horaSalida: ['', []],
+        horaEntrada: ['', []],
+        cantidadPersonas: [1, [ Validators.min(1)]],
+        nombre: ['', ],
+        username: [[this.username],],
+        solicitante: this.fb.group({
+          codigoUsuario: ['', []]
+        }),
+        pasajeros: this.fb.array([])
+      });
+    }
+
   }
 
   //// metodo para validar el campo si es valido o no ////

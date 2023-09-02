@@ -7,8 +7,9 @@
   </button>
 </div>
 <div class="modal-body">
-  <form [formGroup]="formularioSoliVe">
-    <div class="row">
+  <form [formGroup]="formularioSoliVe"
+        (ngSubmit)="guardar()">
+    <div class="row mb-4">
       <div class="col-md-5">
         <div class="row">
 
@@ -335,14 +336,14 @@
 
       </div>
     </div>
+    <div class="d-flex justify-content-end mt-4">
+      <button type="submit" class="btn btn-primary me-2" id="btn-save" name="btn-save"
+              *ngIf="leyenda == 'Nueva'">
+        Enviar
+      </button>
+      <button type="button" class="btn btn-dark" id="btn-cancel" name="btn-cancel"
+              aria-hidden="true" (click)="activeModal.close('Close click')">Cancelar</button>
+    </div>
   </form>
-</div>
-<div class="modal-footer">
-  <button type="submit" class="btn btn-primary me-2" id="btn-save" name="btn-save"
-  *ngIf="leyenda == 'Nueva'">
-    Enviar
-  </button>
-  <button type="button" class="btn btn-dark" id="btn-cancel" name="btn-cancel"
-          aria-hidden="true" (click)="activeModal.close('Close click')">Cancelar</button>
 </div>
 <!-- Modal -->

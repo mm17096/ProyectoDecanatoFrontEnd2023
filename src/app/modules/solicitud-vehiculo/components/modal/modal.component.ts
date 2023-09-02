@@ -6,6 +6,7 @@ import {IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 import {IPais} from "../../interfaces/pais.interface";
 import {map} from "rxjs/operators";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-modal',
@@ -93,6 +94,74 @@ export class ModalComponent implements OnInit {
     }
   }
 
+  guardar(){
+    if (this.formularioSoliVe.valid){
+      if (this.soliVeOd != null){
+        this.editarSoliVe();
+      }else{
+        this.registrarSoliVe();
+      }
+    } else {
+      Swal.fire({
+        position: 'center',
+        title: 'Faltan datos en el formuario',
+        text: 'Complete todos los campos requeridos',
+        icon: 'warning',
+      });
+    }
+  }
+
+  registrarSoliVe() {
+    const solicitudVehiculo = this.formularioSoliVe.value;
+
+    /* para la direccion */
+    let nombreDepartamento;
+    let nombreMunicipio;
+    let nombreDistrito;
+    let nombreCanton;
+
+    const codigoDepartamentoSeleccionado = this.formularioSoliVe.get('depto').value;
+    const codigoMunicipioSeleccionado = this.formularioSoliVe.get('municipio').value;
+    const codigoDistritoSeleccionado = this.formularioSoliVe.get('distrito').value;
+    const codigoCantonSeleccionado = this.formularioSoliVe.get('canton').value;
+
+    // Busca el objeto correspondiente al código seleccionado
+    const departamentoSeleccionado = this.departamentos.find(
+      dpt => dpt.codigo === codigoDepartamentoSeleccionado
+    );
+    const municipioSeleccionado = this.municipios.find(
+      muni => muni.codigo === codigoMunicipioSeleccionado
+    );
+    const distritoSeleccionado = this.distritos.find(
+      dist => dist.codigo === codigoDistritoSeleccionado
+    );
+    const cantonSeleccionado = this.cantones.find(
+      ctn => ctn.codigo === codigoCantonSeleccionado
+    );
+
+    if (departamentoSeleccionado) {
+      nombreDepartamento = departamentoSeleccionado.nam;
+    }
+    if (municipioSeleccionado){
+      nombreMunicipio = municipioSeleccionado.nam;
+    }
+    if (distritoSeleccionado){
+      nombreDistrito = distritoSeleccionado.nam;
+    }
+    if (cantonSeleccionado){
+      nombreCanton = cantonSeleccionado.nam;
+    }
+
+    solicitudVehiculo.direccion = nombreDepartamento+', '+nombreMunicipio+', '+
+    nombreDistrito+', '+nombreCanton;
+    /* fin de la direccion */
+
+    console.log(solicitudVehiculo);
+  }
+
+
+  editarSoliVe(){}
+
   cargarPlacas(tipoVehiculo: string) {
     const vehiculoSeleccionado = this.listVehiculos.find(vehiculo => vehiculo.clase === tipoVehiculo);
     this.formularioSoliVe.get('vehiculo')?.setValue(vehiculoSeleccionado?.placa || '');
@@ -100,27 +169,34 @@ export class ModalComponent implements OnInit {
 
   iniciarFormulario(){
     this.formularioSoliVe = this.fb.group({
-      fechaSolicitud: [this.obtenerFechaActual(new Date()), [Validators.required]],
-      fechaSalida: ['', [Validators.required]],
-      fechaEntrada: ['', [Validators.required]],
-      unidadSolicitante: ['Departamento de Informática', [Validators.required]],
-      tipoVehiculo: ['', [Validators.required]],
-      vehiculo: ['', [Validators.required]],
-      objetivoMision: ['', [Validators.required]],
-      lugarMision: ['', [Validators.required]],
+      fechaSolicitud: [this.obtenerFechaActual(new Date()), []],
+      fechaSalida: ['', []],
+      fechaEntrada: ['', []],
+      unidadSolicitante: ['Departamento de Informática', []],
+      tipoVehiculo: ['', []],
+      vehiculo: ['', []],
+      objetivoMision: ['', []],
+      lugarMision: ['', []],
       direccion: [''],
-      depto: ['', [Validators.required]],
-      municipio: ['', [Validators.required]],
+      depto: ['', []],
+      municipio: ['', []],
       distrito: ['', []],
-      canton: ['', [Validators.required]],
-      horaSalida: ['', [Validators.required]],
-      horaRegreso: ['', [Validators.required]],
-      cantidadPersonas: [1, [Validators.required, Validators.min(1)]],
+      canton: ['', []],
+      horaSalida: ['', []],
+      horaRegreso: ['', []],
+      cantidadPersonas: [1, [ Validators.min(1)]],
       nombre: ['', ],
       username: [[this.username],],
-      solicitante: ['', [Validators.required]],
+      solicitante: ['', []],
       pasajeros: this.fb.array([])
     });
+  }
+
+  //// metodo para validar el campo si es valido o no ////
+  esCampoValido(campo: string) {
+    const validarCampo = this.formularioSoliVe.get(campo);
+    return !validarCampo?.valid && validarCampo?.touched
+      ? 'is-invalid' : validarCampo?.touched ? 'is-valid' : '';
   }
 
   obtenerFechaActual(date: Date): string {
@@ -150,6 +226,7 @@ export class ModalComponent implements OnInit {
 
   /**Cargar municipio segun dpto */
   deptoChange(id: string): void {
+
     this.formularioSoliVe.get('municipio').setValue(null);
     this.formularioSoliVe.get('distrito').setValue(null);
     this.formularioSoliVe.get('canton').setValue(null);

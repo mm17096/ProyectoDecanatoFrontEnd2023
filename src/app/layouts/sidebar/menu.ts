@@ -46,7 +46,7 @@ export const MENU: MenuItem[] = [
     {
       id: 7,
       label: "Solicitud Vehículo",
-      icon: "bx-user-circle",
+      icon: "mdi mdi-car-outline",
       subItems: [
         {
           id: 8,
@@ -65,7 +65,7 @@ export const MENU: MenuItem[] = [
     {
       id: 8,
       label: "Vales",
-      icon: "bx-user-circle",
+      icon: "mdi mdi-gas-station",
       subItems: [
           {
               id: 9,
@@ -80,6 +80,25 @@ export const MENU: MenuItem[] = [
               parentId: 8,
           },
       ],
+  },
+   {
+        id: 10,
+        label: "Entradas y Salidas",
+        icon: "dripicons-document-edit",
+        subItems: [
+          {
+            id: 11,
+            label: "VER",
+            link: "/entrasalida/listar",
+            parent: 10,
+          },
+          {
+            id: 12,
+            label: "Documento",
+            link: "/document/vale",
+            parent: 10,
+          }
+        ]
   }
 ];
 

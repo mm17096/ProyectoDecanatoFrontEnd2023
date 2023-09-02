@@ -25,7 +25,7 @@
 <div class="modal modal-fullscreen-xl-down fade" id="modalEmpleado" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <ng-template #content role="document" let-modal>
-        <div class="modal-header color-top-modal">
+        <div class="modal-header">
             <h5 class="modal-title mt-0">{{leyenda}} Empleado</h5>
             <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
         </div>
@@ -66,12 +66,13 @@
 
                         <!-- Inicio de codigoEmpleado, campo por defecto de la DTO -->
                         <div *ngIf="empleadOd?.codigoEmpleado">
-                            <input id="codigoEmpleado" name="codigoEmpleado" type="hidden" readonly="true" class="form-control"
-                                formControlName="codigoEmpleado" [ngModel]="empleadOd !=null ? empleadOd.codigoEmpleado : ''" />
+                            <input id="codigoEmpleado" name="codigoEmpleado" type="hidden" readonly="true"
+                                class="form-control" formControlName="codigoEmpleado"
+                                [ngModel]="empleadOd !=null ? empleadOd.codigoEmpleado : ''" />
                         </div>
                         <!-- Inicio de codigoEmpleado, campo por defecto de la DTO -->
 
-                         <!-- Inicio de codigoEmpleado, campo por defecto de la DTO -->
+                        <!-- Inicio de codigoEmpleado, campo por defecto de la DTO -->
                         <div *ngIf="empleadOd?.estado">
                             <input id="estado" name="estado" type="hidden" readonly="true" class="form-control"
                                 formControlName="estado" [ngModel]="empleadOd !=null ? empleadOd.estado : 8" />
@@ -80,15 +81,18 @@
 
                         <!-- inicio de dui Empleado -->
                         <div class="form-group row m-4">
-                            <label class="control-label">Dui:</label>
+                            <label class="control-label">DUI:
+                                <span class="text-danger">*</span>
+                            </label>
                             <input type="text" formControlName="dui" class="form-control" id="dui" name="dui"
                                 placeholder="Ingrese DUI - ej: 00000000-0"
-                                [readonly]="empleadOd != null && titulo == 'Detalle'" [class]="esCampoValido('dui')"
+                                [readonly]="empleadOd != null && titulo == 'Detalle'"
+                                [class]="titulo != 'Detalle' ? esCampoValido('dui') : ''"
                                 [ngModel]="empleadOd !=null ? empleadOd.dui : ''" mask="00000000-0" />
                             <div class="invalid-feedback">
                                 <span *ngIf="formBuilder.get('dui')?.errors?.['required']">
-                                    Requiere un DUI</span>
-                                <span *ngIf="!formBuilder.get('dui').valid">
+                                    Ingrese un DUI</span>
+                                <span *ngIf="!formBuilder.get('dui').valid && !formBuilder.get('dui')?.errors?.['required']">
                                     Debe cumplir con el formato correcto</span>
                             </div>
                         </div>
@@ -96,13 +100,16 @@
 
                         <!-- inicio de nombre Empleado -->
                         <div class="form-group row m-4">
-                            <label class="control-label">Nombre:</label>
+                            <label class="control-label">Nombre:
+                                <span class="text-danger">*</span>
+                            </label>
                             <input type="text" formControlName="nombre" class="form-control" id="nombre" name="nombre"
                                 placeholder="Ingrese nombre" [readonly]="empleadOd != null && titulo == 'Detalle'"
-                                [class]="esCampoValido('nombre')" [ngModel]="empleadOd!=null ? empleadOd.nombre : ''" />
+                                [class]="titulo != 'Detalle' ? esCampoValido('nombre') : ''"
+                                [ngModel]="empleadOd!=null ? empleadOd.nombre : ''" />
                             <div class="invalid-feedback">
                                 <span *ngIf="formBuilder.get('nombre')?.errors?.['required']">
-                                    Requiere un nombre</span>
+                                    Ingrese el nombre</span>
                                 <span *ngIf="formBuilder.get('nombre')?.errors?.['pattern']">
                                     No debe contener numeros</span>
                             </div>
@@ -111,15 +118,17 @@
 
                         <!-- inicio de apellido Empleado -->
                         <div class="form-group row m-4">
-                            <label class="control-label">Apellido:</label>
+                            <label class="control-label">Apellido:
+                                <span class="text-danger">*</span>
+                            </label>
                             <input type="text" formControlName="apellido" class="form-control" id="apellido"
                                 name="apellido" placeholder="Ingrese apellido"
                                 [readonly]="empleadOd != null && titulo == 'Detalle'"
-                                [class]="esCampoValido('apellido')"
+                                [class]="titulo != 'Detalle' ? esCampoValido('apellido') : ''"
                                 [ngModel]="empleadOd!=null ? empleadOd.apellido : ''" />
                             <div class="invalid-feedback">
                                 <span *ngIf="formBuilder.get('apellido')?.errors?.['required']">
-                                    Requiere un apellido</span>
+                                    Ingrese el apellido</span>
                                 <span *ngIf="formBuilder.get('apellido')?.errors?.['pattern']">
                                     No debe contener numeros</span>
                             </div>
@@ -128,16 +137,18 @@
 
                         <!-- inicio de telefono Empleado -->
                         <div class="form-group row m-4" *ngIf="esMotorista || motoristaOd">
-                            <label class="control-label">Telefono:</label>
+                            <label class="control-label">Teléfono:
+                                <span class="text-danger">*</span>
+                            </label>
                             <input type="text" formControlName="telefono" class="form-control" id="telefono"
-                                name="telefono" placeholder="Ingrese telefono - ej: 0000-0000"
+                                name="telefono" placeholder="Ingrese teléfono - ej: 0000-0000"
                                 [readonly]="empleadOd != null && titulo == 'Detalle'" mask="0000-0000"
-                                [class]="esCampoValido('telefono')"
+                                [class]="titulo != 'Detalle' ? esCampoValido('telefono') : ''"
                                 [ngModel]="empleadOd!=null ? empleadOd.telefono : ''" />
                             <div class="invalid-feedback">
                                 <span *ngIf="formBuilder.get('telefono')?.errors?.['required']">
-                                    Requiere un telefono</span>
-                                <span *ngIf="!formBuilder.get('telefono').valid">
+                                    Ingrese un teléfono</span>
+                                <span *ngIf="!formBuilder.get('telefono').valid && !formBuilder.get('telefono')?.errors?.['required']">
                                     Debe cumplir con el formato correcto</span>
                             </div>
                         </div>
@@ -150,16 +161,18 @@
 
                         <!-- inicio de telefono Empleado -->
                         <div class="form-group row m-4" *ngIf="!esMotorista && !motoristaOd">
-                            <label class="control-label">Telefono:</label>
+                            <label class="control-label">Teléfono:
+                                <span class="text-danger">*</span>
+                            </label>
                             <input type="text" formControlName="telefono" class="form-control" id="telefono"
-                                name="telefono" placeholder="Ingrese telefono - ej: 0000-0000"
+                                name="telefono" placeholder="Ingrese teléfono - ej: 0000-0000"
                                 [readonly]="empleadOd != null && titulo == 'Detalle'" mask="0000-0000"
-                                [class]="esCampoValido('telefono')"
+                                [class]="titulo != 'Detalle' ? esCampoValido('telefono') : ''"
                                 [ngModel]="empleadOd!=null ? empleadOd.telefono : ''" />
                             <div class="invalid-feedback">
                                 <span *ngIf="formBuilder.get('telefono')?.errors?.['required']">
-                                    Requiere un telefono</span>
-                                <span *ngIf="!formBuilder.get('telefono').valid">
+                                    Ingrese un teléfono</span>
+                                <span *ngIf="!formBuilder.get('telefono').valid && !formBuilder.get('telefono')?.errors?.['required']">
                                     Debe cumplir con el formato correcto</span>
                             </div>
                         </div>
@@ -167,13 +180,16 @@
 
                         <!-- inicio de correo Empleado -->
                         <div class="form-group row m-4">
-                            <label class="control-label">Correo:</label>
+                            <label class="control-label">Correo:
+                                <span class="text-danger">*</span>
+                            </label>
                             <input type="text" formControlName="correo" class="form-control" id="correo" name="correo"
                                 placeholder="Ingrese correo" [readonly]="empleadOd != null && titulo == 'Detalle'"
-                                [class]="esCampoValido('correo')" [ngModel]="empleadOd!=null ? empleadOd.correo : ''" />
+                                [class]="titulo != 'Detalle' ? esCampoValido('correo') : ''"
+                                [ngModel]="empleadOd!=null ? empleadOd.correo : ''" />
                             <div class="invalid-feedback">
                                 <span *ngIf="formBuilder.get('correo')?.errors?.['required']">
-                                    Requiere un correo</span>
+                                    Ingrese un correo</span>
                                 <span *ngIf="formBuilder.get('correo')?.errors?.['pattern']">
                                     Email no válido, debe ser '@ues.edu.sv'</span>
                             </div>
@@ -182,12 +198,14 @@
 
                         <!-- inicio de cargo Empleado -->
                         <div class="form-group row m-4">
-                            <label class="control-label">Cargo:</label>
+                            <label class="control-label">Cargo:
+                                <span class="text-danger">*</span>
+                            </label>
                             <select class="form-control form-select"
                                 (change)="SelectCargo(formBuilder.get('telefono').value)" id="selectCargo"
                                 name="selectCargo" formControlName="cargo"
                                 [ngClass]="{'select-readonly': empleadOd != null && titulo == 'Detalle'}"
-                                [class]="esCampoValido('cargo')"
+                                [class]="titulo != 'Detalle' ? esCampoValido('cargo') : ''"
                                 [ngModel]="empleadOd != null ? empleadOd.cargo.codigoCargo : ''">
                                 <option value="">Seleccione Cargo</option>
                                 <option *ngFor="let cargodata of Cargos" [ngValue]="cargodata.codigoCargo">
@@ -196,22 +214,24 @@
                             </select>
                             <div class="invalid-feedback">
                                 <span *ngIf="formBuilder.get('cargo')?.errors?.['required']">
-                                    Requiere un cargo</span>
+                                    Seleccione un cargo</span>
                             </div>
                         </div>
                         <!-- fin de cargo Empleado -->
 
                         <!-- inicio de licencia Empleado -->
                         <div class="form-group row m-4" *ngIf="esMotorista || motoristaOd">
-                            <label class="control-label">Licencia:</label>
+                            <label class="control-label">Licencia:
+                                <span class="text-danger">*</span>
+                            </label>
                             <input type="text" formControlName="licencia" class="form-control" id="licencia"
                                 name="licencia" placeholder="Ingrese licencia"
                                 [readonly]="empleadOd != null && titulo == 'Detalle'" mask="00000000-0"
-                                [class]="esCampoValido('licencia')"
+                                [class]="titulo != 'Detalle' ? esCampoValido('licencia') : ''"
                                 [ngModel]="empleadOd!=null ? empleadOd.licencia : (esMotorista ? formBuilder.get('dui').value : '')" />
                             <div class="invalid-feedback">
                                 <span *ngIf="formBuilder.get('licencia')?.errors?.['required']">
-                                    Requiere un numero de licencia</span>
+                                    Ingrese un número de licencia</span>
                             </div>
                         </div>
                         <!-- fin de licencia Empleado -->
@@ -220,11 +240,13 @@
                         <div class="form-group row m-3" *ngIf="esMotorista || motoristaOd">
 
                             <div class="col-md-6">
-                                <label class="control-label">Tipo de Licencia:</label>
+                                <label class="control-label">Tipo de Licencia:
+                                    <span class="text-danger">*</span>
+                                </label>
                                 <select class="form-control form-select" id="selecttipo_licencia"
                                     name="selecttipo_licencia" formControlName="tipolicencia"
                                     [ngClass]="{'select-readonly': empleadOd != null && titulo == 'Detalle'}"
-                                    [class]="esCampoValido('tipolicencia')"
+                                    [class]="titulo != 'Detalle' ? esCampoValido('tipolicencia') :''"
                                     [ngModel]="empleadOd != null ? empleadOd.tipolicencia : ''">
                                     <option value="">Seleccione Tipo</option>
                                     <option value="Liviana">Liviana</option>
@@ -233,21 +255,23 @@
                                 </select>
                                 <div class="invalid-feedback">
                                     <span *ngIf="formBuilder.get('tipo_licencia')?.errors?.['required']">
-                                        Requiere un tipo de licencia</span>
+                                        Seleccione un tipo de licencia</span>
                                 </div>
                             </div>
 
 
                             <div class="col-md-6">
-                                <label class="control-label">Fecha de expiracion:</label>
+                                <label class="control-label">Fecha de expiración:
+                                    <span class="text-danger">*</span>
+                                </label>
                                 <input type="date" formControlName="fechalicencia" class="form-control"
                                     id="fechalicencia" name="fechalicencia" placeholder="Ingrese fechalicencia"
                                     [readonly]="empleadOd != null && titulo == 'Detalle'" (change)="validarfecha()"
-                                    [class]="esCampoValido('fechalicencia')"
+                                    [class]="titulo != 'Detalle' ? esCampoValido('fechalicencia') : ''"
                                     [ngModel]="empleadOd!=null ? empleadOd.fechalicencia : ''" />
                                 <div class="invalid-feedback">
                                     <span *ngIf="formBuilder.get('fechalicencia')?.errors?.['required']">
-                                        Requiere una fecha de expiracion</span>
+                                        Seleccione una fecha de expiración</span>
                                 </div>
                             </div>
 
@@ -258,11 +282,13 @@
                         <!-- inicio de departamento & es jefe Empleado -->
                         <div class="form-group row m-3 align-items-center">
                             <div class="col-md-6">
-                                <label class="control-label">Departamento:</label>
+                                <label class="control-label">Departamento:
+                                    <span class="text-danger">*</span>
+                                </label>
                                 <select class="form-control form-select" id="selectDepartamento"
                                     name="selectDepartamento" formControlName="departamento"
                                     [ngClass]="{'select-readonly': empleadOd != null && titulo == 'Detalle'}"
-                                    [class]="esCampoValido('departamento')"
+                                    [class]="titulo != 'Detalle' ? esCampoValido('departamento'): ''"
                                     [ngModel]="empleadOd != null ? empleadOd.departamento.codigoDepto : ''">
                                     <option value="">Seleccione Departamento</option>
                                     <option *ngFor="let departamentodata of Departamentos"
@@ -272,7 +298,7 @@
                                 </select>
                                 <div class="invalid-feedback">
                                     <span *ngIf="formBuilder.get('departamento')?.errors?.['required']">
-                                        Requiere un departamento</span>
+                                        Seleccione un departamento</span>
                                 </div>
                             </div>
 
@@ -293,12 +319,12 @@
 
 
                 <div class="d-flex justify-content-end mt-4">
-                    <button type="submit" class="btn btn-primary me-2" id="btn-save" name="btn-save"
+                    <button type="submit" class="btn btn-primary w-sm me-2" id="btn-save" name="btn-save"
                         *ngIf="titulo !== 'Detalle'">
                         {{ titulo !== 'Editar' ? 'Guardar' : 'Modificar' }}
                     </button>
 
-                    <button type="button" class="btn btn-dark" id="btn-cancel" name="btn-cancel" aria-hidden="true"
+                    <button type="button" class="btn btn-dark w-sm" id="btn-cancel" name="btn-cancel" aria-hidden="true"
                         (click)="modal.dismiss('Cross click')">
                         {{ titulo !== 'Detalle' ? 'Cancelar' : 'Cerrar' }}
                     </button>

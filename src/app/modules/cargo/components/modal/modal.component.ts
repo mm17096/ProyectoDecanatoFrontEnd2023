@@ -18,7 +18,15 @@ export class ModalComponent implements OnInit {
   formCargo !: FormGroup;
   @Input() cargos !: ICargo;
   @Input() leyenda !: string;
-
+  alerts = [
+    {
+      id: 1,
+      type: "info",
+      message:
+        " Ingrese un Cargo en mayusculas y complete los campos obligatorios (*)",
+      show: false,
+    },
+  ];
 
 
   constructor(private cargoService : CargoService,
@@ -187,6 +195,19 @@ export class ModalComponent implements OnInit {
 */
   openModal(content: any) {
     this.modalService.open(content, {size: 'lg', backdrop: 'static'});
+  }
+  CambiarAlert(alert) {
+    alert.show = !alert.show;
+  }
+
+  restaurarAlerts() {
+    this.alerts.forEach((alert) => {
+      alert.show = true;
+    });
+  }
+
+  siMuestraAlertas() {
+    return this.alerts.every((alert) => alert.show);
   }
 
   get nombreCargo(){

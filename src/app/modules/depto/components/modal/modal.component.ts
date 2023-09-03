@@ -17,6 +17,15 @@ export class ModalComponent implements OnInit {
   formDepto !: FormGroup;
   @Input() deptos !: IDepto;
   @Input() leyenda !: string;
+  alerts = [
+    {
+      id: 1,
+      type: "info",
+      message:
+        " Ingrese un Cargo en mayusculas y complete los campos obligatorios (*)",
+      show: false,
+    },
+  ];
 
   constructor(private deptopService : DeptoService,
     private fb : FormBuilder,
@@ -174,6 +183,20 @@ export class ModalComponent implements OnInit {
 
       openModal(content: any) {
         this.modalService.open(content);
+      }
+
+      CambiarAlert(alert) {
+        alert.show = !alert.show;
+      }
+
+      restaurarAlerts() {
+        this.alerts.forEach((alert) => {
+          alert.show = true;
+        });
+      }
+
+      siMuestraAlertas() {
+        return this.alerts.every((alert) => alert.show);
       }
 
       get nombre(){

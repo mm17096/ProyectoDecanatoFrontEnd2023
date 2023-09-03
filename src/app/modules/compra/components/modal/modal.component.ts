@@ -8,7 +8,10 @@ import { MensajesService } from "src/app/shared/global/mensajes.service";
 
 import Swal from "sweetalert2";
 import { IProveedor } from "src/app/modules/proveedor/interfaces/proveedor.interface";
-import { DECIMAL_VALIDATE, INTEGER_VALIDATE } from "src/app/constants/constants";
+import {
+  DECIMAL_VALIDATE,
+  INTEGER_VALIDATE,
+} from "src/app/constants/constants";
 
 @Component({
   selector: "app-modal",
@@ -39,14 +42,14 @@ export class ModalComponent implements OnInit {
       id: 1,
       type: "info",
       message: " Complete los campos obligatorios (*)",
-      show: true,
+      show: false,
     },
     {
       id: 2,
       type: "warning",
       message:
         " Tenga en cuenta que una vez almacenada la información algunas opciones no las podrá modificar y serán datos permanentes.",
-      show: true,
+      show: false,
     },
   ];
 
@@ -78,7 +81,7 @@ export class ModalComponent implements OnInit {
   private iniciarFormulario() {
     return this.fb.group({
       id: [""],
-      factura: ["", [Validators.required]],
+      factura: [""],
       proveedor: ["", [Validators.required]],
       descripcion: ["", [Validators.required, Validators.minLength(2)]],
       cantidad: [
@@ -369,7 +372,8 @@ export class ModalComponent implements OnInit {
     const modalOptions = {
       centered: true,
       size: "lg", // 'lg' para modal grande, 'sm' para modal pequeño
-      backdrop: "static" as "static", // Configura backdrop como 'static'
+      backdrop: "static" as "static",
+      keyboard: false, // Configura backdrop como 'static'
     };
     this.modalService.open(content, modalOptions);
   }

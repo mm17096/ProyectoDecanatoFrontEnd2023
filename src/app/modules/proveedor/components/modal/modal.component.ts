@@ -23,9 +23,10 @@ export class ModalComponent implements OnInit {
     {
       id: 1,
       type: "info",
-      message: " Seleccione un tipo de proveedor y complete los campos obligatorios (*)",
-      show: true,
-    }
+      message:
+        " Seleccione un tipo de proveedor y complete los campos obligatorios (*)",
+      show: false,
+    },
   ];
 
   constructor(
@@ -55,12 +56,7 @@ export class ModalComponent implements OnInit {
           Validators.maxLength(200),
         ],
       ],
-      encargado: [
-        "",
-        [
-          Validators.maxLength(200),
-        ],
-      ],
+      encargado: ["", [Validators.maxLength(200)]],
       telefono: ["", [Validators.required]],
       email: [
         "",
@@ -194,7 +190,8 @@ export class ModalComponent implements OnInit {
     const modalOptions = {
       centered: true,
       size: "", // 'lg' para modal grande, 'sm' para modal pequeño
-      backdrop: "static" as "static", // Configura backdrop como 'static'
+      backdrop: "static" as "static",
+      keyboard: false, // Configura backdrop como 'static'
     };
     this.modalService.open(content, modalOptions);
   }

@@ -3,8 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ICargo } from '../../interface/cargo';
 import { CargoService } from '../../service/cargoservice';
 import { Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
+import { MensajesService } from 'src/app/shared/global/mensajes.service';
 
 
 @Component({
@@ -23,17 +24,30 @@ export class ModalComponent implements OnInit {
   constructor(private cargoService : CargoService,
     private fb : FormBuilder,
     private router : Router,
-    private modalService: NgbModal  ) {
+    private mensajesService : MensajesService,
+    private modalService: NgbModal,
+    public activeModal: NgbActiveModal  ) {
       this.formCargo = this.iniciarFormulario();
      }
 
+     ngOnInit(): void {
+
+
+      if(typeof this.cargos != 'undefined'){
+        console.log("trae algo:"+this.cargos);
+        this.formCargo.patchValue(this.cargos);
+      }
+      console.log("no trae nada"+this.cargos);
+    }
+
      private iniciarFormulario(){
       return this.fb.group({
-        nombreCargo : ['',Validators.compose([Validators.required, Validators.pattern('[A-Z]*')])],
+        nombreCargo : ['',Validators.compose([Validators.required, Validators.pattern('[A-Z ]*')])],
         descripcion : ['',Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*')])],
 
       })
     }
+
 
     guardar(){
 
@@ -47,10 +61,10 @@ export class ModalComponent implements OnInit {
       }
     }else{
       Swal.fire({
-        icon: 'error',
-        title: 'Campos Vacios o invalidos',
-        text: `Ocurrio un error`,
-
+        position: 'center',
+        title: 'Faltan datos en el formuario',
+        text: 'Complete todos los campos requeridos',
+        icon: 'warning',
       });
     }
 
@@ -76,21 +90,30 @@ export class ModalComponent implements OnInit {
         this.mostrar();
       },
       error : (error) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: `Ocurrio un error`,
 
-        });
-        console.log(error);
+       this.mensajesService.mensajesSweet(
+        'error',
+        "Ups... Algo salió mal",
+        error
+       )
       },
       complete : () => {
-        Swal.fire({
-          position: 'center',
-          title: 'Buen Trabajo',
-          text: `Datos Guardados con exito`,
-          icon: 'info',
+
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer : 3000,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
         });
+        Toast.fire({
+          icon: 'success',
+          text: 'Datos Guardados con exito'
+        });
+
       }
     });
 
@@ -100,7 +123,7 @@ export class ModalComponent implements OnInit {
 
       const data : ICargo =
       {
-        codigoCargo : this.cargos.codigoCargo,
+        id : this.cargos.id,
         nombreCargo : this.formCargo.controls['nombreCargo'].value,
         descripcion : this.formCargo.controls['descripcion'].value,
         estado : 8
@@ -108,38 +131,41 @@ export class ModalComponent implements OnInit {
     ;
 
 
-    this.cargoService.editCargo(data).subscribe({
+    this.cargoService.editCargo(data.id,data).subscribe({
       next : (resp) => {
         this.formCargo.reset();
         this.modalService.dismissAll();
         this.mostrar();
       },
       error : (error) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: `Ocurrio un error`,
+        this.mensajesService.mensajesSweet(
+          'error',
+          "Ups... Algo salió mal",
+          error
+         )
 
-        });
-        console.log(error);
       },
       complete : () => {
-        Swal.fire({
-          position: 'center',
-          title: 'Buen Trabajo',
-          text: `Datos Guardados con exito`,
-          icon: 'info',
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer : 3000,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        });
+        Toast.fire({
+          icon: 'success',
+          text: 'Datos Guardados con exito'
         });
       }
     });
 
     }
 
-  ngOnInit(): void {
-    if(typeof this.cargos != 'undefined'){
-      this.formCargo.patchValue(this.cargos);
-    }
-  }
+
 
   esCampoValido(campo:string){
     const validarCampo = this.formCargo.get(campo);
@@ -154,9 +180,13 @@ export class ModalComponent implements OnInit {
     this.router.navigate([currentUrl]);
 
   }
-
+/*
   openModal(content: any) {
     this.modalService.open(content);
+  }
+*/
+  openModal(content: any) {
+    this.modalService.open(content, {size: 'lg', backdrop: 'static'});
   }
 
   get nombreCargo(){

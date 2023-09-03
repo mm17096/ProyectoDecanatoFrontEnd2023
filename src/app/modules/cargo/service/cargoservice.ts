@@ -25,9 +25,9 @@ export class CargoService {
     return this.http.get(`${this.url}/${code}`);
   }
 
-  editCargo( data : unknown){
+  editCargo(id: string, data : unknown){
 
-    return this.http.put(this.url,data);
+    return this.http.put(`${this.url}/${id}`,data);
   }
 
   deleteCargo(code : any){

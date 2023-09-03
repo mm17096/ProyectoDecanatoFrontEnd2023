@@ -1,24 +1,11 @@
-<div *ngIf="leyenda=='Agregar'; else templateElse">
-  <button type="button"  class="btn btn-primary btn-rounded" data-bs-toggle="modal" data-bs-target="#modalDepto"
-  (click)="openModal(content)">
-  {{leyenda}}
-   </button>
-</div>
-<ng-template #templateElse>
-  <button type="button"  class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1" data-bs-toggle="modal" data-bs-target="#modalDepto"
-  ngbTooltip="editar" (click)="openModal(content)">
-  <i class="bx bx-edit-alt"></i>
-   </button>
-</ng-template>
-
 
 
  <!-- Modal -->
- <ng-template #content role="document" let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title mt-0">Departamentos</h5>
-    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"
-    (click)="this.formDepto.reset()"></button>
+
+  <div class="modal-header color-top-modal">
+    <h5 class="modal-title mt-0">{{leyenda}} Departamentos</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="activeModal.dismiss('Cross click')"
+    ></button>
   </div>
 
     <form (ngSubmit)="guardar()" [formGroup]="formDepto">
@@ -27,11 +14,11 @@
   <div class="col-md-12">
     <!--inicio del campo nombre-->
     <div class="form-group row m-4">
-      <label class="control-label">Nombre:</label>
+      <label class="control-label">Nombre:<span class="text-danger"> *</span></label>
       <input type="text"
       class="form-control"
       formControlName="nombre"
-      placeholder="Nombre"
+      placeholder="EJ: Recursos Humanos"
       [class]="esCampoValido('nombre')">
       <div *ngIf="nombre?.errors?.['required'] && nombre?.touched">
         <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*El campo Nombre es obligatorio</span>
@@ -43,6 +30,53 @@
 
     <!--fin del campo nombre-->
 
+    <!--inicio del campo descripcion-->
+  <div class="form-group row m-4">
+    <label class="control-label">Descripcion:<span class="text-danger"> *</span></label>
+    <textarea type="text"
+    class="form-control"
+    formControlName="descripcion"
+    placeholder="Descripcion"
+    [class]="esCampoValido('descripcion')"></textarea>
+    <div *ngIf="descripcion?.errors?.['required'] && descripcion?.touched">
+      <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*El campo Descripcion es obligatorio</span>
+      </div>
+      <div *ngIf="descripcion?.errors?.['pattern'] && descripcion?.touched">
+        <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*Solo letras y espacio</span>
+        </div>
+  </div>
+
+  <!--fin del campo descripcion-->
+  <!--Inicio checkbox-->
+  <div class="form-group">
+    <div class="form-group row m-4">
+      <label class="control-label">Tipo:<span class="text-danger"> *</span></label>
+      <div class="form-check form-check-inline m-3">
+        <input
+          type="radio"
+          class="form-check-input"
+          formControlName="tipo"
+          value="Academico"
+          [class]="esCampoValido('tipo')"
+        />
+        <label class="form-check-lable">Academico</label>
+      </div>
+      <!-- Fin del input mujer-->
+      <div class="form-check form-check-inline m-3">
+        <input
+          type="radio"
+          class="form-check-input"
+          formControlName="tipo"
+          value="Administrativo"
+          [class]="esCampoValido('tipo')"
+        />
+        <label class="form-check-lable">Administrativo</label>
+      </div>
+    </div>
+  </div>
+
+  <!--Final checkbox-->
+
 
   </div>
 </div>
@@ -52,12 +86,12 @@
 
    <button type="submit" class="btn btn-primary">Guardar</button>
 
-   <button type="button" class="btn btn-dark" (click)="modal.close('Close click')"
+   <button type="button" class="btn btn-dark" (click)="activeModal.dismiss('Cross click')"
    (click)="this.formDepto.reset()">Close</button>
   </div>
 
   </form>
 
 
-</ng-template>
+
 

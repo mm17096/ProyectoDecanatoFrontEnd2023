@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, FormControl, FormGroup, RequiredValidator, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
@@ -11,6 +11,7 @@ import {IPais} from "../../interfaces/pais.interface";
 import {MensajesService} from "../../../../shared/global/mensajes.service";
 import {IVehiculos} from "../../../vehiculo/interfaces/vehiculo-interface";
 import {CommunicationService} from "../../services/comunicacion.service";
+import {DECIMAL_VALIDATE, INTEGER_VALIDATE} from "../../../../constants/constants";
 
 @Component({
   selector: 'app-modal',
@@ -121,6 +122,9 @@ export class ModalComponent implements OnInit {
   }
 
   async guardar(){
+    const solicitudVehiculo = this.formularioSoliVe.value;
+    solicitudVehiculo.solicitante.codigoUsuario = '4937c750-13f7-4041-990a-f2de7fdf8cae';
+    console.log(this.formularioSoliVe);
     if (this.formularioSoliVe.valid){
       if (this.soliVeOd != null){
         this.editarSoliVe();
@@ -130,6 +134,11 @@ export class ModalComponent implements OnInit {
         }
       }
     } else {
+      // Mostrar nombres de campos inválidos por consola
+      /*console.log('Campos inválidos:',
+        Object.keys(this.formularioSoliVe.controls).filter((controlName) =>
+          this.formularioSoliVe.get(controlName)?.invalid));*/
+
       this.mensajesService.mensajesToast(
         "warning",
         "Complete los que se indican"
@@ -204,7 +213,6 @@ export class ModalComponent implements OnInit {
 
     solicitudVehiculo.direccion = nombreDepartamento+', '+nombreMunicipio+', '+
       nombreDistrito+', '+nombreCanton;
-    solicitudVehiculo.solicitante.codigoUsuario = '4937c750-13f7-4041-990a-f2de7fdf8cae';
     /* fin de la direccion */
 
     // Mostrar SweetAlert de carga
@@ -265,49 +273,60 @@ export class ModalComponent implements OnInit {
   iniciarFormulario(){
     if (this.leyenda == 'Detalle' && this.soliVeOd != null){
       this.formularioSoliVe = this.fb.group({
-        fechaSolicitud: [this.obtenerFechaActual(new Date()), []],
-        fechaSalida: ['', []],
-        fechaEntrada: ['', []],
-        unidadSolicitante: ['Informática', []],
-        tipoVehiculo: ['', []],
-        vehiculo: ['', []],
-        objetivoMision: ['', []],
-        lugarMision: ['', []],
+        fechaSolicitud: [
+          this.obtenerFechaActual(new Date()),
+          [Validators.required]],
+        fechaSalida: [
+          '',
+          [Validators.required]],
+        fechaEntrada: [
+          '', [Validators.required]],
+        unidadSolicitante: ['Informática', [Validators.required]],
+        tipoVehiculo: ['', [Validators.required]],
+        vehiculo: ['', [Validators.required]],
+        objetivoMision: ['', [Validators.required]],
+        lugarMision: ['', [Validators.required]],
         direccion: [''],
-        depto: ['', []],
-        municipio: ['', []],
-        distrito: ['', []],
-        canton: ['', []],
-        horaSalida: ['', []],
-        horaEntrada: ['', []],
-        cantidadPersonas: [1, [ Validators.min(1)]],
-        nombre: ['', ],
-        username: [[this.username],],
-        solicitante: ['', []], // Aquí definimos el FormControl para codigoUsuario
+        depto: ['', [Validators.required]],
+        municipio: ['', [Validators.required]],
+        distrito: ['', [Validators.required]],
+        canton: ['', [Validators.required]],
+        horaSalida: ['', [Validators.required]],
+        horaEntrada: ['', [Validators.required]],
+        cantidadPersonas: [
+          1, [Validators.required, Validators.min(1)]
+        ],
+        solicitante: ['', [Validators.required]], // Aquí definimos el FormControl para codigoUsuario
         pasajeros: this.fb.array([]),
       });
     }else{
       this.formularioSoliVe = this.fb.group({
-        fechaSolicitud: [this.obtenerFechaActual(new Date()), []],
-        fechaSalida: ['', []],
-        fechaEntrada: ['', []],
-        unidadSolicitante: ['Informática', []],
-        tipoVehiculo: ['', []],
-        vehiculo: ['', []],
-        objetivoMision: ['', []],
-        lugarMision: ['', []],
+        fechaSolicitud: [
+          this.obtenerFechaActual(new Date()),
+          [
+            Validators.required
+          ]],
+        fechaSalida: ['', [Validators.required]],
+        fechaEntrada: ['', [Validators.required]],
+        unidadSolicitante: ['Informática', [Validators.required]],
+        tipoVehiculo: ['', [Validators.required]],
+        vehiculo: ['', [Validators.required]],
+        objetivoMision: ['', [Validators.required]],
+        lugarMision: ['', [Validators.required]],
         direccion: [''],
-        depto: ['', []],
-        municipio: ['', []],
-        distrito: ['', []],
-        canton: ['', []],
-        horaSalida: ['', []],
-        horaEntrada: ['', []],
-        cantidadPersonas: [1, [ Validators.min(1)]],
-        nombre: ['', ],
-        username: [[this.username],],
+        depto: ['', [Validators.required]],
+        municipio: ['', [Validators.required]],
+        distrito: ['', [Validators.required]],
+        canton: ['', [Validators.required]],
+        horaSalida: ['', [Validators.required]],
+        horaEntrada: ['', [Validators.required]],
+        cantidadPersonas: [
+          1, [
+            Validators.required,
+            Validators.min(1)
+          ]],
         solicitante: this.fb.group({
-          codigoUsuario: ['', []]
+          codigoUsuario: ['4937c750-13f7-4041-990a-f2de7fdf8cae', [Validators.required]]
         }),
         listaPasajeros: this.fb.array([])
       });

@@ -45,7 +45,14 @@
                                                                   class="text-danger">*</span></label>
             <input type="date" class="form-control" id="fecha-solicitud"
                    formControlName="fechaSolicitud"
-                   readonly>
+                   [class]="esCampoValido('fechaSolicitud')"
+                   readonly/>
+            <div class="invalid-feedback">
+              <span
+                *ngIf="formularioSoliVe.get('fechaSolicitud')?.errors?.['required']">
+                Requiere una fecha de solicitud
+              </span>
+            </div>
           </div>
           <!--fin fecha de realizacion de solicitud-->
 
@@ -55,7 +62,14 @@
                                                              class="text-danger">*</span></label>
             <input type="date" class="form-control" id="fecha-mision"
                    formControlName="fechaSalida"
-                   [readonly]="soliVeOd != null && leyenda === 'Detalle'">
+                   [class]="esCampoValido('fechaSalida')"
+                   [readonly]="soliVeOd != null && leyenda === 'Detalle'"/>
+            <div class="invalid-feedback">
+              <span
+                *ngIf="formularioSoliVe.get('fechaSalida')?.errors?.['required']">
+                Requiere una fecha de misión
+              </span>
+            </div>
           </div>
           <!--fin fecha de salida de solicitud-->
         </div>
@@ -68,7 +82,15 @@
               <input type="text"
                      class="form-control"
                      id="unidad-solicitante"
-                     formControlName="unidadSolicitante" readonly>
+                     formControlName="unidadSolicitante"
+                     [class]="esCampoValido('unidadSolicitante')"
+                     readonly />
+              <div class="invalid-feedback">
+              <span
+                *ngIf="formularioSoliVe.get('unidadSolicitante')?.errors?.['required']">
+                Requiere una fecha de solicitud
+              </span>
+              </div>
             </div>
             <!--fin unidad que hace la solicitud-->
           </div>
@@ -82,8 +104,15 @@
                    id="lugar-visitar"
                    placeholder="Ingrese el lugar o insitución que visitará"
                    formControlName="lugarMision"
+                   [class]="esCampoValido('lugarMision')"
                    [value]="soliVeOd != null ? soliVeOd.lugarMision: ''"
-                   [readonly]="soliVeOd != null && leyenda === 'Detalle'">
+                   [readonly]="soliVeOd != null && leyenda === 'Detalle'" />
+            <div class="invalid-feedback">
+              <span
+                *ngIf="formularioSoliVe.get('lugarMision')?.errors?.['required']">
+                Requiere el lugar o institucción que visitará
+              </span>
+            </div>
           </div>
           <!--fin lugar o institucion a visitar-->
         </div>
@@ -110,6 +139,7 @@
                   placeholder="Escriba o seleccione"
                   [selectOnTab]="true"
                   labelForId="depto"
+                  [class]="esCampoValido('depto')"
                   (ngModelChange)="deptoChange($event)"
                   [notFoundText]="'Datos no econtrados'"
                 >
@@ -117,6 +147,12 @@
                     {{dpt.na2}}
                   </ng-option>
                 </ng-select>
+                <div class="invalid-feedback">
+                  <span
+                    *ngIf="formularioSoliVe.get('depto')?.errors?.['required']">
+                    Requiere seleccionar un departamento
+                  </span>
+                </div>
               </div>
               <!--fin departamento-->
             </div>
@@ -130,12 +166,19 @@
                   placeholder="Escriba o seleccione"
                   [selectOnTab]="true"
                   labelForId="municipio"
+                  [class]="esCampoValido('municipio')"
                   (ngModelChange)="distChange($event)"
                 >
                   <ng-option *ngFor="let muni of municipios" [value]="muni.codigo">
                     {{muni.nam}}
                   </ng-option>
                 </ng-select>
+                <div class="invalid-feedback">
+                  <span
+                    *ngIf="formularioSoliVe.get('municipio')?.errors?.['required']">
+                    Requiere seleccionar un municipio
+                  </span>
+                </div>
               </div>
               <!-- fin municipio -->
             </div>
@@ -157,11 +200,18 @@
                   placeholder="Escriba o seleccione"
                   [selectOnTab]="true"
                   labelForId="canton"
+                  [class]="esCampoValido('canton')"
                 >
                   <ng-option *ngFor="let cton of cantones" [value]="cton.codigo">
                     {{cton.nam}}
                   </ng-option>
                 </ng-select>
+                <div class="invalid-feedback">
+                  <span
+                    *ngIf="formularioSoliVe.get('canton')?.errors?.['required']">
+                    Requiere seleccionar un cantón
+                  </span>
+                </div>
               </div>
           </div>
           <!-- fin canton -->
@@ -173,7 +223,14 @@
                                                              class="text-danger">*</span></label>
               <input type="time" id="hora-salida"
                      class="form-control" formControlName="horaSalida"
-                     [readonly]="leyenda == 'Detalle' && soliVeOd != null">
+                     [class]="esCampoValido('horaSalida')"
+                     [readonly]="leyenda == 'Detalle' && soliVeOd != null"/>
+              <div class="invalid-feedback">
+                  <span
+                    *ngIf="formularioSoliVe.get('horaSalida')?.errors?.['required']">
+                    Requiere la hora de salida
+                  </span>
+              </div>
             </div>
           </div>
           <!-- fin hora de salida -->
@@ -186,7 +243,15 @@
             <label for="fecha-regreso">Fecha de regreso: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
                                                                class="text-danger">*</span></label>
             <input type="date" class="form-control" id="fecha-regreso"
-                   formControlName="fechaEntrada" [readOnly]="leyenda == 'Detalle' && soliVeOd != null">
+                   formControlName="fechaEntrada"
+                   [class]="esCampoValido('fechaEntrada')"
+                   [readOnly]="leyenda == 'Detalle' && soliVeOd != null"/>
+            <div class="invalid-feedback">
+              <span
+                *ngIf="formularioSoliVe.get('fechaEntrada')?.errors?.['required']">
+                Requiere una fecha de regreso
+              </span>
+            </div>
           </div>
           <!-- fin fecha de regreso -->
         </div>
@@ -202,6 +267,7 @@
                 placeholder="Escriba o seleccione"
                 [selectOnTab]="true"
                 labelForId="tipoVehiculo"
+                 [class]="esCampoValido('tipoVehiculo')"
                 (change)="cargarPlacas(formularioSoliVe.get('tipoVehiculo').value)"
               >
                 <ng-option
@@ -210,6 +276,12 @@
                 >{{ x.clase }}</ng-option
                 >
               </ng-select>
+              <div class="invalid-feedback">
+                  <span
+                    *ngIf="formularioSoliVe.get('tipoVehiculo')?.errors?.['required']">
+                    Requiere seleccionar un tipo de vehículo
+                  </span>
+              </div>
               <input *ngIf="leyenda == 'Detalle' && soliVeOd != null" type="text" class="form-control"
                      id="tipo-vehiculo"
                      formControlName="tipoVehiculo"
@@ -232,10 +304,17 @@
                            placeholder="Escriba o seleccione"
                            [selectOnTab]="true"
                            labelForId="vehiculo"
+                           [class]="esCampoValido('vehiculo')"
                 >
                   <ng-option *ngFor="let vehiculo of placas"
                              [value]="vehiculo.codigoVehiculo">{{vehiculo.placa}}</ng-option>
                 </ng-select>
+                <div class="invalid-feedback">
+                  <span
+                    *ngIf="formularioSoliVe.get('vehiculo')?.errors?.['required']">
+                    Requiere seleccionar un departamento
+                  </span>
+                </div>
               </ng-template>
 
               <!-- fin placa -->
@@ -268,12 +347,19 @@
                 placeholder="Escriba o seleccione"
                 [selectOnTab]="true"
                 labelForId="distrito"
+                [class]="esCampoValido('distrito')"
                 (ngModelChange)="muniChange($event)"
               >
                 <ng-option *ngFor="let dist of distritos" [value]="dist.codigo">
                   {{dist.nam}}
                 </ng-option>
               </ng-select>
+              <div class="invalid-feedback">
+                  <span
+                    *ngIf="formularioSoliVe.get('distrito')?.errors?.['required']">
+                    Requiere seleccionar un distrito
+                  </span>
+              </div>
             </div>
           </div>
           <!-- fin distrito -->
@@ -286,7 +372,14 @@
                                                                class="text-danger">*</span></label>
               <input type="time" id="hora-regreso"
                      class="form-control" formControlName="horaEntrada"
-                     [readOnly]="leyenda == 'Detalle' && soliVeOd != null">
+                     [class]="esCampoValido('horaEntrada')"
+                     [readOnly]="leyenda == 'Detalle' && soliVeOd != null"/>
+              <div class="invalid-feedback">
+                  <span
+                    *ngIf="formularioSoliVe.get('horaEntrada')?.errors?.['required']">
+                    Requiere la hora de regreso
+                  </span>
+              </div>
             </div>
           </div>
           <!-- fin hora de regreso -->
@@ -304,7 +397,15 @@
                       class="form-control"
                       placeholder="Ingrese el objetivo de la misión"
                       formControlName="objetivoMision"
-                      [readonly]="leyenda == 'Detalle' && soliVeOd != null"></textarea>
+                      [class]="esCampoValido('objetivoMision')"
+                      [readonly]="leyenda == 'Detalle' && soliVeOd != null">
+            </textarea>
+            <div class="invalid-feedback">
+                  <span
+                    *ngIf="formularioSoliVe.get('objetivoMision')?.errors?.['required']">
+                    Requiere el obejetivo de la misión
+                  </span>
+            </div>
           </div>
           <!-- fin objetivo de la mision -->
         </div>
@@ -319,8 +420,15 @@
                      [value]="formularioSoliVe.get('cantidadPersonas').value"
                      class="form-control"
                      formControlName="cantidadPersonas" min="1"
+                     [class]="esCampoValido('cantidadPersonas')"
                      [readonly]="leyenda == 'Detalle' && soliVeOd != null"
-                     (change)="actualizarFilas()" (input)="actualizarFilas()">
+                     (change)="actualizarFilas()" (input)="actualizarFilas()"/>
+              <div class="invalid-feedback">
+                  <span
+                    *ngIf="formularioSoliVe.get('cantidadPersonas')?.errors?.['required']">
+                    Requiere la cantidad de pasajeros en la misión
+                  </span>
+              </div>
             </div>
             <!-- fin cantidad de personas que viajaran -->
           </div>

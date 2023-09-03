@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import {IPais} from "../../interfaces/pais.interface";
 import {MensajesService} from "../../../../shared/global/mensajes.service";
 import {IVehiculos} from "../../../vehiculo/interfaces/vehiculo-interface";
+import {CommunicationService} from "../../services/comunicacion.service";
 
 @Component({
   selector: 'app-modal',
@@ -41,7 +42,7 @@ export class ModalComponent implements OnInit {
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router,
               private soliVeService: SolicitudVehiculoService, public activeModal: NgbActiveModal,
-              private mensajesService: MensajesService) { }
+              private mensajesService: MensajesService, private communicationService: CommunicationService) { }
 
   ngOnInit(): void {
     console.log(this.leyenda);
@@ -208,7 +209,7 @@ export class ModalComponent implements OnInit {
         });
 
         this.formularioSoliVe.reset();
-        this.listVehiculos;
+        this.communicationService.notifyDataUpdated();
         this.modalService.dismissAll();
       }
     },

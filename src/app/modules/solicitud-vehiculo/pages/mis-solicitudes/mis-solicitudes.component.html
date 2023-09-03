@@ -20,7 +20,8 @@
               <div class="ng-select-wrapper mb-3">
                 <div class="d-flex align-items-center">
                   <label class="me-2">Filtro por estado</label>
-                  <select class="control-form custom-select" (change)="onEstadoSeleccionado($event)">
+                  <select class="control-form custom-select" [(ngModel)]="estadoSeleccionado"
+                          (change)="onEstadoSeleccionado($event)">
                     <option *ngFor="let estado of estadosSoliVe" [value]="estado.codigoEstado">{{estado.nombreEstado}}</option>
                   </select>
                 </div>

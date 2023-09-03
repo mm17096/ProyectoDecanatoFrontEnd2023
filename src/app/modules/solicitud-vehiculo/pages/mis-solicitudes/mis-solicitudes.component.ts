@@ -4,6 +4,7 @@ import {IEstados} from "../../interfaces/estados.interface";
 import {ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {ModalComponent} from "../../components/modal/modal.component";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {CommunicationService} from "../../services/comunicacion.service";
 
 @Component({
   selector: 'app-mis-solicitudes',
@@ -20,15 +21,17 @@ export class MisSolicitudesComponent implements OnInit {
   page:number = 0;
   size:number = 10;
 
-  solicitudesVehiculo: ISolicitudVehiculo [] = [];
+  estadoSeleccionado: any;
   estadosSoliVe: IEstados [] = [];
 
-  constructor( private soliVeService: SolicitudVehiculoService, private modalService: NgbModal ) { }
+  constructor( private soliVeService: SolicitudVehiculoService, private modalService: NgbModal,
+               private communicationService: CommunicationService) { }
 
   ngOnInit(): void {
     this.breadCrumbItems = [{ label: 'Solicitud de Vehículo' }, { label: 'Mis Solicitudes', active: true }]; // miga de pan
-    this.soliVeService.getSolicitudesVehiculo(null);
+    this.soliVeService.getSolicitudesVehiculo(this.estadoSeleccionado);
     this.getEstados();
+    this.actualizarTabla();
   }
 
   abrirModal(leyenda: string) {
@@ -40,12 +43,18 @@ export class MisSolicitudesComponent implements OnInit {
     return this.soliVeService.listSoliVehiculo;
   }
 
+  actualizarTabla(){
+    this.communicationService.dataUpdated$.subscribe(() => {
+      this.soliVeService.getSolicitudesVehiculo(this.estadoSeleccionado);
+    });
+  }
+
   onEstadoSeleccionado(event: any) {
-    const estadoSeleccionado = event.target.value;
-    if (estadoSeleccionado == 0) {
+    this.estadoSeleccionado = event.target.value;
+    if (this.estadoSeleccionado == 0) {
       this.soliVeService.getSolicitudesVehiculo(null);
     } else {
-      this.soliVeService.getSolicitudesVehiculo(estadoSeleccionado);
+      this.soliVeService.getSolicitudesVehiculo(this.estadoSeleccionado);
     }
   }
 

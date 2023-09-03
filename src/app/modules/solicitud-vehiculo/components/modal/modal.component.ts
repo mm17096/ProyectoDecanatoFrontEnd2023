@@ -39,6 +39,22 @@ export class ModalComponent implements OnInit {
 
   pasajeroFormControls: FormControl[] = [];
 
+  alerts = [
+    {
+      id: 1,
+      type: "info",
+      message: " Complete los campos obligatorios (*)",
+      show: false,
+    },
+    {
+      id: 2,
+      type: "warning",
+      message:
+        " Tenga en cuenta que una vez almacenada la información no las podrá modificar y serán datos permanentes.",
+      show: false,
+    },
+  ];
+
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router,
               private soliVeService: SolicitudVehiculoService, public activeModal: NgbActiveModal,
@@ -372,10 +388,10 @@ export class ModalComponent implements OnInit {
       .pipe(map(dp => dp.filter(canton => canton.codigo.startsWith(id) && canton.codigo.length === 8)))
       .subscribe(resp => {
         this.cantones = this.sortItemsByCodigo(resp);
-        console.log(this.cantones)
       });
   }
 
+  //metodo para ordenar los datos del json de direcciones
   sortItemsByCodigo(items: any[]): any[] {
     return items.sort((a, b) => a.codigo.localeCompare(b.codigo));
   }
@@ -420,6 +436,18 @@ export class ModalComponent implements OnInit {
       this.mostrarTabla = true; // Mostrar la tabla
       this.mostrarArchivoAdjunto = false; // Ocultar el campo de entrada de archivo
     }
+  }
+
+  siMuestraAlertas() {
+    return this.alerts.every((alert) => alert.show);
+  }
+  restaurarAlerts() {
+    this.alerts.forEach((alert) => {
+      alert.show = true;
+    });
+  }
+  CambiarAlert(alert) {
+    alert.show = !alert.show;
   }
 
   // subir el archivo

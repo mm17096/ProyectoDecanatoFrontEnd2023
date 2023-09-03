@@ -2,11 +2,37 @@
 <!-- Modal -->
 
 <div class="modal-header">
-  <h4 class="modal-title">{{leyenda}} Solicitud de Vehículo</h4>
+  <h5 class="modal-title mt-0">{{leyenda}} Solicitud de Vehículo</h5>
+  <div class="btn-alerta" *ngIf="alerts && leyenda!='Detalle'">
+    <i
+      class="mdi mdi-18px mdi-lightbulb-on-outline custom-cursor"
+      ngbTooltip="Mostrar Ayuda"
+      *ngIf="!siMuestraAlertas()"
+      (click)="restaurarAlerts()"
+    ></i>
+  </div>
   <button type="button" class="btn-close" aria-hidden="true" (click)="activeModal.dismiss('Cross click')">
   </button>
 </div>
 <div class="modal-body">
+  <div *ngFor="let alert of alerts">
+    <div
+      class="alert alert-{{ alert.type }} alert-dismissible fade show"
+      role="alert"
+      *ngIf="alert.show"
+    >
+      <strong>{{
+        alert.type === "info" ? "Importante!" : "Precaución!"
+        }}</strong>
+      {{ alert.message }}
+      <button
+        type="button"
+        class="btn-close"
+        (click)="CambiarAlert(alert)"
+        aria-label="Close"
+      ></button>
+    </div>
+  </div>
   <form [formGroup]="formularioSoliVe"
         (ngSubmit)="guardar()">
     <div class="row mb-4">
@@ -15,7 +41,8 @@
 
           <!--fecha de realizacion de solicitud-->
           <div class="col-md-6">
-            <label for="fecha-solicitud">Fecha de solicitud</label>
+            <label for="fecha-solicitud">Fecha de solicitud: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                                  class="text-danger">*</span></label>
             <input type="date" class="form-control" id="fecha-solicitud"
                    formControlName="fechaSolicitud"
                    readonly>
@@ -24,7 +51,8 @@
 
           <!--fecha de salida de solicitud-->
           <div class="col-md-6">
-            <label for="fecha-mision">Fecha de misión</label>
+            <label for="fecha-mision">Fecha de misión: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                             class="text-danger">*</span></label>
             <input type="date" class="form-control" id="fecha-mision"
                    formControlName="fechaSalida"
                    [readonly]="soliVeOd != null && leyenda === 'Detalle'">
@@ -35,7 +63,8 @@
           <div class="mt-2">
             <!--unidad que hace la solicitud-->
             <div class="form-group">
-              <label for="unidad-solicitante">Unidad solicitante</label>
+              <label for="unidad-solicitante">Unidad solicitante: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                                        class="text-danger">*</span></label>
               <input type="text"
                      class="form-control"
                      id="unidad-solicitante"
@@ -47,7 +76,8 @@
         <div class="row">
           <!--Lugar o institucion a visitar-->
           <div class="mt-2">
-            <label for="lugar-visitar">Lugar que visitará</label>
+            <label for="lugar-visitar">Lugar que visitará: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                                 class="text-danger">*</span></label>
             <input type="text" class="form-control"
                    id="lugar-visitar"
                    placeholder="Ingrese el lugar o insitución que visitará"
@@ -62,7 +92,7 @@
             <div *ngSwitchCase="'Detalle'" class="col-md-12">
               <!--direccon (solamente para mostrar en detalle de la solcitud)-->
               <div class="mt-2">
-                <label for="lugar-visitar">Dirección</label>
+                <label for="lugar-visitar">Dirección:</label>
                 <textarea cols="30" rows="2"
                           class="form-control"
                           formControlName="direccion"
@@ -73,7 +103,8 @@
             <div *ngSwitchCase="'Nueva'" class="col-md-6">
               <!--Departamento-->
               <div class="mt-2">
-                <label for="detpto">Departamento</label>
+                <label for="detpto">Departamento: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                        class="text-danger">*</span></label>
                 <ng-select
                   formControlName="depto"
                   placeholder="Escriba o seleccione"
@@ -92,7 +123,8 @@
             <div *ngSwitchCase="'Nueva'" class="col-md-6">
               <!--municipio-->
               <div class="mt-2">
-                <label for="municipio">Municipio</label>
+                <label for="municipio">Municipio: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                        class="text-danger">*</span></label>
                 <ng-select
                   formControlName="municipio"
                   placeholder="Escriba o seleccione"
@@ -117,7 +149,8 @@
             <!--canton-->
             <div class="col-md-6" *ngIf="leyenda == 'Nueva' && soliVeOd == null">
               <div class="mt-2">
-                <label for="canton">Cantón</label>
+                <label for="canton">Cantón: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                  class="text-danger">*</span></label>
 
                 <ng-select
                   formControlName="canton"
@@ -136,7 +169,8 @@
           <!-- hora de salida -->
           <div class="col-md-6">
             <div class="mt-2">
-              <label for="hora-salida">Hora de salida</label>
+              <label for="hora-salida">Hora de salida: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                             class="text-danger">*</span></label>
               <input type="time" id="hora-salida"
                      class="form-control" formControlName="horaSalida"
                      [readonly]="leyenda == 'Detalle' && soliVeOd != null">
@@ -149,7 +183,8 @@
         <div class="row">
           <!-- fecha de regreso -->
           <div class="col-md-12">
-            <label for="fecha-regreso">Fecha de regreso</label>
+            <label for="fecha-regreso">Fecha de regreso: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                               class="text-danger">*</span></label>
             <input type="date" class="form-control" id="fecha-regreso"
                    formControlName="fechaEntrada" [readOnly]="leyenda == 'Detalle' && soliVeOd != null">
           </div>
@@ -159,7 +194,8 @@
           <!-- tipo de vehiculo -->
           <div class="col-md-12">
             <div class="mt-2 ngselect-ve" >
-              <label for="tipo-vehiculo">Tipo de vehículo</label>
+              <label for="tipo-vehiculo">Tipo de vehículo: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                                 class="text-danger">*</span></label>
 
               <ng-select *ngIf="leyenda == 'Nueva' && soliVeOd == null"
                 formControlName="tipoVehiculo"
@@ -187,7 +223,8 @@
           <!-- placa -->
           <div class="col-md-12">
             <div class="mt-2">
-              <label for="vehiculo">Placa</label>
+              <label for="vehiculo">Placa: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                 class="text-danger">*</span></label>
 
               <ng-template #selectTemplate>
                 <ng-select *ngIf="leyenda == 'Nueva' && soliVeOd == null"
@@ -224,7 +261,8 @@
           <!-- distrito -->
           <div class="col-md-12">
             <div class="mt-2">
-              <label for="distrito">Distrito</label>
+              <label for="distrito">Distrito: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                    class="text-danger">*</span></label>
               <ng-select
                 formControlName="distrito"
                 placeholder="Escriba o seleccione"
@@ -244,7 +282,8 @@
           <!-- hora de regreso -->
           <div class="col-md-12">
             <div class="mt-2">
-              <label for="hora-regreso">Hora de regreso</label>
+              <label for="hora-regreso">Hora de regreso: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                               class="text-danger">*</span></label>
               <input type="time" id="hora-regreso"
                      class="form-control" formControlName="horaEntrada"
                      [readOnly]="leyenda == 'Detalle' && soliVeOd != null">
@@ -257,7 +296,8 @@
         <div class="row">
           <!-- objetivo de la mision -->
           <div class="col-md-12">
-            <label for="objetivo-mision">Objetivo de la misión</label>
+            <label for="objetivo-mision">Objetivo de la misión: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                                      class="text-danger">*</span></label>
             <textarea id="objetivo-mision"
                       cols="30"
                       rows="3"
@@ -271,7 +311,8 @@
         <div class="row">
           <div class="mt-2">
             <!-- cantidad de personas que viajaran -->
-            <label for="cantidad-pasajeros">No. de personas que viajarán</label>
+            <label for="cantidad-pasajeros">No. de personas que viajarán: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                                                class="text-danger">*</span></label>
             <div class="col-md-3">
 
               <input type="number" id="cantidad-pasajeros"
@@ -288,7 +329,7 @@
         <div class="row" *ngIf="leyenda == 'Detalle' && soliVeOd != null">
             <div class="col-md-12">
               <div class="mt-2">
-                <label for="lugar-visitar">Responsable</label>
+                <label for="lugar-visitar">Responsable:</label>
                 <input type="text"
                           class="form-control"
                           formControlName="solicitante"
@@ -302,7 +343,8 @@
         <div class="row" *ngIf="cantidadPersonas >= 2 || leyenda=='Detalle' && soliVeOd != null && soliVeOd.cantidadPersonas >= 2">
           <div class="mt-2">
             <div *ngIf="mostrarTabla; else archivoAdjunto">
-              <label for="tablaPasajeros">Ingrese los nombres de los pasajeros</label>
+              <label for="tablaPasajeros">Ingrese los nombres de los pasajeros: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                                                     class="text-danger">*</span></label>
               <table class="table excel-table table-responsive" id="tablaPasajeros"
               *ngIf="leyenda==='Detalle' && soliVeOd != null">
                 <thead>
@@ -344,7 +386,8 @@
 
             <ng-template #archivoAdjunto>
               <div *ngIf="mostrarArchivoAdjunto" class="alert alert-warning">
-                Por favor, adjunta la lista de pasajeros:
+                Por favor, adjunta la lista de pasajeros: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                                class="text-danger">*</span>
                 <input type="file" (change)="cambioDeArchivo($event)" />
               </div>
             </ng-template>
@@ -356,11 +399,11 @@
       </div>
     </div>
     <div class="d-flex justify-content-end mt-4">
-      <button type="submit" class="btn btn-primary me-2" id="btn-save" name="btn-save"
+      <button type="submit" class="btn btn-primary w-sm me-2" id="btn-save" name="btn-save"
               *ngIf="leyenda == 'Nueva'">
         Enviar
       </button>
-      <button type="button" class="btn btn-dark" id="btn-cancel" name="btn-cancel"
+      <button type="button" class="btn btn-dark w-sm" id="btn-cancel" name="btn-cancel"
               aria-hidden="true" (click)="activeModal.close('Close click')">Cancelar</button>
     </div>
   </form>

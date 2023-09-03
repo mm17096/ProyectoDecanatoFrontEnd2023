@@ -303,7 +303,8 @@
           <div class="mt-2">
             <div *ngIf="mostrarTabla; else archivoAdjunto">
               <label for="tablaPasajeros">Ingrese los nombres de los pasajeros</label>
-              <table class="table excel-table table-responsive" id="tablaPasajeros">
+              <table class="table excel-table table-responsive" id="tablaPasajeros"
+              *ngIf="leyenda==='Detalle' && soliVeOd != null">
                 <thead>
                 <tr>
                   <th>No</th>
@@ -316,6 +317,24 @@
                   <td>
                     <input type="text" style="width: 100%"
                            [formControl]="pasajeroFormControls[i]"
+                           [readonly]="soliVeOd != null && leyenda === 'Detalle'">
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+              <table class="table excel-table table-responsive" id="tablaPasajeros"
+              *ngIf="leyenda !== 'Detalle' || soliVeOd === null">
+                <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Nombre</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let control of pasajeroFormControls; let i = index">
+                  <td>{{ i + 1 }}</td>
+                  <td>
+                    <input type="text" style="width: 100%" [formControl]="control"
                            [readonly]="soliVeOd != null && leyenda === 'Detalle'">
                   </td>
                 </tr>

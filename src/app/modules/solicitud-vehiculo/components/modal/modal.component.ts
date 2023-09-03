@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
@@ -123,6 +123,27 @@ export class ModalComponent implements OnInit {
   registrarSoliVe() {
     const solicitudVehiculo = this.formularioSoliVe.value;
 
+    // Crear un arreglo vacío para almacenar los datos de los pasajeros
+    const pasajerosData = [];
+
+    // Recorrer los controles de los pasajeros
+    for (const control of this.pasajeroFormControls) {
+      // Obtener el valor del control
+      const nombrePasajero = control.value;
+
+      // Crear un objeto con el valor del control y un ID vacío
+      const pasajero = { id: '', nombrePasajero };
+
+      // Agregar el objeto al arreglo de pasajerosData
+      pasajerosData.push(pasajero);
+    }
+
+    solicitudVehiculo.listaPasajeros = pasajerosData;
+
+    // Ahora, pasajerosData contendrá un arreglo con objetos en el formato deseado
+    console.log("dataPas: ",pasajerosData);
+
+
     /* para la direccion */
     let nombreDepartamento;
     let nombreMunicipio;
@@ -241,7 +262,7 @@ export class ModalComponent implements OnInit {
         nombre: ['', ],
         username: [[this.username],],
         solicitante: ['', []], // Aquí definimos el FormControl para codigoUsuario
-        pasajeros: this.fb.array([])
+        pasajeros: this.fb.array([]),
       });
     }else{
       this.formularioSoliVe = this.fb.group({
@@ -266,7 +287,7 @@ export class ModalComponent implements OnInit {
         solicitante: this.fb.group({
           codigoUsuario: ['', []]
         }),
-        pasajeros: this.fb.array([])
+        listaPasajeros: this.fb.array([])
       });
     }
 
@@ -356,18 +377,37 @@ export class ModalComponent implements OnInit {
 
   // metodo para generar la filas de la tabla
   actualizarFilas() {
-    this.cantidadPersonas  = this.formularioSoliVe.get('cantidadPersonas').value;
 
-    if (this.cantidadPersonas > this.pasajeros.length && this.pasajeros.length < 4){
-      let cantidaFilasNuevas = this.cantidadPersonas - this.pasajeros.length - 1;
-      for (let i = 0; i < cantidaFilasNuevas; i++){
-        this.pasajeros.push({id: "", nombrePasajero: ''});
+    this.cantidadPersonas = this.formularioSoliVe.get('cantidadPersonas').value;
+    const pasajerosArray = this.formularioSoliVe.get('listaPasajeros') as FormArray;
+
+    // Calcula cuántas filas deberías tener
+    const filasAAgregar = this.cantidadPersonas >= 2 && this.cantidadPersonas <= 5 ? this.cantidadPersonas - 1 : 0;
+
+    if (this.cantidadPersonas <= 5) {
+      // Si la cantidad actual es menor o igual a 5, elimina el último input si existe
+      if (pasajerosArray.length > filasAAgregar) {
+        pasajerosArray.removeAt(pasajerosArray.length - 1);
+        this.pasajeroFormControls.pop();
       }
-    } else if (this.cantidadPersonas < this.pasajeros.length) {
-      this.pasajeros.splice(this.cantidadPersonas);
+
+      // Agrega filas adicionales según la cantidad deseada
+      while (pasajerosArray.length < filasAAgregar) {
+        pasajerosArray.push(this.fb.group({
+          id: [''], // Puedes inicializar estos valores como desees
+          nombrePasajero: ['']
+        }));
+
+        // Agrega un nuevo FormControl al arreglo pasajeroFormControls
+        this.pasajeroFormControls.push(new FormControl(''));
+      }
+    } else {
+      // Si la cantidad de personas es mayor a 5, detén la generación de filas
+      pasajerosArray.clear();
+      this.pasajeroFormControls = [];
     }
 
-    else if (this.cantidadPersonas > 5) {
+    if (this.cantidadPersonas > 5) {
       this.mostrarTabla = false; // Ocultar la tabla
       this.mostrarArchivoAdjunto = true; // Mostrar el campo de entrada de archivo
     } else {

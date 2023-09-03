@@ -23,20 +23,18 @@ export class SolicitudVehiculoService {
   // Servicio para obtener todas las solicitudes de vehiculo
 
   getSolicitudesVehiculo(estado: number) {
-    console.log(estado);
     if (estado != null){
       this.http
         .get(`${this.url}/solicitudvehiculo/listapage/${estado}`)
         .pipe(map((resp: any) => resp.content as ISolicitudVehiculo[]))
         .subscribe(
           (soliVe: ISolicitudVehiculo[]) => {
-            console.log("filtro:", soliVe);
             this.listSoliVehiculo = soliVe;
           },
           (error) => {
             console.log("Error al obtener las solicitudes de vehiculo", error);
           }
-        )
+        );
     }else {
       this.http
         .get(`${this.url}/solicitudvehiculo/listapage`)

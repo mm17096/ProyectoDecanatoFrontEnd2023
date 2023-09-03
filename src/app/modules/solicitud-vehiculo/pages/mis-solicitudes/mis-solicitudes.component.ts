@@ -37,6 +37,7 @@ export class MisSolicitudesComponent implements OnInit {
   abrirModal(leyenda: string) {
     const modalRef = this.modalService.open(ModalComponent, {size: 'xl', backdrop: 'static'});
     modalRef.componentInstance.leyenda = leyenda;
+    modalRef.componentInstance.estadoSeleccionado = this.estadoSeleccionado;
   }
 
   get listSoliVeData(){

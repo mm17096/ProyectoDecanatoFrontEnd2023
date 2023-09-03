@@ -20,7 +20,7 @@ import {CommunicationService} from "../../services/comunicacion.service";
 export class ModalComponent implements OnInit {
 
   @Input() leyenda!: string;
-  @Input() titulo!: string;
+  @Input() estadoSelecionado!: number;
   @Input() soliVeOd!: ISolicitudVehiculo;
 
   departamentos!: IPais[];
@@ -104,24 +104,27 @@ export class ModalComponent implements OnInit {
     }
   }
 
-  guardar(){
+  async guardar(){
     if (this.formularioSoliVe.valid){
       if (this.soliVeOd != null){
         this.editarSoliVe();
       }else{
-        this.registrarSoliVe();
+        if ((await this.mensajesService.mensajesConfirmar()) == true) {
+          this.registrarSoliVe();
+        }
       }
     } else {
-      Swal.fire({
-        position: 'center',
-        title: 'Faltan datos en el formuario',
-        text: 'Complete todos los campos requeridos',
-        icon: 'warning',
-      });
+      this.mensajesService.mensajesToast(
+        "warning",
+        "Complete los que se indican"
+      );
+      return Object.values(this.formularioSoliVe.controls).forEach((control) =>
+        control.markAsTouched()
+      );
     }
   }
 
-  registrarSoliVe() {
+  registrarSoliVe() : Promise<void> {
     const solicitudVehiculo = this.formularioSoliVe.value;
 
     // Crear un arreglo vacío para almacenar los datos de los pasajeros
@@ -184,42 +187,44 @@ export class ModalComponent implements OnInit {
     }
 
     solicitudVehiculo.direccion = nombreDepartamento+', '+nombreMunicipio+', '+
-    nombreDistrito+', '+nombreCanton;
+      nombreDistrito+', '+nombreCanton;
     solicitudVehiculo.solicitante.codigoUsuario = '4937c750-13f7-4041-990a-f2de7fdf8cae';
-
     /* fin de la direccion */
+
+    // Mostrar SweetAlert de carga
+    const loadingAlert = Swal.fire({
+      title: "Espere",
+      text: "Realizando la acción...",
+      icon: "info",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showCancelButton: false,
+      showConfirmButton: false,
+    });
+
     //console.log(solicitudVehiculo);
-    this.soliVeService.registrarSoliVe(solicitudVehiculo).subscribe( (resp: any) => {
-      if (resp) {
-        const Toast = Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 3000,
-          //timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-          }
-        });
-
-        Toast.fire({
-          icon: 'success',
-          text: 'Almacenamiento exitoso'
-        });
-
-        this.formularioSoliVe.reset();
-        this.communicationService.notifyDataUpdated();
-        this.modalService.dismissAll();
-      }
-    },
-      (err: any) => {
-        this.mensajesService.mensajesSweet(
-          "error",
-          "Ups... Algo salió mal",
-          err
-        )
+    return new Promise<void> ((resolve, reject) => {
+      this.soliVeService.registrarSoliVe(solicitudVehiculo).subscribe({
+        next: (resp: any) => {
+          Swal.close();
+          this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
+          this.mensajesService.mensajesToast("success", "Registro agregado");
+          this.modalService.dismissAll();
+          this.formularioSoliVe.reset();
+          resolve();
+        },
+        error : (err) => {
+          // Cerrar SweetAlert de carga
+          Swal.close();
+          this.mensajesService.mensajesSweet(
+            "error",
+            "Ups... Algo salió mal",
+            err
+          );
+          reject(err); // Rechaza la promesa con el error
+        },
       });
+    });
   }
 
 

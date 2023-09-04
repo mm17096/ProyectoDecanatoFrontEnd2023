@@ -1,3 +1,11 @@
+/* Agrega una clase para aplicar el estilo de "solo lectura" al select */
+.select-readonly {
+  background-color: #eff2f7;
+  /* Cambia el color de fondo para indicar que está en modo "solo lectura" */
+  pointer-events: none;
+  /* Evita que se capturen eventos en el select */
+}
+
 .excel-table {
   border-collapse: collapse;
   width: 100%;
@@ -17,12 +25,16 @@
   line-height: 1.5;
 }
 
-i {
-  font-size: 17px;
+ng-select.is-invalid {
+  box-shadow: 0 0 0 1px #f46a6a;
+  border-radius: 0.25rem;
 }
 
-/* Agrega una clase para aplicar el estilo de "solo lectura" al select */
-.select-readonly {
-  background-color: #eff2f7; /* Cambia el color de fondo para indicar que está en modo "solo lectura" */
-  pointer-events: none; /* Evita que se capturen eventos en el select */
+ng-select.is-valid {
+  box-shadow: 0 0 0 1px #34c38f;
+  border-radius: 0.25rem;
+}
+
+button.btn-close{
+  margin-left: 5px;
 }

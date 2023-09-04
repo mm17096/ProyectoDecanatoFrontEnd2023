@@ -24,7 +24,9 @@
         <td>{{data.lugarMision}}</td>
         <td>{{data.fechaSalida}}</td>
         <td style="text-align: center">{{data.cantidadPersonas}}</td>
-        <td style="text-align: center">{{data.estadoString}}</td>
+        <td style="text-align: center">
+          <h5><span class="badge rounded-pill bg-info">{{data.estadoString}}</span></h5>
+        </td>
         <td style="text-align: center">
           <button type="button" class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1"
                   (click)="abrirModal('Detalle', data)"

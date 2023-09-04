@@ -32,6 +32,9 @@ export class ModalComponent implements OnInit {
   @Input() estadoSelecionado!: number;
   @Input() soliVeOd!: ISolicitudVehiculo;
 
+  private isInteger: string = INTEGER_VALIDATE;
+  private isDate: string = "";
+
   departamentos!: IPais[];
   municipios!: IPais[];
   distritos!: IPais[];
@@ -70,8 +73,6 @@ export class ModalComponent implements OnInit {
               private mensajesService: MensajesService, private communicationService: CommunicationService) { }
 
   ngOnInit(): void {
-    console.log(this.leyenda);
-    console.log(this.soliVeOd);
     this.iniciarFormulario();
     this.llenarComboDepartamentos();
     this.soliVeService.obtenerVehiculos();
@@ -138,48 +139,69 @@ export class ModalComponent implements OnInit {
       }else{
         solicitudVehiculo.solicitante.codigoUsuario = '4937c750-13f7-4041-990a-f2de7fdf8cae';
 
-        //  vacío para almacenar los datos de los pasajeros
-        const pasajerosData = [];
+       if(this.validarfecha(solicitudVehiculo.fechaSolicitud)){
+         if (this.validarfecha(solicitudVehiculo.fechaSalida)){
+           if(this.validarfecha(solicitudVehiculo.fechaEntrada)){
+             //  vacío para almacenar los datos de los pasajeros
+             const pasajerosData = [];
 
-        // Recorrer los controles de los pasajeros
-        for (const control of this.pasajeroFormControls) {
-          // Obtener el valor del control
-          const nombrePasajero = control.value;
+             // Recorrer los controles de los pasajeros
+             for (const control of this.pasajeroFormControls) {
+               // Obtener el valor del control
+               const nombrePasajero = control.value;
 
-          // objeto con el valor del control y un ID vacío
-          const pasajero = { id: '', nombrePasajero };
+               // objeto con el valor del control y un ID vacío
+               const pasajero = { id: '', nombrePasajero };
 
-          // Agregar el objeto al arreglo de pasajerosData
-          pasajerosData.push(pasajero);
-        }
+               // Agregar el objeto al arreglo de pasajerosData
+               pasajerosData.push(pasajero);
+             }
 
-        solicitudVehiculo.listaPasajeros = pasajerosData;
+             solicitudVehiculo.listaPasajeros = pasajerosData;
 
-        //console.log("dataPas: ",pasajerosData);
+             //console.log("dataPas: ",pasajerosData);
 
-        // validacion lista de pasajeros
-        const todosLlenos = pasajerosData.every((pasajero) => {
-          const value = pasajero.nombrePasajero;
+             // validacion lista de pasajeros
+             const todosLlenos = pasajerosData.every((pasajero) => {
+               const value = pasajero.nombrePasajero;
 
-          if (typeof value === 'string' && value.trim() !== '') {
-            return true;
-          }
+               if (typeof value === 'string' && value.trim() !== '') {
+                 return true;
+               }
 
-          return false;
-        });
+               return false;
+             });
 
-        if (!todosLlenos) {
-          this.mensajesService.mensajesToast(
-            "warning",
-            "Por favor, completa todos los nombres de los pasajeros."
-          );
-          // fin validacion de lista de pasajeros
-        } else {
-          // Todos los nombres de los pasajeros están llenos, continuar con el envío de la solicitud.
-          if ((await this.mensajesService.mensajesConfirmar()) == true) {
-            this.registrarSoliVe();
-          }
-        }
+             if (!todosLlenos) {
+               this.mensajesService.mensajesToast(
+                 "warning",
+                 "Por favor, completa todos los nombres de los pasajeros."
+               );
+               // fin validacion de lista de pasajeros
+             } else {
+               // Todos los nombres de los pasajeros están llenos, continuar con el envío de la solicitud.
+               if ((await this.mensajesService.mensajesConfirmar()) == true) {
+                 this.registrarSoliVe();
+               }
+             }
+           } else {
+             this.mensajesService.mensajesToast(
+               "warning",
+               "Año de fecha de regreso incorrecta"
+             );
+           }
+         } else {
+           this.mensajesService.mensajesToast(
+             "warning",
+             "Año de fecha de misión incorrecta"
+           );
+         }
+       } else {
+         this.mensajesService.mensajesToast(
+           "warning",
+           "Año de fecha de solicitud incorrecta"
+         );
+       }
       }
     } else {
       // Mostrar nombres de campos inválidos por consola
@@ -302,7 +324,10 @@ export class ModalComponent implements OnInit {
       this.formularioSoliVe = this.fb.group({
         fechaSolicitud: [
           this.obtenerFechaActual(new Date()),
-          [Validators.required]],
+          [
+            Validators.required,
+            Validators.pattern(this.isDate)
+          ]],
         fechaSalida: [
           '',
           [Validators.required]],
@@ -333,13 +358,25 @@ export class ModalComponent implements OnInit {
           [
             Validators.required
           ]],
-        fechaSalida: ['', [Validators.required]],
-        fechaEntrada: ['', [Validators.required]],
+        fechaSalida: ['', [
+          Validators.required,
+          Validators.pattern(this.isDate)
+        ]],
+        fechaEntrada: ['', [
+          Validators.required,
+          Validators.pattern(this.isDate)
+        ]],
         unidadSolicitante: ['Informática', [Validators.required]],
         tipoVehiculo: ['', [Validators.required]],
         vehiculo: ['', [Validators.required]],
-        objetivoMision: ['', [Validators.required]],
-        lugarMision: ['', [Validators.required]],
+        objetivoMision: ['', [
+          Validators.required,
+          Validators.minLength(6)
+        ]],
+        lugarMision: ['', [
+          Validators.required,
+          Validators.minLength(3)
+        ]],
         direccion: [''],
         depto: ['', [Validators.required]],
         municipio: ['', [Validators.required]],
@@ -350,7 +387,8 @@ export class ModalComponent implements OnInit {
         cantidadPersonas: [
           1, [
             Validators.required,
-            Validators.min(1)
+            Validators.min(1),
+            Validators.pattern(this.isInteger)
           ]],
         solicitante: this.fb.group({
           codigoUsuario: ['4937c750-13f7-4041-990a-f2de7fdf8cae', [Validators.required]]
@@ -359,6 +397,16 @@ export class ModalComponent implements OnInit {
       });
     }
 
+  }
+
+  validarfecha(fecha: string) {
+    const inputDate = new Date(fecha);
+
+    if (inputDate.getFullYear() > 999 && inputDate.getFullYear() < 10000) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   //// metodo para validar el campo si es valido o no ////

@@ -52,6 +52,10 @@
                 *ngIf="formularioSoliVe.get('fechaSolicitud')?.errors?.['required']">
                 Requiere una fecha de solicitud
               </span>
+              <span
+                *ngIf="formularioSoliVe.get('fechaSolicitud')?.errors?.['pattern']">
+                Fecha no valida
+              </span>
             </div>
           </div>
           <!--fin fecha de realizacion de solicitud-->
@@ -68,6 +72,10 @@
               <span
                 *ngIf="formularioSoliVe.get('fechaSalida')?.errors?.['required']">
                 Requiere una fecha de misión
+              </span>
+              <span
+                *ngIf="formularioSoliVe.get('fechaSalida')?.errors?.['pattern']">
+                Fecha no valida
               </span>
             </div>
           </div>
@@ -112,6 +120,10 @@
                 *ngIf="formularioSoliVe.get('lugarMision')?.errors?.['required']">
                 Requiere el lugar o institucción que visitará
               </span>
+              <span
+                *ngIf="formularioSoliVe.get('lugarMision')?.errors?.['minlength']">
+                Digite más de 3 caracteres
+              </span>
             </div>
           </div>
           <!--fin lugar o institucion a visitar-->
@@ -121,7 +133,7 @@
             <div *ngSwitchCase="'Detalle'" class="col-md-12">
               <!--direccon (solamente para mostrar en detalle de la solcitud)-->
               <div class="mt-2">
-                <label for="lugar-visitar">Dirección:</label>
+                <label for="direccion">Dirección:</label>
                 <textarea cols="30" rows="2"
                           class="form-control"
                           formControlName="direccion"
@@ -251,6 +263,10 @@
                 *ngIf="formularioSoliVe.get('fechaEntrada')?.errors?.['required']">
                 Requiere una fecha de regreso
               </span>
+              <span
+                *ngIf="formularioSoliVe.get('fechaEntrada')?.errors?.['pattern']">
+                Fecha no valida
+              </span>
             </div>
           </div>
           <!-- fin fecha de regreso -->
@@ -312,7 +328,7 @@
                 <div class="invalid-feedback">
                   <span
                     *ngIf="formularioSoliVe.get('vehiculo')?.errors?.['required']">
-                    Requiere seleccionar un departamento
+                    Requiere seleccionar un vehículo
                   </span>
                 </div>
               </ng-template>
@@ -405,6 +421,10 @@
                     *ngIf="formularioSoliVe.get('objetivoMision')?.errors?.['required']">
                     Requiere el obejetivo de la misión
                   </span>
+              <span
+                *ngIf="formularioSoliVe.get('objetivoMision')?.errors?.['minlength']">
+                    Digite más de 6 caracteres
+              </span>
             </div>
           </div>
           <!-- fin objetivo de la mision -->
@@ -428,6 +448,14 @@
                     *ngIf="formularioSoliVe.get('cantidadPersonas')?.errors?.['required']">
                     Requiere la cantidad de pasajeros en la misión
                   </span>
+                <span
+                  *ngIf="formularioSoliVe.get('cantidadPersonas')?.errors?.['min']">
+                    La cantidad de personas debe ser al menos 1
+                  </span>
+                <span
+                  *ngIf="formularioSoliVe.get('cantidadPersonas')?.errors?.['pattern']">
+                    Solamente se permiten números enteros
+                  </span>
               </div>
             </div>
             <!-- fin cantidad de personas que viajaran -->
@@ -437,7 +465,7 @@
         <div class="row" *ngIf="leyenda == 'Detalle' && soliVeOd != null">
             <div class="col-md-12">
               <div class="mt-2">
-                <label for="lugar-visitar">Responsable:</label>
+                <label for="solicitante">Responsable:</label>
                 <input type="text"
                           class="form-control"
                           formControlName="solicitante"

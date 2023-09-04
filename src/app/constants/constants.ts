@@ -35,3 +35,4 @@ export const TEXTO_PLACA = '[a-zA-Z]{1,2}[a-zA-Z0-9]{0,3}[a-zA-Z0-9]{3}';
 
 
 
+

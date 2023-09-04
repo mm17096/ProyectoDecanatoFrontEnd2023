@@ -26,12 +26,11 @@
                       </div>
                     </div>
                     <div class="col-md-6">
-
-                      <label class="control-label">Número Placa:</label>
+                      <label class="control-label">Número Placa: <span class="text-danger">*</span></label>
                       <input type="text" formControlName="placa" class="form-control" id="placa" name="placa"
-                        placeholder="Ingrese Placa"
+                        placeholder="Ingrese placa"
                         [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [class]="esCampoValido('placa')"/>
+                        [class]="titulo != 'Detalle' ? esCampoValido('placa') : ''"/>
                         <div class="invalid-feedback">
                           <span *ngIf="formVehiculo.get('placa')?.errors?.['required']">
                             Requiere Placa
@@ -42,14 +41,17 @@
                         </div>
 
                         <div class="mt-4">
-                          <label class="control-label">Fecha Vencimiento Tarjeta:</label>
+                          <label class="control-label">Fecha Vencimiento Tarjeta: <span class="text-danger">*</span></label>
                           <input type="date" formControlName="fecha_tarjeta" class="form-control" id="fecha_tarjeta" name="fecha_tarjeta"
-                            placeholder="Ingrese Placa"
+                            placeholder="Ingrese fecha vencimiento"
                             [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                            [class]="esCampoValido('placa')"/>
+                            [class]="titulo != 'Detalle' ? esCampoValido('fecha_tarjeta') : ''"/>
                             <div class="invalid-feedback">
                               <span *ngIf="formVehiculo.get('fecha_tarjeta')?.errors?.['required']">
                                 Requiere Fecha Tarjeta
+                              </span>
+                              <span *ngIf="formVehiculo.get('fecha_tarjeta')?.errors?.['fechaVencimientoInvalida']">
+                                Fecha vencimiento  debe ser mayor
                               </span>
                             </div>
                         </div>
@@ -60,32 +62,30 @@
                 <div class="col-md-12">
                   <div class="form-group row m-3">
                     <div class="col-md-6">
-                      <label class="control-label">Modelo:</label>
+                      <label class="control-label">Modelo: <span class="text-danger">*</span></label>
                       <input type="text" formControlName="modelo" class="form-control" id="modelo" name="modelo"
-                          placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                          [class]="esCampoValido('modelo')"/>
+                          placeholder="Ingrese modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                          [class]="titulo != 'Detalle' ? esCampoValido('modelo') : ''"/>
                       <div class="invalid-feedback">
-                        <div class="invalid-feedback">
                           <span *ngIf="formVehiculo.get('modelo')?.errors?.['required']">
-                              Requiere una Modelo
+                              Requiere un Modelo
                           </span>
-                          <span *ngIf="formVehiculo.get('modelo')?.errors?.['pattern']">
-                              Ingreso solo texto
-                          </span>
-                        </div>
                       </div>
                     </div>
                     <div class="col-md-6">
-                      <label class="control-label">Marca:</label>
+                      <label class="control-label">Marca: <span class="text-danger">*</span></label>
                       <input type="text" list="datalistOptions" formControlName="marca" class="form-control" id="marca" name="marca"
-                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [class]="esCampoValido('marca')"/>
+                        placeholder="Ingrese marca" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [class]="titulo != 'Detalle' ? esCampoValido('marca') : ''"/>
                         <datalist id="datalistOptions">
                           <option value="Toyota">
+                          <option value="Nissan">
                           <option value="Jeep">
                           <option value="Isuzu">
-                          <option value="Mazada">
+                          <option value="Mazda">
                           <option value="Mitsubishi">
+                          <option value="Honda">
+                          <option value="Kia">
                         </datalist>
                         <div class="invalid-feedback">
                           <span *ngIf="formVehiculo.get('marca')?.errors?.['required']">
@@ -102,38 +102,49 @@
                 <div class="col-md-12">
                   <div class="form-group row m-3">
                     <div class="col-md-3">
-                      <label class="control-label">Número Motor:</label>
+                      <label class="control-label">Número Motor: <span class="text-danger">*</span></label>
                       <input type="text" formControlName="n_motor" class="form-control" id="n_motor" name="n_motor"
-                        placeholder="Ingrese Motor" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [class]="esCampoValido('n_motor')"/>
+                        placeholder="Ingrese motor" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [class]="titulo != 'Detalle' ? esCampoValido('n_motor') : ''"/>
                         <div class="invalid-feedback">
                           <span *ngIf="formVehiculo.get('n_motor')?.errors?.['required']">
                               Requiere Motor
                           </span>
-                          <span *ngIf="formVehiculo.get('n_motor')?.errors?.['pattern']">
-                              Ingreso solo texto
+                          <span *ngIf="formVehiculo.get('n_motor')?.errors?.['minlength']">
+                              Tamano minimo {{formVehiculo.get('n_motor')?.errors?.['minlength']?.requiredLength}}
                           </span>
+                          <span *ngIf="formVehiculo.get('n_motor')?.errors?.['maxlength']">
+                            Tamano maximo {{formVehiculo.get('n_motor')?.errors?.['maxlength']?.requiredLength}}
+                        </span>
                         </div>
                     </div>
                     <div class="col-md-3">
-                      <label class="control-label">Número Chasis:</label>
+                      <label class="control-label">Número Chasis: <span class="text-danger">*</span></label>
                       <input type="text" formControlName="n_chasis" class="form-control" id="n_chasis" name="n_chasis"
-                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [class]="esCampoValido('chasis')"/>
+                        placeholder="Ingrese chasis" mask="AAAAAAAAAAAAAAAAA"
+                        [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [class]="titulo != 'Detalle' ? esCampoValido('n_chasis') : ''"/>
                         <div class="invalid-feedback">
                           <span *ngIf="formVehiculo.get('n_chasis')?.errors?.['required']">
                               Requiere Chasis
                           </span>
-                          <span *ngIf="formVehiculo.get('n_chasis')?.errors?.['pattern']">
-                              Ingreso solo texto
-                          </span>
+                          <span *ngIf="formVehiculo.get('n_chasis')?.errors?.['mask']">
+                            No cumple formato 17 numeros
+                        </span>
                         </div>
                     </div>
                     <div class="col-md-3">
-                      <label class="control-label">Clase:</label>
-                      <input type="text" formControlName="clase" class="form-control" id="clase" name="clase"
-                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [class]="esCampoValido('clase')"/>
+                      <label class="control-label">Clase: <span class="text-danger">*</span></label>
+                      <input type="text" list="datalistClase" formControlName="clase" class="form-control" id="clase" name="clase"
+                        placeholder="Ingrese clase" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [class]="titulo != 'Detalle' ? esCampoValido('clase') : ''"/>
+                        <datalist id="datalistClase">
+                          <option value="Automovil">
+                          <option value="Camion Pesado">
+                          <option value="Camion Liviano">
+                          <option value="Microbus">
+                          <option value="Pick up">
+                        </datalist>
                         <div class="invalid-feedback">
                           <span *ngIf="formVehiculo.get('clase')?.errors?.['required']">
                               Requiere una Clase
@@ -144,10 +155,10 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                      <label class="control-label">Color:</label>
+                      <label class="control-label">Color: <span class="text-danger">*</span></label>
                       <input type="text" formControlName="color" class="form-control" id="color" name="color"
-                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [class]="esCampoValido('color')"/>
+                        placeholder="Ingrese color" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [class]="titulo != 'Detalle' ? esCampoValido('color') : ''"/>
                         <div class="invalid-feedback">
                           <span *ngIf="formVehiculo.get('color')?.errors?.['required']">
                               Requiere un Color
@@ -165,8 +176,8 @@
                     <div class="col-md-3">
                       <label class="control-label">Capacidad Personas:</label>
                       <input type="number" formControlName="capacidad" class="form-control" id="capacidad" name="capacidad"
-                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [class]="esCampoValido('capacidad')"/>
+                        placeholder="Ingrese capacidad" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [class]="titulo != 'Detalle' ? esCampoValido('capacidad') : ''"/>
                         <div class="invalid-feedback">
                           <span *ngIf="formVehiculo.get('capacidad')?.errors?.['required']">
                               Requiere  Capacidad
@@ -177,10 +188,10 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                      <label class="control-label">Capacidad Tanque:</label>
+                      <label class="control-label">Capacidad Tanque: <span class="text-danger">*</span></label>
                       <input type="text" formControlName="capacidadTanque" class="form-control" id="capacidadTanque" name="capacidadTanque"
-                        placeholder="Ingrese Modelo" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [class]="esCampoValido('ctanque')"/>
+                        placeholder="Ingrese capacidad" [readonly]="objVehiculo != null && titulo == 'Detalle'"
+                        [class]="titulo != 'Detalle' ? esCampoValido('capacidadTanque') : ''"/>
                         <div class="invalid-feedback">
                           <span *ngIf="formVehiculo.get('capacidadTanque')?.errors?.['required']">
                               Requiere  Capacidad
@@ -188,24 +199,25 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                      <label class="control-label">Tipo de Gas:</label>
-                      <select type="text" formControlName="tipoGas" class="form-select" id="tipoGas" name="tipoGas"
+                      <label class="control-label">Tipo de Gas: <span class="text-danger">*</span></label>
+                      <select type="text" formControlName="tipo_gas" class="form-select" id="tipo_gas" name="tipo_gas"
                         [disabled]="objVehiculo != null && titulo == 'Detalle'"
-                        [class]="esCampoValido('tipoGas')">
+                        [ngClass]="{'select-readonly': objVehiculo != null && titulo == 'Detalle'}"
+                        [class]="titulo != 'Detalle' ? esCampoValido('tipo_gas') : ''">
                           <option value="Diesel">Diesel</option>
                           <option value="Gasolina">Gasolina</option>
                       </select>
                       <div class="invalid-feedback">
-                        <span *ngIf="formVehiculo.get('tipoGas')?.errors?.['required']">
+                        <span *ngIf="formVehiculo.get('tipo_gas')?.errors?.['required']">
                             Requiere un Tipo
                         </span>
                       </div>
                     </div>
                     <div class="col-md-3">
-                      <label class="control-label">Año Vehiculo:</label>
+                      <label class="control-label">Año Vehiculo: <span class="text-danger">*</span></label>
                       <input type="number" formControlName="year" class="form-control" id="year" name="year"
                         placeholder="Ingrese Año" [readonly]="objVehiculo != null && titulo == 'Detalle'"
-                        [class]="esCampoValido('year')"/>
+                        [class]="titulo != 'Detalle' ? esCampoValido('year') : ''"/>
                         <div class="invalid-feedback">
                           <span *ngIf="formVehiculo.get('year')?.errors?.['required']">
                               Requiere un modelo

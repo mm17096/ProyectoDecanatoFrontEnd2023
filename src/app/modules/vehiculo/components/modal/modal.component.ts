@@ -5,6 +5,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms"
 import { MensajesService } from "src/app/shared/global/mensajes.service";
 import { INTEGER_VALIDATE, STRING_VALIDATE, TEXTO_CARACTER_ESPECIAL, TEXTO_PLACA } from "src/app/constants/constants";
 import { VehiculoService } from "../../service/vehiculo.service";
+import { ListarComponent } from "../../pages/listar/listar.component";
 
 @Component({
   selector: "app-modal",
@@ -53,16 +54,17 @@ export class ModalComponent implements OnInit {
   iniciarFormulario(): FormGroup {
     return this.fb.group({
       placa: ['', [Validators.required, Validators.pattern(this.isPlaca)]],
-      modelo: ['', [Validators.required,Validators.pattern(this.isPalabra)]],
+      modelo: ['', [Validators.required]],
       marca: ['', [Validators.required,Validators.pattern(this.isPalabra)]],
       clase: ['', [Validators.required, Validators.pattern(this.isPalabra)]],
       color: ['',[Validators.required, Validators.pattern(this.isTexto)]],
+      fecha_tarjeta: ['',[Validators.required, this.fechaVencimientoValidator]],
       year: ['',[Validators.required, Validators.pattern(this.isInteger), this.yearValidator]],
       capacidad: ['',[Validators.required, Validators.min(1)]],
       capacidadTanque: ['',[Validators.required]],
       n_chasis: ['',[Validators.required]],
-      n_motor: ['', [Validators.required]],
-      tipoGas: ['Diesel',[Validators.required]],
+      n_motor: ['', [Validators.required,Validators.minLength(5), Validators.maxLength(10)]],
+      tipo_gas: ['Diesel',[Validators.required]],
       file: ['',]
     });
   }
@@ -73,6 +75,17 @@ export class ModalComponent implements OnInit {
 
     if (isNaN(enteredYear) || enteredYear > currentYear || enteredYear < currentYear - 50) {
       return { invalidYear: true };
+    }
+
+    return null;
+  }
+
+  fechaVencimientoValidator(control: FormControl) {
+    const fechaVencimiento = new Date(control.value);
+    const fechaActual = new Date();
+
+    if (fechaVencimiento <= fechaActual) {
+      return { fechaVencimientoInvalida: true };
     }
 
     return null;
@@ -114,35 +127,20 @@ export class ModalComponent implements OnInit {
 
   registrando(){
     const formData = new FormData();
-
-    const envObj = {
-      codigoVehiculo:  '',
-      placa:           this.formVehiculo.get('placa')?.value,
-      modelo:          this.formVehiculo.get('modelo')?.value,
-      marca:           this.formVehiculo.get('marca')?.value,
-      clase:           this.formVehiculo.get('clase')?.value,
-      color:           this.formVehiculo.get('color')?.value,
-      year:            this.formVehiculo.get('year')?.value,
-      fecha_tarjeta:   '2023-09-05',
-      capacidad:       this.formVehiculo.get('capacidad')?.value,
-      capacidadTanque: this.formVehiculo.get('ctanque')?.value,
-      estado:          7,
-      n_chasis:        this.formVehiculo.get('chasis')?.value,
-      n_motor:         this.formVehiculo.get('motor')?.value,
-      tipo_gas:        this.formVehiculo.get('tipoGas')?.value,
-      nombrefoto:      '',
-      urlfoto:         ''
-    };
+    let envObj = this.formVehiculo.value;
+    envObj.estado = 8;
 
     formData.append('vehiculo', new Blob([JSON.stringify(envObj)], {type: 'application/json'}));
     formData.append('imagen', this.file!);
 
     this.vehiService.guardarVehiculo(formData).subscribe( reps => {
       this.mensajeService.mensajesToast("success", "Registro agregado");
+      this.vehiService.getVehiculos();
+      //cerrar el modal
+      this.modalService.dismissAll();
+    }, (err: any) => {
+      this.mensajeService.mensajesSweet("error", "Algo salió mal", err);
     });
-
-    //cerrar el modal
-    this.modalService.dismissAll();
 
   }
 

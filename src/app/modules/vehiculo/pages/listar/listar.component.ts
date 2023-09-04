@@ -14,8 +14,7 @@ export class ListarComponent implements OnInit {
   breadCrumbItems: Array<{}>;
   termBusca: string;
 
-  //var
-  vehiculos:IVehiculos[] = [];
+
 
   constructor(private vehiService:VehiculoService, private serviModal: NgbModal) {}
 
@@ -24,13 +23,11 @@ export class ListarComponent implements OnInit {
       { label: "Vehiculo" },
       { label: "Listar", active: true },
     ];
-    this.obtenerVehiculos();
+    this.vehiService.getVehiculos();
   }
 
-  obtenerVehiculos(){
-    this.vehiService.getVehiculos().subscribe((resp) => {
-      this.vehiculos = resp;
-    });
+  get obtenerVehiculos(){
+    return this.vehiService.listVehiclos;
   }
 
   abrirModal(leyenda: string) {

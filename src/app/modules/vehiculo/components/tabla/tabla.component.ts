@@ -29,6 +29,10 @@ export class TablaComponent implements OnInit {
     modalRef.componentInstance.objVehiculo = objVehiculo;
   }
 
+  cambiarEstado(vehiculoED: IVehiculos, estado: number) {
+    
+  }
+
 
 
 }

@@ -13,13 +13,13 @@ export class VehiculoService {
 
   constructor(private http: HttpClient) {}
 
-  public getVehiculos(): Observable<IVehiculos[]> {
+  public gyetVehi(): Observable<IVehiculos[]> {
     return this.http
       .get<IVehiculos[]>(this.url + "api/vehiculo/lista")
       .pipe(map((resp: any) => resp.content as IVehiculos[]));
   }
 
-  getVehi() {
+  getVehiculos() {
     this.http
       .get(`${this.url}api/vehiculo/lista`)
       .pipe(map((resp: any) => resp.content as IVehiculos[]))

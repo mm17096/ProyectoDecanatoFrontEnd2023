@@ -18,7 +18,14 @@
               <td class="align-middle text-center">{{ obj.modelo }}</td>
               <td class="align-middle text-center">{{ obj.year }}</td>
               <td class="align-middle text-center">{{ obj.fecha_tarjeta}}</td>
-              <td class="align-middle text-center">{{ obj.estado === 7 ? 'Activo' : 'Inactivo' }}</td>
+              <td class="align-middle text-center">
+                <h5>
+                    <span
+                        class="{{ obj.estado === 8 ? 'badge rounded-pill bg-success' : 'badge rounded-pill bg-danger' }}">
+                        {{ obj.estado === 8 ? 'Activo' : 'Inactivo' }}
+                    </span>
+                </h5>
+              </td>
               <td class="align-middle text-center text-center">
                 <!--       botones para detalle -->
                 <button type="button" class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1"
@@ -31,6 +38,15 @@
                 (click)="abrirModal('Editar',obj)"
                   ngbTooltip="Modificar vehiculo">
                   <i class="mdi mdi-18px mdi-book-edit-outline"></i>
+                </button>
+                <!-- bontes para editar estado -->
+                <button type="button" class="btn btn-warning btn-sm btn-rounded mx-1"
+                        (click)="cambiarEstado(obj, obj.estado)"
+                        ngbTooltip="Cambiar a {{obj.estado === 9 ? 'Activo' : 'Inactivo'}}">
+                        <i
+                            [ngClass]="obj.estado === 8 ? 'mdi mdi-18px mdi-lock-outline' : 'mdi mdi-18px mdi-key-outline'"></i>
+                        <!-- <i class="mdi mdi-account-lock-outline"></i>
+                         mdi-account-check-outline -->
                 </button>
               </td>
           </tr>

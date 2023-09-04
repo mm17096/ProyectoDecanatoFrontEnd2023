@@ -1,67 +1,82 @@
-<!-- Button trigger modal -->
-<div *ngIf="leyenda=='Agregar'; else templateElse">
-  <button type="button"  class="btn btn-primary btn-rounded" data-bs-toggle="modal" data-bs-target="#modalCargo"
-  (click)="openModal(content)">
-  {{leyenda}}
-   </button>
-</div>
-<ng-template #templateElse>
-  <button type="button"  class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1" data-bs-toggle="modal" data-bs-target="#modalCargo"
-  ngbTooltip="editar" (click)="openModal(content)">
-  <i class="bx bx-edit-alt"></i>
-   </button>
-</ng-template>
-
-
 
  <!-- Modal -->
+<!--
  <ng-template #content role="document" let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title mt-0">Cargos</h5>
-    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"
-    (click)="this.formCargo.reset()"></button>
-  </div>
+ -->
 
-    <form (ngSubmit)="guardar()" [formGroup]="formCargo">
-      <div class="modal-body">
+  <div class="modal-header ">
+    <h5 class="modal-title mt-0">{{leyenda}} Cargos</h5>
+    <!-- aqui inicia el botton la alerta -->
+    <div class="btn-alerta" *ngIf="alerts">
+      <i
+        class="mdi mdi-18px mdi-lightbulb-on-outline custom-cursor"
+        ngbTooltip="Mostrar Ayuda"
+        *ngIf="!siMuestraAlertas()"
+        (click)="restaurarAlerts()"
+      ></i>
+    </div>
+    <!-- aqui termina el botton la alerta -->
+    <button type="button" class="btn-close" aria-hidden="true" (click)="activeModal.dismiss('Cross click')"
+    ></button>
+  </div>
+  <form (ngSubmit)="guardar()" [formGroup]="formCargo">
+    <div class="modal-body">
+      <!-- Aqui va el div la alerta -->
+      <div *ngFor="let alert of alerts">
+        <div
+          class="alert alert-{{ alert.type }} alert-dismissible fade show"
+          role="alert"
+          *ngIf="alert.show"
+        >
+          <strong>Importante!</strong>
+          {{ alert.message }}
+          <button
+            type="button"
+            class="btn-close"
+            (click)="CambiarAlert(alert)"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    <!-- Aqui termina el div la alerta -->
 <div class="row">
-  <div class="col-md-12">
-    <!--inicio del campo nombre-->
-    <div class="form-group row m-4">
-      <label class="control-label">Nombre:</label>
-      <input type="text"
-      class="form-control"
-      formControlName="nombreCargo"
-      placeholder="Nombre"
-      [class]="esCampoValido('nombreCargo')">
-      <div *ngIf="nombreCargo?.errors?.['required'] && nombreCargo?.touched">
-        <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*El campo Nombre es obligatorio</span>
+<div class="col-md-12">
+  <!--inicio del campo nombre-->
+  <div class="form-group row m-4">
+    <label class="control-label">Nombre:<span class="text-danger"> *</span></label>
+    <input type="text"
+    class="form-control"
+    formControlName="nombreCargo"
+    placeholder="Nombre"
+    [class]="esCampoValido('nombreCargo')">
+    <div *ngIf="nombreCargo?.errors?.['required'] && nombreCargo?.touched">
+      <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*El campo Nombre es obligatorio</span>
+      </div>
+      <div *ngIf="nombreCargo?.errors?.['pattern'] && nombreCargo?.touched">
+        <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*Solo letras Mayusculas</span>
         </div>
-        <div *ngIf="nombreCargo?.errors?.['pattern'] && nombreCargo?.touched">
-          <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*Solo letras Mayusculas</span>
-          </div>
-    </div>
-
-    <!--fin del campo nombre-->
-
-    <!--inicio del campo descripcion-->
-    <div class="form-group row m-4">
-      <label class="control-label">Descripcion:</label>
-      <input type="text"
-      class="form-control"
-      formControlName="descripcion"
-      placeholder="Descripcion"
-      [class]="esCampoValido('descripcion')">
-      <div *ngIf="descripcion?.errors?.['required'] && descripcion?.touched">
-        <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*El campo Descripcion es obligatorio</span>
-        </div>
-        <div *ngIf="descripcion?.errors?.['pattern'] && descripcion?.touched">
-          <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*Solo letras y espacio</span>
-          </div>
-    </div>
-
-    <!--fin del campo descripcion-->
   </div>
+
+  <!--fin del campo nombre-->
+
+  <!--inicio del campo descripcion-->
+  <div class="form-group row m-4">
+    <label class="control-label">Descripcion:<span class="text-danger"> *</span></label>
+    <textarea type="text"
+    class="form-control"
+    formControlName="descripcion"
+    placeholder="Descripcion"
+    [class]="esCampoValido('descripcion')"></textarea>
+    <div *ngIf="descripcion?.errors?.['required'] && descripcion?.touched">
+      <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*El campo Descripcion es obligatorio</span>
+      </div>
+      <div *ngIf="descripcion?.errors?.['pattern'] && descripcion?.touched">
+        <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*Solo letras y espacio</span>
+        </div>
+  </div>
+
+  <!--fin del campo descripcion-->
+</div>
 </div>
 
 
@@ -70,17 +85,21 @@
 
 
 
-  </div>
+</div>
 
-  <div class="modal-footer">
+<div class="modal-footer">
 
-   <button type="submit" class="btn btn-primary">Guardar</button>
+ <button type="submit" class="btn btn-primary">Guardar</button>
 
-   <button type="button" class="btn btn-dark" (click)="modal.close('Close click')"
-   (click)="this.formCargo.reset()">Close</button>
-  </div>
+ <button type="button" class="btn btn-dark" (click)="activeModal.dismiss('Cross click')"
+ >Close</button>
+</div>
 
-  </form>
+</form>
 
 
-</ng-template>
+<!--
+  </ng-template>
+-->
+
+

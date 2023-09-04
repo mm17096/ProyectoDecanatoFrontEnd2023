@@ -3,8 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IDepto } from '../../interface/depto';
 import { DeptoService } from '../../service/depto.service';
 import { Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
+import { MensajesService } from 'src/app/shared/global/mensajes.service';
 
 @Component({
   selector: 'app-modal',
@@ -16,11 +17,22 @@ export class ModalComponent implements OnInit {
   formDepto !: FormGroup;
   @Input() deptos !: IDepto;
   @Input() leyenda !: string;
+  alerts = [
+    {
+      id: 1,
+      type: "info",
+      message:
+        " Ingrese un Cargo en mayusculas y complete los campos obligatorios (*)",
+      show: false,
+    },
+  ];
 
   constructor(private deptopService : DeptoService,
     private fb : FormBuilder,
     private router : Router,
-    private modalService: NgbModal) {
+    private modalService: NgbModal,
+    private mensajesService : MensajesService,
+    public activeModal: NgbActiveModal) {
       this.formDepto = this.iniciarFormulario();
     }
 
@@ -32,8 +44,9 @@ export class ModalComponent implements OnInit {
 
   private iniciarFormulario(){
     return this.fb.group({
-      nombre : ['',Validators.compose([Validators.required, Validators.pattern('[A-Z]*')])],
-
+      nombre : ['',Validators.compose([Validators.required, Validators.pattern('[A-Z ]*')])],
+      descripcion : ['',Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*')])],
+      tipo : ['',Validators.compose([Validators.required])]
     })
   }
 
@@ -49,10 +62,10 @@ export class ModalComponent implements OnInit {
       }
     }else{
       Swal.fire({
-        icon: 'error',
-        title: 'Campos Vacios o invalidos',
-        text: `Ocurrio un error`,
-
+        position: 'center',
+        title: 'Faltan datos en el formuario',
+        text: 'Complete todos los campos requeridos',
+        icon: 'warning',
       });
     }
     }
@@ -61,6 +74,8 @@ export class ModalComponent implements OnInit {
       const data : IDepto =
         {
           nombre : this.formDepto.controls['nombre'].value,
+          descripcion : this.formDepto.controls['descripcion'].value,
+          tipo : this.formDepto.controls['tipo'].value,
           estado : 8
         }
       ;
@@ -75,21 +90,29 @@ export class ModalComponent implements OnInit {
           this.mostrar();
         },
         error : (error) => {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: `Ocurrio un error`,
+          this.mensajesService.mensajesSweet(
+            'error',
+            "Ups... Algo salió mal",
+            error
+           )
 
-          });
-          console.log(error);
         },
         complete : () => {
-          Swal.fire({
-            position: 'center',
-            title: 'Buen Trabajo',
-            text: `Datos Guardados con exito`,
-            icon: 'info',
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer : 3000,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
           });
+          Toast.fire({
+            icon: 'success',
+            text: 'Datos Guardados con exito'
+          });
+
         }
       });
       }
@@ -100,33 +123,41 @@ export class ModalComponent implements OnInit {
         {
           codigoDepto : this.deptos.codigoDepto,
           nombre : this.formDepto.controls['nombre'].value,
-
+          descripcion : this.formDepto.controls['descripcion'].value,
+          tipo : this.formDepto.controls['tipo'].value,
           estado : 8
         }
       ;
 
 
-      this.deptopService.editDepto(data).subscribe({
+      this.deptopService.editDepto(data.codigoDepto,data).subscribe({
         next : (resp) => {
           this.formDepto.reset();
           this.modalService.dismissAll();
           this.mostrar();
         },
         error : (error) => {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: `Ocurrio un error`,
-
-          });
+          this.mensajesService.mensajesSweet(
+            'error',
+            "Ups... Algo salió mal",
+            error
+           )
           console.log(error);
         },
         complete : () => {
-          Swal.fire({
-            position: 'center',
-            title: 'Buen Trabajo',
-            text: `Datos Guardados con exito`,
-            icon: 'info',
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer : 3000,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+          });
+          Toast.fire({
+            icon: 'success',
+            text: 'Datos Guardados con exito'
           });
         }
       });
@@ -136,6 +167,10 @@ export class ModalComponent implements OnInit {
         const validarCampo = this.formDepto.get(campo);
         return !validarCampo?.valid && validarCampo?.touched
         ? 'is-invalid' : validarCampo?.touched ? 'is-valid' : '';
+      }
+
+      noRequiereValor(campo:string):string{
+        return this.formDepto.get(campo)?.value ? 'is-valid' : '';
       }
 
       mostrar(){
@@ -150,7 +185,25 @@ export class ModalComponent implements OnInit {
         this.modalService.open(content);
       }
 
+      CambiarAlert(alert) {
+        alert.show = !alert.show;
+      }
+
+      restaurarAlerts() {
+        this.alerts.forEach((alert) => {
+          alert.show = true;
+        });
+      }
+
+      siMuestraAlertas() {
+        return this.alerts.every((alert) => alert.show);
+      }
+
       get nombre(){
         return this.formDepto.get('nombre');
+      }
+
+      get descripcion(){
+        return this.formDepto.get('descripcion');
       }
 }

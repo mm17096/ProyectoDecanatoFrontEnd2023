@@ -3,9 +3,12 @@
     <thead class="table-light">
       <tr>
         <th class="align-middle">Nombre</th>
+        <th class="align-middle">Encargado</th>
         <th class="align-middle">Teléfono</th>
-        <th class="align-middle">Dirección</th>
         <th class="align-middle">Email</th>
+        <th class="align-middle">Dirección</th>
+        <th class="align-middle">Tipo</th>
+        <th class="align-middle">Estado</th>
         <th class="align-middle text-center">Acciones</th>
       </tr>
     </thead>
@@ -18,20 +21,57 @@
             {{ data.nombre }}
           </a>
         </td>
+
+        <ng-container
+          *ngIf="data.encargado == null || data.encargado == ''; else encargado"
+        >
+          <td>N/A</td>
+        </ng-container>
+        <ng-template #encargado>
+          <td>{{ data.encargado }}</td>
+        </ng-template>
         <td>
           {{ data.telefono | slice : 0 : 4 }}-{{ data.telefono | slice : 4 }}
         </td>
-        <td>{{ data.direccion }}</td>
         <td>{{ data.email }}</td>
+        <td>{{ data.direccion }}</td>
+
+        <ng-container *ngIf="data.tipo == 13; else tipo">
+          <td>Gasolinera</td>
+        </ng-container>
+        <ng-template #tipo>
+          <td>UES</td>
+        </ng-template>
+
+        <ng-container *ngIf="data.estado == 8; else estado">
+          <td>
+            <h5><span class="badge rounded-pill bg-success">Activo</span></h5>
+          </td>
+        </ng-container>
+        <ng-template #estado>
+          <td>
+            <h5><span class="badge rounded-pill bg-danger">Inactivo</span></h5>
+          </td>
+        </ng-template>
+
         <td class="d-flex justify-content-center gap-1">
           <app-modal [proveedor]="data" [leyenda]="'Editar'"></app-modal>
-          <!-- Button trigger modal
           <button
-            (click)="eliminar(data)"
-            class="btn btn-danger btn-sm btn-rounded"
+            type="button"
+            class="btn btn-warning btn-sm btn-rounded mx-1"
+            (click)="cambiarEstado(data)"
+            ngbTooltip="Cambiar a {{
+              data.estado === 9 ? 'Activo' : 'Inactivo'
+            }}"
           >
-            Eliminar
-          </button> -->
+            <i
+              [ngClass]="
+                data.estado === 8
+                  ? 'mdi mdi-18px mdi-lock-outline'
+                  : 'mdi mdi-18px mdi-key-outline'
+              "
+            ></i>
+          </button>
         </td>
       </tr>
     </tbody>

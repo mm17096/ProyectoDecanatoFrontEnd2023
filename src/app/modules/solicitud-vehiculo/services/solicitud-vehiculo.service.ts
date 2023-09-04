@@ -6,6 +6,7 @@ import {IEstados} from "../interfaces/estados.interface";
 import {environment} from "../../../../environments/environment";
 import {map} from "rxjs/operators";
 import {IVehiculos} from "../../vehiculo/interfaces/vehiculo-interface";
+import {IPais} from "../interfaces/pais.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -22,20 +23,18 @@ export class SolicitudVehiculoService {
   // Servicio para obtener todas las solicitudes de vehiculo
 
   getSolicitudesVehiculo(estado: number) {
-    console.log(estado);
     if (estado != null){
       this.http
         .get(`${this.url}/solicitudvehiculo/listapage/${estado}`)
         .pipe(map((resp: any) => resp.content as ISolicitudVehiculo[]))
         .subscribe(
           (soliVe: ISolicitudVehiculo[]) => {
-            console.log("filtro:", soliVe);
             this.listSoliVehiculo = soliVe;
           },
           (error) => {
             console.log("Error al obtener las solicitudes de vehiculo", error);
           }
-        )
+        );
     }else {
       this.http
         .get(`${this.url}/solicitudvehiculo/listapage`)
@@ -66,12 +65,25 @@ export class SolicitudVehiculoService {
           this.listVehiculos = vehiculo;
         },
         (error) => {
-          console.log("Error al obtener las solicitudes de vehiculo", error);
+          console.log("Error al obtener los vehiculos", error);
           }
         );
   }
 
-  public registrarSoliVe(solicitudVehiculo: ISolicitudVehiculo): Observable<ISolicitudVehiculo>{
-    return this.http.post<ISolicitudVehiculo>(this.url + `/solicitudvehiculo/insert`, solicitudVehiculo);
+  filtroPlacasVehiculo(clase: string): Observable<IVehiculos[]> {
+    return this.http
+      .get(`${this.url}/api/vehiculo/clase/${clase}`)
+      .pipe(map((resp: any) => resp as IVehiculos[]));
+  }
+
+
+  public getDepa(): Observable<IPais[]>{
+    return this.http.get<IPais[]>("assets/pais/ubicacionPaisSV2023.json");
+  }
+
+
+  registrarSoliVe(solicitudVehiculo: ISolicitudVehiculo){
+    console.log("regist", solicitudVehiculo);
+    return this.http.post<ISolicitudVehiculo>( `${this.url}/solicitudvehiculo/insert`, solicitudVehiculo);
   }
 }

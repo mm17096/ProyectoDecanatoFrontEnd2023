@@ -3,5 +3,7 @@
 export interface IDepto {
   codigoDepto ?: string;
   nombre :      string;
+  descripcion : string;
+  tipo :        string;
   estado :      number;
 }

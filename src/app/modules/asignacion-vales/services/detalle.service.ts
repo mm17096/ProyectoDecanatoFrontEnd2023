@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { HttpClient } from '@angular/common/http';
-import { IDocumentosvale, valeDocumentosI } from '../interface/IDocumentosvale';
+import { IDocumentosvale} from '../interface/IDocumentosvale';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 

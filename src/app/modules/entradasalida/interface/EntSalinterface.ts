@@ -1,5 +1,5 @@
 export interface IEntradaSalida{
-    codigoEntradaSalida:number;
+    id:string;
     tipo: string;
     fecha: string;
     hora:string;

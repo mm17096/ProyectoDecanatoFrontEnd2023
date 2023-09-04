@@ -24,9 +24,13 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="mb-3">
-                          <label>Misión</label><span class="text-danger"> *</span>
-                          <input type="text" class="form-control" id="tipo" name="tipo" placeholder="Escribe tipo de misión"
-                            formControlName="tipo" [class]="esCampoValido('tipo')" />
+                          <label>Tipo</label><span class="text-danger"> *</span>
+                        <select class="form-control form-select" id="tipo" name="tipo" placeholder="Escribe tipo de misión"
+                            formControlName="tipo" [class]="esCampoValido('tipo')" [ngModel]="entradasalidaOd!=null ? entradasalidaOd.tipo : ''" >
+                            <option value="">Seleccione tipo de registro</option>
+                            <option value="Entrada">Entrada</option>
+                            <option value="Salida">Salida</option>
+                        </select>
                             <div class="invalid-feedback">
                               <!-- aqui la validación-->
                               <span *ngIf="formBuilder.get('tipo')?.errors?.['required']">Requiere un nombre para el campo</span>
@@ -39,10 +43,11 @@
                             <div class="mb-3">
                               <label>Fecha</label><span class="text-danger"> *</span>
                               <input type="date" class="form-control" id="fecha" name="fecha"
-                                formControlName="fecha" autocomplete="off" [class]="esCampoValido('fecha')" />
+                                formControlName="fecha" autocomplete="off" [class]="esCampoValido('fecha')" [ngModel]="entradasalidaOd!=null ? entradasalidaOd.fecha : ''"/>
                                 <div class="invalid-feedback">
                                   <!-- aqui la validación-->
                                   <span *ngIf="formBuilder.get('tipo')?.errors?.['required']">Requiere un fecha</span>
+                                  <span *ngIf="formBuilder.get('fecha').hasError('maxDate')">Requiere una fecha menor o igual a la actual</span>
                                 </div>
                                 
                             </div>
@@ -51,7 +56,7 @@
                             <div class="mb-3">
                                 <label>Hora</label><span class="text-danger"> *</span>
                                 <input type="time" class="form-control" id="hora" name="hora"
-                                  formControlName="hora" autocomplete="off" [class]="esCampoValido('hora')"/>
+                                  formControlName="hora" autocomplete="off" [class]="esCampoValido('hora')" [ngModel]="entradasalidaOd!=null ? entradasalidaOd.hora : ''"/>
                                 <div class="invalid-feedback">
                                     <!-- aqui la validación-->
                                     <span *ngIf="formBuilder.get('hora')?.errors?.['required']">Requiere una hora</span>
@@ -61,7 +66,7 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                               <label>Kilometraje</label><span class="text-danger"> *</span>
-                              <input type="text" class="form-control" id="kilometraje" name="kilometraje"
+                              <input type="text" class="form-control" id="kilometraje" name="kilometraje" [ngModel]="entradasalidaOd!=null ? entradasalidaOd.kilometraje : ''" 
                                 formControlName="kilometraje" autocomplete="off" [class]="esCampoValido('kilometraje')" pattern="" (keypress)="OnlyNumbersAllowed($event)" placeholder="Escribe el kilometraje"/>
                                 <div class="invalid-feedback">
                                   <!-- aqui la validación-->
@@ -73,22 +78,26 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                               <label>Combustible</label><span class="text-danger"> *</span>
-                              <input type="text" class="form-control" id="combustible" name="combustible"
-                                formControlName="combustible" autocomplete="off" [class]="esCampoValido('combustible')" placeholder="Escribe el tipo de combustible"/>
+                              <select class="form-control form-select" id="combustible" name="combustible" [ngModel]="entradasalidaOd!=null ? entradasalidaOd.combustible : ''"
+                                formControlName="combustible" autocomplete="off" [class]="esCampoValido('combustible')" placeholder="Escribe el tipo de combustible">
+                                <option value="">Seleccione el tipo de combustible</option>
+                                <option value="Regular">Regular</option>
+                                <option value="Diesel">Diesel</option>
+                                <option value="Super">Super</option>
+                            </select>
                                 <div class="invalid-feedback">
                                   <!-- aqui la validación-->
                                   <span *ngIf="formBuilder.get('combustible')?.errors?.['required']">Requiere datos en el campo</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
+                    </div>  
                 </div>
 
 
                 <div class="d-flex justify-content-end mt-4">
                     <button type="submit" class="btn btn-primary me-2" id="btn-save" name="btn-save">
-                        Guardar
+                     {{ titulo !== 'Editar' ? 'Guardar' : 'Modificar' }}
                     </button>
 
                     <button type="button" class="btn btn-dark" id="btn-cancel" name="btn-cancel" aria-hidden="true"

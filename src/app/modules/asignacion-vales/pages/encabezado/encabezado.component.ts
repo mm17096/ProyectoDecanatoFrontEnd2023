@@ -24,7 +24,7 @@ export class EncabezadoComponent implements OnInit {
       { label: "Registro de Asignaciones", active: true },
     ];
 
-    this.service.getDetalleAsignacionValePage();
+    //this.service.getDetalleAsignacionValePage();
   }
 
   pageChange(page:number){

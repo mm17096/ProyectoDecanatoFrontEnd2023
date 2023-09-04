@@ -24,4 +24,7 @@ export class ListaentradasalidaService {
   public putEntradasalida(entrasali: EntradaSalidaI): Observable<Object> {
     return this.http.put(`${this.url}/{{id}}`,entrasali);
   }
+  public putEmpleado(ent: IEntradaSalida): any {
+    return this.http.put(`${this.url}/editar/${ent.id}`, ent);
+  }
 }

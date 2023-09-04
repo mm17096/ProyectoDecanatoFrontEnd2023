@@ -7,6 +7,8 @@ import { TablaComponent } from './components/tabla/tabla.component';
 import { ModalComponent } from './components/modal/modal.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UIModule } from 'src/app/shared/ui/ui.module';
+import { IConfig, NgxMaskModule } from 'ngx-mask';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -20,7 +22,9 @@ import { UIModule } from 'src/app/shared/ui/ui.module';
     VehiculoRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    UIModule
+    UIModule,
+    NgbModule,
+    NgxMaskModule.forRoot()
   ]
 })
 export class VehiculoModule { }

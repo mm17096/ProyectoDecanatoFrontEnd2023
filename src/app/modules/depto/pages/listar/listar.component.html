@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <app-page-title title="Listado de cargos disponibles" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+  <app-page-title title="Listado de Departamentos disponibles" [breadcrumbItems]="breadCrumbItems"></app-page-title>
 
   <div class="row">
       <div class="col-12">
@@ -8,21 +8,26 @@
                   <div class="row mb-2" >
                       <div class="col-sm-4">
                            <div class="search-box me-2 mb-2 d-inline-block">
-            <div class="position-relative">
-              <p>Departamentos</p>
-
-              <select class="form-select" aria-label="Default select example" (change)="cargaDeptos($event)">
-                <option selected>Seleccione Estado</option>
-                <option value="8">Activo</option>
-                <option value="9">Inactivo</option>
-
-                </select>
-            </div>
-          </div>
+                            <div class="position-relative">
+                              <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="term">
+                              <i class="bx bx-search-alt search-icon"></i>
+                            </div>
+                          </div>
                       </div>
-                      <div class="col-sm-8">
+
+                     <div class="col-sm-4">
+                      <div class="text-sm-center">
+                        <select class="form-select" aria-label="Default select example" (change)="cargaDeptos($event)">
+                          <option selected>Seleccione Estado</option>
+                          <option value="8">Activo</option>
+                          <option value="9">Inactivo</option>
+                        </select>
+                      </div>
+                     </div>
+                      <div class="col-sm-4">
                         <div class="text-sm-end">
-                            <app-modal [leyenda]="'Agregar'"></app-modal>
+                          <button type="button" class="btn btn-primary btn-rounded" (click)="abrirModal('Nueva')">Agregar
+                          </button>
                         </div>
                       </div>
                   </div>
@@ -35,6 +40,8 @@
                               <!--  <th class="border-0 rounded-start">#</th>-->
                                   <th class="align-middle text-center">#</th>
                                   <th class="align-middle text-center">Departamento</th>
+                                  <th class="align-middle text-center">Descripcion</th>
+                                  <th class="align-middle text-center">Tipo</th>
                                   <th class="align-middle text-center">Acciones</th>
                               </tr>
                           </thead>
@@ -42,15 +49,24 @@
                               <tr  *ngFor="let data of lstDeptos;let i = index">
                                   <td class="align-middle text-center">{{ (i + 1) }}</td>
                                   <td class="align-middle text-center">{{ data.nombre }}</td>
+                                  <td class="align-middle text-center">{{ data.descripcion }}</td>
+                                  <td class="align-middle text-center">{{ data.tipo }}</td>
                                   <td class="align-middle text-center text-center">
                                       <!-- <div class="btn-group"> -->
-                                        <app-modal [deptos]="data" [leyenda]="'Editar'" ></app-modal>
 
-                                         <button type="button" class="btn btn-warning btn-sm btn-rounded mx-1"
-                                         ngbTooltip="dar baja">
-                                          <i class="mdi mdi-account-lock-outline"></i>
-                                          <!-- mdi-account-check-outline -->
-                                          </button>
+                                        <button type="button" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1"
+                                          (click)="abrirModal2('Detalle', data)"
+                                          ngbTooltip="Modificar Cargo">
+                                    <i class="mdi mdi-18px mdi-book-edit-outline"></i></button>
+
+                                    <button type="button" class="btn btn-warning btn-sm btn-rounded mx-1"
+                                    (click)="cambiarEstado(data, data.estado)"
+                                    ngbTooltip="Cambiar a {{data.estado === 9 ? 'Activo' : 'Inactivo'}}">
+                                    <i
+                                        [ngClass]="data.estado === 8 ? 'mdi mdi-18px mdi-lock-outline' : 'mdi mdi-18px mdi-key-outline'"></i>
+                                    <!-- <i class="mdi mdi-account-lock-outline"></i>
+                                     mdi-account-check-outline -->
+                                </button>
                                       <!--</div>-->
 
                                   </td>

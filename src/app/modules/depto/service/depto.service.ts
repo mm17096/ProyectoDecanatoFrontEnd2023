@@ -25,9 +25,9 @@ export class DeptoService {
     return this.http.get(`${this.url}/${code}`);
   }
 
-  editDepto( data : IDepto){
+  editDepto(codigoDepto : string, data : IDepto){
 
-    return this.http.put(this.url,data);
+    return this.http.put(`${this.url}/${codigoDepto}`,data);
   }
 
   deleteCargo(code : any){

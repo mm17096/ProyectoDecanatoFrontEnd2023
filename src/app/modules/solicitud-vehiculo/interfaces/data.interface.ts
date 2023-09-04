@@ -24,8 +24,9 @@ export interface ISolicitudVehiculo {
 
 interface ISolicitante {
   codigoUsuario: string;
-  email: string;
-  password: string;
+  clave: string;
+  nombre: string;
+  nuevo: boolean;
   empleado: IEmpleado;
 }
 
@@ -49,7 +50,7 @@ interface IEmpleado {
 
 
 interface ICargo {
-  codigoCargo: string;
+  id: string;
   nombreCargo: string;
   descripcion: string;
   estado: number;
@@ -61,10 +62,9 @@ interface IDepartamento {
   estado: number;
 }
 
-interface IPasajero {
-  codigoUsuario: string;
-  nombre: string;
-  apellido: string;
+export interface IPasajero {
+  id: string;
+  nombrePasajero: string;
 }
 
 interface IMotorista {

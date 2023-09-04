@@ -103,9 +103,10 @@ export class ModalComponent implements OnInit {
       Swal.fire({
         position: 'center',
         title: 'Faltan datos en el formuario',
-        text: 'Complete todos los campos requeridos',
+        html: 'Complete todos los campos requeridos (<span style="color: red;">*</span>)',
         icon: 'warning',
       });
+
     }
   }
 
@@ -327,7 +328,8 @@ export class ModalComponent implements OnInit {
 
   //// metodo par abrir la modal ////
   openModal(content: any) {
-    this.modalService.open(content, { size: 'xl', centered: true });
+    //hacer que la modal no se cierre al precionar fuera de ella -> backdrop: 'static', keyboard: false
+    this.modalService.open(content, { size: 'xl', centered: true, backdrop: 'static', keyboard: false });
   }
 
 

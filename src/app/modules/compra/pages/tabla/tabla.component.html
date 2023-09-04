@@ -5,23 +5,32 @@
         <th class="align-middle">Factura</th>
         <th class="align-middle">Proveedor</th>
         <th class="align-middle">Fecha de compra</th>
-        <th class="align-middle">Fecha de vencimiento</th>
+        <th class="align-middle">Fecha ven. vale</th>
         <th class="align-middle">Descripción</th>
-        <th class="align-middle">Cod. inicio</th>
-        <th class="align-middle">Cod. fin</th>
+        <th class="align-middle">Cód. inicio</th>
+        <th class="align-middle">Cód. fin</th>
         <th class="align-middle">Cantidad</th>
-        <th class="align-middle">Precio unitario</th>
-        <th class="align-middle">Total compra</th>
+        <th class="align-middle">Prec. Unit.</th>
+        <th class="align-middle">Total</th>
         <th class="align-middle text-center">Acciones</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of compras | filter : queryString; let i = index">
-        <td>
-          <a class="text-body fw-bold">
-            {{ data.factura }}
-          </a>
-        </td>
+        <ng-container
+          *ngIf="data.factura == null || data.factura == ''; else factura"
+        >
+          <td>
+            <a class="text-body fw-bold"> N/A </a>
+          </td>
+        </ng-container>
+        <ng-template #factura>
+          <td>
+            <a class="text-body fw-bold">
+              {{ data.factura }}
+            </a>
+          </td>
+        </ng-template>
         <td>{{ data.proveedor.nombre }}</td>
         <td>{{ data.fecha_compra | date : "dd/MM/yyyy h:mm a" }}</td>
         <td>{{ data.fecha_vencimiento | date : "dd/MM/yyyy" }}</td>

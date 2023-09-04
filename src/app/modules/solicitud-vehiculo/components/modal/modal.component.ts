@@ -1,6 +1,14 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {FormArray, FormBuilder, FormControl, FormGroup, RequiredValidator, Validators} from "@angular/forms";
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  RequiredValidator,
+  Validators
+} from "@angular/forms";
 import {Router} from "@angular/router";
 import {IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
@@ -123,14 +131,54 @@ export class ModalComponent implements OnInit {
 
   async guardar(){
     const solicitudVehiculo = this.formularioSoliVe.value;
-    solicitudVehiculo.solicitante.codigoUsuario = '4937c750-13f7-4041-990a-f2de7fdf8cae';
     console.log(this.formularioSoliVe);
     if (this.formularioSoliVe.valid){
       if (this.soliVeOd != null){
         this.editarSoliVe();
       }else{
-        if ((await this.mensajesService.mensajesConfirmar()) == true) {
-          this.registrarSoliVe();
+        solicitudVehiculo.solicitante.codigoUsuario = '4937c750-13f7-4041-990a-f2de7fdf8cae';
+
+        //  vacío para almacenar los datos de los pasajeros
+        const pasajerosData = [];
+
+        // Recorrer los controles de los pasajeros
+        for (const control of this.pasajeroFormControls) {
+          // Obtener el valor del control
+          const nombrePasajero = control.value;
+
+          // objeto con el valor del control y un ID vacío
+          const pasajero = { id: '', nombrePasajero };
+
+          // Agregar el objeto al arreglo de pasajerosData
+          pasajerosData.push(pasajero);
+        }
+
+        solicitudVehiculo.listaPasajeros = pasajerosData;
+
+        //console.log("dataPas: ",pasajerosData);
+
+        // validacion lista de pasajeros
+        const todosLlenos = pasajerosData.every((pasajero) => {
+          const value = pasajero.nombrePasajero;
+
+          if (typeof value === 'string' && value.trim() !== '') {
+            return true;
+          }
+
+          return false;
+        });
+
+        if (!todosLlenos) {
+          this.mensajesService.mensajesToast(
+            "warning",
+            "Por favor, completa todos los nombres de los pasajeros."
+          );
+          // fin validacion de lista de pasajeros
+        } else {
+          // Todos los nombres de los pasajeros están llenos, continuar con el envío de la solicitud.
+          if ((await this.mensajesService.mensajesConfirmar()) == true) {
+            this.registrarSoliVe();
+          }
         }
       }
     } else {
@@ -151,27 +199,6 @@ export class ModalComponent implements OnInit {
 
   registrarSoliVe() : Promise<void> {
     const solicitudVehiculo = this.formularioSoliVe.value;
-
-    // Crear un arreglo vacío para almacenar los datos de los pasajeros
-    const pasajerosData = [];
-
-    // Recorrer los controles de los pasajeros
-    for (const control of this.pasajeroFormControls) {
-      // Obtener el valor del control
-      const nombrePasajero = control.value;
-
-      // Crear un objeto con el valor del control y un ID vacío
-      const pasajero = { id: '', nombrePasajero };
-
-      // Agregar el objeto al arreglo de pasajerosData
-      pasajerosData.push(pasajero);
-    }
-
-    solicitudVehiculo.listaPasajeros = pasajerosData;
-
-    // Ahora, pasajerosData contendrá un arreglo con objetos en el formato deseado
-    console.log("dataPas: ",pasajerosData);
-
 
     /* para la direccion */
     let nombreDepartamento;

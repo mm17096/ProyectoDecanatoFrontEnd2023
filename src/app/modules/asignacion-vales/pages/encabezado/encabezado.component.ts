@@ -1,13 +1,16 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { DetalleService } from '../../services/detalle.service';
+import { HttpClient } from "@angular/common/http";
+import { Component, OnInit } from "@angular/core";
+import { DetalleService } from "../../services/detalle.service";
+import { IAsignacionDetalle } from '../../interfaces/asignacion.interface';
 
 @Component({
-  selector: 'app-encabezado',
-  templateUrl: './encabezado.component.html',
-  styleUrls: ['./encabezado.component.scss']
+  selector: "app-encabezado",
+  templateUrl: "./encabezado.component.html",
+  styleUrls: ["./encabezado.component.scss"],
 })
 export class EncabezadoComponent implements OnInit {
+
+  detalleAsignacion:IAsignacionDetalle;
   breadCrumbItems: Array<{}>;
 
   p: any;
@@ -24,10 +27,19 @@ export class EncabezadoComponent implements OnInit {
       { label: "Registro de Asignaciones", active: true },
     ];
 
-    this.service.getDetalleAsignacionValePage();
+    this.obtnerEncabezado()
   }
 
-  pageChange(page:number){
+  obtnerEncabezado() {
+    this.service.getDetalleAsignacionVale().subscribe({
+      next: (data) => {
+        this.detalleAsignacion = data;
+        console.log(this.detalleAsignacion);
+      }
+    }
+    )
+  }
+  /* pageChange(page:number){
     //this.service.getDetalleAsignacionValePage(page-1);
   }
 
@@ -35,5 +47,5 @@ export class EncabezadoComponent implements OnInit {
    // return this.service.listDetalle;
    return  null;
   }
-
+ */
 }

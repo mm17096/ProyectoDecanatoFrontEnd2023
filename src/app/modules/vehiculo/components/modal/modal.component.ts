@@ -37,6 +37,17 @@ export class ModalComponent implements OnInit {
   private file!: File;
   imagen: string = "no hay";
 
+  //para alertas
+  alerts = [
+    {
+      id: 1,
+      type: "info",
+      message: "Complete los campos obligatorios (*)",
+      messageTwo:"Ingrese el número de placa sin guiones",
+      show: false,
+    }
+  ];
+
   constructor(
     public activeModal: NgbActiveModal,
     private modalService: NgbModal,
@@ -95,14 +106,10 @@ export class ModalComponent implements OnInit {
     this.modalService.open(content, { size: "xl", centered: true });
   }
 
-  convertirObjToForm(){
-
-  }
-
   guardar() {
     if (this.formVehiculo.valid) {
       if (this.objVehiculo != null) {
-        //this.editando();
+        this.editando();
       } else {
         this.registrando();
       }
@@ -144,6 +151,28 @@ export class ModalComponent implements OnInit {
 
   }
 
+  editando(){
+    const formData = new FormData();
+    let envObj = this.formVehiculo.value;
+    envObj.codigoVehiculo = this.objVehiculo.codigoVehiculo;
+    envObj.estado = this.objVehiculo.estado;
+    envObj.nombrefoto = this.objVehiculo.nombrefoto;
+    envObj.urlfoto = this.objVehiculo.urlfoto;
+
+    formData.append('vehiculo', new Blob([JSON.stringify(envObj)], {type: 'application/json'}));
+    formData.append('imagen', this.file!);
+
+    this.vehiService.editarVehiculo(formData).subscribe( reps => {
+      this.mensajeService.mensajesToast("success", "Registro editado");
+      this.vehiService.getVehiculos();
+      //cerrar el modal
+      this.modalService.dismissAll();
+    }, (err: any) => {
+      this.mensajeService.mensajesSweet("error", "Algo salió mal", err);
+    });
+
+  }
+
   preVisualizarImagen(event: any) {
     this.file = event.target.files[0];
     //cambia a imagen previa
@@ -155,6 +184,20 @@ export class ModalComponent implements OnInit {
     reader.onloadend = () => {
       this.imgTemp = reader.result;
     };
+  }
+
+  siMuestraAlertas() {
+    return this.alerts.every((alert) => alert.show);
+  }
+
+  restaurarAlerts() {
+    this.alerts.forEach((alert) => {
+      alert.show = true;
+    });
+  }
+
+  cambiarAlert(alert) {
+    alert.show = !alert.show;
   }
 
 }

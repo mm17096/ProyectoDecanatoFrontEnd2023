@@ -3,6 +3,7 @@ import { IVehiculos } from '../../interfaces/vehiculo-interface';
 import { VehiculoService } from '../../service/vehiculo.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from '../modal/modal.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-tabla',
@@ -12,6 +13,9 @@ import { ModalComponent } from '../modal/modal.component';
 export class TablaComponent implements OnInit {
 
   @Input() vehiculos: IVehiculos[] = [];
+
+  cambio:string = '';
+  estado:number = 8;
 
   constructor(private vehiService:VehiculoService, private serviModal: NgbModal) { }
 
@@ -30,7 +34,60 @@ export class TablaComponent implements OnInit {
   }
 
   cambiarEstado(vehiculoED: IVehiculos, estado: number) {
-    
+    const envObj = vehiculoED;
+    const formData = new FormData();
+    if(envObj.estado == 8){
+      this.cambio = 'Inactivo';
+      this.estado = 9;
+      //envObj.estado = 9;
+    }else{
+      this.cambio = 'Activo';
+      this.estado = 8;
+      //envObj.estado = 8;
+    }
+
+    Swal.fire({
+      icon: 'question',
+      title: "¿Cambiar el estado a " + this.cambio + "?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Cambiar",
+      denyButtonText: `No cambiar`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        envObj.estado = this.estado;
+        formData.append('vehiculo', new Blob([JSON.stringify(envObj)], {type: 'application/json'}));
+        this.vehiService.editarVehiculo(formData).subscribe((resp: any) => {
+          if (resp) {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              //timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+            })
+
+            Toast.fire({
+              icon: 'success',
+              text: 'Modificación exitosa'
+            });
+            this.vehiService.getVehiculos();
+          }
+        }, (err: any) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: err,
+          });
+        });
+      } else if (result.isDenied) {
+        Swal.fire("Cambios no aplicados", "", "info");
+      }
+    });
   }
 
 

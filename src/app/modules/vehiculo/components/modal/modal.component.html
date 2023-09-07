@@ -1,9 +1,36 @@
 
         <div class="modal-header">
             <h5 class="modal-title mt-0">{{titulo}} Vehiculo</h5>
+            <div class="btn-alerta" *ngIf="alerts">
+              <i
+                class="mdi mdi-18px mdi-lightbulb-on-outline custom-cursor"
+                ngbTooltip="Mostrar Ayuda"
+                *ngIf="!siMuestraAlertas()"
+                (click)="restaurarAlerts()"
+              ></i>
+            </div>
             <button type="button" class="btn-close" aria-hidden="true" (click)="activeModal.dismiss('Cross click')"></button>
         </div>
         <div class="modal-body">
+          <div *ngFor="let alert of alerts">
+            <div
+              class="alert alert-{{ alert.type }} alert-dismissible fade show"
+              role="alert"
+              *ngIf="alert.show"
+            >
+              <strong>{{
+                alert.type === "info" ? "Importante!" : "Precaución!"
+              }}</strong><br>
+              {{ alert.message }} <br>
+              {{ alert.messageTwo}}
+              <button
+                type="button"
+                class="btn-close"
+                (click)="cambiarAlert(alert)"
+                aria-label="Close"
+              ></button>
+            </div>
+          </div>
             <form (ngSubmit)="guardar()" [formGroup]="formVehiculo" enctype="multipart/form-data" autocomplete="off">
               <div class="row">
                 <div class="col-md-12">
@@ -19,7 +46,7 @@
                         </div>
                         <span class="align-text-top col-md-4" style="display: flex; left: 10%;" *ngIf="titulo === 'Detalle' && !imgTemp"><strong>Foto Vehiclo:</strong></span>
                         <div class="col-md-5 imgcontent">
-                            <img class="rounded-circle custom-border"  *ngIf="leyenda === titulo && !imgTemp" src="{{objVehiculo.nombrefoto}}" alt="">
+                            <img class="rounded-circle custom-border"  *ngIf="'Detalle' == titulo || titulo == 'Editar' && !imgTemp" src="{{objVehiculo.nombrefoto}}" alt="">
 
                             <img class="rounded-circle custom-border" *ngIf="imgTemp" [src]="imgTemp" alt="">
                         </div>
@@ -232,7 +259,7 @@
               </div>
 
               <div class="d-flex justify-content-end mt-4">
-                  <button type="submit" class="btn btn-primary me-2" id="btn-save" name="btn-save">
+                  <button *ngIf="titulo != 'Detalle'" type="submit" class="btn btn-primary me-2" id="btn-save" name="btn-save">
                       Guardar
                   </button>
                   <button type="button" class="btn btn-dark" id="btn-cancel" name="btn-cancel" aria-hidden="true"

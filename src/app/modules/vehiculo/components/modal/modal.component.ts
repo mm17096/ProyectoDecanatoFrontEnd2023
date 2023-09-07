@@ -37,6 +37,17 @@ export class ModalComponent implements OnInit {
   private file!: File;
   imagen: string = "no hay";
 
+  //para alertas
+  alerts = [
+    {
+      id: 1,
+      type: "info",
+      message: "Complete los campos obligatorios (*)",
+      messageTwo:"Ingrese el número de placa sin guiones",
+      show: false,
+    }
+  ];
+
   constructor(
     public activeModal: NgbActiveModal,
     private modalService: NgbModal,
@@ -173,6 +184,20 @@ export class ModalComponent implements OnInit {
     reader.onloadend = () => {
       this.imgTemp = reader.result;
     };
+  }
+
+  siMuestraAlertas() {
+    return this.alerts.every((alert) => alert.show);
+  }
+
+  restaurarAlerts() {
+    this.alerts.forEach((alert) => {
+      alert.show = true;
+    });
+  }
+
+  cambiarAlert(alert) {
+    alert.show = !alert.show;
   }
 
 }

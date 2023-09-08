@@ -24,7 +24,18 @@
         <td>{{data.lugarMision}}</td>
         <td>{{data.fechaSalida}}</td>
         <td style="text-align: center">{{data.cantidadPersonas}}</td>
-        <td style="text-align: center">{{data.estadoString}}</td>
+        <td style="text-align: center">
+          <h5><span class="{{data.estado === 1 ? 'badge rounded-pill bg-warning'
+          : data.estado === 2 ? 'badge rounded-pill bg-info'
+          : data.estado === 3 ? 'badge rounded-pill bg-esdec'
+          : data.estado === 4 ? 'badge rounded-pill bg-success'
+          : data.estado === 5 ? 'badge rounded-pill bg-purple'
+          : data.estado === 6 ? 'badge rounded-pill bg-revision'
+          : data.estado === 7 ? 'badge rounded-pill bg-prima'
+          : data.estado === 15 ? 'badge rounded-pill bg-danger': ''}}">
+            {{data.estadoString}}
+          </span></h5>
+        </td>
         <td style="text-align: center">
           <button type="button" class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1"
                   (click)="abrirModal('Detalle', data)"

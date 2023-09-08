@@ -81,7 +81,7 @@ export class ModalComponent implements OnInit {
   private iniciarFormulario() {
     return this.fb.group({
       id: [""],
-      factura: ["", [Validators.required]],
+      factura: [""],
       proveedor: ["", [Validators.required]],
       descripcion: ["", [Validators.required, Validators.minLength(2)]],
       cantidad: [

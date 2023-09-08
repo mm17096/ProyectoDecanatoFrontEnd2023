@@ -31,7 +31,7 @@ import {NgbActiveModal, NgbModule, NgbTooltipModule} from "@ng-bootstrap/ng-boot
     ReactiveFormsModule,
     NgSelectModule,
     NgbTooltipModule,
-    NgbModule
+    NgbModule,
   ],
   providers: [NgbActiveModal],
 })

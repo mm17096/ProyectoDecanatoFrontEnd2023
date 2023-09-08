@@ -9,22 +9,22 @@
             <div class="col-sm-4">
               <div class="search-box me-2 mb-2 d-inline-block">
                 <div class="position-relative">
-                  <input type="text" class="form-control" placeholder="Search..." [(ngModel)]="termBusca">
+                  <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="termBusca">
                   <i class="bx bx-search-alt search-icon"></i>
                 </div>
               </div>
             </div>
             <div class="col-sm-8">
               <div class="text-sm-end">
-                <app-modal [leyenda]="'Nuevo'" [titulo]="'Agregar'"></app-modal>
+                <button type="button" class="btn btn-primary btn-rounded" (click)="abrirModal('Nuevo')">
+                  Agregar
+                </button>
               </div>
             </div><!-- end col-->
           </div>
 
           <!-- Table data -->
-          <app-tabla></app-tabla>
-
-
+          <app-tabla [vehiculos]="obtenerVehiculos"></app-tabla>
         </div>
       </div>
     </div>

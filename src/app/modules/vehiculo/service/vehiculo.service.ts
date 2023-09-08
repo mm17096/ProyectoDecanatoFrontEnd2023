@@ -37,5 +37,8 @@ export class VehiculoService {
     return this.http.post(`${this.url}api/vehiculo/insertar`, part);
   }
 
+  public editarVehiculo(part:FormData){
+    return this.http.put(`${this.url}api/vehiculo/editar`, part);
+  }
 
 }

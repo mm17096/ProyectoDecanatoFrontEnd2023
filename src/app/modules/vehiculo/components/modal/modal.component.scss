@@ -3,6 +3,10 @@ img {
   height: 155px;
 }
 
+button.btn-close{
+  margin-left: 5px;
+}
+
 /* Agrega una clase para aplicar el estilo de "solo lectura" al select */
 .select-readonly {
   background-color: #eff2f7;

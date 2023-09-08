@@ -1,6 +1,6 @@
 
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NAME_VALIDATE } from 'src/app/constants/constants';
 import Swal from 'sweetalert2';
@@ -22,9 +22,14 @@ export class ModalComponent implements OnInit {
   @Input() salidaentradaOd!: boolean;
 
   formBuilder!: FormGroup;
+  //miFormulario: FormGroup;
   private isName: string= NAME_VALIDATE;
   entradasalidas: IEntradaSalida[]=[];//para almacenar los resultados
   entrasal:IEntradaSalida;
+  horaActual: string;
+  fechaActual: string;
+  modoEdicion = false;
+  
   
 
   constructor(private modalService: NgbModal,private mensajesService: MensajesService, private fb: FormBuilder, private router: Router, private listaentradasalidaservice: ListaentradasalidaService) { }
@@ -32,19 +37,42 @@ export class ModalComponent implements OnInit {
   ngOnInit(): void {
 
       this.formBuilder = this.Iniciarformulario();
-    
   }
-  private Iniciarformulario(): FormGroup {1
+  
+  
+
+  // Función para obtener la fecha actual en formato "yyyy-MM-dd"
+  getCurrentDate(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+   // Función para obtener la hora actual en formato "hh:mm"
+   getCurrentTime(): string {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+
+  
+
+  private Iniciarformulario(): FormGroup {
     return this.fb.group({
       id:[''],
       tipo: ['', [Validators.required, Validators.pattern(this.isName)]],
-      fecha: ['', [Validators.required, this.maxDateValidator() ]],
+      fecha: ['', [Validators.required, this.maxDateValidator()]],
       hora: ['', [Validators.required]],
       kilometraje: ['', [Validators.required]],
       combustible: ['', [Validators.required]],
   
     });
   }
+
+
+
   //funcion para obtener la fecha actual.
   getToday(): Date{
     return new Date();
@@ -64,13 +92,30 @@ export class ModalComponent implements OnInit {
   }
 
   OnlyNumbersAllowed(event):boolean{
-    const charCode= (event.wich)? event.wich: event.keyCode;
-    if(charCode > 31 && (charCode < 48 || charCode >75))
-    {
-      console.log('charCode restricted is' + charCode);
+    const charCode = event.which ? event.which : event.keyCode;
+    const inputValue = event.target.value;
+    const dotIndex = inputValue.indexOf('.');
+  
+    // Permitir números del 0 al 9
+    if (charCode >= 48 && charCode <= 57) {
+      // Verificar si ya existe un punto decimal en el campo
+      if (dotIndex !== -1) {
+        // Obtener la parte decimal después del punto
+        const decimalPart = inputValue.substr(dotIndex + 1);
+        // Permitir máximo dos decimales
+        if (decimalPart.length >= 2) {
+          console.log('Máximo dos decimales permitidos');
+          return false;
+        }
+      }
+      return true;
+    } else if (charCode === 46 && dotIndex === -1) {
+      // Permitir un único punto decimal si no existe uno ya en el campo
+      return true;
+    } else {
+      console.log('charCode restricted is ' + charCode);
       return false;
     }
-    return true;
   }
 
   openModal(content: any) {

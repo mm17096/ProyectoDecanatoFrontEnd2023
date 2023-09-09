@@ -1,0 +1,275 @@
+<div class="container-fluid">
+  <app-page-title
+    title="Devolución de Vales"
+    [breadcrumbItems]="breadCrumbItems"
+  ></app-page-title>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div *ngFor="let alert of alerts">
+            <div
+              class="alert alert-{{ alert.type }} alert-dismissible fade show"
+              role="alert"
+              *ngIf="alert.show"
+            >
+              <strong>{{
+                alert.type === "info" ? "Importante!" : "Precaución!"
+              }}</strong>
+              {{ alert.message }}
+              <button
+                type="button"
+                class="btn-close"
+                (click)="CambiarAlert(alert)"
+                aria-label="Close"
+              ></button>
+            </div>
+          </div>
+
+          <form
+            id="formDeVale"
+            name="formDeVale"
+            (ngSubmit)="generarVales()"
+            [formGroup]="formularioGeneral"
+          >
+            <div class="row">
+              <div class="mb-4 d-grid gap-2 mx-auto text-center">
+                <label for="proveedor"
+                  >Elija el tipo de movimiento:
+                  <div class="btn-alerta miDiv" *ngIf="alerts">
+                    <i
+                      class="mdi mdi-lightbulb-on-outline custom-cursor"
+                      ngbTooltip="Mostrar Ayuda"
+                      *ngIf="!siMuestraAlertas()"
+                      (click)="restaurarAlerts()"
+                    ></i></div
+                ></label>
+                <div
+                  class="btn-group"
+                  role="group"
+                  aria-label="Basic mixed styles example"
+                >
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="tipo"
+                    id="tipo1"
+                    autocomplete="off"
+                    formControlName="tipo"
+                    [value]="1"
+                    (click)="cambiartipo1()"
+                  />
+                  <label class="btn btn-outline-dark" for="tipo1"
+                    >Por cantidad de Vales</label
+                  >
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="tipo"
+                    id="tipo2"
+                    autocomplete="off"
+                    formControlName="tipo"
+                    [value]="0"
+                    (click)="cambiartipo0()"
+                  />
+                  <label class="btn btn-outline-primary" for="tipo2"
+                    >Por Total Monetario de Vales</label
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-5 mb-4">
+                <label for="proveedor"
+                  >Abonar a Proveedor: <span class="text-danger">*</span></label
+                >
+
+                <ng-select
+                  formControlName="proveedor"
+                  placeholder="Escriba o seleccione"
+                  [selectOnTab]="true"
+                  labelForId="proveedor"
+                  [class]="esCampoValido('proveedor')"
+                >
+                  <ng-option *ngFor="let x of listProveedor" [value]="x.id">{{
+                    x.nombre
+                  }}</ng-option>
+                </ng-select>
+
+                <div class="invalid-feedback">
+                  <span
+                    *ngIf="formularioGeneral.get('proveedor')?.errors?.['required']"
+                  >
+                    Requiere un proveedor</span
+                  >
+                </div>
+              </div>
+              <div class="col-sm-5 mb-4">
+                <ng-container
+                  *ngIf="formularioGeneral.get('tipo').value == 1; else tipo"
+                >
+                  <label for="cantidad"
+                    >Cantidad de vales:
+                    <span class="text-danger">*</span></label
+                  >
+                  <input
+                    id="cantidad"
+                    name="cantidad"
+                    type="text"
+                    class="form-control"
+                    formControlName="cantidad"
+                    placeholder="Cantidad"
+                    [class]="esCampoValido('cantidad')"
+                  />
+                  <div class="invalid-feedback">
+                    <!-- aqui la validación-->
+                    <span
+                      *ngIf="formularioGeneral.get('cantidad')?.errors?.['required']"
+                    >
+                      Requiere una cantidad</span
+                    >
+                    <span
+                      *ngIf="formularioGeneral.get('cantidad')?.errors?.['min']"
+                    >
+                      Cantidad no puede ser negativa o cero</span
+                    >
+                    <span
+                      *ngIf="formularioGeneral.get('cantidad')?.errors?.['pattern']"
+                    >
+                      Solamente se permiten numeros enteros</span
+                    >
+                  </div>
+                </ng-container>
+                <ng-template #tipo>
+                  <label for="total_monetario"
+                    >Total monetario ($):
+                    <span class="text-danger">*</span></label
+                  >
+                  <input
+                    id="total_monetario"
+                    name="total_monetario"
+                    type="text"
+                    class="form-control"
+                    formControlName="total_monetario"
+                    placeholder="Total monetario"
+                    [class]="esCampoValido('total_monetario')"
+                  />
+                  <div class="invalid-feedback">
+                    <!-- aqui la validación-->
+                    <span
+                      *ngIf="formularioGeneral.get('total_monetario')?.errors?.['required']"
+                    >
+                      Requiere un total monetario</span
+                    >
+                    <span
+                      *ngIf="formularioGeneral.get('total_monetario')?.errors?.['min']"
+                    >
+                      Total monetario no puede ser negativo o cero</span
+                    >
+                    <span
+                      *ngIf="formularioGeneral.get('total_monetario')?.errors?.['pattern']"
+                    >
+                      Solamente se permiten numeros con dos decimales</span
+                    >
+                  </div>
+                </ng-template>
+              </div>
+              <div class="col-sm-2">
+                <label>Generar Vales</label>
+                <div class="d-grid gap-2 mx-auto text-center">
+                  <button
+                    class="btn btn-primary w-sm"
+                    type="submit"
+                    form="formDeVale"
+                  >
+                    Obtener Lista
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="listDatos.length != 0">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <ng-container *ngIf="tipoOpcion == 0 && montoGenerado != total_monetario">
+
+            <div
+            class="alert alert-info"
+            role="alert"
+          >
+            <strong>Importante!</strong> No se pudo encontrar N cantidad de vales que su
+            suma total del valor (precio) sea igual a
+            {{ total_monetario | currency : "USD" : "symbol" : "1.2-2" }}, solo
+            se obtuvieron los siguientes vales que su suma del valor se acerca a dicho
+            monto.
+          </div>
+          </ng-container>
+          <div class="row mb-2 align-items-center">
+            <div class="col-sm-3">
+              <div class="search-box me-2 mb-2 d-inline-block">
+                <div class="position-relative">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Buscar..."
+                  />
+                  <i class="bx bx-search-alt search-icon"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-3 mx-auto text-center">
+              <h5>
+                Vales Encontrados
+                <span class="badge bg-dark">{{ cantidaGenerada }}</span>
+              </h5>
+            </div>
+            <div class="col-sm-3 mx-auto text-center">
+              <h5>
+                Monto Generado
+                <span class="badge bg-primary">{{
+                  montoGenerado | currency : "USD" : "symbol" : "1.2-2"
+                }}</span>
+              </h5>
+            </div>
+
+            <div class="col-sm-3">
+              <div class="text-sm-end">
+                <button
+                  type="button"
+                  class="btn btn-primary btn-rounded position-relative"
+                  (click)="registrarDevolucion()"
+                >
+                  Registrar Devolución
+                  <span
+                    class="position-absolute top-100 start-0 translate-middle badge rounded-pill bg-warning"
+                  >
+                    {{ cantidaGenerada }}
+                    <span class="visually-hidden">unread messages</span>
+                  </span>
+                  <span
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                  >
+                    {{ montoGenerado | currency : "USD" : "symbol" : "1.2-2" }}
+                    <span class="visually-hidden">unread messages</span>
+                  </span>
+                </button>
+              </div>
+            </div>
+            <!-- end col-->
+          </div>
+          <!-- Table data -->
+
+          <app-tabla [vales]="listDatos" [queryString]="term"></app-tabla>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

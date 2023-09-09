@@ -24,7 +24,7 @@ export class ModalComponent implements OnInit {
       id: 1,
       type: "info",
       message:
-        " Seleccione un tipo de proveedor y complete los campos obligatorios (*)",
+        " Seleccione un tipo de proveedor y complete los campos obligatorios (*).",
       show: false,
     },
   ];

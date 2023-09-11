@@ -128,11 +128,14 @@ export class UsuarioService {
     }).pipe(
       map((resp: any) => {
         this.guardarLocalSotrage('token', resp.token);
-        /*       const { codigoUsuario, nombre, nuevo, rol, empleado } = resp.usuario;
-              this.usuario = new Usuario(codigoUsuario, nombre, "", nuevo, rol, empleado); */
         return true;
       }),
-      catchError((err) => of(false))
+      catchError((err) => {
+        // Token caducado, muestra un mensaje de error en la consola
+        console.error('El token ha caducado.');
+        this.logout();
+        return of(false);
+      })
     );
   }
 

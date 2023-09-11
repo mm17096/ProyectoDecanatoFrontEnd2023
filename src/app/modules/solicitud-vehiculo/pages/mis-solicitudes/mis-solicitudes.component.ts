@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
-import {IEstados} from "../../interfaces/estados.interface";
-import {ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {ModalComponent} from "../../components/modal/modal.component";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {CommunicationService} from "../../services/comunicacion.service";
+import { IEstados } from '../../interfaces/data.interface';
+import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
 
 @Component({
   selector: 'app-mis-solicitudes',
@@ -25,29 +24,28 @@ export class MisSolicitudesComponent implements OnInit {
   estadosSoliVe: IEstados [] = [];
 
   constructor( private soliVeService: SolicitudVehiculoService, private modalService: NgbModal,
-               private communicationService: CommunicationService) { }
+               private userService: UsuarioService) { }
 
   ngOnInit(): void {
+    this.userService.getUsuario();
     this.breadCrumbItems = [{ label: 'Solicitud de Vehículo' }, { label: 'Mis Solicitudes', active: true }]; // miga de pan
     this.soliVeService.getSolicitudesVehiculo(this.estadoSeleccionado);
     this.getEstados();
-    this.actualizarTabla();
   }
 
   abrirModal(leyenda: string) {
     const modalRef = this.modalService.open(ModalComponent, {size: 'xl', backdrop: 'static'});
     modalRef.componentInstance.leyenda = leyenda;
     modalRef.componentInstance.estadoSeleccionado = this.estadoSeleccionado;
+    modalRef.componentInstance.usuarioActivo = this.usuarioActivo;
+  }
+
+  get usuarioActivo(){
+    return this.userService.usuario;
   }
 
   get listSoliVeData(){
     return this.soliVeService.listSoliVehiculo;
-  }
-
-  actualizarTabla(){
-    this.communicationService.dataUpdated$.subscribe(() => {
-      this.soliVeService.getSolicitudesVehiculo(this.estadoSeleccionado);
-    });
   }
 
   onEstadoSeleccionado(event: any) {

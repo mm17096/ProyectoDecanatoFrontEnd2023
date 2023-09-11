@@ -92,3 +92,14 @@ interface IDocumento {
   archivo: string;
   estado: number;
 }
+
+export interface IEstados {
+  codigoEstado: number,
+  nombreEstado: string
+}
+
+export interface IPais {
+  codigo: string;
+  nam: string;
+  na2: string;
+}

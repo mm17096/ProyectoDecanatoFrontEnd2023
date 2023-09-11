@@ -1,0 +1,47 @@
+<div class="table-responsive mb-0">
+  <table class="table table-centered table-nowrap">
+    <thead class="table-light">
+      <tr>
+        <th class="align-middle">Código de Vale</th>
+        <th class="align-middle">Fecha de Compra</th>
+        <th class="align-middle">Valor</th>
+        <th class="align-middle">Factura</th>
+        <th class="align-middle">Fecha ven. vale</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let data of vales | filter : queryString; let i = index"
+      >
+        <td>
+          <a class="text-body fw-bold">
+            {{ data.correlativo }}
+          </a>
+        </td>
+        <td>{{ data.compra.fecha_compra | date : "dd/MM/yyyy h:mm a" }}</td>
+        <td>{{ data.valor | currency : "USD" : "symbol" : "1.2-2" }}</td>
+        <ng-container
+          *ngIf="
+            data.compra.factura == null || data.compra.factura == '';
+            else factura
+          "
+        >
+          <td>N/A</td>
+        </ng-container>
+        <ng-template #factura>
+          <td>
+            {{ data.compra.factura }}
+          </td>
+        </ng-template>
+        <td>{{ data.fecha_vencimiento | date : "dd/MM/yyyy" }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ! PAGINACION
+  <div class="pagination pagination-rounded justify-content-end mb-2">
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
+  -->
+</div>
+<!-- end table -->

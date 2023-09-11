@@ -9,9 +9,10 @@ const routes: Routes = [
 
   { path: 'entrasalida', loadChildren: () => import('./entradasalida/entradasalida.module').then(m => m.EntradasalidaModule), canActivate: [AuthGuard] },
   { path: 'document', loadChildren: () => import('./documentosolcitud-vale/documentosolcitud-vale.module').then(m => m.DocumentosolcitudValeModule), canActivate: [AuthGuard] },
-  
+
   { path: 'compra',  loadChildren: () => import('./compra/compra.module').then(m => m.CompraModule) },
   { path: 'proveedor', loadChildren: () => import('./proveedor/proveedor.module').then(m => m.ProveedorModule) },
+  { path: 'devolucion-vale',  loadChildren: () => import('./devolucion-vale/devolucion-vale.module').then(m => m.DevolucionValeModule) },
 
   //Ruta de empleado //
   { path: 'empleados', loadChildren: () => import('./empleado/empleado.module').then(m => m.EmpleadoModule), canActivate: [AuthGuard] },
@@ -19,6 +20,8 @@ const routes: Routes = [
   { path: 'vehiculo', loadChildren: () => import('./vehiculo/vehiculo.module').then(m => m.VehiculoModule), canActivate: [AuthGuard] },
   { path: 'cargo', loadChildren: () => import('./cargo/cargo.module').then(m => m.CargoModule)},
   {  path: 'depto', loadChildren: () => import('./depto/depto.module').then(m => m.DeptoModule)},
+
+  { path: 'dashboard', loadChildren: () => import('./../pages/dashboards/dashboards.module').then(m => m.DashboardsModule) },
 ];
 
 @NgModule({

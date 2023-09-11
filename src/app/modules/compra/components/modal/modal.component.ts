@@ -41,7 +41,7 @@ export class ModalComponent implements OnInit {
     {
       id: 1,
       type: "info",
-      message: " Complete los campos obligatorios (*)",
+      message: " Complete los campos obligatorios (*).",
       show: false,
     },
     {
@@ -209,7 +209,6 @@ export class ModalComponent implements OnInit {
   }
 
   async guardar() {
-    this;
     if (this.formularioGeneral.valid) {
       if (this.validarCodigos()) {
         if (
@@ -262,7 +261,7 @@ export class ModalComponent implements OnInit {
     const compra = this.formularioGeneral.value;
 
     // Mostrar SweetAlert de carga
-    const loadingAlert = Swal.fire({
+    Swal.fire({
       title: "Espere",
       text: "Realizando la acción...",
       icon: "info",
@@ -310,7 +309,7 @@ export class ModalComponent implements OnInit {
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",
-          err
+          err.error.message
         );
       },
     });

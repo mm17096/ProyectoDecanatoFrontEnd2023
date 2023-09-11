@@ -1,12 +1,20 @@
-import { Component, OnInit, Output, EventEmitter, Inject } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Inject, Pipe, PipeTransform } from '@angular/core';
 import { Router } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import { AuthenticationService } from '../../core/services/auth.service';
 import { AuthfakeauthenticationService } from '../../core/services/authfake.service';
-import { environment } from '../../../environments/environment';
 import { CookieService } from 'ngx-cookie-service';
 import { LanguageService } from '../../core/services/language.service';
 import { TranslateService } from '@ngx-translate/core';
+import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
+
+@Pipe({name: 'slice'})
+export class SlicePipe implements PipeTransform {
+  transform(value: string, start: number, end: number): string {
+    return value.slice(start, end) + '...';
+  }
+}
+
 
 @Component({
   selector: 'app-topbar',
@@ -26,11 +34,14 @@ export class TopbarComponent implements OnInit {
   valueset;
   icono: string = 'fa fa-fw fa-bars';
 
+  fotoEmpleado!: string;
+
   constructor(@Inject(DOCUMENT) private document: any, private router: Router, private authService: AuthenticationService,
               private authFackservice: AuthfakeauthenticationService,
               public languageService: LanguageService,
               public translate: TranslateService,
-              public _cookiesService: CookieService) {
+              public _cookiesService: CookieService,
+              private usuarioService: UsuarioService) {
   }
 
   listLang = [
@@ -47,6 +58,9 @@ export class TopbarComponent implements OnInit {
   @Output() mobileMenuButtonClicked = new EventEmitter();
 
   ngOnInit() {
+    this.fotoEmpleado =  this.usuarioService.empleadofoto;
+    this.usuarioService.getEmpleado();
+    
     this.openMobileMenu = false;
     this.element = document.documentElement;
 
@@ -58,6 +72,10 @@ export class TopbarComponent implements OnInit {
     } else {
       this.flagvalue = val.map(element => element.flag);
     }
+  }
+
+  get empleado() {
+    return this.usuarioService.empleado;
   }
 
   setLanguage(text: string, lang: string, flag: string) {
@@ -91,12 +109,7 @@ export class TopbarComponent implements OnInit {
    * Logout the user
    */
   logout() {
-    if (environment.defaultauth === 'firebase') {
-      this.authService.logout();
-    } else {
-      this.authFackservice.logout();
-    }
-    this.router.navigate(['/account/login']);
+    this.usuarioService.logout();
   }
 
   /**

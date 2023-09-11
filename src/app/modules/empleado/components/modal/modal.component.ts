@@ -39,6 +39,16 @@ export class ModalComponent implements OnInit {
 
   hovered: boolean = false; // Inicializamos hovered como falso
 
+  alerts = [
+    {
+      id: 1,
+      type: "info",
+      message:
+        " Por favor, asegúrese de completar todos los campos obligatorios (*) y de cumplir con los formatos correspondientes. Además, le recomendamos prestar atención a los mensajes de alerta. En cuanto a la foto del empleado no es obligatoria; Indicar que el empleado sera jefe del área o departamento correspondiente solamente cuando sea acorde a sus responsabilidades laborales. ",
+      show: false,
+    },
+  ];
+
 
   constructor(
     private empleadoService: EmpleadoService,
@@ -54,7 +64,7 @@ export class ModalComponent implements OnInit {
     if (this.leyenda == "Editar") {
       this.formBuilder = this.Iniciarformulario();
     }
-
+    
     this.empleadoService.getCargos();
     this.empleadoService.getDepartamentos();
   }
@@ -141,7 +151,7 @@ export class ModalComponent implements OnInit {
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",
-          err
+          err.error.message
         )
       });
     } else {
@@ -169,11 +179,11 @@ export class ModalComponent implements OnInit {
           this.recargar();
           this.modalService.dismissAll();
         }
-      }, (err: any) => {
+      }, (err: string) => {
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",
-          err
+            err
         )
       });
     }
@@ -211,10 +221,11 @@ export class ModalComponent implements OnInit {
           this.modalService.dismissAll();
         }
       }, (err: any) => {
+        console.log(err);
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",
-          err
+          err.error.message
         )
       });
     } else {
@@ -245,7 +256,7 @@ export class ModalComponent implements OnInit {
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",
-          err
+          err.error.message
         )
       });
     }
@@ -368,6 +379,21 @@ export class ModalComponent implements OnInit {
     reader.onloadend = () => {
       this.imgTemp = reader.result;
     };
+  }
+
+  //////   metodos para la ayuda ///////
+  CambiarAlert(alert) {
+    alert.show = !alert.show;
+  }
+
+  restaurarAlerts() {
+    this.alerts.forEach((alert) => {
+      alert.show = true;
+    });
+  }
+
+  siMuestraAlertas() {
+    return this.alerts.every((alert) => alert.show);
   }
 
 }

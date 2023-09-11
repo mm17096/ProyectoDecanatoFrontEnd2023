@@ -33,9 +33,6 @@ export class TablaComponent implements OnInit {
   ngOnInit() { }
 
 
-
-
-
 /*   public static function desencriptacion($string)
     {
         $key = hash('sha256', SECRET_KEY);

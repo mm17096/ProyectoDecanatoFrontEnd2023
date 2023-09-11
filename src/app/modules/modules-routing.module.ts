@@ -19,6 +19,8 @@ const routes: Routes = [
   { path: 'vehiculo', loadChildren: () => import('./vehiculo/vehiculo.module').then(m => m.VehiculoModule), canActivate: [AuthGuard] },
   { path: 'cargo', loadChildren: () => import('./cargo/cargo.module').then(m => m.CargoModule)},
   {  path: 'depto', loadChildren: () => import('./depto/depto.module').then(m => m.DeptoModule)},
+
+  { path: 'dashboard', loadChildren: () => import('./../pages/dashboards/dashboards.module').then(m => m.DashboardsModule) },
 ];
 
 @NgModule({

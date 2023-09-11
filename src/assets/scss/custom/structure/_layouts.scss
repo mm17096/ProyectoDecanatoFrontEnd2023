@@ -58,3 +58,72 @@ body[data-layout-scrollable="true"] {
     }
 }
 
+
+///////////////////   login page Decanato ////////////////
+
+
+#background-image {
+    background-image: url('./../../../../assets/images/login.jpg');
+    background-size: 42% 100%; /* Ajusta la imagen al 100% de la altura y el ancho del componente */
+    background-repeat: no-repeat;
+    background-attachment: initial;
+    opacity: 0.9;
+    position: relative;
+    height: 20vh; /* Ajusta la altura del componente al 100% de la ventana gráfica */
+    width: 150vh;
+}
+
+/* Ajusta la opacidad del contenido para que sea más legible */
+.row .col-7,
+.row .col-5 {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    position: relative; /* Establece una posición relativa para que los elementos hijos se posicionen en relación con este contenedor */
+    z-index: 1; /* Establece una elevación para que este contenido aparezca encima de la imagen de fondo */
+}
+
+/* Ajusta la posición del segundo div para superponerlo */
+.rount-image {
+    position: relative;
+    z-index: 2; /* Establece una elevación para que este contenido aparezca encima de la imagen de fondo */
+}
+
+.title-top {
+    position: absolute;
+    top: 190px; /* Ajusta la distancia desde la parte superior según tu diseño */
+    left: 50%; /* Centra horizontalmente el elemento en su contenedor */
+    transform: translateX(-50%); /* Ajusta para centrar con margen negativo */
+    padding: 0;
+    margin: 0;
+}
+
+@media (max-width: 1200px) {
+    #background-image {
+        background-size: 49% 100%; /* Ajusta la imagen al 100% de la altura y el ancho del componente */
+        width: 134vh;
+    }
+}
+
+
+@media (max-width: 994px) {
+    .col-7{
+        width: 70vh; 
+    }
+}
+
+
+@media (max-width: 993px) {
+    #background-image {
+        background-size: 70% 100%; /* Ajusta la imagen al 100% de la altura y el ancho del componente */
+        width: 100vh;
+    }
+}
+
+
+@media (max-width: 767.5px) {
+    #background-image {
+        background-size: 97.7% 100%; /* Ajusta la imagen al 100% de la altura y el ancho del componente */
+        width: 70vh;
+        
+    }
+}

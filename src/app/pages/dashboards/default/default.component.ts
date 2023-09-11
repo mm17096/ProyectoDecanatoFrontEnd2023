@@ -5,6 +5,10 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EventService } from '../../../core/services/event.service';
 
 import { ConfigService } from '../../../core/services/config.service';
+import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
+import { IEmpleado } from 'src/app/modules/empleado/interface/empleado.interface';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { Usuario } from 'src/app/account/auth/models/usuario.models';
 
 @Component({
   selector: 'app-default',
@@ -22,12 +26,25 @@ export class DefaultComponent implements OnInit {
 
   isActive: string;
 
+  empleado!: IEmpleado;
+  fotoEmpleado!: string;
+  usuario!: string;
+  imagenBlob: Blob | null = null;
+  imagenURL: any; // Variable para almacenar la URL de la imagen
+
+
   @ViewChild('content') content;
-  constructor(private modalService: NgbModal, private configService: ConfigService, private eventService: EventService) {
-  }
+  constructor(
+    private modalService: NgbModal, 
+    private configService: ConfigService, 
+    private eventService: EventService, 
+    private usuarioService: UsuarioService, 
+    private jwtHelper: JwtHelperService
+    ) {}
 
   ngOnInit() {
-
+    //console.log(this.usuarioService.getUsuario());
+    this.fotoEmpleado =  this.usuarioService.empleadofoto;
     /**
      * horizontal-vertical layput set
      */
@@ -49,6 +66,25 @@ export class DefaultComponent implements OnInit {
      * Fetches the data
      */
     this.fetchData();
+  }
+
+  decodeToken() {
+    const token = this.usuarioService.token;
+    const decodedToken = this.jwtHelper.decodeToken(token);
+    return decodedToken.sub;
+  }
+
+  //// metodo para obtener el empleado /////
+  getEmpleadoData(nombre: string) {
+    this.eventService.getEmpleado(nombre)
+      .subscribe(
+        (data: IEmpleado) => {
+          this.empleado = data; // Asigna el resultado a la variable empleado
+        },
+        (error) => {
+          console.error('Error al obtener datos del empleado', error);
+        }
+      );
   }
 
   ngAfterViewInit() {

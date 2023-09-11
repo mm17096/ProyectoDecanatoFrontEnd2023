@@ -113,7 +113,7 @@ export class ModalComponent implements OnInit {
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",
-          err
+          err.error.message
         );
       },
     });
@@ -133,7 +133,7 @@ export class ModalComponent implements OnInit {
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",
-          err
+          err.error.message
         );
       },
     });

@@ -344,7 +344,15 @@ body[data-layout="horizontal"] {
 
 .user-text {
   font-size: 10px;
-  margin-left: -45px;
+  display: grid;
+  margin-left: -44px;
+}
+
+.user-text-2 {
+  font-size: 8px;
+  margin-top: -20px;
+  display: grid;
+  margin-left: -50px;
 }
 
 /* Estilos responsivos */

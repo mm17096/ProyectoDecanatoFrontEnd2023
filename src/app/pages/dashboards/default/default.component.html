@@ -21,7 +21,7 @@
                 <div class="bg-primary bg-soft">
                     <div class="row">
                         <div class="col-7">
-                            <div class="text-primary p-3">
+                            <div class="text-primary p-2">
                                 <h5 class="text-primary">Welcome Back !</h5>
                                 <p>Skote Dashboard</p>
                             </div>
@@ -34,12 +34,14 @@
                 <div class="card-body pt-0">
                     <div class="row">
                         <div class="col-sm-4">
-                            <div class="avatar-md profile-user-wid mb-4">
-                                <img src="assets/images/users/avatar-1.jpg" alt="" class="img-thumbnail rounded-circle">
+                            <div class="image-container mb-4">
+                                <img class="rounded-circle header-profile-user"
+                                [src]="fotoEmpleado !== '' ? fotoEmpleado : './../../../assets/images/Default-Avatar.png'" alt="Header Avatar">
                             </div>
                             <h5 class="font-size-15 text-truncate">Henry Price</h5>
                             <p class="text-muted mb-0 text-truncate">UI/UX Designer</p>
                         </div>
+                        
 
                         <div class="col-sm-8">
                             <div class="pt-4">

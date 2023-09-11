@@ -1,19 +1,22 @@
+import { environment } from "src/environments/environment";
+
+const base_url = environment.baseUrl;
 export interface IEmpleado {
-    codigoEmpleado: string,
-    dui: string,
-    nombre: string,
-    apellido: string,
-    telefono: string,
-    licencia: string,
-    tipolicencia: string,
-    fechalicencia: Date,
-    estado: number,
-    jefe: boolean,
-    correo: string,
-    nombrefoto: string,
-    urlfoto: string,
-    cargo: ICargo,
-    departamento: IDepartamento
+     codigoEmpleado: string,
+     dui: string,
+     nombre: string,
+     apellido: string,
+     telefono: string,
+     licencia: string,
+     tipolicencia: string,
+     fechalicencia: Date,
+     estado: number,
+     jefe: boolean,
+     correo: string,
+     nombrefoto: string,
+     urlfoto: string,
+     cargo: ICargo,
+     departamento: IDepartamento
 }
 
 export interface ICargo {

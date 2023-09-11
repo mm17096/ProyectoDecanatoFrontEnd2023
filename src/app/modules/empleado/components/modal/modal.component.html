@@ -27,9 +27,23 @@
     <ng-template #content role="document" let-modal>
         <div class="modal-header">
             <h5 class="modal-title mt-0">{{leyenda}} Empleado</h5>
+
+            <div class="btn-alerta" *ngIf="alerts">
+                <i class="mdi mdi-18px mdi-lightbulb-on-outline custom-cursor" ngbTooltip="Mostrar Ayuda"
+                    *ngIf="!siMuestraAlertas()" (click)="restaurarAlerts()"></i>
+            </div>
+
             <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
         </div>
         <div class="modal-body">
+            <div *ngFor="let alert of alerts">
+                <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert" *ngIf="alert.show">
+                  <strong>Importante!</strong>
+                  <div class="text-justify">{{ alert.message }}</div>
+                  <button type="button" class="btn-close" (click)="CambiarAlert(alert)" aria-label="Close"></button>
+                </div>
+              </div>
+              
 
             <form (ngSubmit)="guardar()" [formGroup]="formBuilder" enctype="multipart/form-data">
                 <div class="row">
@@ -92,7 +106,8 @@
                             <div class="invalid-feedback">
                                 <span *ngIf="formBuilder.get('dui')?.errors?.['required']">
                                     Ingrese un DUI</span>
-                                <span *ngIf="!formBuilder.get('dui').valid && !formBuilder.get('dui')?.errors?.['required']">
+                                <span
+                                    *ngIf="!formBuilder.get('dui').valid && !formBuilder.get('dui')?.errors?.['required']">
                                     Debe cumplir con el formato correcto</span>
                             </div>
                         </div>
@@ -148,7 +163,8 @@
                             <div class="invalid-feedback">
                                 <span *ngIf="formBuilder.get('telefono')?.errors?.['required']">
                                     Ingrese un teléfono</span>
-                                <span *ngIf="!formBuilder.get('telefono').valid && !formBuilder.get('telefono')?.errors?.['required']">
+                                <span
+                                    *ngIf="!formBuilder.get('telefono').valid && !formBuilder.get('telefono')?.errors?.['required']">
                                     Debe cumplir con el formato correcto</span>
                             </div>
                         </div>
@@ -172,7 +188,8 @@
                             <div class="invalid-feedback">
                                 <span *ngIf="formBuilder.get('telefono')?.errors?.['required']">
                                     Ingrese un teléfono</span>
-                                <span *ngIf="!formBuilder.get('telefono').valid && !formBuilder.get('telefono')?.errors?.['required']">
+                                <span
+                                    *ngIf="!formBuilder.get('telefono').valid && !formBuilder.get('telefono')?.errors?.['required']">
                                     Debe cumplir con el formato correcto</span>
                             </div>
                         </div>

@@ -1,7 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { Subject, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
+import { IEmpleado } from 'src/app/modules/empleado/interface/empleado.interface';
+import { environment } from 'src/environments/environment';
 
 interface Event {
     type: string;
@@ -15,7 +18,9 @@ type EventCallback = (payload: any) => void;
 })
 export class EventService {
     private handler = new Subject<Event>();
-    constructor() { }
+    private baseUrl: string = environment.baseUrl;
+    empleado: IEmpleado[];
+    constructor(private http: HttpClient) { }
 
     /**
      * Broadcast the event
@@ -37,4 +42,10 @@ export class EventService {
                 map(event => event.payload))
             .subscribe(callback);
     }
+
+    //Obtener empleados para la tabla
+    getEmpleado(name: string) {
+        return this.http.get<IEmpleado>(`${this.baseUrl}/empleado/lista/${name}`);
+    }
+
 }

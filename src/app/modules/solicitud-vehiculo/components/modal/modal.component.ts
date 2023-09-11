@@ -77,6 +77,7 @@ export class ModalComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.usuarioActivo);
+    console.log("data",this.soliVeOd);
     this.iniciarFormulario();
     this.llenarSelectDepartamentos();
     this.soliVeService.obtenerVehiculos();
@@ -322,39 +323,50 @@ export class ModalComponent implements OnInit {
   }
 
 
-  iniciarFormulario(){
-      this.formularioSoliVe = this.fb.group({
-        fechaSolicitud: [
-          this.obtenerFechaActual(new Date()),
-          [
-            Validators.required,
-            Validators.pattern(this.isDate)
-          ]],
-        fechaSalida: [
-          '',
-          [Validators.required]],
-        fechaEntrada: [
-          '', [Validators.required]],
-        unidadSolicitante: [this.usuarioActivo.empleado.departamento.nombre,
-          [Validators.required]],
-        tipoVehiculo: ['', [Validators.required]],
-        vehiculo: ['', [Validators.required]],
-        objetivoMision: ['', [Validators.required]],
-        lugarMision: ['', [Validators.required]],
-        direccion: [''],
-        depto: ['', [Validators.required]],
-        municipio: ['', [Validators.required]],
-        distrito: ['', [Validators.required]],
-        canton: ['', [Validators.required]],
-        horaSalida: ['', [Validators.required]],
-        horaEntrada: ['', [Validators.required]],
-        cantidadPersonas: [
-          1, [Validators.required, Validators.min(1)]
-        ],
-        solicitante: [this.usuarioActivo.codigoUsuario, [Validators.required]], // Aquí definimos el FormControl para codigoUsuario
-        listaPasajeros: this.fb.array([]),
-      });
+  iniciarFormulario() {
+    const unidadSolicitante = this.usuarioActivo?.empleado?.departamento?.nombre || '';
+    const fechaSolicitudInicial = this.obtenerFechaActual(new Date()) || '';
+
+    this.formularioSoliVe = this.fb.group({
+      fechaSolicitud: [
+        fechaSolicitudInicial,
+        [
+          Validators.required,
+          Validators.pattern(this.isDate)
+        ]
+      ],
+      fechaSalida: [
+        '',
+        [Validators.required]
+      ],
+      fechaEntrada: [
+        '',
+        [Validators.required]
+      ],
+      unidadSolicitante: [
+        unidadSolicitante,
+        [Validators.required]
+      ],
+      tipoVehiculo: ['', [Validators.required]],
+      vehiculo: ['', [Validators.required]],
+      objetivoMision: ['', [Validators.required]],
+      lugarMision: ['', [Validators.required]],
+      direccion: [''],
+      depto: ['', [Validators.required]],
+      municipio: ['', [Validators.required]],
+      distrito: ['', [Validators.required]],
+      canton: ['', [Validators.required]],
+      horaSalida: ['', [Validators.required]],
+      horaEntrada: ['', [Validators.required]],
+      cantidadPersonas: [
+        1,
+        [Validators.required, Validators.min(1)]
+      ],
+      solicitante: [this.usuarioActivo?.codigoUsuario || '', [Validators.required]],
+      listaPasajeros: this.fb.array([]),
+    });
   }
+
 
   validarfecha(fecha: string) {
     const inputDate = new Date(fecha);

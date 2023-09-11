@@ -475,62 +475,62 @@
         </div>
         <!-- fin solicitante -->
 
-        <!-- tabla de personas -->
-        <div class="row" *ngIf="cantidadPersonas >= 2 || leyenda=='Detalle' && soliVeOd != null && soliVeOd.cantidadPersonas >= 2">
-          <div class="mt-2">
-            <div *ngIf="mostrarTabla; else archivoAdjunto">
-              <label for="tablaPasajeros">Ingrese los nombres de los pasajeros: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
-                                                                                     class="text-danger">*</span></label>
-              <table class="table excel-table table-responsive" id="tablaPasajeros"
-              *ngIf="leyenda==='Detalle' && soliVeOd != null">
-                <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Nombre</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let pasajero of pasajeros; let i = index">
-                  <td>{{ i + 1}}</td>
-                  <td>
-                    <input type="text" style="width: 100%"
-                           [formControl]="pasajeroFormControls[i]"
-                           [readonly]="soliVeOd != null && leyenda === 'Detalle'">
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-              <table class="table excel-table table-responsive" id="tablaPasajeros"
-              *ngIf="leyenda !== 'Detalle' || soliVeOd === null">
-                <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Nombre</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let control of pasajeroFormControls; let i = index">
-                  <td>{{ i + 1 }}</td>
-                  <td>
-                    <input type="text" style="width: 100%" [formControl]="control"
-                           [readonly]="soliVeOd != null && leyenda === 'Detalle'">
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <ng-template #archivoAdjunto>
-              <div *ngIf="mostrarArchivoAdjunto" class="alert alert-warning">
-                Por favor, adjunta la lista de pasajeros: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
-                                                                class="text-danger">*</span>
-                <input type="file" (change)="cambioDeArchivo($event)" />
-              </div>
-            </ng-template>
-
+       <!-- tabla de personas -->
+       <div class="row" *ngIf="cantidadPersonas >= 2 || leyenda=='Detalle' && soliVeOd != null && soliVeOd.cantidadPersonas >= 2">
+        <div class="mt-2">
+          <div *ngIf="mostrarTabla; else archivoAdjunto">
+            <label for="tablaPasajeros">Ingrese los nombres de los pasajeros: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                                                   class="text-danger">*</span></label>
+            <table class="table excel-table table-responsive" id="tablaPasajeros"
+            *ngIf="leyenda==='Detalle' && soliVeOd != null">
+              <thead>
+              <tr>
+                <th>No</th>
+                <th>Nombre</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let pasajero of pasajeros; let i = index">
+                <td>{{ i + 1}}</td>
+                <td>
+                  <input type="text" style="width: 100%"
+                         [formControl]="pasajeroFormControls[i]"
+                         [readonly]="soliVeOd != null && leyenda === 'Detalle'">
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <table class="table excel-table table-responsive" id="tablaPasajeros"
+            *ngIf="leyenda !== 'Detalle' || soliVeOd === null">
+              <thead>
+              <tr>
+                <th>No</th>
+                <th>Nombre</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let control of pasajeroFormControls; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>
+                  <input type="text" style="width: 100%" [formControl]="control"
+                         [readonly]="soliVeOd != null && leyenda === 'Detalle'">
+                </td>
+              </tr>
+              </tbody>
+            </table>
           </div>
+
+          <ng-template #archivoAdjunto>
+            <div *ngIf="mostrarArchivoAdjunto" class="alert alert-warning">
+              Por favor, adjunta la lista de pasajeros: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                              class="text-danger">*</span>
+              <input type="file" (change)="cambioDeArchivo($event)" />
+            </div>
+          </ng-template>
+
         </div>
-        <!-- fin de personas -->
+      </div>
+      <!-- fin de personas -->
 
       </div>
     </div>

@@ -19,6 +19,8 @@ import {MensajesService} from "../../../../shared/global/mensajes.service";
 import {IVehiculos} from "../../../vehiculo/interfaces/vehiculo-interface";
 import {CommunicationService} from "../../services/comunicacion.service";
 import {DECIMAL_VALIDATE, INTEGER_VALIDATE} from "../../../../constants/constants";
+import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
+import { Usuario } from 'src/app/account/auth/models/usuario.models';
 
 @Component({
   selector: 'app-modal',
@@ -30,6 +32,7 @@ export class ModalComponent implements OnInit {
   @Input() leyenda!: string;
   @Input() estadoSelecionado!: number;
   @Input() soliVeOd!: ISolicitudVehiculo;
+  @Input() usuarioActivo !: Usuario;
 
   private isInteger: string = INTEGER_VALIDATE;
   private isDate: string = "";
@@ -69,11 +72,13 @@ export class ModalComponent implements OnInit {
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router,
               private soliVeService: SolicitudVehiculoService, public activeModal: NgbActiveModal,
-              private mensajesService: MensajesService, private communicationService: CommunicationService) { }
+              private mensajesService: MensajesService, private communicationService: CommunicationService,
+              ) { }
 
   ngOnInit(): void {
+    console.log(this.usuarioActivo);
     this.iniciarFormulario();
-    this.llenarComboDepartamentos();
+    this.llenarSelectDepartamentos();
     this.soliVeService.obtenerVehiculos();
     this.detalle(this.leyenda);
   }
@@ -130,14 +135,13 @@ export class ModalComponent implements OnInit {
   }
 
   async guardar(){
+    this.formularioSoliVe.value.unidadSolicitante = this.usuarioActivo.empleado.departamento.nombre;
     const solicitudVehiculo = this.formularioSoliVe.value;
-    console.log(this.formularioSoliVe);
+    console.log("formularo: ",this.formularioSoliVe);
     if (this.formularioSoliVe.valid){
       if (this.soliVeOd != null){
         this.editarSoliVe();
       }else{
-        solicitudVehiculo.solicitante.codigoUsuario = '4937c750-13f7-4041-990a-f2de7fdf8cae';
-
        if(this.validarfecha(solicitudVehiculo.fechaSolicitud)){
          if (this.validarfecha(solicitudVehiculo.fechaSalida)){
            if(this.validarfecha(solicitudVehiculo.fechaEntrada)){
@@ -204,9 +208,9 @@ export class ModalComponent implements OnInit {
       }
     } else {
       // Mostrar nombres de campos inválidos por consola
-      /*console.log('Campos inválidos:',
+      console.log('Campos inválidos:',
         Object.keys(this.formularioSoliVe.controls).filter((controlName) =>
-          this.formularioSoliVe.get(controlName)?.invalid));*/
+          this.formularioSoliVe.get(controlName)?.invalid));
 
       this.mensajesService.mensajesToast(
         "warning",
@@ -331,7 +335,8 @@ export class ModalComponent implements OnInit {
           [Validators.required]],
         fechaEntrada: [
           '', [Validators.required]],
-        unidadSolicitante: ['Informática', [Validators.required]],
+        unidadSolicitante: [this.usuarioActivo.empleado.departamento.nombre,
+          [Validators.required]],
         tipoVehiculo: ['', [Validators.required]],
         vehiculo: ['', [Validators.required]],
         objetivoMision: ['', [Validators.required]],
@@ -346,8 +351,8 @@ export class ModalComponent implements OnInit {
         cantidadPersonas: [
           1, [Validators.required, Validators.min(1)]
         ],
-        solicitante: ['', [Validators.required]], // Aquí definimos el FormControl para codigoUsuario
-        pasajeros: this.fb.array([]),
+        solicitante: [this.usuarioActivo.codigoUsuario, [Validators.required]], // Aquí definimos el FormControl para codigoUsuario
+        listaPasajeros: this.fb.array([]),
       });
   }
 
@@ -377,7 +382,7 @@ export class ModalComponent implements OnInit {
     return `${year}-${mes}-${dia}`;
   }
 
-  llenarComboDepartamentos(){
+  llenarSelectDepartamentos(){
     // Reiniciar las selecciones y opciones para los selectores subsiguientes
     this.formularioSoliVe.get('depto').setValue(null);
     this.formularioSoliVe.get('municipio').setValue(null);
@@ -443,7 +448,6 @@ export class ModalComponent implements OnInit {
   }
 
 
-  // metodo para generar la filas de la tabla
   actualizarFilas() {
 
     this.cantidadPersonas = this.formularioSoliVe.get('cantidadPersonas').value;

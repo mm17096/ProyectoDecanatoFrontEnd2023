@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 import {ModalComponent} from "../../components/modal/modal.component";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {CommunicationService} from "../../services/comunicacion.service";
 import { IEstados } from '../../interfaces/data.interface';
 import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
 
@@ -25,14 +24,13 @@ export class MisSolicitudesComponent implements OnInit {
   estadosSoliVe: IEstados [] = [];
 
   constructor( private soliVeService: SolicitudVehiculoService, private modalService: NgbModal,
-               private communicationService: CommunicationService, private userService: UsuarioService) { }
+               private userService: UsuarioService) { }
 
   ngOnInit(): void {
     this.userService.getUsuario();
     this.breadCrumbItems = [{ label: 'Solicitud de Vehículo' }, { label: 'Mis Solicitudes', active: true }]; // miga de pan
     this.soliVeService.getSolicitudesVehiculo(this.estadoSeleccionado);
     this.getEstados();
-    this.actualizarTabla();
   }
 
   abrirModal(leyenda: string) {
@@ -48,12 +46,6 @@ export class MisSolicitudesComponent implements OnInit {
 
   get listSoliVeData(){
     return this.soliVeService.listSoliVehiculo;
-  }
-
-  actualizarTabla(){
-    this.communicationService.dataUpdated$.subscribe(() => {
-      this.soliVeService.getSolicitudesVehiculo(this.estadoSeleccionado);
-    });
   }
 
   onEstadoSeleccionado(event: any) {

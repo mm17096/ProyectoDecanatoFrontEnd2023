@@ -1,12 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import {
-  AbstractControl,
   FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
-  RequiredValidator,
   Validators
 } from "@angular/forms";
 import {Router} from "@angular/router";
@@ -17,9 +15,7 @@ import {map} from "rxjs/operators";
 import Swal from "sweetalert2";
 import {MensajesService} from "../../../../shared/global/mensajes.service";
 import {IVehiculos} from "../../../vehiculo/interfaces/vehiculo-interface";
-import {CommunicationService} from "../../services/comunicacion.service";
-import {DECIMAL_VALIDATE, INTEGER_VALIDATE} from "../../../../constants/constants";
-import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
+import {INTEGER_VALIDATE} from "../../../../constants/constants";
 import { Usuario } from 'src/app/account/auth/models/usuario.models';
 
 @Component({
@@ -72,7 +68,7 @@ export class ModalComponent implements OnInit {
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router,
               private soliVeService: SolicitudVehiculoService, public activeModal: NgbActiveModal,
-              private mensajesService: MensajesService, private communicationService: CommunicationService,
+              private mensajesService: MensajesService,
               ) { }
 
   ngOnInit(): void {
@@ -296,7 +292,7 @@ export class ModalComponent implements OnInit {
           this.mensajesService.mensajesSweet(
             "error",
             "Ups... Algo salió mal",
-            err
+            err.error.message
           );
           reject(err); // Rechaza la promesa con el error
         },
@@ -325,11 +321,11 @@ export class ModalComponent implements OnInit {
 
   iniciarFormulario() {
     const unidadSolicitante = this.usuarioActivo?.empleado?.departamento?.nombre || '';
-    const fechaSolicitudInicial = this.obtenerFechaActual(new Date()) || '';
+    const fechaActual = this.obtenerFechaActual(new Date()) || '';
 
     this.formularioSoliVe = this.fb.group({
       fechaSolicitud: [
-        fechaSolicitudInicial,
+        fechaActual,
         [
           Validators.required,
           Validators.pattern(this.isDate)

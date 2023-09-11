@@ -81,7 +81,6 @@ export class SolicitudVehiculoService {
 
 
   registrarSoliVe(solicitudVehiculo: ISolicitudVehiculo){
-    console.log("regist", solicitudVehiculo);
     return this.http.post<ISolicitudVehiculo>( `${this.url}/solicitudvehiculo/insert`, solicitudVehiculo);
   }
 }

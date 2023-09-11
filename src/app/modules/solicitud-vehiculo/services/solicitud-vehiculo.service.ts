@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {ISolicitudVehiculo} from "../interfaces/data.interface";
-import {IEstados} from "../interfaces/estados.interface";
+import {IEstados, IPais, ISolicitudVehiculo} from "../interfaces/data.interface";
 import {environment} from "../../../../environments/environment";
 import {map} from "rxjs/operators";
 import {IVehiculos} from "../../vehiculo/interfaces/vehiculo-interface";
-import {IPais} from "../interfaces/pais.interface";
 
 @Injectable({
   providedIn: 'root'

@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
-import {IEstados} from "../../interfaces/estados.interface";
-import {ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {ModalComponent} from "../../components/modal/modal.component";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {CommunicationService} from "../../services/comunicacion.service";
+import { IEstados } from '../../interfaces/data.interface';
 
 @Component({
   selector: 'app-mis-solicitudes',

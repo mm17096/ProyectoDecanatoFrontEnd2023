@@ -10,12 +10,11 @@ import {
   Validators
 } from "@angular/forms";
 import {Router} from "@angular/router";
-import {IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
+import {IPais, IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 
 import {map} from "rxjs/operators";
 import Swal from "sweetalert2";
-import {IPais} from "../../interfaces/pais.interface";
 import {MensajesService} from "../../../../shared/global/mensajes.service";
 import {IVehiculos} from "../../../vehiculo/interfaces/vehiculo-interface";
 import {CommunicationService} from "../../services/comunicacion.service";
@@ -320,7 +319,6 @@ export class ModalComponent implements OnInit {
 
 
   iniciarFormulario(){
-    if (this.leyenda == 'Detalle' && this.soliVeOd != null){
       this.formularioSoliVe = this.fb.group({
         fechaSolicitud: [
           this.obtenerFechaActual(new Date()),
@@ -351,52 +349,6 @@ export class ModalComponent implements OnInit {
         solicitante: ['', [Validators.required]], // Aquí definimos el FormControl para codigoUsuario
         pasajeros: this.fb.array([]),
       });
-    }else{
-      this.formularioSoliVe = this.fb.group({
-        fechaSolicitud: [
-          this.obtenerFechaActual(new Date()),
-          [
-            Validators.required
-          ]],
-        fechaSalida: ['', [
-          Validators.required,
-          Validators.pattern(this.isDate)
-        ]],
-        fechaEntrada: ['', [
-          Validators.required,
-          Validators.pattern(this.isDate)
-        ]],
-        unidadSolicitante: ['Informática', [Validators.required]],
-        tipoVehiculo: ['', [Validators.required]],
-        vehiculo: ['', [Validators.required]],
-        objetivoMision: ['', [
-          Validators.required,
-          Validators.minLength(6)
-        ]],
-        lugarMision: ['', [
-          Validators.required,
-          Validators.minLength(3)
-        ]],
-        direccion: [''],
-        depto: ['', [Validators.required]],
-        municipio: ['', [Validators.required]],
-        distrito: ['', [Validators.required]],
-        canton: ['', [Validators.required]],
-        horaSalida: ['', [Validators.required]],
-        horaEntrada: ['', [Validators.required]],
-        cantidadPersonas: [
-          1, [
-            Validators.required,
-            Validators.min(1),
-            Validators.pattern(this.isInteger)
-          ]],
-        solicitante: this.fb.group({
-          codigoUsuario: ['4937c750-13f7-4041-990a-f2de7fdf8cae', [Validators.required]]
-        }),
-        listaPasajeros: this.fb.array([])
-      });
-    }
-
   }
 
   validarfecha(fecha: string) {

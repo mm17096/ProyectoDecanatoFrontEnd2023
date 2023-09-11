@@ -1,25 +1,22 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import {
-  AbstractControl,
   FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
-  RequiredValidator,
   Validators
 } from "@angular/forms";
 import {Router} from "@angular/router";
-import {IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
+import {IPais, IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 
 import {map} from "rxjs/operators";
 import Swal from "sweetalert2";
-import {IPais} from "../../interfaces/pais.interface";
 import {MensajesService} from "../../../../shared/global/mensajes.service";
 import {IVehiculos} from "../../../vehiculo/interfaces/vehiculo-interface";
-import {CommunicationService} from "../../services/comunicacion.service";
-import {DECIMAL_VALIDATE, INTEGER_VALIDATE} from "../../../../constants/constants";
+import {INTEGER_VALIDATE} from "../../../../constants/constants";
+import { Usuario } from 'src/app/account/auth/models/usuario.models';
 
 @Component({
   selector: 'app-modal',
@@ -31,6 +28,7 @@ export class ModalComponent implements OnInit {
   @Input() leyenda!: string;
   @Input() estadoSelecionado!: number;
   @Input() soliVeOd!: ISolicitudVehiculo;
+  @Input() usuarioActivo !: Usuario;
 
   private isInteger: string = INTEGER_VALIDATE;
   private isDate: string = "";
@@ -70,11 +68,14 @@ export class ModalComponent implements OnInit {
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router,
               private soliVeService: SolicitudVehiculoService, public activeModal: NgbActiveModal,
-              private mensajesService: MensajesService, private communicationService: CommunicationService) { }
+              private mensajesService: MensajesService,
+              ) { }
 
   ngOnInit(): void {
+    console.log(this.usuarioActivo);
+    console.log("data",this.soliVeOd);
     this.iniciarFormulario();
-    this.llenarComboDepartamentos();
+    this.llenarSelectDepartamentos();
     this.soliVeService.obtenerVehiculos();
     this.detalle(this.leyenda);
   }
@@ -131,14 +132,13 @@ export class ModalComponent implements OnInit {
   }
 
   async guardar(){
+    this.formularioSoliVe.value.unidadSolicitante = this.usuarioActivo.empleado.departamento.nombre;
     const solicitudVehiculo = this.formularioSoliVe.value;
-    console.log(this.formularioSoliVe);
+    console.log("formularo: ",this.formularioSoliVe);
     if (this.formularioSoliVe.valid){
       if (this.soliVeOd != null){
         this.editarSoliVe();
       }else{
-        solicitudVehiculo.solicitante.codigoUsuario = '4937c750-13f7-4041-990a-f2de7fdf8cae';
-
        if(this.validarfecha(solicitudVehiculo.fechaSolicitud)){
          if (this.validarfecha(solicitudVehiculo.fechaSalida)){
            if(this.validarfecha(solicitudVehiculo.fechaEntrada)){
@@ -205,9 +205,9 @@ export class ModalComponent implements OnInit {
       }
     } else {
       // Mostrar nombres de campos inválidos por consola
-      /*console.log('Campos inválidos:',
+      console.log('Campos inválidos:',
         Object.keys(this.formularioSoliVe.controls).filter((controlName) =>
-          this.formularioSoliVe.get(controlName)?.invalid));*/
+          this.formularioSoliVe.get(controlName)?.invalid));
 
       this.mensajesService.mensajesToast(
         "warning",
@@ -292,7 +292,7 @@ export class ModalComponent implements OnInit {
           this.mensajesService.mensajesSweet(
             "error",
             "Ups... Algo salió mal",
-            err
+            err.error.message
           );
           reject(err); // Rechaza la promesa con el error
         },
@@ -319,85 +319,50 @@ export class ModalComponent implements OnInit {
   }
 
 
-  iniciarFormulario(){
-    if (this.leyenda == 'Detalle' && this.soliVeOd != null){
-      this.formularioSoliVe = this.fb.group({
-        fechaSolicitud: [
-          this.obtenerFechaActual(new Date()),
-          [
-            Validators.required,
-            Validators.pattern(this.isDate)
-          ]],
-        fechaSalida: [
-          '',
-          [Validators.required]],
-        fechaEntrada: [
-          '', [Validators.required]],
-        unidadSolicitante: ['Informática', [Validators.required]],
-        tipoVehiculo: ['', [Validators.required]],
-        vehiculo: ['', [Validators.required]],
-        objetivoMision: ['', [Validators.required]],
-        lugarMision: ['', [Validators.required]],
-        direccion: [''],
-        depto: ['', [Validators.required]],
-        municipio: ['', [Validators.required]],
-        distrito: ['', [Validators.required]],
-        canton: ['', [Validators.required]],
-        horaSalida: ['', [Validators.required]],
-        horaEntrada: ['', [Validators.required]],
-        cantidadPersonas: [
-          1, [Validators.required, Validators.min(1)]
-        ],
-        solicitante: ['', [Validators.required]], // Aquí definimos el FormControl para codigoUsuario
-        pasajeros: this.fb.array([]),
-      });
-    }else{
-      this.formularioSoliVe = this.fb.group({
-        fechaSolicitud: [
-          this.obtenerFechaActual(new Date()),
-          [
-            Validators.required
-          ]],
-        fechaSalida: ['', [
-          Validators.required,
-          Validators.pattern(this.isDate)
-        ]],
-        fechaEntrada: ['', [
-          Validators.required,
-          Validators.pattern(this.isDate)
-        ]],
-        unidadSolicitante: ['Informática', [Validators.required]],
-        tipoVehiculo: ['', [Validators.required]],
-        vehiculo: ['', [Validators.required]],
-        objetivoMision: ['', [
-          Validators.required,
-          Validators.minLength(6)
-        ]],
-        lugarMision: ['', [
-          Validators.required,
-          Validators.minLength(3)
-        ]],
-        direccion: [''],
-        depto: ['', [Validators.required]],
-        municipio: ['', [Validators.required]],
-        distrito: ['', [Validators.required]],
-        canton: ['', [Validators.required]],
-        horaSalida: ['', [Validators.required]],
-        horaEntrada: ['', [Validators.required]],
-        cantidadPersonas: [
-          1, [
-            Validators.required,
-            Validators.min(1),
-            Validators.pattern(this.isInteger)
-          ]],
-        solicitante: this.fb.group({
-          codigoUsuario: ['4937c750-13f7-4041-990a-f2de7fdf8cae', [Validators.required]]
-        }),
-        listaPasajeros: this.fb.array([])
-      });
-    }
+  iniciarFormulario() {
+    const unidadSolicitante = this.usuarioActivo?.empleado?.departamento?.nombre || '';
+    const fechaActual = this.obtenerFechaActual(new Date()) || '';
 
+    this.formularioSoliVe = this.fb.group({
+      fechaSolicitud: [
+        fechaActual,
+        [
+          Validators.required,
+          Validators.pattern(this.isDate)
+        ]
+      ],
+      fechaSalida: [
+        '',
+        [Validators.required]
+      ],
+      fechaEntrada: [
+        '',
+        [Validators.required]
+      ],
+      unidadSolicitante: [
+        unidadSolicitante,
+        [Validators.required]
+      ],
+      tipoVehiculo: ['', [Validators.required]],
+      vehiculo: ['', [Validators.required]],
+      objetivoMision: ['', [Validators.required]],
+      lugarMision: ['', [Validators.required]],
+      direccion: [''],
+      depto: ['', [Validators.required]],
+      municipio: ['', [Validators.required]],
+      distrito: ['', [Validators.required]],
+      canton: ['', [Validators.required]],
+      horaSalida: ['', [Validators.required]],
+      horaEntrada: ['', [Validators.required]],
+      cantidadPersonas: [
+        1,
+        [Validators.required, Validators.min(1)]
+      ],
+      solicitante: [this.usuarioActivo?.codigoUsuario || '', [Validators.required]],
+      listaPasajeros: this.fb.array([]),
+    });
   }
+
 
   validarfecha(fecha: string) {
     const inputDate = new Date(fecha);
@@ -425,7 +390,7 @@ export class ModalComponent implements OnInit {
     return `${year}-${mes}-${dia}`;
   }
 
-  llenarComboDepartamentos(){
+  llenarSelectDepartamentos(){
     // Reiniciar las selecciones y opciones para los selectores subsiguientes
     this.formularioSoliVe.get('depto').setValue(null);
     this.formularioSoliVe.get('municipio').setValue(null);
@@ -491,7 +456,6 @@ export class ModalComponent implements OnInit {
   }
 
 
-  // metodo para generar la filas de la tabla
   actualizarFilas() {
 
     this.cantidadPersonas = this.formularioSoliVe.get('cantidadPersonas').value;

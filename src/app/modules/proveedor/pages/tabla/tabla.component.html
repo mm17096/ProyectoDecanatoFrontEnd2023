@@ -14,7 +14,7 @@
     </thead>
     <tbody>
       <tr
-        *ngFor="let data of proveedores | filter : queryString; let i = index"
+        *ngFor="let data of proveedores  | filter : queryString | paginate : { itemsPerPage: 10, currentPage: p }; let i = index"
       >
         <td>
           <a class="text-body fw-bold">
@@ -77,10 +77,9 @@
     </tbody>
   </table>
 
-  <!-- ! PAGINACION
+  <!-- ! PAGINACION -->
   <div class="pagination pagination-rounded justify-content-end mb-2">
     <pagination-controls (pageChange)="p = $event"></pagination-controls>
   </div>
-  -->
 </div>
 <!-- end table -->

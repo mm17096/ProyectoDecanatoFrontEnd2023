@@ -2,13 +2,14 @@ import { Cargo } from "./Cargo";
 import { Departamento } from "./Departamento";
 
 export interface Empleado{
+    codigoEmpleado?:string;
     dui?:string;
     nombre?:string;
     apellido?:string;
     telefono?:string;
     licencia?:string;
-    tipolicencia?:string;
-    fechalicencia?: Date;
+    tipo_licencia?:string;
+    fecha_licencia?: Date;
     estado?: number;
     jefe?: boolean;
     correo?: string;
@@ -17,4 +18,3 @@ export interface Empleado{
     cargo?: Cargo;
     departamento?: Departamento;
 }
-

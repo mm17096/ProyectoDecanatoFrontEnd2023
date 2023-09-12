@@ -1,5 +1,7 @@
 export interface Departamento{
-    codigoDepto?:number;
+    codigoDepto?:string;
     nombre?:string;
+    descripcion?:string;
+    tipo?:string;
     estado?:number;
 }

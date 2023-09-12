@@ -23,7 +23,7 @@ export class SolicitudVehiculoService {
   getSolicitudesVehiculo(estado: number) {
     if (estado != null){
       this.http
-        .get(`${this.url}/solicitudvehiculo/listapage/${estado}`)
+        .get(`${this.url}/api/solicitudvehiculo/listapage/${estado}`)
         .pipe(map((resp: any) => resp.content as ISolicitudVehiculo[]))
         .subscribe(
           (soliVe: ISolicitudVehiculo[]) => {
@@ -35,7 +35,7 @@ export class SolicitudVehiculoService {
         );
     }else {
       this.http
-        .get(`${this.url}/solicitudvehiculo/listapage`)
+        .get(`${this.url}/api/solicitudvehiculo/listapage`)
         .pipe(map((resp: any) => resp.content as ISolicitudVehiculo[]))
         .subscribe(
           (soliVe: ISolicitudVehiculo[]) => {
@@ -51,7 +51,7 @@ export class SolicitudVehiculoService {
 
   // Servicio para obtener los estados
   public obtenerEstados(): Observable<any> {
-    return this.http.get<IEstados>((this.url)+ '/solicitudvehiculo/estados');
+    return this.http.get<IEstados>((this.url)+ '/api/solicitudvehiculo/estados');
   }
 
   obtenerVehiculos() {
@@ -81,6 +81,6 @@ export class SolicitudVehiculoService {
 
 
   registrarSoliVe(solicitudVehiculo: ISolicitudVehiculo){
-    return this.http.post<ISolicitudVehiculo>( `${this.url}/solicitudvehiculo/insert`, solicitudVehiculo);
+    return this.http.post<ISolicitudVehiculo>( `${this.url}/api/solicitudvehiculo/insert`, solicitudVehiculo);
   }
 }

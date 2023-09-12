@@ -102,13 +102,11 @@ export class MostrarComponent implements OnInit {
 
   get listProveedor() {
     const proveedores: IProveedor[] = [];
-
     this.devolucionValeService.listProveedor.forEach((x) => {
       if (x.estado == 8 && x.tipo == 14) {
         proveedores.push(x);
       }
     });
-
     return proveedores;
   }
 
@@ -145,7 +143,14 @@ export class MostrarComponent implements OnInit {
 
   async registrarDevolucion() {
     if (this.formularioGeneral.valid) {
-      if ((await this.mensajesService.mensajesConfirmar("warning","¿Continuar con la acción?", "No se podrá revertir acción, digite: ", "devolver")) == true) {
+      if (
+        (await this.mensajesService.mensajesConfirmar(
+          "warning",
+          "¿Continuar con la acción?",
+          "No se podrá revertir acción, digite: ",
+          "devolver"
+        )) == true
+      ) {
         this.editando();
       }
     } else {
@@ -192,7 +197,7 @@ export class MostrarComponent implements OnInit {
           this.mensajesService.mensajesSweet(
             "error",
             "Ups... Algo salió mal",
-            err
+            err.error.message
           );
         },
       });

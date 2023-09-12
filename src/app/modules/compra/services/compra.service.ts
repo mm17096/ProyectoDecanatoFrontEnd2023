@@ -16,12 +16,21 @@ export class CompraService {
 
   constructor(private http: HttpClient) {}
 
-  getCompras() {
+  getComprasConPaginacion() {
     this.http
       .get(`${this.baseUrl}/compra/lista`)
       .pipe(map((resp: any) => resp.content as ICompra[]))
       .subscribe((compras: ICompra[]) => {
         this.listCompra = compras; // Actualiza la propiedad listCompra
+      });
+  }
+
+  getCompras() {
+    this.http
+      .get(`${this.baseUrl}/compra/listasinpagina`)
+      .pipe(map((resp: any) => resp as ICompra[]))
+      .subscribe((compras: ICompra[]) => {
+        this.listCompra = compras;
       });
   }
 

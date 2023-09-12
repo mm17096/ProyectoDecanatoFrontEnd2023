@@ -8,7 +8,6 @@ import { ConfigService } from '../../../core/services/config.service';
 import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
 import { IEmpleado } from 'src/app/modules/empleado/interface/empleado.interface';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { Usuario } from 'src/app/account/auth/models/usuario.models';
 
 @Component({
   selector: 'app-default',
@@ -35,10 +34,10 @@ export class DefaultComponent implements OnInit {
 
   @ViewChild('content') content;
   constructor(
-    private modalService: NgbModal, 
-    private configService: ConfigService, 
-    private eventService: EventService, 
-    private usuarioService: UsuarioService, 
+    private modalService: NgbModal,
+    private configService: ConfigService,
+    private eventService: EventService,
+    private usuarioService: UsuarioService,
     private jwtHelper: JwtHelperService
     ) {}
 

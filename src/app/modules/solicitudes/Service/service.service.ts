@@ -8,10 +8,10 @@ import { SolicitudVv } from '../Interfaces/SolicitudVv';
 export class ServiceService {
 
   constructor(private http:HttpClient) { }
-  url = 'http://localhost:8080/api/solicitudVv'
+  url = 'http://localhost:8080/api/consulta'
   
   getCliente(){
-    return this.http.get<SolicitudVv>(this.url);
+    return this.http.get<SolicitudVv>(this.url+'/listapage');
   }
 
  /* createCliente(cliente:Cliente){

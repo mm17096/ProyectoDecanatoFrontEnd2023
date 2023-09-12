@@ -76,8 +76,8 @@ export class SolicitudvaleComponent implements OnInit {
   ngOnInit() {
     this.breadCrumbItems = [{ label: 'UI Elements' }, { label: 'Modals', active: true }];
     this.service.getCliente().subscribe((data:any)=>{
-      this.solicitudvv=data;
-      console.log(data);
+      this.solicitudvv=data.content;
+      console.log(this.solicitudvv);
     })
   }
  /**
@@ -137,14 +137,15 @@ export class SolicitudvaleComponent implements OnInit {
 
   filteredItems3() {
     const currentDate = new Date();
+    //console.log(this.solicitudvv)
     return this.solicitudvv.filter(item =>
       ((item.solicitante.empleado.nombre+' '+item.solicitante.empleado.apellido).toLowerCase().includes(this.searchText.toLowerCase()) ||
       item.lugarMision.toLowerCase().includes(this.searchText.toLowerCase()) ||
-      item.estado.toLowerCase().includes(this.searchText.toLowerCase()) || 
+      item.estadoString.toLowerCase().includes(this.searchText.toLowerCase()) || 
      // item.fechaSalida.toLocaleDateString().includes(this.searchText.toLowerCase()) || 
       (item.motorista.nombre+' '+item.motorista.apellido).toLowerCase().includes(this.searchText.toLowerCase()) || 
       this.searchText === '') && 
-      (item.estado === this.filtroEstado || this.filtroEstado === '')
+      (item.estadoString === this.filtroEstado || this.filtroEstado === '')
     );
   }
 

@@ -1,5 +1,5 @@
 export interface Vehiculo{
-    codigoVehiculo?:number;
+    codigoVehiculo?:string;
     placa?:string;
     modelo?:string;
     marca?:string;

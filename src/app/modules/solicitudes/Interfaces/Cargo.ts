@@ -1,5 +1,5 @@
 export interface Cargo{
-    codigoCargo?:number;
+    id?:string;
     nombreCargo?:string;
     descripcion?:string;
     estado?:number;

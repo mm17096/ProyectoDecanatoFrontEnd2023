@@ -20,6 +20,7 @@ export class ListarComponent implements OnInit {
   lstDeptos: IDepto[] = [];
   cambio: string;
   term: string = 'asdasd';
+  p: any;
 
   constructor(private deptoService : DeptoService,
     private modalService: NgbModal,

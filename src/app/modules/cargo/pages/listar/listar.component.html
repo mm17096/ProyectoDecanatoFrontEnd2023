@@ -53,7 +53,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr  *ngFor="let data of lstCargos; let i = index">
+
+                                <tr  *ngFor="let data of lstCargos  | filter : term | paginate : { itemsPerPage: 10, currentPage: p }; let i = index">
                                     <td class="align-middle text-center">{{ (i + 1)}}</td>
                                     <td class="align-middle text-center">{{ data.nombreCargo }}</td>
                                     <td class="align-middle text-center">
@@ -94,7 +95,10 @@
 
                                 </tbody>
                         </table>
-
+                         <!-- ! PAGINACION -->
+  <div class="pagination pagination-rounded justify-content-end mb-2">
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
                 </div>
             </div>
         </div>

@@ -17,6 +17,7 @@ export class ListarComponent implements OnInit {
   lstCargos: ICargo[] = [];
   cambio: string;
   term: string = '';
+  p: any;
 
   selectedData: any;
   constructor(private cargoService : CargoService,

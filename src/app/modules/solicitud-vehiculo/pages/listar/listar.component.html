@@ -68,13 +68,7 @@
             </table>
 
             <div class="pagination pagination-rounded justify-content-end mb-2">
-              <pagination-controls
-                previousLabel="Anterior"
-                nextLabel="Siguiente"
-                firstLabel="Primera"
-                lastLabel="Última"
-                itemsPerPageLabel="por página"
-                (pageChange)="p = $event"></pagination-controls>
+              <pagination-controls (pageChange)="p = $event" [nextLabel]="''" [previousLabel]="''"></pagination-controls>
             </div>
 
           </div>

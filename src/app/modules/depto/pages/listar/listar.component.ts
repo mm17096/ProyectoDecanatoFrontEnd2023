@@ -19,7 +19,7 @@ export class ListarComponent implements OnInit {
   breadCrumbItems: Array<{}>;
   lstDeptos: IDepto[] = [];
   cambio: string;
-  term: string = 'asdasd';
+  term: string = '';
   p: any;
 
   constructor(private deptoService : DeptoService,

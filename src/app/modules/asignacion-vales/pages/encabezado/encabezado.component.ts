@@ -31,7 +31,7 @@ export class EncabezadoComponent implements OnInit {
       { label: "Registro de Asignaciones", active: true },
     ];
     this.route.paramMap.subscribe(params => {
-      const parametro = params.get('parametro'); // 'parametro' debe coincidir con el nombre definido en la ruta
+      const parametro = params.get('codigoAsignacion'); // 'parametro' debe coincidir con el nombre definido en la ruta
 
       if (parametro) {
         // Hacer lo que necesites con el parámetro

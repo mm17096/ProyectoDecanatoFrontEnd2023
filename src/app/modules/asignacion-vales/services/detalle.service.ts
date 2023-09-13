@@ -27,6 +27,6 @@ export class DetalleService {
   url = "http://localhost:8080/asignacionvale/listar/cc0a3fa0-984e-4d10-9c11-deded04a3dae";
 
   getDetalleAsignacionVale(codigoAsignacion: string) {
-    return this.http.get<IAsignacionDetalle>(`${this.baseUrl}/api/asignacionvale/listar/${codigoAsignacion}`);
+    return this.http.get<IAsignacionDetalle>(`${this.baseUrl}/api/asignacionvale/listar/6a7d5fee-d63d-4df1-bd89-a2e0e5c6b39c`);
   }
 }

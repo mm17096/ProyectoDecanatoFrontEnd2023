@@ -56,33 +56,43 @@
               <tr *ngFor="let item of filteredItems3()">
                 <td>
                   {{
-                    item.solicitante.empleado.nombre +
+                    item.solicitante.empleado?.nombre +
                       " " +
-                      item.solicitante.empleado.apellido
+                      item.solicitante.empleado?.apellido
                   }}
                 </td>
                 <td>{{ item.lugarMision }}</td>
                 <td>{{ item.estadoString }}</td>
                 <td>{{ item.fechaSalida }}</td>
                 <td>
-                  {{ item.motorista.nombre + " " + item.motorista.apellido }}
+                  {{ item.motorista?.nombre + " " + item.motorista?.apellido }}
                 </td>
 
-                <td >
-                  <button *ngIf="item.estadoString == 'Aprobada'"
+                <td>
+                  <button
+                    *ngIf="item.estadoString == 'Aprobada' "
                     type="button"
                     class="btn btn-primary"
                     (click)="largeModal(largeDataModalvale, item)"
                   >
                     Asignar Vale
                   </button>
-                  <button *ngIf="item.estadoString == 'Asignado'"
+
+                  <button
+                    *ngIf="item.estadoString == 'Asignado'"
                     type="button"
                     class="btn btn-primary"
                     (click)="irADetalle()"
                   >
-
-                   Detalle
+                    Liquidar
+                  </button>
+                  <button
+                    *ngIf="item.estadoString == 'Activo'"
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="largeModal(largeDataModaldetalle, item)"
+                  >
+                    Detalle
                   </button>
                 </td>
                 <!-- <div *ngIf="item.estado=='En espera por jefe' || item.estado=='En espera por decano' ||  item.estado=='Asignado'">
@@ -514,7 +524,13 @@
               />
             </div>
             <div class="col-sm-4">
-              <button type="button" class="btn btn-primary" (click)="valesAsignar(valesAsignarModal)">Ver Vales</button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="valesAsignar(valesAsignarModal)"
+              >
+                Ver Vales
+              </button>
             </div>
           </div>
           <div class="row mb-4">
@@ -736,18 +752,25 @@
   <div class="modal-body">
     <div class="table-responsive mb-0">
       <table class="table table-centered table-nowrap">
-          <thead class="table-light">
-              <tr>
-                  <th class="align-middle text-center">Codigo Vale</th>
-              </tr>
-          </thead>
-          <tbody>
-              <tr *ngFor="let vale of valesAsingar | filter:busqueda |
-                          paginate: { itemsPerPage: 10, currentPage: p };
-                          let i = index">
-                  <td class="align-middle text-center">{{ vale.codigoVale }}</td>
-              </tr>
-          </tbody>
+        <thead class="table-light">
+          <tr>
+            <th class="align-middle text-center">Codigo Vale</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="
+              let vale of valesAsingar
+                | filter : busqueda
+                | paginate : { itemsPerPage: 10, currentPage: p };
+              let i = index
+            "
+          >
+            <td class="align-middle text-center h3">
+              {{ vale.correlativoVale }}
+            </td>
+          </tr>
+        </tbody>
       </table>
       <div class="pagination pagination-rounded justify-content-end mb-2">
         <pagination-controls
@@ -756,7 +779,8 @@
           firstLabel="Primera"
           lastLabel="Última"
           itemsPerPageLabel="por página"
-          (pageChange)="p = $event"></pagination-controls>
+          (pageChange)="p = $event"
+        ></pagination-controls>
       </div>
     </div>
   </div>

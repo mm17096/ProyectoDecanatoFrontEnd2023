@@ -174,8 +174,10 @@ export class SolicitudvaleComponent implements OnInit {
           "el método, codigoSolicitudVale:" +
             this.codigoSolicitudVale.codigoSolicitudVale
         );
+
       },
     });
+    //this.obtenerCodigoAsignacion();
   }
 
   obtenerCodigoAsignacion(){
@@ -188,7 +190,14 @@ export class SolicitudvaleComponent implements OnInit {
     });
   }
   irADetalle(){
-    this.obtenerCodigoAsignacion();
+    //console.log("el codigo del vehiculo es: "+ codigoVehiculo);
+
+    //this.obtenerIdSolicitudVale(codigoVehiculo);
+
+    //this.obtenerCodigoAsignacion();
+
+    console.log("el codigo del asignación es: "+ this.codigoAsignacion);
+
     this.router.navigate(['/asignacion-vale/asignacion', this.codigoAsignacion]);
   }
   /**

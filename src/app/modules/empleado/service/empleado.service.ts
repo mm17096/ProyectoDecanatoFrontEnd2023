@@ -4,8 +4,6 @@ import { Observable } from 'rxjs';
 import { ICargo, IDepartamento, IEmpleado, IEmpleadoTabala } from '../interface/empleado.interface';
 import { environment } from 'src/environments/environment';
 import { map } from "rxjs/operators";
-import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

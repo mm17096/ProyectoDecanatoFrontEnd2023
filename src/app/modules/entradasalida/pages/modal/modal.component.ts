@@ -1,6 +1,6 @@
 
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import { FormBuilder ,FormGroup, Validators} from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NAME_VALIDATE } from 'src/app/constants/constants';
 import Swal from 'sweetalert2';
@@ -29,18 +29,34 @@ export class ModalComponent implements OnInit {
   horaActual: string;
   fechaActual: string;
   modoEdicion = false;
-  
-  
 
+
+  //para habilitar o deshabilitar botones
+  entradaHabilitada = false;
+  salidaHabilitada = true;
+
+  
   constructor(private modalService: NgbModal,private mensajesService: MensajesService, private fb: FormBuilder, private router: Router, private listaentradasalidaservice: ListaentradasalidaService) { }
 
   ngOnInit(): void {
+    
 
       this.formBuilder = this.Iniciarformulario();
+      if (!this.fechaActual) {
+        this.fechaActual = this.getCurrentDate();
+      }
+    
+      if (!this.horaActual) {
+        this.horaActual = this.getCurrentTime();
+      }
+      this.listaentradasalidaservice.getMisiones();
+  }
+
+  guardarDatosDesdeBotonSalida() {
+    this.entradaHabilitada = true;
+    this.salidaHabilitada = false;
   }
   
-  
-
   // Función para obtener la fecha actual en formato "yyyy-MM-dd"
   getCurrentDate(): string {
     const now = new Date();
@@ -57,22 +73,16 @@ export class ModalComponent implements OnInit {
     return `${hours}:${minutes}`;
   }
 
-  
-
   private Iniciarformulario(): FormGroup {
     return this.fb.group({
       id:[''],
-      tipo: ['', [Validators.required, Validators.pattern(this.isName)]],
       fecha: ['', [Validators.required, this.maxDateValidator()]],
       hora: ['', [Validators.required]],
       kilometraje: ['', [Validators.required]],
       combustible: ['', [Validators.required]],
-  
+      solicitudvehiculo: ['', [Validators.required]]
     });
   }
-
-
-
   //funcion para obtener la fecha actual.
   getToday(): Date{
     return new Date();
@@ -181,7 +191,7 @@ export class ModalComponent implements OnInit {
     const listando = this.formBuilder.value;
   
 
-      const entsali: EntradaSalidaI = new EntradaSalidaI(listando.tipo, listando.fecha, listando.hora, listando.combustible, listando.kilometraje);
+      const entsali: EntradaSalidaI = new EntradaSalidaI(listando.tipo, listando.fecha, listando.hora, listando.combustible, listando.kilometraje,listando.estado, listando.solicitudvehiculo);
       console.log(entsali);
 
       this.listaentradasalidaservice.NuevosDatos(entsali).subscribe((resp: any) => {
@@ -204,6 +214,7 @@ export class ModalComponent implements OnInit {
           this.formBuilder.reset();
           this.recargar();
           this.modalService.dismissAll();
+          this.guardarDatosDesdeBotonSalida();
         }
       }, (err: any) => {
         this.mensajesService.mensajesSweet(
@@ -234,6 +245,10 @@ export class ModalComponent implements OnInit {
     const validarCampo= this.formBuilder.get(campo);
     return !validarCampo?.valid && validarCampo?.touched ? 'is-invalid' : validarCampo?.touched? 'is-valid': '';
   
+  }
+
+  get Listamisiones() {
+    return this.listaentradasalidaservice.listDeMisiones;
   }
 
 }

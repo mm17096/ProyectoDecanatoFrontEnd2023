@@ -1,7 +1,11 @@
-<span *ngIf="leyenda !== titulo">
+<span *ngIf="leyenda !== 'Entrada'" >
     <div class="text-sm-end">
-        <button type="button" class="btn btn-primary btn-rounded" (click)="openModal(content)">{{titulo}}
-        </button>
+        <button type="button" class="btn btn-salida btn-separado" [disabled]="!salidaHabilitada" (click)="openModal(content)">{{titulo}}</button>
+    </div>
+</span>
+<span *ngIf="leyenda !== 'Salida'" >
+    <div class="text-sm-end">
+        <button type="button" class="btn btn-entrada" [disabled]="!entradaHabilitada" (click)="openModal(content)">{{titulo}}</button>
     </div>
 </span>
 <span *ngIf="leyenda === titulo && titulo == 'Editar'">
@@ -24,17 +28,18 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="mb-3">
-                          <label>Tipo</label><span class="text-danger"> *</span>
-                        <select class="form-control form-select" id="tipo" name="tipo" placeholder="Escribe tipo de misión"
-                            formControlName="tipo" [class]="esCampoValido('tipo')" [ngModel]="entradasalidaOd!=null ? entradasalidaOd.tipo : ''" >
+                          <label>Misión</label><span class="text-danger"> *</span>
+                        <select class="form-control form-select" id="Selectsolicitudvehiculo" name="Selectsolicitudvehiculo" placeholder="Escribe tipo de misión"
+                            formControlName="solicitudvehiculo" [class]="esCampoValido('solicitudvehiculo')" >
                             <option value="">Seleccione tipo de registro</option>
-                            <option value="Entrada">Entrada</option>
-                            <option value="Salida">Salida</option>
+                            <option *ngFor="let lamision of Listamisiones"
+                                    [ngValue]="lamision.codigoSolicitudVehiculo">
+                                    {{lamision.objetivoMision}}
+                            </option>
                         </select>
                             <div class="invalid-feedback">
                               <!-- aqui la validación-->
-                              <span *ngIf="formBuilder.get('tipo')?.errors?.['required']">Requiere un nombre para el campo</span>
-                              <span *ngIf="formBuilder.get('tipo')?.errors?.['pattern']">nombre no valido</span>
+                              <span *ngIf="formBuilder.get('solicitudvehiculo')?.errors?.['required']">Requiere un nombre para el campo</span>
                             </div>
                         </div>
                     </div>

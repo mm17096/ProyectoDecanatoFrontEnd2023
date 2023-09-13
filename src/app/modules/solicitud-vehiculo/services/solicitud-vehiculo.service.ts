@@ -39,9 +39,7 @@ export class SolicitudVehiculoService {
         .pipe(map((resp: any) => resp as ISolicitudVehiculo[]))
         .subscribe(
           (soliVe: ISolicitudVehiculo[]) => {
-            //console.log(soliVe);
             this.listSoliVehiculo = soliVe;
-            console.log("peti: ", soliVe);
           },
           (error) => {
             console.log("Error al obtener las solicitudes de vehiculo", error);

@@ -7,7 +7,6 @@ export interface IAsignacionVale {
 
 export interface IValesAsignar {
   idVale: string;
-  codigoVale: number;
   correlativoVale: number;
 }
 

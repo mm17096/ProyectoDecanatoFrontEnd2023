@@ -13,6 +13,6 @@ export class DetalleService {
   constructor(private http: HttpClient) {}
 
   getDetalleAsignacionVale(codigoAsignacion: string) {
-    return this.http.get<IAsignacionDetalle>(`${this.baseUrl}/api/asignacionvale/listar/6a7d5fee-d63d-4df1-bd89-a2e0e5c6b39c`);
+    return this.http.get<IAsignacionDetalle>(`${this.baseUrl}/api/asignacionvale/listar/${codigoAsignacion}`);
   }
 }

@@ -3,9 +3,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Consulta } from "../Interfaces/CompraVale/Consulta";
 import { ExcelService } from "../Service/Excel/excel.service";
 import { ConsultaService } from "../Service/Excel/consulta.service";
-import { IConsultaExcelTabla } from "../Interfaces/CompraVale/excel";
-import { IExistenciaVales } from '../Interfaces/existenciavales.interface';
-import { ServiceService } from "../Service/service.service";
+
 
 @Component({
   selector: "app-solicitudv",

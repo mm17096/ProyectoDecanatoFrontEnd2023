@@ -7,7 +7,6 @@ import { WidgetModule } from '../../shared/widget/widget.module';
 import { NgbNavModule, NgbDropdownModule, NgbPaginationModule, NgbModalModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
-import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { Ng5SliderModule } from 'ng5-slider';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxPaginationModule } from 'ngx-pagination';

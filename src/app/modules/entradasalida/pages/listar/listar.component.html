@@ -9,24 +9,25 @@
               <div class="col-sm-4">
                 <div class="search-box me-2 mb-2 d-inline-block">
                   <div class="position-relative">
-                    <input type="search" class="form-control" placeholder="Buscar..." [(ngModel)]="term">
+                    <input type="text" class="form-control" placeholder="Buscar..." 
+                    [(ngModel)]="parametroBuscar" 
+                    (keyup.enter)="buscar()">
                     <i class="bx bx-search-alt search-icon"></i>
                   </div>
                 </div>
               </div>
               <div class="col-sm-8">
-              <div class="row">
-                <div class="col-sm-9">
-                  <app-modal [leyenda]="'Nuevo'" [titulo]="'Entradas'" [leyendas]="'entrada'" ></app-modal>
-                </div>
-                <div class="col-sm-1">
-                  <app-modal [leyenda]="'Nuevo'" [titulo]="'Salidas'" [leyendas]="'salida'" ></app-modal>
-                </div>
-              </div>
+                  <!---<app-modal [leyenda]="'Nuevo'" [titulo]="'Agregar'" [leyendas]="'entrada'" ></app-modal>--->
               </div><!-- end col-->
             </div>
+            <div class="row row-cols-1 row-cols-md-3 row-cols-xl-5 justify-content-center">
+              <ng-container *ngFor="let obj of vehiculos">
+                <app-card [obj]="obj" ></app-card>
+              </ng-container>
+
+            </div>
             <!-- Table data -->
-            <app-tabla [entraoOd]="entradasalidas" [queryString]="term"></app-tabla>
+           
           </div>
         </div>
       </div>

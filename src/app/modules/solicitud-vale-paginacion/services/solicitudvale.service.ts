@@ -47,7 +47,7 @@ export class SolicitudvaleService {
 
   getSolicitudes(page:number=0,size:number=10) {
     this.http
-      .get<IPaginacion<ISolicitudvalep>>(`${this.baseUrl}/api/asignacionvale/listarsolicitudvale`,{
+      .get<IPaginacion<ISolicitudvalep>>(`${this.baseUrl}/asignacionvale/listarsolicitudvale`,{
         params:{
           page:page.toString(),
           size:size.toString()

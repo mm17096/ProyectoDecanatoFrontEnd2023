@@ -44,7 +44,7 @@ export class ModalComponent implements OnInit {
 
   private iniciarFormulario(){
     return this.fb.group({
-      nombre : ['',Validators.compose([Validators.required, Validators.pattern('[A-Z ]*')])],
+      nombre : ['',Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*')])],
       descripcion : ['',Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*')])],
       tipo : ['',Validators.compose([Validators.required])]
     })
@@ -79,6 +79,8 @@ export class ModalComponent implements OnInit {
           estado : 8
         }
       ;
+
+      data.nombre = data.nombre.toUpperCase();
 
       console.log(data);
       console.log(this.formDepto.value);
@@ -129,6 +131,7 @@ export class ModalComponent implements OnInit {
         }
       ;
 
+      data.nombre = data.nombre.toUpperCase();
 
       this.deptopService.editDepto(data.codigoDepto,data).subscribe({
         next : (resp) => {

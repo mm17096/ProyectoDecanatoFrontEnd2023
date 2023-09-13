@@ -3,19 +3,19 @@ import { MenuItem } from "./menu.model";
 export const MENU: MenuItem[] = [
   {
     id: 1,
-    label: "MENU PRINCIPAL",
+    label: 'MENU PRINCIPAL',
     isTitle: true,
   },
   {
     id: 2,
-    label: "Inicio",
-    icon: "bx-home-circle",
-    link: "/dashboard",
+    label: 'Inicio',
+    icon: 'bx-home-circle',
+    link: '/dashboard',
   },
   {
     id: 3,
-    label: "MODULOS",
-    isTitle: true,
+    label: 'MODULOS',
+    isTitle: true
   },
   {
     id: 6,
@@ -24,20 +24,20 @@ export const MENU: MenuItem[] = [
     subItems: [
       {
         id: 7,
-        label: "Lista",
+        label: "Listado",
         link: "/empleados/listar",
         parentId: 6,
       },
       {
         id: 8,
         label: "Cargos",
-        link: "/empleados/cargos",
+        link: "/cargo/listar",
         parentId: 6,
       },
       {
         id: 9,
         label: "Departamentos",
-        link: "/empleados/depto",
+        link: "/depto/listar",
         parentId: 6,
       },
     ],
@@ -101,7 +101,7 @@ export const MENU: MenuItem[] = [
     subItems: [
       {
         id: 11,
-        label: "VER",
+        label: "Listado",
         link: "/entrasalida/listar",
         parent: 10,
       },
@@ -126,4 +126,13 @@ export const MENU: MenuItem[] = [
       },
     ],
   },
+  {
+    id: 12,
+    label: "Vehiculos",
+    icon: "mdi mdi-car-outline",
+    link: "/vehiculo/listar"
+  }
 ];
+
+
+

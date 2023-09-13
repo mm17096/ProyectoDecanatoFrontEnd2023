@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { DetalleService } from "../../services/detalle.service";
 import { IAsignacionDetalle } from "../../interfaces/asignacion.interface";
 
@@ -12,12 +12,13 @@ export class TablaDetalleComponent implements OnInit {
   valesASignados: IAsignacionDetalle;
   constructor(private service: DetalleService, private http: HttpClient) {}
 
+  @Input() codigoAsignacion: string = "";
   ngOnInit(): void {
     this.mostrarVales();
   }
 
   mostrarVales() {
-    this.service.getDetalleAsignacionVale().subscribe({
+    this.service.getDetalleAsignacionVale(this.codigoAsignacion).subscribe({
       next: (data) => {
         console.log('aquí llega:');
 

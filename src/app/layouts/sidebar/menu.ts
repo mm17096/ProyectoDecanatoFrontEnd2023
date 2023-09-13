@@ -1,4 +1,4 @@
-import { MenuItem } from './menu.model';
+import { MenuItem } from "./menu.model";
 
 export const MENU: MenuItem[] = [
   {
@@ -46,7 +46,7 @@ export const MENU: MenuItem[] = [
   {
     id: 7,
     label: "Solicitud Vehículo",
-    icon: "bx bxs-spreadsheet",
+    icon: "mdi mdi-car-outline",
     subItems: [
       {
         id: 8,
@@ -55,7 +55,7 @@ export const MENU: MenuItem[] = [
         parentId: 7,
       },
       {
-        id: 9,
+        id: 10,
         label: "Mis solicitudes",
         link: "/solicitud-vehiculo/mis-solicitudes",
         parentId: 7,
@@ -69,16 +69,29 @@ export const MENU: MenuItem[] = [
     subItems: [
       {
         id: 9,
-        label: "Solicitudes",
-        link: "/empleados",
+        label: "Proveedor",
+        link: "/proveedor",
         parentId: 8,
       },
       {
         id: 10,
-        label: "Asignaciones",
-        link: "/asignacionVale/asignaciones",
+        label: "Compras",
+        link: "/compra",
         parentId: 8,
       },
+      {
+        id: 11,
+        label: "Solicitud de Vales",
+        link: "/solicitudes/solicitudvale",
+        parentId: 8,
+      },
+      {
+        id: 12,
+        label: "Ajustes de Vales",
+        link: "/devolucion-vale",
+        parentId: 8,
+      },
+
     ],
   },
   {
@@ -97,16 +110,29 @@ export const MENU: MenuItem[] = [
         label: "Documento",
         link: "/document/vale",
         parent: 10,
-      }
-    ]
+      },
+    ],
+  },
+  {
+    id: 11,
+    label: "Reportes",
+    icon: "mdi mdi-file-document-outline",
+    subItems: [
+      {
+        id: 12,
+        label: "Consumo de Vales",
+        link: "/solicitudes/solicitudv",
+        parentId: 11,
+      },
+    ],
   },
   {
     id: 12,
     label: "Vehiculos",
     icon: "mdi mdi-car-outline",
     link: "/vehiculo/listar"
-
   }
-
 ];
+
+
 

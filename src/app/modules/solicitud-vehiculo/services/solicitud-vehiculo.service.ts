@@ -23,8 +23,8 @@ export class SolicitudVehiculoService {
   getSolicitudesVehiculo(estado: number) {
     if (estado != null){
       this.http
-        .get(`${this.url}/api/solicitudvehiculo/listapage/${estado}`)
-        .pipe(map((resp: any) => resp.content as ISolicitudVehiculo[]))
+        .get(`${this.url}/api/solicitudvehiculo/lista/${estado}`)
+        .pipe(map((resp: any) => resp as ISolicitudVehiculo[]))
         .subscribe(
           (soliVe: ISolicitudVehiculo[]) => {
             this.listSoliVehiculo = soliVe;
@@ -35,12 +35,13 @@ export class SolicitudVehiculoService {
         );
     }else {
       this.http
-        .get(`${this.url}/api/solicitudvehiculo/listapage`)
-        .pipe(map((resp: any) => resp.content as ISolicitudVehiculo[]))
+        .get(`${this.url}/api/solicitudvehiculo/lista`)
+        .pipe(map((resp: any) => resp as ISolicitudVehiculo[]))
         .subscribe(
           (soliVe: ISolicitudVehiculo[]) => {
             //console.log(soliVe);
             this.listSoliVehiculo = soliVe;
+            console.log("peti: ", soliVe);
           },
           (error) => {
             console.log("Error al obtener las solicitudes de vehiculo", error);

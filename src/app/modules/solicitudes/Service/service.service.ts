@@ -1,17 +1,36 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { SolicitudVv } from '../Interfaces/SolicitudVv';
+import { IExistenciaVales, ISolicitudValeID } from '../Interfaces/existenciavales.interface';
+import { IAsignacionVale } from '../Interfaces/asignacionvale.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServiceService {
 
+  private baseUrl: string = environment.baseUrl;
+
   constructor(private http:HttpClient) { }
-  url = 'http://localhost:8080/api/consulta'
-  
+
+
   getCliente(){
-    return this.http.get<SolicitudVv>(this.url+'/listapage');
+    return this.http.get<SolicitudVv>(this.baseUrl+'/api/consulta/listapage');
+  }
+
+  getCantidadVales(){
+    return this.http.get<IExistenciaVales>(this.baseUrl+'/api/asignacionvale/cantidadvales');
+  }
+
+  getIdSolicitudVale(codigoSolicitudVale: string){
+    return this.http.get<ISolicitudValeID>(`${this.baseUrl}/api/asignacionvale/solitudvale/${codigoSolicitudVale}`);
+  }
+
+  insertar(asignacionVale: IAsignacionVale){
+    console.log("en el servicio:" + asignacionVale);
+
+    return this.http.post<IAsignacionVale>(`${this.baseUrl}/api/asignacionvale/insertar`, asignacionVale);
   }
 
  /* createCliente(cliente:Cliente){

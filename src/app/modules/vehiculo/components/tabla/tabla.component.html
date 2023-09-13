@@ -12,12 +12,14 @@
           </tr>
       </thead>
       <tbody>
-          <tr *ngFor="let obj of vehiculos">
+          <tr *ngFor="let obj of vehiculos | filter:busqueda |
+                      paginate: { itemsPerPage: 10, currentPage: p };
+                      let i = index">
               <td class="align-middle text-center">{{ obj.placa }}</td>
               <td class="align-middle text-center">{{ obj.clase }}</td>
               <td class="align-middle text-center">{{ obj.modelo }}</td>
               <td class="align-middle text-center">{{ obj.year }}</td>
-              <td class="align-middle text-center">{{ obj.fecha_tarjeta}}</td>
+              <td class="align-middle text-center">{{ obj.fecha_tarjeta | date : "dd/MM/yyyy"}}</td>
               <td class="align-middle text-center">
                 <h5>
                     <span
@@ -52,5 +54,14 @@
           </tr>
       </tbody>
   </table>
+  <div class="pagination pagination-rounded justify-content-end mb-2">
+    <pagination-controls
+      previousLabel="Anterior"
+      nextLabel="Siguiente"
+      firstLabel="Primera"
+      lastLabel="Última"
+      itemsPerPageLabel="por página"
+      (pageChange)="p = $event"></pagination-controls>
+  </div>
 </div>
 <!-- end table -->

@@ -1,5 +1,5 @@
 import { map } from "rxjs/operators";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { IProveedor } from "../../proveedor/interfaces/proveedor.interface";
 import { environment } from "src/environments/environment";
@@ -126,8 +126,21 @@ export class DevolucionValeService {
     return this.http.put(`${this.baseUrl}/vale/actualizarValesCantidad`, vales);
   }
 
-  modificarPorCantidad(vales: IVale[], idProveedor: string): Observable<any> {
-    const url = `${this.baseUrl}/vale/actualizarValesCantidad/${idProveedor}`;
-    return this.http.put(url, vales);
+  modificarPorCantidad(vales: IVale[], idProveedor: string, concepto: string): Observable<any> {
+    const url = `${this.baseUrl}/vale/actualizarValesCantidad`;
+
+    // Crea un objeto que coincide con la estructura de ActualizacionValesRequest
+    const requestBody = {
+      vales: vales,
+      idProveedor: idProveedor,
+      concepto: concepto
+    };
+
+    // Realiza la solicitud HTTP con el objeto requestBody y configura el encabezado para JSON
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const options = { headers: headers };
+
+    // Realiza la solicitud HTTP con el objeto modificado y devuelve un Observable
+    return this.http.put(url, requestBody, options);
   }
 }

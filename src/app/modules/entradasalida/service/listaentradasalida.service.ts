@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class ListaentradasalidaService {
-  private baseUrl: string = environment.baseUrl;
+  private baseUrl: string = environment.baseUrl;///base url
 
   listDeMisiones: IsolicitudVehiculo[] = [];
   constructor(private http: HttpClient) { }

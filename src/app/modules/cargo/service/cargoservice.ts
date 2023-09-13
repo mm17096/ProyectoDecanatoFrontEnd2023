@@ -7,13 +7,17 @@ import { Observable } from 'rxjs';
 })
 export class CargoService {
 
-  url = 'http://localhost:8080/cargo';
+  url = 'http://localhost:8080/api/cargo';
 
   constructor(private http : HttpClient) { }
 
   getCargos(estado : number) : Observable<unknown[]> {
 
     return this.http.get<unknown[]>(`${this.url}/listar/${estado}`);
+  }
+
+  getCargosAll(){
+    return this.http.get<unknown[]>(`${this.url}/lista`);
   }
 
   saveCargos(data : any){

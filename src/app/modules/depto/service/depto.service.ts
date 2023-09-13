@@ -7,13 +7,18 @@ import { IDepto } from '../interface/depto';
   providedIn: 'root'
 })
 export class DeptoService {
-  url = 'http://localhost:8080/depto';
+  url = 'http://localhost:8080/api/depto';
 
   constructor(private http : HttpClient) { }
 
   getDeptos(estado : number) : Observable<unknown[]> {
 
     return this.http.get<unknown[]>(`${this.url}/listar/${estado}`);
+  }
+
+  getDeptosAll() : Observable<unknown[]> {
+
+      return this.http.get<unknown[]>(`${this.url}`);
   }
 
   saveDepto(data : IDepto){

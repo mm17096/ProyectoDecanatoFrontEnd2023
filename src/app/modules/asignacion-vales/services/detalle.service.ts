@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
   providedIn: "root",
 })
 export class DetalleService {
-  
+
   //url='http://localhost:8080/document';
   private burl: string = environment.baseUrl;
   private baseUrl: string = environment.baseUrl;
@@ -24,9 +24,8 @@ export class DetalleService {
     return this.http.post(`${this.burl}/document/insertar`, formData);
   }
 
-  url = "http://localhost:8080/asignacionvale/listar/cc0a3fa0-984e-4d10-9c11-deded04a3dae";
 
   getDetalleAsignacionVale(codigoAsignacion: string) {
-    return this.http.get<IAsignacionDetalle>(`${this.baseUrl}/api/asignacionvale/listar/${codigoAsignacion}`);
+    return this.http.get<IAsignacionDetalle>(`${this.baseUrl}/asignacionvale/listar/${codigoAsignacion}`);
   }
 }

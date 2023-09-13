@@ -68,13 +68,21 @@
                   {{ item.motorista.nombre + " " + item.motorista.apellido }}
                 </td>
 
-                <td *ngIf="item.estadoString == 'Aprobada'">
-                  <button
+                <td >
+                  <button *ngIf="item.estadoString == 'Aprobada'"
                     type="button"
                     class="btn btn-primary"
                     (click)="largeModal(largeDataModalvale, item)"
                   >
                     Asignar Vale
+                  </button>
+                  <button *ngIf="item.estadoString == 'Asignado'"
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="irADetalle()"
+                  >
+
+                   Detalle
                   </button>
                 </td>
                 <!-- <div *ngIf="item.estado=='En espera por jefe' || item.estado=='En espera por decano' ||  item.estado=='Asignado'">
@@ -506,7 +514,7 @@
               />
             </div>
             <div class="col-sm-4">
-              <button type="button" class="btn btn-primary">Ver Vales</button>
+              <button type="button" class="btn btn-primary" (click)="valesAsignar(valesAsignarModal)">Ver Vales</button>
             </div>
           </div>
           <div class="row mb-4">
@@ -709,6 +717,56 @@
       (click)="modal.close('Close click')"
     >
       Cancelar
+    </button>
+
+    <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+  </div>
+</ng-template>
+
+<ng-template #valesAsignarModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Vales a Asignar</h5>
+    <button
+      type="button"
+      class="btn-close"
+      (click)="modal.dismiss('Cross click')"
+      aria-hidden="true"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <div class="table-responsive mb-0">
+      <table class="table table-centered table-nowrap">
+          <thead class="table-light">
+              <tr>
+                  <th class="align-middle text-center">Codigo Vale</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let vale of valesAsingar | filter:busqueda |
+                          paginate: { itemsPerPage: 10, currentPage: p };
+                          let i = index">
+                  <td class="align-middle text-center">{{ vale.codigoVale }}</td>
+              </tr>
+          </tbody>
+      </table>
+      <div class="pagination pagination-rounded justify-content-end mb-2">
+        <pagination-controls
+          previousLabel="Anterior"
+          nextLabel="Siguiente"
+          firstLabel="Primera"
+          lastLabel="Última"
+          itemsPerPageLabel="por página"
+          (pageChange)="p = $event"></pagination-controls>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-light"
+      (click)="modal.close('Close click')"
+    >
+      Cerrar
     </button>
 
     <!--<button type="button" class="btn btn-primary">Save changes</button>-->

@@ -17,8 +17,9 @@ import {
 } from "../Interfaces/existenciavales.interface";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
 import Swal from "sweetalert2";
-import { IAsignacionVale } from "../Interfaces/asignacionvale.interface";
+import { IAsignacionVale, IValesAsignar, ICodigoAsignacion } from '../Interfaces/asignacionvale.interface';
 import { NUMBER_VALIDATE } from "src/app/constants/constants";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-solicitudvale",
@@ -52,7 +53,8 @@ export class SolicitudvaleComponent implements OnInit {
   searchTerm = "";
   itemsPerPage = 5;
   currentPage = 1;
-
+  busqueda: string = '';
+  p: any;
   private isNumber: string = NUMBER_VALIDATE;
 
   filtroEstado: string = "";
@@ -61,9 +63,13 @@ export class SolicitudvaleComponent implements OnInit {
 
   solicitudvv: SolicitudVv[] = [];
 
+  valesAsingar: IValesAsignar;
+
   asignacionVale: IAsignacionVale;
 
   solcitudVale: SolicitudVv;
+
+  codigoAsignacion: ICodigoAsignacion;
 
   datosSolicitudV: SolicitudVv[] = [];
 
@@ -82,7 +88,8 @@ export class SolicitudvaleComponent implements OnInit {
     private service: ServiceService,
     public fb: FormBuilder,
     private existenciaService: ServiceService,
-    private mensajesService: MensajesService
+    private mensajesService: MensajesService,
+    private router: Router
   ) {
     this.formularioSolicitudVale = fb.group({
       cantidadVales: new FormControl("", [Validators.required, Validators.pattern(this.isNumber)]),
@@ -128,13 +135,26 @@ export class SolicitudvaleComponent implements OnInit {
     ];
     this.service.getCliente().subscribe((data: any) => {
       this.solicitudvv = data.content;
-      /* this.solcitudVale = this.solicitudvv[0];
-      this.codigoSolicitudVehiculo = this.solcitudVale.codigoSolicitudVehiculo;
-      console.log(this.codigoSolicitudVehiculo); */
       console.log(this.solicitudvv);
     });
     this.obtnerExistenciaVales();
     //this.obtenerIdSolicitudVale();
+  }
+
+  valesAsignar(valesAsignarModal: any){
+    const cantidadVales =
+      this.formularioSolicitudValev.get("cantidadVales")?.value;
+    this.service.getValesAignar(cantidadVales).subscribe({
+      next: (response) => {
+        this.valesAsingar = response;
+        console.log(this.valesAsingar);
+      }
+    });
+      /* (data: any) => {
+      this.valesAsingar = data; */
+      console.log(this.valesAsingar);
+      this.modalService.open(valesAsignarModal, { size: "lg", centered: true });
+
   }
 
   obtnerExistenciaVales() {
@@ -156,6 +176,20 @@ export class SolicitudvaleComponent implements OnInit {
         );
       },
     });
+  }
+
+  obtenerCodigoAsignacion(){
+    //this.obtenerIdSolicitudVale(this.solicitudvv.codigoSolicitudVehiculo)
+    this.service.getCodigoAsignacion(this.codigoSolicitudVale.codigoSolicitudVale).subscribe({
+      next: (response) => {
+        this.codigoAsignacion = response;
+        console.log(this.codigoAsignacion);
+      },
+    });
+  }
+  irADetalle(){
+    this.obtenerCodigoAsignacion();
+    this.router.navigate(['/asignacion-vale/asignacion', this.codigoAsignacion]);
   }
   /**
    * Open Large modal

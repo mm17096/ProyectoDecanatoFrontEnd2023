@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { SolicitudVv } from '../Interfaces/SolicitudVv';
-import { IExistenciaVales, ISolicitudValeID } from '../Interfaces/existenciavales.interface';
 import { IAsignacionVale, ICodigoAsignacion, IValesAsignar } from '../Interfaces/asignacionvale.interface';
+import { IExistenciaVales, ISolicitudValeID } from '../Interfaces/existenciavales.interface';
+import { SolicitudVv } from '../Interfaces/SolicitudVv';
 
 @Injectable({
   providedIn: 'root'

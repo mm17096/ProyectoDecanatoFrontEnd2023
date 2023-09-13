@@ -9,6 +9,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { TablaComponent } from './pages/tabla/tabla.component';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     UIModule,
     Ng2SearchPipeModule,
     ReactiveFormsModule,
+    NgxPaginationModule,
     NgbModule,
     NgSelectModule
   ]

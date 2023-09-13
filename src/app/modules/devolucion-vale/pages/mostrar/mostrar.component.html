@@ -198,18 +198,16 @@
     <div class="col-12">
       <div class="card">
         <div class="card-body">
-          <ng-container *ngIf="tipoOpcion == 0 && montoGenerado != total_monetario">
-
-            <div
-            class="alert alert-info"
-            role="alert"
+          <ng-container
+            *ngIf="tipoOpcion == 0 && montoGenerado != total_monetario"
           >
-            <strong>Importante!</strong> No se pudo encontrar N cantidad de vales que su
-            suma total del valor (precio) sea igual a
-            {{ total_monetario | currency : "USD" : "symbol" : "1.2-2" }}, solo
-            se obtuvieron los siguientes vales que su suma del valor se acerca a dicho
-            monto.
-          </div>
+            <div class="alert alert-info" role="alert">
+              <strong>Importante!</strong> No se pudo encontrar N cantidad de
+              vales que su suma total del valor (precio) sea igual a
+              {{ total_monetario | currency : "USD" : "symbol" : "1.2-2" }},
+              solo se obtuvieron los siguientes vales que su suma del valor se
+              acerca a dicho monto.
+            </div>
           </ng-container>
           <div class="row mb-2 align-items-center">
             <div class="col-sm-3">
@@ -219,6 +217,7 @@
                     type="text"
                     class="form-control"
                     placeholder="Buscar..."
+                    [(ngModel)]="term"
                   />
                   <i class="bx bx-search-alt search-icon"></i>
                 </div>

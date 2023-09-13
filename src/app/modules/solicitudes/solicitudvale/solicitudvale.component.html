@@ -6,7 +6,7 @@
         <div class="col-lg-12">
           <div class="card">
             <div class="card-body">
-              <h1 class="card-title">Mis solicitudes de Vehiculos</h1>
+              <h1 class="card-title">Mis solicitudes de Vales</h1>
               <p class="card-title-desc">
                Solicitud
               </p>           
@@ -49,13 +49,13 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let item of  filteredItems3()">
-                        <td *ngIf="item.estado=='Aprobada'">{{ item.solicitante.empleado.nombre + ' ' + item.solicitante.empleado.apellido}}</td>
-                        <td *ngIf="item.estado=='Aprobada'">{{ item.lugarMision }}</td>
-                        <td *ngIf="item.estado=='Aprobada'">{{ item.estado }}</td>
-                        <td *ngIf="item.estado=='Aprobada'">{{ item.fechaSalida }}</td>
-                        <td *ngIf="item.estado=='Aprobada'">{{ item.motorista.nombre + ' ' + item.motorista.apellido}}</td>
+                        <td >{{ item.solicitante.empleado.nombre + ' ' + item.solicitante.empleado.apellido}}</td>
+                        <td >{{ item.lugarMision }}</td>
+                        <td >{{ item.estadoString }}</td>
+                        <td >{{ item.fechaSalida }}</td>
+                        <td >{{ item.motorista.nombre + ' ' + item.motorista.apellido}}</td>
                        
-                      <td *ngIf="item.estado=='Aprobada'"><button type="button" class="btn btn-primary" (click)="largeModal(largeDataModalvale,item)">Asignar Vale</button> </td>
+                      <td *ngIf="item.estadoString=='Aprobada'"><button type="button" class="btn btn-primary" (click)="largeModal(largeDataModalvale,item)">Asignar Vale</button> </td>
                       <!-- <div *ngIf="item.estado=='En espera por jefe' || item.estado=='En espera por decano' ||  item.estado=='Asignado'">
                           <button type="button" class="btn btn-primary" (click)="largeModal(largeDataModaldetalle,item)">Detalle</button>
                         </div>

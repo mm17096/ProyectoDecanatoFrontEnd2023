@@ -49,6 +49,7 @@
       class="form-control"
       formControlName="nombre"
       placeholder="EJ: Recursos Humanos"
+      [readonly]="leyenda == 'Detalle'"
       [class]="esCampoValido('nombre')">
       <div *ngIf="nombre?.errors?.['required'] && nombre?.touched">
         <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*El campo Nombre es obligatorio</span>
@@ -67,6 +68,7 @@
     class="form-control"
     formControlName="descripcion"
     placeholder="Descripcion"
+    [readonly]="leyenda == 'Detalle'"
     [class]="esCampoValido('descripcion')"></textarea>
     <div *ngIf="descripcion?.errors?.['required'] && descripcion?.touched">
       <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*El campo Descripcion es obligatorio</span>
@@ -78,7 +80,7 @@
 
   <!--fin del campo descripcion-->
   <!--Inicio checkbox-->
-  <div class="form-group">
+  <div class="form-group" *ngIf="leyenda !== 'Detalle'">
     <div class="form-group row m-4">
       <label class="control-label">Tipo:<span class="text-danger"> *</span></label>
       <div class="form-check form-check-inline m-3">
@@ -87,17 +89,19 @@
           class="form-check-input"
           formControlName="tipo"
           value="Academico"
+          [readonly]="leyenda == 'Detalle'"
           [class]="esCampoValido('tipo')"
         />
         <label class="form-check-lable">Academico</label>
       </div>
       <!-- Fin del input mujer-->
-      <div class="form-check form-check-inline m-3">
+      <div class="form-check form-check-inline m-3" >
         <input
           type="radio"
           class="form-check-input"
           formControlName="tipo"
           value="Administrativo"
+          [readonly]="leyenda == 'Detalle'"
           [class]="esCampoValido('tipo')"
         />
         <label class="form-check-lable">Administrativo</label>
@@ -107,6 +111,9 @@
 
   <!--Final checkbox-->
 
+  <div  class="form-group row m-4" *ngIf="leyenda === 'Detalle'" >
+    <label class="control-label">Tipo: <span class="text-danger"> {{ deptos.tipo }} </span></label>
+  </div>
 
   </div>
 </div>
@@ -114,7 +121,9 @@
 
   <div class="modal-footer">
 
-   <button type="submit" class="btn btn-primary">Guardar</button>
+   <button type="submit" class="btn btn-primary" *ngIf="leyenda !== 'Detalle'">
+    {{ leyenda !== 'Editar' ? 'Guardar' : 'Modificar' }}
+   </button>
 
    <button type="button" class="btn btn-dark" (click)="activeModal.dismiss('Cross click')"
    (click)="this.formDepto.reset()">Close</button>

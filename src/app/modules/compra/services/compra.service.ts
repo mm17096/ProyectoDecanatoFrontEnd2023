@@ -16,32 +16,31 @@ export class CompraService {
 
   constructor(private http: HttpClient) {}
 
-  getCompras() {
+  getComprasConPaginacion() {
     this.http
       .get(`${this.baseUrl}/compra/lista`)
       .pipe(map((resp: any) => resp.content as ICompra[]))
-      .subscribe(
-        (compras: ICompra[]) => {
-          this.listCompra = compras; // Actualiza la propiedad listCompra
-        },
-        (error) => {
-          console.error("Error al obtener las compras:", error);
-        }
-      );
+      .subscribe((compras: ICompra[]) => {
+        this.listCompra = compras; // Actualiza la propiedad listCompra
+      });
+  }
+
+  getCompras() {
+    this.http
+      .get(`${this.baseUrl}/compra/listasinpagina`)
+      .pipe(map((resp: any) => resp as ICompra[]))
+      .subscribe((compras: ICompra[]) => {
+        this.listCompra = compras;
+      });
   }
 
   getProveedor() {
     this.http
       .get(`${this.baseUrl}/proveedor/listasinpagina`)
       .pipe(map((resp: any) => resp as IProveedor[]))
-      .subscribe(
-        (proveedor: IProveedor[]) => {
-          this.listProveedor = proveedor;
-        },
-        (error) => {
-          console.error("Error al obtener los proveedor:", error);
-        }
-      );
+      .subscribe((proveedor: IProveedor[]) => {
+        this.listProveedor = proveedor;
+      });
   }
 
   guardar(compra: ICompra) {

@@ -25,14 +25,9 @@ export class DevolucionValeService {
     this.http
       .get(`${this.baseUrl}/proveedor/listasinpagina`)
       .pipe(map((resp: any) => resp as IProveedor[]))
-      .subscribe(
-        (proveedor: IProveedor[]) => {
-          this.listProveedor = proveedor;
-        },
-        (error) => {
-          console.error("Error al obtener los proveedor:", error);
-        }
-      );
+      .subscribe((proveedor: IProveedor[]) => {
+        this.listProveedor = proveedor;
+      });
   }
 
   getValesPorCantidad(cantidad: number = 0): Promise<IVale[]> {
@@ -62,7 +57,7 @@ export class DevolucionValeService {
               this.mensajesService.mensajesSweet(
                 "error",
                 "Ups... Algo salió mal",
-                err
+                err.error.message
               );
               reject(err);
             },
@@ -114,7 +109,7 @@ export class DevolucionValeService {
               this.mensajesService.mensajesSweet(
                 "error",
                 "Ups... Algo salió mal",
-                err
+                err.error.message
               );
               reject(err);
             },

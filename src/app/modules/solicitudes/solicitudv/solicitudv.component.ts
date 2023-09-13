@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Consulta } from '../Interfaces/CompraVale/Consulta';
+import { ExcelService } from '../Service/Excel/excel.service';
+import { ConsultaService } from '../Service/Excel/consulta.service';
+import { IConsultaExcelTabla } from '../Interfaces/CompraVale/excel';
 
 @Component({
   selector: 'app-solicitudv',
@@ -8,6 +12,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class SolicitudvComponent implements OnInit {
   breadCrumbItems: Array<{}>;
+  consultaExcel:Consulta[]=[];
 
   items = [
     { solicitante: 'Erik Manrique Flores', objetivo: 'Objetivo 1', estado: 'Aprobado', fechaDeUso: '05-07-2023', cantidad: '5' },
@@ -18,12 +23,17 @@ export class SolicitudvComponent implements OnInit {
   itemsPerPage = 5;
   currentPage = 1;
 
-  constructor(private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal, private excelService:ExcelService, private consultaService: ConsultaService) { }
 
   ngOnInit() {
     this.breadCrumbItems = [{ label: 'UI Elements' }, { label: 'Modals', active: true }];
   }
-
+  download(): void{
+  //  this.consultaService.getConsultaExporExcel().subscribe((response:IConsultaExcelTabla)=>{
+    //this.excelService.dowloadExcel(response);
+    this.excelService.dowloadExcel();
+ // });
+ }
   /**
    * Open modal
    * @param content modal content

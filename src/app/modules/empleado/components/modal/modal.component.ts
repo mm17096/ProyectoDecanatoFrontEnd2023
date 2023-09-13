@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import { EmpleadoService } from '../../service/empleado.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
-import { ICargo, IDepartamento, IEmpleado } from '../../interface/empleado.interface';
+import { ICargo, IDepto, IEmpleado } from '../../interface/empleado.interface';
 
 import { EMAIL_VALIDATE_UES, NAME_VALIDATE } from 'src/app/constants/constants';
 import { MensajesService } from 'src/app/shared/global/mensajes.service';
@@ -28,7 +28,7 @@ export class ModalComponent implements OnInit {
   private isText: string = NAME_VALIDATE;
 
   cargos: ICargo[] = [];
-  departamentos: IDepartamento[] = [];
+  departamentos: IDepto[] = [];
 
   formBuilder!: FormGroup;
 
@@ -301,7 +301,7 @@ export class ModalComponent implements OnInit {
     //obtenemos el objeto que tenga como nombreCargo Motorista
     const motoristaOb = this.Cargos.find(cargo => cargo.nombreCargo === "Motorista");
     //Comparamos que el ID sea igual al seleccionado y cambiamos la variable para mostrar los demas campos
-    this.esMotorista = (this.formBuilder.get('cargo').value === motoristaOb.codigoCargo);
+    this.esMotorista = (this.formBuilder.get('cargo').value === motoristaOb.id);
     this.motoristaOd = this.esMotorista;
 
     // Retrasamos la actualización del teléfono en 3 segundos
@@ -326,10 +326,14 @@ export class ModalComponent implements OnInit {
       licenciaControl.setValue('');
       tipolicenciaControl.setValue('');
       fechalicenciaControl.setValue('');
+      fechalicenciaControl.reset();
 
-      this.empleadOd.licencia = "";
-      this.empleadOd.tipolicencia = "";
-      this.empleadOd.fechalicencia = new Date();
+      if(this.empleadOd){
+        this.empleadOd.licencia = "";
+        this.empleadOd.tipolicencia = "";
+        this.empleadOd.fechalicencia = new Date();
+      }
+
     }
     licenciaControl.updateValueAndValidity();
     tipolicenciaControl.updateValueAndValidity();

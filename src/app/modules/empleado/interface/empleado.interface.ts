@@ -1,6 +1,3 @@
-import { environment } from "src/environments/environment";
-
-const base_url = environment.baseUrl;
 export interface IEmpleado {
      codigoEmpleado: string,
      dui: string,
@@ -16,21 +13,23 @@ export interface IEmpleado {
      nombrefoto: string,
      urlfoto: string,
      cargo: ICargo,
-     departamento: IDepartamento
+     departamento: IDepto
 }
 
 export interface ICargo {
-    codigoCargo: number,
+    id: number,
     nombreCargo: string,
     descripcion: string,
     estado: number
 }
 
-export interface IDepartamento {
-    codigoDepto: number,
-    nombre: string,
-    estado: number
-}
+export interface IDepto {
+    codigoDepto ?: string;
+    nombre :      string;
+    descripcion : string;
+    tipo :        string;
+    estado :      number;
+  }
 
 export interface IEmpleadoTabala {
     dui: string,

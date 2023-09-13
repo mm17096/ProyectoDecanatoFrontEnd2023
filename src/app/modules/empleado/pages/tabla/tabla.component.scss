@@ -1,15 +1,1 @@
-/* Clase para estado activo */
-.activo {
-    background-color: green;
-    color: white;
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-/* Clase para estado inactivo */
-.inactivo {
-    background-color: #CD9941;
-    color: white;
-    padding-left: 7px;
-    padding-right: 7px;
-}
+@import "./../../../../shared/scss/pagination.component.scss";

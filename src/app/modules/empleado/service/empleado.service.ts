@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ICargo, IDepartamento, IEmpleado, IEmpleadoTabala } from '../interface/empleado.interface';
+import { ICargo, IDepto, IEmpleado, IEmpleadoTabala } from '../interface/empleado.interface';
 import { environment } from 'src/environments/environment';
 import { map } from "rxjs/operators";
 
@@ -12,7 +12,7 @@ import { map } from "rxjs/operators";
 export class EmpleadoService {
   private baseUrl: string = environment.baseUrl;
 
-  listDepartamentos: IDepartamento[] = [];
+  listDepartamentos: IDepto[] = [];
   listEmpleados: IEmpleado[] = [];
   listCargos: ICargo[] = [];
 
@@ -51,9 +51,9 @@ export class EmpleadoService {
   getDepartamentos() {
     this.http
       .get(`${this.baseUrl}/depto`)
-      .pipe(map((resp: any) => resp as IDepartamento[]))
+      .pipe(map((resp: any) => resp as IDepto[]))
       .subscribe(
-        (departamentos: IDepartamento[]) => {
+        (departamentos: IDepto[]) => {
           this.listDepartamentos = departamentos;
         },
         (error) => {

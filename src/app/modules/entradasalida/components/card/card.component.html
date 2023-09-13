@@ -1,0 +1,20 @@
+<div class="card mb-3 bordered-card" style="width: 15rem;">
+  <div class="d-flex flex-wrap justify-content-between">
+    <!-- Inicio del bucle que muestra las imágenes -->
+    <div class="card mb-3" style="width: 15rem;">
+      <img [src]="obj.nombrefoto" class="card-img-top col-img" alt="">
+      <div class="card-body">
+        <p><strong>Placa: </strong>{{obj.placa}}</p>
+        <div class="d-flex justify-content-between">
+          <!--<a class="btn btn-salida btn-separado">+ Salida</a>-->
+          <app-modal [leyenda]="'Salida'" [titulo]="'Salida'" [leyendas]="'Salida'"></app-modal>
+          <!--<a class="btn btn-entrada">- Entrada</a>-->
+          <app-modal [leyenda]="'Entrada'" [titulo]="'Entrada'" [leyendas]="'Entrada'"></app-modal>
+  
+        </div>
+  
+      </div>
+    </div>
+    <!-- Fin del bucle que muestra las imágenes -->
+  </div>
+</div>

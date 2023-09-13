@@ -16,6 +16,7 @@ import { ListaentradasalidaService } from './service/listaentradasalida.service'
 import { ListarComponent } from './pages/listar/listar.component';
 import { TablaComponent } from './pages/tabla/tabla.component';
 import { ModalComponent } from './pages/modal/modal.component';
+import { CardComponent } from './components/card/card.component';
 
 
 
@@ -25,6 +26,7 @@ import { ModalComponent } from './pages/modal/modal.component';
     ListarComponent,
     TablaComponent,
     ModalComponent,
+    CardComponent,
   ],
   imports: [
     CommonModule,

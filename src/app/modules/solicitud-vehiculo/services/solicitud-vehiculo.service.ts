@@ -23,7 +23,7 @@ export class SolicitudVehiculoService {
   getSolicitudesVehiculo(estado: number) {
     if (estado != null){
       this.http
-        .get(`${this.url}/api/solicitudvehiculo/lista/${estado}`)
+        .get(`${this.url}/solicitudvehiculo/lista/${estado}`)
         .pipe(map((resp: any) => resp as ISolicitudVehiculo[]))
         .subscribe(
           (soliVe: ISolicitudVehiculo[]) => {
@@ -35,7 +35,7 @@ export class SolicitudVehiculoService {
         );
     }else {
       this.http
-        .get(`${this.url}/api/solicitudvehiculo/lista`)
+        .get(`${this.url}/solicitudvehiculo/lista`)
         .pipe(map((resp: any) => resp as ISolicitudVehiculo[]))
         .subscribe(
           (soliVe: ISolicitudVehiculo[]) => {
@@ -50,12 +50,12 @@ export class SolicitudVehiculoService {
 
   // Servicio para obtener los estados
   public obtenerEstados(): Observable<any> {
-    return this.http.get<IEstados>((this.url)+ '/api/solicitudvehiculo/estados');
+    return this.http.get<IEstados>((this.url)+ '/solicitudvehiculo/estados');
   }
 
   obtenerVehiculos() {
     this.http
-      .get(`${this.url}/api/vehiculo/listasinpagina`)
+      .get(`${this.url}/vehiculo/listasinpagina`)
       .pipe(map((resp: any) => resp as IVehiculos[]))
       .subscribe(
         (vehiculo: IVehiculos[])=> {
@@ -69,7 +69,7 @@ export class SolicitudVehiculoService {
 
   filtroPlacasVehiculo(clase: string): Observable<IVehiculos[]> {
     return this.http
-      .get(`${this.url}/api/vehiculo/clase/${clase}`)
+      .get(`${this.url}/vehiculo/clase/${clase}`)
       .pipe(map((resp: any) => resp as IVehiculos[]));
   }
 
@@ -80,6 +80,6 @@ export class SolicitudVehiculoService {
 
 
   registrarSoliVe(solicitudVehiculo: ISolicitudVehiculo){
-    return this.http.post<ISolicitudVehiculo>( `${this.url}/api/solicitudvehiculo/insert`, solicitudVehiculo);
+    return this.http.post<ISolicitudVehiculo>( `${this.url}/solicitudvehiculo/insert`, solicitudVehiculo);
   }
 }

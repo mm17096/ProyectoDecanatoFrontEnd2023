@@ -2,7 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { DetalleService } from "../../services/detalle.service";
 import { IAsignacionDetalle } from "../../interfaces/asignacion.interface";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, ParamMap } from "@angular/router";
+import { stringify } from "querystring";
 
 @Component({
   selector: "app-encabezado",
@@ -16,7 +17,7 @@ export class EncabezadoComponent implements OnInit {
   p: any;
   term: string = "";
   currentPage = 1;
-  codigoAsignacion:string ="";
+  codigoAsignacion:string
   //@Input() queryString!: string;
 
   constructor(
@@ -30,21 +31,19 @@ export class EncabezadoComponent implements OnInit {
       { label: "Asignación de Vales" },
       { label: "Registro de Asignaciones", active: true },
     ];
-    this.route.paramMap.subscribe(params => {
-      const parametro = params.get('parametro'); // 'parametro' debe coincidir con el nombre definido en la ruta
 
-      if (parametro) {
-        // Hacer lo que necesites con el parámetro
-        this.codigoAsignacion = parametro;
-        console.log('Parámetro recibido:', parametro);
-      }
-    });
+    this.route.paramMap.subscribe((params: ParamMap) => {
+      this.codigoAsignacion = params.get('codigoAsignacion')
+    })
 
-    this.obtnerEncabezado();
+    console.log("codigoAsignacion en Líquidar: ", this.codigoAsignacion);
+
+
+    this.obtnerEncabezado(this.codigoAsignacion);
   }
 
-  obtnerEncabezado() {
-    this.service.getDetalleAsignacionVale(this.codigoAsignacion).subscribe({
+  obtnerEncabezado(codigoA: string) {
+    this.service.getDetalleAsignacionVale(codigoA).subscribe({
       next: (data) => {
         this.detalleAsignacion = data;
         console.log(this.detalleAsignacion);

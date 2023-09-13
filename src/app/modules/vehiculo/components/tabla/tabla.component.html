@@ -1,67 +1,54 @@
 <div class="table-responsive mb-0">
   <table class="table table-centered table-nowrap">
-      <thead class="table-light">
-          <tr>
-              <th class="align-middle text-center">Placa</th>
-              <th class="align-middle text-center">Clase</th>
-              <th class="align-middle text-center">Modelo</th>
-              <th class="align-middle text-center">Año</th>
-              <th class="align-middle text-center">Fecha Vence Tarjeta</th>
-              <th class="align-middle text-center">Estado</th>
-              <th class="align-middle text-center">Acciones</th>
-          </tr>
-      </thead>
-      <tbody>
-          <tr *ngFor="let obj of vehiculos | filter:busqueda |
-                      paginate: { itemsPerPage: 10, currentPage: p };
-                      let i = index">
-              <td class="align-middle text-center">{{ obj.placa }}</td>
-              <td class="align-middle text-center">{{ obj.clase }}</td>
-              <td class="align-middle text-center">{{ obj.modelo }}</td>
-              <td class="align-middle text-center">{{ obj.year }}</td>
-              <td class="align-middle text-center">{{ obj.fecha_tarjeta | date : "dd/MM/yyyy"}}</td>
-              <td class="align-middle text-center">
-                <h5>
-                    <span
-                        class="{{ obj.estado === 8 ? 'badge rounded-pill bg-success' : 'badge rounded-pill bg-danger' }}">
-                        {{ obj.estado === 8 ? 'Activo' : 'Inactivo' }}
-                    </span>
-                </h5>
-              </td>
-              <td class="align-middle text-center text-center">
-                <!--       botones para detalle -->
-                <button type="button" class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1"
-                  (click)="abrirModal('Detalle',obj)"
-                  ngbTooltip="Detalle vehiculo">
-                    <i class="mdi mdi-18px mdi-eye-outline"></i>
-                </button>
-                <!--       botones para editar -->
-                <button type="button" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1"
-                (click)="abrirModal('Editar',obj)"
-                  ngbTooltip="Modificar vehiculo">
-                  <i class="mdi mdi-18px mdi-book-edit-outline"></i>
-                </button>
-                <!-- bontes para editar estado -->
-                <button type="button" class="btn btn-warning btn-sm btn-rounded mx-1"
-                        (click)="cambiarEstado(obj, obj.estado)"
-                        ngbTooltip="Cambiar a {{obj.estado === 9 ? 'Activo' : 'Inactivo'}}">
-                        <i
-                            [ngClass]="obj.estado === 8 ? 'mdi mdi-18px mdi-lock-outline' : 'mdi mdi-18px mdi-key-outline'"></i>
-                        <!-- <i class="mdi mdi-account-lock-outline"></i>
+    <thead class="table-light">
+      <tr>
+        <th class="align-middle text-center">Placa</th>
+        <th class="align-middle text-center">Clase</th>
+        <th class="align-middle text-center">Modelo</th>
+        <th class="align-middle text-center">Año</th>
+        <th class="align-middle text-center">Fecha Vence Tarjeta</th>
+        <th class="align-middle text-center">Estado</th>
+        <th class="align-middle text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let obj of vehiculos | filter:busqueda | paginate: { itemsPerPage: 10, currentPage: p }">
+        <td class="align-middle text-center">{{ obj.placa }}</td>
+        <td class="align-middle text-center">{{ obj.clase }}</td>
+        <td class="align-middle text-center">{{ obj.modelo }}</td>
+        <td class="align-middle text-center">{{ obj.year }}</td>
+        <td class="align-middle text-center">{{ obj.fecha_tarjeta | date : "dd/MM/yyyy"}}</td>
+        <td class="align-middle text-center">
+          <h5>
+            <span class="{{ obj.estado === 8 ? 'badge rounded-pill bg-success' : 'badge rounded-pill bg-danger' }}">
+              {{ obj.estado === 8 ? 'Activo' : 'Inactivo' }}
+            </span>
+          </h5>
+        </td>
+        <td class="align-middle text-center text-center">
+          <!--       botones para detalle -->
+          <button type="button" class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1"
+            (click)="abrirModal('Detalle',obj)" ngbTooltip="Detalle vehiculo">
+            <i class="mdi mdi-18px mdi-eye-outline"></i>
+          </button>
+          <!--       botones para editar -->
+          <button type="button" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1"
+            (click)="abrirModal('Editar',obj)" ngbTooltip="Modificar vehiculo">
+            <i class="mdi mdi-18px mdi-book-edit-outline"></i>
+          </button>
+          <!-- bontes para editar estado -->
+          <button type="button" class="btn btn-warning btn-sm btn-rounded mx-1" (click)="cambiarEstado(obj, obj.estado)"
+            ngbTooltip="Cambiar a {{obj.estado === 9 ? 'Activo' : 'Inactivo'}}">
+            <i [ngClass]="obj.estado === 8 ? 'mdi mdi-18px mdi-lock-outline' : 'mdi mdi-18px mdi-key-outline'"></i>
+            <!-- <i class="mdi mdi-account-lock-outline"></i>
                          mdi-account-check-outline -->
-                </button>
-              </td>
-          </tr>
-      </tbody>
+          </button>
+        </td>
+      </tr>
+    </tbody>
   </table>
   <div class="pagination pagination-rounded justify-content-end mb-2">
-    <pagination-controls
-      previousLabel="Anterior"
-      nextLabel="Siguiente"
-      firstLabel="Primera"
-      lastLabel="Última"
-      itemsPerPageLabel="por página"
-      (pageChange)="p = $event"></pagination-controls>
+    <pagination-controls (pageChange)="p = $event" [nextLabel]="''" [previousLabel]="''"></pagination-controls>
   </div>
 </div>
 <!-- end table -->

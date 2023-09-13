@@ -126,18 +126,22 @@ export class DevolucionValeService {
     return this.http.put(`${this.baseUrl}/vale/actualizarValesCantidad`, vales);
   }
 
-  modificarPorCantidad(vales: IVale[], idProveedor: string, concepto: string): Observable<any> {
+  modificarPorCantidad(
+    vales: IVale[],
+    idProveedor: string,
+    concepto: string
+  ): Observable<any> {
     const url = `${this.baseUrl}/vale/actualizarValesCantidad`;
 
     // Crea un objeto que coincide con la estructura de ActualizacionValesRequest
     const requestBody = {
       vales: vales,
       idProveedor: idProveedor,
-      concepto: concepto
+      concepto: concepto,
     };
 
     // Realiza la solicitud HTTP con el objeto requestBody y configura el encabezado para JSON
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const headers = new HttpHeaders({ "Content-Type": "application/json" });
     const options = { headers: headers };
 
     // Realiza la solicitud HTTP con el objeto modificado y devuelve un Observable

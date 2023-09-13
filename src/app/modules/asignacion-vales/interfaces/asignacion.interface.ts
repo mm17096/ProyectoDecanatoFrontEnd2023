@@ -5,7 +5,7 @@ export interface IAsignacionDetalle{
   vales: [
       {
           idVale: string;
-          codigoVale: number;
+          correlativo: number;
       },
   ]
 }

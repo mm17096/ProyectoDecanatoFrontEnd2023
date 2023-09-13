@@ -17,7 +17,7 @@ export class CargoService {
   }
 
   getCargosAll(){
-    return this.http.get<unknown[]>(`${this.url}/lista`);
+    return this.http.get<unknown[]>(`${this.url}`);
   }
 
   saveCargos(data : any){

@@ -36,7 +36,6 @@ export class LoginComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.usuarioService.logout();
     this.loginForm = this.formBuilder.group({
       email: ['kevin6', [Validators.required]],
       password: ['1234', [Validators.required]],

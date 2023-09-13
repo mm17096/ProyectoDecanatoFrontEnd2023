@@ -58,11 +58,11 @@
           <div class="vertical-line"></div>
           <button type="button" class="btn header-item header-profile-name" ngbDropdownToggle
             id="page-header-user-dropdown">
-            <span class="user-text-name">{{empleado.nombre | slice:0:10}}{{ empleado.nombre.length > 10? '...' : ''
+            <span class="user-text-name">{{empleado?.nombre | slice:0:10}}{{ empleado?.nombre.length > 10? '...' : ''
               }}</span>
             <i class="mdi mdi-chevron-down ms-1"></i>
-            <p class="user-text">{{ empleado.cargo.nombreCargo }}</p>
-            <span class="user-text-2" *ngIf="empleado.jefe">Jefe Dpto</span>
+            <p class="user-text">{{ empleado?.cargo.nombreCargo }}</p>
+            <span class="user-text-2" *ngIf="empleado?.jefe">Jefe Dpto</span>
           </button>
         </div>
 

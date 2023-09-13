@@ -8,3 +8,9 @@
     white-space: nowrap; /* Evita que los botones se envuelvan al siguiente renglón */
   }
 
+
+  .bordered-card {
+    border: 4px solid #ccc; /* Establece el ancho y el color del borde según tus preferencias */
+    border-radius: 10px; /* Agrega esquinas redondeadas */
+    padding: 15px; /* Agrega espacio interno alrededor del contenido de la tarjeta */
+  }

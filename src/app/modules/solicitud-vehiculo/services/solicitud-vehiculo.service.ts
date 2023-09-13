@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {ISolicitudVehiculo} from "../interfaces/data.interface";
-import {IEstados} from "../interfaces/estados.interface";
+import {IEstados, IPais, ISolicitudVehiculo} from "../interfaces/data.interface";
 import {environment} from "../../../../environments/environment";
 import {map} from "rxjs/operators";
 import {IVehiculos} from "../../vehiculo/interfaces/vehiculo-interface";
-import {IPais} from "../interfaces/pais.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +23,8 @@ export class SolicitudVehiculoService {
   getSolicitudesVehiculo(estado: number) {
     if (estado != null){
       this.http
-        .get(`${this.url}/solicitudvehiculo/listapage/${estado}`)
-        .pipe(map((resp: any) => resp.content as ISolicitudVehiculo[]))
+        .get(`${this.url}/api/solicitudvehiculo/lista/${estado}`)
+        .pipe(map((resp: any) => resp as ISolicitudVehiculo[]))
         .subscribe(
           (soliVe: ISolicitudVehiculo[]) => {
             this.listSoliVehiculo = soliVe;
@@ -37,11 +35,10 @@ export class SolicitudVehiculoService {
         );
     }else {
       this.http
-        .get(`${this.url}/solicitudvehiculo/listapage`)
-        .pipe(map((resp: any) => resp.content as ISolicitudVehiculo[]))
+        .get(`${this.url}/api/solicitudvehiculo/lista`)
+        .pipe(map((resp: any) => resp as ISolicitudVehiculo[]))
         .subscribe(
           (soliVe: ISolicitudVehiculo[]) => {
-            //console.log(soliVe);
             this.listSoliVehiculo = soliVe;
           },
           (error) => {
@@ -53,7 +50,7 @@ export class SolicitudVehiculoService {
 
   // Servicio para obtener los estados
   public obtenerEstados(): Observable<any> {
-    return this.http.get<IEstados>((this.url)+ '/solicitudvehiculo/estados');
+    return this.http.get<IEstados>((this.url)+ '/api/solicitudvehiculo/estados');
   }
 
   obtenerVehiculos() {
@@ -83,7 +80,6 @@ export class SolicitudVehiculoService {
 
 
   registrarSoliVe(solicitudVehiculo: ISolicitudVehiculo){
-    console.log("regist", solicitudVehiculo);
-    return this.http.post<ISolicitudVehiculo>( `${this.url}/solicitudvehiculo/insert`, solicitudVehiculo);
+    return this.http.post<ISolicitudVehiculo>( `${this.url}/api/solicitudvehiculo/insert`, solicitudVehiculo);
   }
 }

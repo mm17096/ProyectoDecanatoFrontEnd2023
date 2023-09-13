@@ -1,0 +1,87 @@
+////////////////////// Estilos de la paginacion, modificada ///////////////////////
+/* Colocar diseño a la paginacion ngx-pagintatio*/
+::ng-deep {
+
+    .ngx-pagination .current {
+        background: #972727 !important;
+        /* Cambia este color al que desees */
+    }
+
+
+    .ngx-pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .ngx-pagination li {
+        width: 27px;
+        height: 27px;
+        border-radius: 50% !important;
+        background: #f8f8f8;
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+
+        &.small-screen {
+            display: none !important;
+        }
+
+        &.pagination-previous,
+        &.pagination-next {
+            a,
+            span {
+                width:50%;
+                height: 50%;
+                border-radius: 50%;
+                overflow: hidden;
+                color: #f8f8f8;
+            }
+        }
+
+    }
+
+    .ngx-pagination .pagination-previous a:before,
+    .ngx-pagination .pagination-previous.disabled:before,
+    .ngx-pagination .pagination-next::before {
+        margin-right: 0px !important;
+        font-size: 30px;
+        margin-top: -8px;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        color: #000; //color de los botones de los lados
+        left: 0;
+        top: 7px;
+        pointer-events: none;
+    }
+
+    .ngx-pagination .pagination-next::before{
+        content: '\bb'; //para colocarla icono
+    }
+
+    .ngx-pagination .pagination-next::after {
+        display: none !important;
+    }
+
+    .ngx-pagination .pagination-previous.disabled:before,
+    .ngx-pagination .pagination-next.disabled:before {
+        opacity: 0.4;
+    }
+
+    .ngx-pagination .pagination-previous.disabled:hover {
+        background: #f8f8f8 !important;
+    }
+
+    .ngx-pagination a:hover,
+    .ngx-pagination button:hover {
+        background: initial !important;
+    }
+
+}

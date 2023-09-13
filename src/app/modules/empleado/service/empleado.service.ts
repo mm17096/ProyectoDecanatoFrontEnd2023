@@ -1,19 +1,18 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ICargo, IDepartamento, IEmpleado, IEmpleadoTabala } from '../interface/empleado.interface';
+import { ICargo, IDepto, IEmpleado, IEmpleadoTabala } from '../interface/empleado.interface';
 import { environment } from 'src/environments/environment';
 import { map } from "rxjs/operators";
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmpleadoService {
-
-
   private baseUrl: string = environment.baseUrl;
 
-  listDepartamentos: IDepartamento[] = [];
+  listDepartamentos: IDepto[] = [];
   listEmpleados: IEmpleado[] = [];
   listCargos: ICargo[] = [];
 
@@ -21,18 +20,18 @@ export class EmpleadoService {
 
   //Obtener empleados para la tabla
   getEmpleados() {
-    this.http
-      .get(`${this.baseUrl}/empleado/lista`)
-      .pipe(map((resp: any) => resp.content as IEmpleado[]))
-      .subscribe(
-        (empleados: IEmpleado[]) => {
-          console.log(empleados);
-          this.listEmpleados = empleados; // Actualiza la propiedad listEmpleados
-        },
-        (error) => {
-          console.error("Error al obtener las empleados:", error);
-        }
-      );
+      this.http
+        .get(`${this.baseUrl}/empleado/lista`)
+        .pipe(map((resp: any) => resp.content as IEmpleado[]))
+        .subscribe(
+          (empleados: IEmpleado[]) => {
+            console.log(empleados);
+            this.listEmpleados = empleados; // Actualiza la propiedad listEmpleados
+          },
+          (error) => {
+            console.error("Error al obtener los empleados:", error);
+          }
+        );
   }
 
   getCargos() {
@@ -52,27 +51,15 @@ export class EmpleadoService {
   getDepartamentos() {
     this.http
       .get(`${this.baseUrl}/depto`)
-      .pipe(map((resp: any) => resp as IDepartamento[]))
+      .pipe(map((resp: any) => resp as IDepto[]))
       .subscribe(
-        (departamentos: IDepartamento[]) => {
+        (departamentos: IDepto[]) => {
           this.listDepartamentos = departamentos;
         },
         (error) => {
           console.error("Error al obtener los departamentos:", error);
         }
       );
-  }
-
-//Obtener estado por ID
-  ObtenerestadoporID(id): any {
-    return new Promise(resolve => {
-      this.http.get(`${this.baseUrl}/estados/PorID/${id}`).subscribe(data => {
-        return resolve(data);
-      }, err => {
-        console.log(err);
-      });
-
-    });
   }
 
   getEstadoNombre(nombre: string): Observable<Object> {

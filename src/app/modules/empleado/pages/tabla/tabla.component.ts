@@ -16,7 +16,7 @@ export class TablaComponent implements OnInit {
 
   @Input() empleados!: IEmpleado[];
   @Input() queryString!: string;
-
+  p: any;
   cambio: string;
 
   formularioEmpleado: FormGroup;
@@ -31,9 +31,6 @@ export class TablaComponent implements OnInit {
   }
 
   ngOnInit() { }
-
-
-
 
 
 /*   public static function desencriptacion($string)
@@ -68,7 +65,7 @@ export class TablaComponent implements OnInit {
 
     this.formularioEmpleado.patchValue(empleadoED);
     this.formularioEmpleado.patchValue({
-      cargo: empleadoED.cargo.codigoCargo,
+      cargo: empleadoED.cargo.id,
     });
     this.formularioEmpleado.patchValue({
       departamento: empleadoED.departamento.codigoDepto,

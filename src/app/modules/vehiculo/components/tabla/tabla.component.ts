@@ -13,7 +13,9 @@ import Swal from 'sweetalert2';
 export class TablaComponent implements OnInit {
 
   @Input() vehiculos: IVehiculos[] = [];
+  @Input() busqueda: string = '';
 
+  p: any;
   cambio:string = '';
   estado:number = 8;
 

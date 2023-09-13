@@ -48,6 +48,7 @@
     class="form-control"
     formControlName="nombreCargo"
     placeholder="Nombre"
+    [readonly]="leyenda == 'Detalle'"
     [class]="esCampoValido('nombreCargo')">
     <div *ngIf="nombreCargo?.errors?.['required'] && nombreCargo?.touched">
       <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*El campo Nombre es obligatorio</span>
@@ -66,6 +67,8 @@
     class="form-control"
     formControlName="descripcion"
     placeholder="Descripcion"
+    [readonly]="leyenda == 'Detalle'"
+
     [class]="esCampoValido('descripcion')"></textarea>
     <div *ngIf="descripcion?.errors?.['required'] && descripcion?.touched">
       <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*El campo Descripcion es obligatorio</span>
@@ -89,7 +92,9 @@
 
 <div class="modal-footer">
 
- <button type="submit" class="btn btn-primary">Guardar</button>
+ <button type="submit" class="btn btn-primary" *ngIf="leyenda !== 'Detalle'">
+ {{ leyenda !== 'Editar' ? 'Guardar' : 'Modificar' }}
+ </button>
 
  <button type="button" class="btn btn-dark" (click)="activeModal.dismiss('Cross click')"
  >Close</button>

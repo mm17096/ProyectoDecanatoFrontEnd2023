@@ -3,12 +3,11 @@ import { Solicitante } from "./Solicitante";
 import { Vehiculo } from "./Vehiculo";
 
 export interface SolicitudVv{
-    codigoSolicitudVehiculo?:number;
+    codigoSolicitudVehiculo?:string;
     fechaSolicitud?:Date;
     fechaSalida?:Date;
     unidadSolicitante?:string;
     vehiculo?:Vehiculo;
-    duiCliente?:string;
     objetivoMision?: string;
     lugarMision?: string;
     direccion?: string;
@@ -18,6 +17,7 @@ export interface SolicitudVv{
     solicitante?: Solicitante;
     nombreJefeDepto?: string;
     fechaEntrada?: Date;
-    estado?: string;
+    estado?: number;
+    estadoString?: string;
     motorista?: Empleado;
 }

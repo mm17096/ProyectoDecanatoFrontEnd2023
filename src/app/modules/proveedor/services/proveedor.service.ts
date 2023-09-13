@@ -14,18 +14,22 @@ export class ProveedorService {
 
   constructor(private http: HttpClient) {}
 
-  getProveedors() {
+  getProveedorsPaginacion() {
     this.http
       .get(`${this.baseUrl}/proveedor/lista`)
       .pipe(map((resp: any) => resp.content as IProveedor[]))
-      .subscribe(
-        (proveedor: IProveedor[]) => {
-          this.listProveedor = proveedor;
-        },
-        (error) => {
-          console.error("Error al obtener los proveedor:", error);
-        }
-      );
+      .subscribe((proveedor: IProveedor[]) => {
+        this.listProveedor = proveedor;
+      });
+  }
+
+  getProveedors() {
+    this.http
+      .get(`${this.baseUrl}/proveedor/listasinpagina`)
+      .pipe(map((resp: any) => resp as IProveedor[]))
+      .subscribe((proveedor: IProveedor[]) => {
+        this.listProveedor = proveedor;
+      });
   }
 
   getProveedorsById(id: string) {

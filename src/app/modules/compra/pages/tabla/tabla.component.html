@@ -16,7 +16,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of compras | filter : queryString; let i = index">
+      <tr *ngFor="let data of compras  | filter : queryString | paginate : { itemsPerPage: 10, currentPage: p }; let i = index">
         <ng-container
           *ngIf="data.factura == null || data.factura == ''; else factura"
         >
@@ -44,22 +44,14 @@
         <td>{{ data.total_compra | currency : "USD" : "symbol" : "1.2-2" }}</td>
         <td class="justify-content-center">
           <app-modal [compra]="data" [leyenda]="'Editar'"></app-modal>
-          <!-- Button trigger modal
-          <button
-            (click)="eliminar(data)"
-            class="btn btn-danger btn-sm btn-rounded"
-          >
-            Eliminar
-          </button> -->
         </td>
       </tr>
     </tbody>
   </table>
 
-  <!-- ! PAGINACION
+  <!-- ! PAGINACION -->
   <div class="pagination pagination-rounded justify-content-end mb-2">
     <pagination-controls (pageChange)="p = $event"></pagination-controls>
   </div>
-  -->
 </div>
 <!-- end table -->

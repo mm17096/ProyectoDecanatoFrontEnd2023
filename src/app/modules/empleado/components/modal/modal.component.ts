@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import { EmpleadoService } from '../../service/empleado.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
-import { ICargo, IDepartamento, IEmpleado } from '../../interface/empleado.interface';
+import { ICargo, IDepto, IEmpleado } from '../../interface/empleado.interface';
 
 import { EMAIL_VALIDATE_UES, NAME_VALIDATE } from 'src/app/constants/constants';
 import { MensajesService } from 'src/app/shared/global/mensajes.service';
@@ -28,7 +28,7 @@ export class ModalComponent implements OnInit {
   private isText: string = NAME_VALIDATE;
 
   cargos: ICargo[] = [];
-  departamentos: IDepartamento[] = [];
+  departamentos: IDepto[] = [];
 
   formBuilder!: FormGroup;
 
@@ -38,6 +38,16 @@ export class ModalComponent implements OnInit {
   imagen: string = 'no hay';
 
   hovered: boolean = false; // Inicializamos hovered como falso
+
+  alerts = [
+    {
+      id: 1,
+      type: "info",
+      message:
+        " Por favor, asegúrese de completar todos los campos obligatorios (*) y de cumplir con los formatos correspondientes. Además, le recomendamos prestar atención a los mensajes de alerta. En cuanto a la foto del empleado no es obligatoria; Indicar que el empleado sera jefe del área o departamento correspondiente solamente cuando sea acorde a sus responsabilidades laborales. ",
+      show: false,
+    },
+  ];
 
 
   constructor(
@@ -54,7 +64,7 @@ export class ModalComponent implements OnInit {
     if (this.leyenda == "Editar") {
       this.formBuilder = this.Iniciarformulario();
     }
-
+    
     this.empleadoService.getCargos();
     this.empleadoService.getDepartamentos();
   }
@@ -141,7 +151,7 @@ export class ModalComponent implements OnInit {
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",
-          err
+          err.error.message
         )
       });
     } else {
@@ -169,11 +179,11 @@ export class ModalComponent implements OnInit {
           this.recargar();
           this.modalService.dismissAll();
         }
-      }, (err: any) => {
+      }, (err: string) => {
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",
-          err
+            err
         )
       });
     }
@@ -211,10 +221,11 @@ export class ModalComponent implements OnInit {
           this.modalService.dismissAll();
         }
       }, (err: any) => {
+        console.log(err);
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",
-          err
+          err.error.message
         )
       });
     } else {
@@ -245,7 +256,7 @@ export class ModalComponent implements OnInit {
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",
-          err
+          err.error.message
         )
       });
     }
@@ -290,7 +301,7 @@ export class ModalComponent implements OnInit {
     //obtenemos el objeto que tenga como nombreCargo Motorista
     const motoristaOb = this.Cargos.find(cargo => cargo.nombreCargo === "Motorista");
     //Comparamos que el ID sea igual al seleccionado y cambiamos la variable para mostrar los demas campos
-    this.esMotorista = (this.formBuilder.get('cargo').value === motoristaOb.codigoCargo);
+    this.esMotorista = (this.formBuilder.get('cargo').value === motoristaOb.id);
     this.motoristaOd = this.esMotorista;
 
     // Retrasamos la actualización del teléfono en 3 segundos
@@ -315,10 +326,14 @@ export class ModalComponent implements OnInit {
       licenciaControl.setValue('');
       tipolicenciaControl.setValue('');
       fechalicenciaControl.setValue('');
+      fechalicenciaControl.reset();
 
-      this.empleadOd.licencia = "";
-      this.empleadOd.tipolicencia = "";
-      this.empleadOd.fechalicencia = new Date();
+      if(this.empleadOd){
+        this.empleadOd.licencia = "";
+        this.empleadOd.tipolicencia = "";
+        this.empleadOd.fechalicencia = new Date();
+      }
+
     }
     licenciaControl.updateValueAndValidity();
     tipolicenciaControl.updateValueAndValidity();
@@ -368,6 +383,21 @@ export class ModalComponent implements OnInit {
     reader.onloadend = () => {
       this.imgTemp = reader.result;
     };
+  }
+
+  //////   metodos para la ayuda ///////
+  CambiarAlert(alert) {
+    alert.show = !alert.show;
+  }
+
+  restaurarAlerts() {
+    this.alerts.forEach((alert) => {
+      alert.show = true;
+    });
+  }
+
+  siMuestraAlertas() {
+    return this.alerts.every((alert) => alert.show);
   }
 
 }

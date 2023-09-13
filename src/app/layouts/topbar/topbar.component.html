@@ -53,13 +53,16 @@
 
       <div class="dropdown d-inline-block" ngbDropdown>
         <div class="content">
-          <img class="rounded-circle header-profile-user" src="assets/images/users/avatar-2.jpg" alt="Header Avatar">
+          <img class="rounded-circle header-profile-user"
+            [src]="fotoEmpleado !== '' ? fotoEmpleado : './../../../assets/images/Default-Avatar.png'" alt="Header Avatar">
           <div class="vertical-line"></div>
           <button type="button" class="btn header-item header-profile-name" ngbDropdownToggle
             id="page-header-user-dropdown">
-            <span class="user-text-name">Decanato</span>
+            <span class="user-text-name">{{empleado?.nombre | slice:0:10}}{{ empleado?.nombre.length > 10? '...' : ''
+              }}</span>
             <i class="mdi mdi-chevron-down ms-1"></i>
-            <p class="user-text">admin</p>
+            <p class="user-text">{{ empleado?.cargo.nombreCargo }}</p>
+            <span class="user-text-2" *ngIf="empleado?.jefe">Jefe Dpto</span>
           </button>
         </div>
 

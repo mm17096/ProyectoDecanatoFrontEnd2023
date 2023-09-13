@@ -5,7 +5,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common
 
 import { environment } from '../environments/environment';
 
-import { NgbNavModule, NgbAccordionModule, NgbTooltipModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbNavModule, NgbAccordionModule, NgbTooltipModule, NgbModule, NgbPagination, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 
@@ -21,11 +21,11 @@ import { CyptolandingComponent } from './cyptolanding/cyptolanding.component';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-import { ErrorInterceptor } from './core/helpers/error.interceptor';
-import { JwtInterceptor } from './core/helpers/jwt.interceptor';
 import { FakeBackendInterceptor } from './core/helpers/fake-backend';
 import { UIModule } from "./shared/ui/ui.module";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AuthInterceptor } from './helpers/auth.interceptor';
+import { JwtModule } from '@auth0/angular-jwt';
 
 
 
@@ -47,11 +47,7 @@ export function createTranslateLoader(http: HttpClient): any {
     ],
     bootstrap: [AppComponent],
     providers: [
-        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-        { provide: HTTP_INTERCEPTORS, useClass: FakeBackendInterceptor, multi: true },
-        // LoaderService,
-        // { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorService, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     ],
     imports: [
         BrowserModule,
@@ -72,11 +68,21 @@ export function createTranslateLoader(http: HttpClient): any {
         NgbNavModule,
         NgbTooltipModule,
         SharedModule,
+        NgbPaginationModule,
         ScrollToModule.forRoot(),
         NgbModule,
         UIModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        JwtModule.forRoot({
+          config: {
+            tokenGetter: () => {
+              return localStorage.getItem("token" || "");
+            },
+            allowedDomains: ['*'], // Dominios permitidos para CORS (opcional)
+            disallowedRoutes: ['*'] // Rutas excluidas de la inserción automática del token (opcional)
+          }
+        }),
     ]
 })
 export class AppModule { }

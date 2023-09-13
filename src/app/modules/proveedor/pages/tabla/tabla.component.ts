@@ -10,6 +10,7 @@ import { MensajesService } from "src/app/shared/global/mensajes.service";
   styleUrls: ["./tabla.component.scss"],
 })
 export class TablaComponent implements OnInit {
+
   @Input() proveedores!: IProveedor[];
   @Input() queryString!: string;
   p: any;

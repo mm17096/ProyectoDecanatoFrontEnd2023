@@ -19,7 +19,8 @@ export class ListarComponent implements OnInit {
   breadCrumbItems: Array<{}>;
   lstDeptos: IDepto[] = [];
   cambio: string;
-  term: string = 'asdasd';
+  term: string = '';
+  p: any;
 
   constructor(private deptoService : DeptoService,
     private modalService: NgbModal,
@@ -28,16 +29,23 @@ export class ListarComponent implements OnInit {
 
   ngOnInit(): void {
     this.breadCrumbItems = [{ label: 'Departamento' }, { label: 'Listar', active: true }];
-    this.getDeptos(8);
+    this.getDeptosAll();
   }
 
   cargaDeptos(event : any){
     const estado = event.target.value;
-    this.getDeptos(Number(estado));
+    //this.getDeptos(Number(estado));
+    this.getDeptosAll();
   }
 
   getDeptos(estado : number){
     this.deptoService.getDeptos(estado).subscribe((data: IDepto[]) => {
+      this.lstDeptos = data;
+    });
+  }
+
+  getDeptosAll(){
+    this.deptoService.getDeptosAll().subscribe((data: IDepto[]) => {
       this.lstDeptos = data;
     });
   }

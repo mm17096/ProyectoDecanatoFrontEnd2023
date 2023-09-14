@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IEntradaSalida } from '../../interface/EntSalinterface';
+import { IVehiculoentradaSalida } from '../../interface/VehiculoEntradasalida';
+import { ListaentradasalidaService } from '../../service/listaentradasalida.service';
 
 @Component({
   selector: 'app-listar',
@@ -8,14 +10,17 @@ import { IEntradaSalida } from '../../interface/EntSalinterface';
 })
 export class ListarComponent implements OnInit {
    // bread crumb items
+   vehiculos:IVehiculoentradaSalida[]=[];//array de vehiculos
    breadCrumbItems: Array<{}>;
    entradasalidas: IEntradaSalida[]=[];
    term: string='';
    transactions;
+   parametroBuscar: string='';//parametro de busqueda.
 
-  constructor() { }
+  constructor(private listavehiculos: ListaentradasalidaService) { }
 
   ngOnInit(): void {
+    
     this.breadCrumbItems = [{ label: 'Entradas' }, { label: 'Salidas', active: true }];
   
   this.transactions = [
@@ -101,6 +106,15 @@ export class ListarComponent implements OnInit {
       index: 9,
     },
   ];
+
+  this.buscar();
+}
+
+buscar():void{
+  //metodo para buscar
+  this.parametroBuscar=this.parametroBuscar.toLocaleLowerCase();
+  this.listavehiculos.buscarVehiculo(this.parametroBuscar).subscribe((resp:IVehiculoentradaSalida[])=>{this.vehiculos=resp;});
+
 }
 
 }

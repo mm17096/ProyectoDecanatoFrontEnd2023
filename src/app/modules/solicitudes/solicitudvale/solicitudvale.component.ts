@@ -17,7 +17,11 @@ import {
 } from "../Interfaces/existenciavales.interface";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
 import Swal from "sweetalert2";
-import { IAsignacionVale, IValesAsignar, ICodigoAsignacion } from '../Interfaces/asignacionvale.interface';
+import {
+  IAsignacionVale,
+  IValesAsignar,
+  ICodigoAsignacion,
+} from "../Interfaces/asignacionvale.interface";
 import { NUMBER_VALIDATE } from "src/app/constants/constants";
 import { Router } from "@angular/router";
 
@@ -53,7 +57,7 @@ export class SolicitudvaleComponent implements OnInit {
   searchTerm = "";
   itemsPerPage = 5;
   currentPage = 1;
-  busqueda: string = '';
+  busqueda: string = "";
   p: any;
   private isNumber: string = NUMBER_VALIDATE;
 
@@ -63,19 +67,23 @@ export class SolicitudvaleComponent implements OnInit {
 
   solicitudvv: SolicitudVv[] = [];
 
-  valesAsingar: IValesAsignar;
+  valesAsingar!: IValesAsignar;
 
-  asignacionVale: IAsignacionVale;
+  asignacionVale!: IAsignacionVale;
 
   solcitudVale: SolicitudVv;
 
   codigoAsignacion: ICodigoAsignacion;
 
+  public paramAsignacion!: string;
+
+  public paramSolicitudV!: string;
+
   datosSolicitudV: SolicitudVv[] = [];
 
   codigoSolicitudVehiculo: string = "";
 
-  codigoSolicitudVale: ISolicitudValeID;
+  codigoSolicitudVale!: ISolicitudValeID;
 
   searchText: string = "";
 
@@ -92,7 +100,10 @@ export class SolicitudvaleComponent implements OnInit {
     private router: Router
   ) {
     this.formularioSolicitudVale = fb.group({
-      cantidadVales: new FormControl("", [Validators.required, Validators.pattern(this.isNumber)]),
+      cantidadVales: new FormControl("", [
+        Validators.required,
+        Validators.pattern(this.isNumber),
+      ]),
       fechaSolicitud: new FormControl("", [Validators.required]),
       fechaEntrada: new FormControl("", [Validators.required]),
       fechaSalida: new FormControl("", [Validators.required]),
@@ -141,20 +152,19 @@ export class SolicitudvaleComponent implements OnInit {
     //this.obtenerIdSolicitudVale();
   }
 
-  valesAsignar(valesAsignarModal: any){
+  valesAsignar(valesAsignarModal: any) {
     const cantidadVales =
       this.formularioSolicitudValev.get("cantidadVales")?.value;
     this.service.getValesAignar(cantidadVales).subscribe({
       next: (response) => {
         this.valesAsingar = response;
         console.log(this.valesAsingar);
-      }
+      },
     });
-      /* (data: any) => {
+    /* (data: any) => {
       this.valesAsingar = data; */
-      console.log(this.valesAsingar);
-      this.modalService.open(valesAsignarModal, { size: "lg", centered: true });
-
+    console.log(this.valesAsingar);
+    this.modalService.open(valesAsignarModal, { size: "lg", centered: true });
   }
 
   obtnerExistenciaVales() {
@@ -166,31 +176,52 @@ export class SolicitudvaleComponent implements OnInit {
     });
   }
 
+
+
+  liquidarVales(solicitudVehiculo: SolicitudVv) {
+    console.log(
+      "el codigo del vehiculo es: " + solicitudVehiculo.codigoSolicitudVehiculo
+    );
+
+   // this.obtenerIdSolicitudVale( solicitudVehiculo.codigoSolicitudVehiculo);
+
+    console.log(
+      this.obtenerIdSolicitudVale( solicitudVehiculo.codigoSolicitudVehiculo)
+    );
+
+    /* const codAsignacion = this.obtenerCodigoAsignacion(
+      soliVale.codigoSolicitudVale
+    ); */
+
+    //console.log("el codigo del asignación es: " + codAsignacion);
+
+    //this.router.navigate(["/asignacion-vale/asignacion", codAsignacion]);
+  }
+
   obtenerIdSolicitudVale(codigoSolicitudVehiculo: string) {
     this.service.getIdSolicitudVale(codigoSolicitudVehiculo).subscribe({
       next: (response) => {
         this.codigoSolicitudVale = response;
-        console.log(
-          "el método, codigoSolicitudVale:" +
-            this.codigoSolicitudVale.codigoSolicitudVale
-        );
+
+         this.paramSolicitudV = this.codigoSolicitudVale.codigoSolicitudVale;
+         console.log("el método, codigoSolicitudVale:", this.paramSolicitudV);
+         this.obtenerCodigoAsignacion(this.paramSolicitudV)
       },
     });
   }
 
-  obtenerCodigoAsignacion(){
+  obtenerCodigoAsignacion(codigoSolitudVale: string) {
     //this.obtenerIdSolicitudVale(this.solicitudvv.codigoSolicitudVehiculo)
-    this.service.getCodigoAsignacion(this.codigoSolicitudVale.codigoSolicitudVale).subscribe({
+    this.service.getCodigoAsignacion(codigoSolitudVale).subscribe({
       next: (response) => {
         this.codigoAsignacion = response;
-        console.log(this.codigoAsignacion);
+        this.paramAsignacion = this.codigoAsignacion.codigoAsignacion;
+        console.log("metodo, códigoAsignacion: ", this.paramAsignacion);
       },
     });
+    this.router.navigate(["/asignacion-vale/asignacion",  this.paramAsignacion]);
   }
-  irADetalle(){
-    this.obtenerCodigoAsignacion();
-    this.router.navigate(['/asignacion-vale/asignacion', this.codigoAsignacion]);
-  }
+
   /**
    * Open Large modal
    * @param largeDataModal large modal data
@@ -300,8 +331,8 @@ export class SolicitudvaleComponent implements OnInit {
         "warning",
         "Complete los que se indican"
       );
-      return Object.values(this.formularioSolicitudValev.controls).forEach((control) =>
-        control.markAsTouched()
+      return Object.values(this.formularioSolicitudValev.controls).forEach(
+        (control) => control.markAsTouched()
       );
     }
   }
@@ -338,6 +369,7 @@ export class SolicitudvaleComponent implements OnInit {
         next: (resp: any) => {
           // Cerrar SweetAlert de carga
           Swal.close();
+          this.mostrar();
           this.modalService.dismissAll();
           this.limpiarCampos();
           this.mensajesService.mensajesToast("success", "Vales Asignados");
@@ -389,6 +421,14 @@ export class SolicitudvaleComponent implements OnInit {
   CargarDatos(sulici: SolicitudVv) {
     // localStorage.setItem('id', JSON.stringify(clien));
     // this.router.navigate(["edit"]);
+  }
+
+  mostrar(){
+    let currentUrl = this.router.url;
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.router.onSameUrlNavigation = 'reload';
+    this.router.navigate([currentUrl]);
+
   }
   get paginatedItems() {
     if (!this.searchText) {
@@ -504,5 +544,4 @@ export class SolicitudvaleComponent implements OnInit {
       ? "is-valid"
       : "";
   }
-
 }

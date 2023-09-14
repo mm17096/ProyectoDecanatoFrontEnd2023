@@ -1,19 +1,10 @@
 
-export interface IEntradaSalida{
-    id:string,
-    fecha: string,
-    hora:string,
-    combustible:string,
-    kilometraje:string,
-    estado?: number,
-    solicitudvehiculo: IsolicitudVehiculo
-}
 export interface IsolicitudVehiculo{
     codigoSolicitudVehiculo: number;
     fechaSolicitud:string,
     fechaSalida: string,
     unidadSolicitante: string,
-    vehiculo: IVehiculo,
+    vehiculo: IVehiculoentradaSalida,
     objetivoMision: string,
     lugarMision: string,
     direccion: string,
@@ -31,25 +22,24 @@ export interface IsolicitudVehiculo{
     horasValidas: boolean
 
 }
-export interface IVehiculo{
-    codigoVehiculo: string,
-    placa: string,
-    modelo: string,
-    marca: string,
-    clase: string,
-    color: string,
-    year: number,
-    fecha_tarjeta: string,
-    capacidad: string,
-    capacidadTanque: string,
-    estado: number,
-    n_chasis: string,
-    n_motor: string,
-    tipo_gas: string,
-    nombrefoto: string,
-    urlfoto: string
+export interface IVehiculoentradaSalida{
+    codigoVehiculo: string;
+    placa:string;
+    modelo: string;
+    marca: string;
+    clase: string;
+    color: string;
+    year: string;
+    fecha_tarjeta: string;
+    capacidad: string;
+    capacidadTanque: string;
+    estado: string;
+    n_chasis: string;
+    n_motor: string;
+    tipo_gas: string;
+    nombrefoto?: string;
+    urlfoto: string;
 }
-
 export interface ISolicitante{
     codigoUsuario: string,
     nombre: string,
@@ -74,16 +64,3 @@ export interface IMotorista{
     cargo: string,
     departamento: string,
 }
-
-export class EntradaSalidaI {
-    constructor(
-        public tipo: string,
-        public fecha: string,
-        public hora:string,
-        public combustible:string,
-        public kilometraje:string,
-        public estado?: number,
-        public solicitudvehiculo?: IsolicitudVehiculo
-
-){}
-  }

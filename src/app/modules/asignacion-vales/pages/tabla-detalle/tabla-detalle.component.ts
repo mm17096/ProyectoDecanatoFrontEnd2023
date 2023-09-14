@@ -9,6 +9,9 @@ import { IAsignacionDetalle } from "../../interfaces/asignacion.interface";
   styleUrls: ["./tabla-detalle.component.scss"],
 })
 export class TablaDetalleComponent implements OnInit {
+  checkboxValue = false; // Estado del checkbox
+  buttonDisabled = true; // Estado del botón
+
   valesASignados: IAsignacionDetalle;
   constructor(private service: DetalleService, private http: HttpClient) {}
 
@@ -20,11 +23,17 @@ export class TablaDetalleComponent implements OnInit {
   mostrarVales() {
     this.service.getDetalleAsignacionVale(this.codigoAsignacion).subscribe({
       next: (data) => {
-        console.log('aquí llega:');
+        console.log("aquí llega:");
 
         this.valesASignados = data;
-        console.log('aquí van los vales: ', this.valesASignados.vales);
+        console.log("aquí van los vales: ", this.valesASignados.vales);
       },
     });
+  }
+
+  valesDevolver() {
+    this.buttonDisabled = this.valesASignados.vales.some(
+      (vale) => vale.idVale
+    );
   }
 }

@@ -58,7 +58,7 @@ export class MostrarComponent implements OnInit {
 
   ngOnInit(): void {
     this.breadCrumbItems = [
-      { label: "Devolución de Vales" },
+      { label: "Ajuste de Vale" },
       { label: "Mostrar", active: true },
     ];
     this.devolucionValeService.getProveedor();
@@ -84,6 +84,14 @@ export class MostrarComponent implements OnInit {
           Validators.required,
           Validators.min(1),
           Validators.pattern(this.isNumber),
+        ],
+      ],
+      concepto: [
+        "",
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(750),
         ],
       ],
     });
@@ -166,7 +174,7 @@ export class MostrarComponent implements OnInit {
 
   editando() {
     const idproveedor = this.formularioGeneral.get("proveedor").value;
-    console.log("Este es el proveedor: ", idproveedor);
+    const concepto = this.formularioGeneral.get("concepto").value;
 
     // Mostrar SweetAlert de carga
     Swal.fire({
@@ -180,7 +188,7 @@ export class MostrarComponent implements OnInit {
     });
 
     this.devolucionValeService
-      .modificarPorCantidad(this.listDatos, idproveedor)
+      .modificarPorCantidad(this.listDatos, idproveedor, concepto)
       .subscribe({
         next: (resp: any) => {
           // Ocultar SweetAlert de carga

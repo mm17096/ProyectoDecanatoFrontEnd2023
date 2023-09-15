@@ -25,7 +25,7 @@ export class ListarComponent implements OnInit {
     private router : Router,) { }
 
   ngOnInit(): void {
-    this.breadCrumbItems = [{ label: 'Formulario' }, { label: 'Listar', active: true }];
+    this.breadCrumbItems = [{ label: 'Cargo' }, { label: 'Listar', active: true }];
     this.getCargoAll();
   }
 

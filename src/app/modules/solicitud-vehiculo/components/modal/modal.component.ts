@@ -291,38 +291,46 @@ export class ModalComponent implements OnInit {
           this.soliSave = resp;
           Swal.close();
 
-          // enviar pdf
-          const formData = new FormData();
-          let obj = {
-            nombreDocumento: '',
-            urlDocumento: '',
-            fecha: this.obtenerFechaActual(new Date()),
-            codigoSolicitudVehiculo: {
-              codigoSolicitudVehiculo: resp.codigoSolicitudVehiculo,
+          if (solicitudVehiculo.file != null && solicitudVehiculo.cantidadPersonas > 5) {
+              // enviar pdf
+            const formData = new FormData();
+            let obj = {
+              nombreDocumento: '',
+              urlDocumento: '',
+              fecha: this.obtenerFechaActual(new Date()),
+              codigoSolicitudVehiculo: {
+                codigoSolicitudVehiculo: resp.codigoSolicitudVehiculo,
+              }
             }
-          }
-          formData.append('archivo', this.file!);
-          formData.append('entidad', new Blob([JSON.stringify(obj)], {type: 'application/json'}));
+            formData.append('archivo', this.file!);
+            formData.append('entidad', new Blob([JSON.stringify(obj)], {type: 'application/json'}));
 
-          this.soliVeService.enviarPdfPasajeros(formData).subscribe({
-            next: (pdfResp: any) => {
-              console.log(pdfResp);
-              this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
-              this.mensajesService.mensajesToast("success", "Registro agregado");
-              this.modalService.dismissAll();
-              this.formularioSoliVe.reset();
-              resolve();
-            },
-            error: (pdfError) => {
-              Swal.close();
-              this.mensajesService.mensajesSweet(
-                'error',
-                'Ups... Algo salió mal al enviar el PDF',
-                pdfError.error.message
-              );
-              reject(pdfError);
-            },
-          });
+            this.soliVeService.enviarPdfPasajeros(formData).subscribe({
+              next: (pdfResp: any) => {
+                console.log(pdfResp);
+                this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
+                this.mensajesService.mensajesToast("success", "Registro agregado");
+                this.modalService.dismissAll();
+                this.formularioSoliVe.reset();
+                resolve();
+              },
+              error: (pdfError) => {
+                Swal.close();
+                this.mensajesService.mensajesSweet(
+                  'error',
+                  'Ups... Algo salió mal al enviar el PDF',
+                  pdfError.error.message
+                );
+                reject(pdfError);
+              },
+            });
+          } else {
+            this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
+            this.mensajesService.mensajesToast("success", "Registro agregado");
+            this.modalService.dismissAll();
+            this.formularioSoliVe.reset();
+            resolve();
+          }
         },
         error : (err) => {
           // Cerrar SweetAlert de carga
@@ -337,7 +345,6 @@ export class ModalComponent implements OnInit {
       });
     });
   }
-
 
   editarSoliVe(){}
 

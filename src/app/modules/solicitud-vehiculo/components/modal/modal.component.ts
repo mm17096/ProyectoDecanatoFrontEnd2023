@@ -75,8 +75,8 @@ export class ModalComponent implements OnInit {
               ) { }
 
   ngOnInit(): void {
-    console.log(this.usuarioActivo);
-    console.log("data",this.soliVeOd);
+    //console.log(this.usuarioActivo);
+    //console.log("data",this.soliVeOd);
     this.iniciarFormulario();
     this.llenarSelectDepartamentos();
     this.soliVeService.obtenerVehiculos();
@@ -144,10 +144,7 @@ export class ModalComponent implements OnInit {
       }else{
        if(this.validarfecha(solicitudVehiculo.fechaSolicitud)){
          if (this.validarfecha(solicitudVehiculo.fechaSalida)){
-          console.log(solicitudVehiculo.file);
            if(this.validarfecha(solicitudVehiculo.fechaEntrada)){
-            console.log(this.file);
-            console.log(solicitudVehiculo.cantidadPersonas);
              if(this.file  != null
               || solicitudVehiculo.cantidadPersonas < 6){
                   //  vacío para almacenar los datos de los pasajeros
@@ -318,7 +315,7 @@ export class ModalComponent implements OnInit {
 
             this.soliVeService.enviarPdfPasajeros(formData).subscribe({
               next: (pdfResp: any) => {
-                console.log(pdfResp);
+                //console.log(pdfResp);
                 this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
                 this.mensajesService.mensajesToast("success", "Registro agregado");
                 this.modalService.dismissAll();

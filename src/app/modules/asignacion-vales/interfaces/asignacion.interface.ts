@@ -4,7 +4,7 @@ export interface IAsignacionDetalle{
   mision: string;
   vales: [
       {
-          idVale: string;
+          idVale: null,
           correlativo: number;
       },
   ]

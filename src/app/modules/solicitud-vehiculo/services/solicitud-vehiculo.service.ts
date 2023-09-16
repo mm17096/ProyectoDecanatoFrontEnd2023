@@ -82,4 +82,9 @@ export class SolicitudVehiculoService {
   registrarSoliVe(solicitudVehiculo: ISolicitudVehiculo){
     return this.http.post<ISolicitudVehiculo>( `${this.url}/solicitudvehiculo/insert`, solicitudVehiculo);
   }
+
+  enviarPdfPasajeros(multiPart: FormData){
+    console.log("docus:", multiPart);
+    return this.http.post<any>(`${this.url}/documentosoli/upload`, multiPart);
+  }
 }

@@ -8,7 +8,7 @@ import {
   Validators
 } from "@angular/forms";
 import {Router} from "@angular/router";
-import {IPais, IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
+import {IDocumentoSoliVe, IPais, IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 
 import {map} from "rxjs/operators";
@@ -48,6 +48,9 @@ export class ModalComponent implements OnInit {
   cantidadPersonas: number = 0;
 
   pasajeroFormControls: FormControl[] = [];
+  soliSave : ISolicitudVehiculo [] = [];
+  file!: File;
+  documentoSoliVe: IDocumentoSoliVe [] = [];
 
   alerts = [
     {
@@ -219,6 +222,12 @@ export class ModalComponent implements OnInit {
     }
   }
 
+  // subir el archivo
+  cambioDeArchivo(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.file = (target.files as FileList)[0];
+  }
+
   registrarSoliVe() : Promise<void> {
     const solicitudVehiculo = this.formularioSoliVe.value;
 
@@ -279,19 +288,48 @@ export class ModalComponent implements OnInit {
     return new Promise<void> ((resolve, reject) => {
       this.soliVeService.registrarSoliVe(solicitudVehiculo).subscribe({
         next: (resp: any) => {
+          this.soliSave = resp;
           Swal.close();
-          this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
-          this.mensajesService.mensajesToast("success", "Registro agregado");
-          this.modalService.dismissAll();
-          this.formularioSoliVe.reset();
-          resolve();
+
+          // enviar pdf
+          const formData = new FormData();
+          let obj = {
+            nombreDocumento: '',
+            urlDocumento: '',
+            fecha: this.obtenerFechaActual(new Date()),
+            codigoSolicitudVehiculo: {
+              codigoSolicitudVehiculo: resp.codigoSolicitudVehiculo,
+            }
+          }
+          formData.append('archivo', this.file!);
+          formData.append('entidad', new Blob([JSON.stringify(obj)], {type: 'application/json'}));
+
+          this.soliVeService.enviarPdfPasajeros(formData).subscribe({
+            next: (pdfResp: any) => {
+              console.log(pdfResp);
+              this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
+              this.mensajesService.mensajesToast("success", "Registro agregado");
+              this.modalService.dismissAll();
+              this.formularioSoliVe.reset();
+              resolve();
+            },
+            error: (pdfError) => {
+              Swal.close();
+              this.mensajesService.mensajesSweet(
+                'error',
+                'Ups... Algo salió mal al enviar el PDF',
+                pdfError.error.message
+              );
+              reject(pdfError);
+            },
+          });
         },
         error : (err) => {
           // Cerrar SweetAlert de carga
           Swal.close();
           this.mensajesService.mensajesSweet(
             "error",
-            "Ups... Algo salió mal",
+            "Ups... Algo salió mal al registrar la solicitud",
             err.error.message
           );
           reject(err); // Rechaza la promesa con el error
@@ -360,6 +398,7 @@ export class ModalComponent implements OnInit {
       ],
       solicitante: [this.usuarioActivo?.codigoUsuario || '', [Validators.required]],
       listaPasajeros: this.fb.array([]),
+      file: ['',],
     });
   }
 
@@ -506,10 +545,5 @@ export class ModalComponent implements OnInit {
   }
   CambiarAlert(alert) {
     alert.show = !alert.show;
-  }
-
-  // subir el archivo
-  cambioDeArchivo(event: Event) {
-
   }
 }

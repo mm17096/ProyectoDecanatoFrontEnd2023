@@ -144,48 +144,59 @@ export class ModalComponent implements OnInit {
       }else{
        if(this.validarfecha(solicitudVehiculo.fechaSolicitud)){
          if (this.validarfecha(solicitudVehiculo.fechaSalida)){
+          console.log(solicitudVehiculo.file);
            if(this.validarfecha(solicitudVehiculo.fechaEntrada)){
-             //  vacío para almacenar los datos de los pasajeros
-             const pasajerosData = [];
+            console.log(this.file);
+            console.log(solicitudVehiculo.cantidadPersonas);
+             if(this.file  != null
+              || solicitudVehiculo.cantidadPersonas < 6){
+                  //  vacío para almacenar los datos de los pasajeros
+               const pasajerosData = [];
 
-             // Recorrer los controles de los pasajeros
-             for (const control of this.pasajeroFormControls) {
-               // Obtener el valor del control
-               const nombrePasajero = control.value;
+               // Recorrer los controles de los pasajeros
+               for (const control of this.pasajeroFormControls) {
+                 // Obtener el valor del control
+                 const nombrePasajero = control.value;
 
-               // objeto con el valor del control y un ID vacío
-               const pasajero = { id: '', nombrePasajero };
+                 // objeto con el valor del control y un ID vacío
+                 const pasajero = { id: '', nombrePasajero };
 
-               // Agregar el objeto al arreglo de pasajerosData
-               pasajerosData.push(pasajero);
-             }
-
-             solicitudVehiculo.listaPasajeros = pasajerosData;
-
-             //console.log("dataPas: ",pasajerosData);
-
-             // validacion lista de pasajeros
-             const todosLlenos = pasajerosData.every((pasajero) => {
-               const value = pasajero.nombrePasajero;
-
-               if (typeof value === 'string' && value.trim() !== '') {
-                 return true;
+                 // Agregar el objeto al arreglo de pasajerosData
+                 pasajerosData.push(pasajero);
                }
 
-               return false;
-             });
+               solicitudVehiculo.listaPasajeros = pasajerosData;
 
-             if (!todosLlenos) {
-               this.mensajesService.mensajesToast(
-                 "warning",
-                 "Por favor, completa todos los nombres de los pasajeros."
-               );
-               // fin validacion de lista de pasajeros
+               //console.log("dataPas: ",pasajerosData);
+
+               // validacion lista de pasajeros
+               const todosLlenos = pasajerosData.every((pasajero) => {
+                 const value = pasajero.nombrePasajero;
+
+                 if (typeof value === 'string' && value.trim() !== '') {
+                   return true;
+                 }
+
+                 return false;
+               });
+
+               if (!todosLlenos) {
+                 this.mensajesService.mensajesToast(
+                   "warning",
+                   "Por favor, completa todos los nombres de los pasajeros."
+                 );
+                 // fin validacion de lista de pasajeros
+               } else {
+                 // Todos los nombres de los pasajeros están llenos, continuar con el envío de la solicitud.
+                 if ((await this.mensajesService.mensajesConfirmar()) == true) {
+                   this.registrarSoliVe();
+                 }
+               }
              } else {
-               // Todos los nombres de los pasajeros están llenos, continuar con el envío de la solicitud.
-               if ((await this.mensajesService.mensajesConfirmar()) == true) {
-                 this.registrarSoliVe();
-               }
+              this.mensajesService.mensajesToast(
+                "warning",
+                "Debe subir pdf de la lista de pasajeros"
+              );
              }
            } else {
              this.mensajesService.mensajesToast(

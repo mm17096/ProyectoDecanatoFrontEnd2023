@@ -10,9 +10,9 @@ import { IAsignacionDetalle } from "../../interfaces/asignacion.interface";
 })
 export class TablaDetalleComponent implements OnInit {
   checkboxValue = false; // Estado del checkbox
-  buttonDisabled = true; // Estado del botón
+  buttonDisabled= false; // Estado del botón
 
-  valesASignados: IAsignacionDetalle;
+  valesAsignados: IAsignacionDetalle;
   constructor(private service: DetalleService, private http: HttpClient) {}
 
   @Input() codigoAsignacion: string = "";
@@ -25,14 +25,14 @@ export class TablaDetalleComponent implements OnInit {
       next: (data) => {
         console.log("aquí llega:");
 
-        this.valesASignados = data;
-        console.log("aquí van los vales: ", this.valesASignados.vales);
+        this.valesAsignados = data;
+        console.log("aquí van los vales: ", this.valesAsignados.vales);
       },
     });
   }
 
   valesDevolver() {
-    this.buttonDisabled = this.valesASignados.vales.some(
+    this.buttonDisabled = this.valesAsignados.vales.some(
       (vale) => vale.idVale
     );
   }

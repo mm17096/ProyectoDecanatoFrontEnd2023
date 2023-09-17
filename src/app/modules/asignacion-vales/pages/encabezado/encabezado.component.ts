@@ -17,9 +17,10 @@ export class EncabezadoComponent implements OnInit {
   p: any;
   term: string = "";
   currentPage = 1;
-  codigoAsignacion:string
+  codigoAsignacion: string;
   //@Input() queryString!: string;
 
+  mision: string = "";
   constructor(
     private service: DetalleService,
     private http: HttpClient,
@@ -33,11 +34,10 @@ export class EncabezadoComponent implements OnInit {
     ];
 
     this.route.paramMap.subscribe((params: ParamMap) => {
-      this.codigoAsignacion = params.get('codigoAsignacion')
-    })
+      this.codigoAsignacion = params.get("codigoAsignacion");
+    });
 
     console.log("codigoAsignacion en Líquidar: ", this.codigoAsignacion);
-
 
     this.obtnerEncabezado(this.codigoAsignacion);
   }
@@ -46,6 +46,7 @@ export class EncabezadoComponent implements OnInit {
     this.service.getDetalleAsignacionVale(codigoA).subscribe({
       next: (data) => {
         this.detalleAsignacion = data;
+        this.mision = this.detalleAsignacion.mision;
         console.log(this.detalleAsignacion);
       },
     });

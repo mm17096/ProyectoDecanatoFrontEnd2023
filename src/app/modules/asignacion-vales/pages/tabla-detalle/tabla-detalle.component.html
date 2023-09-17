@@ -6,18 +6,26 @@
         <th class="text-center">Acción</th>
       </tr>
     </thead>
-    <tbody>
-      <tr *ngFor="let vales of valesASignados.vales">
-        <th class="text-center" scope="row">{{ vales.correlativo }}</th>
+    <tbody *ngIf="devolucionExito == false">
+      <tr *ngFor="let vale of vales">
+        <th class="text-center" scope="row">{{ vale.correlativo }}</th>
         <td class="text-center">
-          <input type="checkbox" class="form-check-input" [(ngModel)]="vales.idVale" (change)="valesDevolver()" />
+          <input type="checkbox" class="form-check-input" (change)="valesDevolver(valesAsignados.vales,vale.idVale)" [(ngModel)]="vale.checked" />
+        </td>
+      </tr>
+    </tbody>
+    <tbody *ngIf="devolucionExito == true">
+      <tr *ngFor="let vale of nuevoArregloVales">
+        <th class="text-center" scope="row">{{ vale.correlativo }}</th>
+        <td class="text-center">
+          <input type="checkbox" class="form-check-input" (change)="valesDevolver(valesAsignados.vales, vale.idVale)" [(ngModel)]="vale.checked" />
         </td>
       </tr>
     </tbody>
   </table>
 </div>
 <div class="d-flex justify-content-end mt-4">
-  <button type="button" [disabled]="!buttonDisabled" class="btn btn-primary me-2" disabled="true">Devolución</button>
+  <button type="button" [disabled]="buttonDisabled" class="btn btn-primary me-2" (click)="devolverVales()" >Devolución</button>
 
   <app-modal-documentos
     [leyenda]="'Nuevo'"

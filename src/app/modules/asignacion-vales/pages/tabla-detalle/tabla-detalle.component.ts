@@ -27,9 +27,7 @@ export class TablaDetalleComponent implements OnInit {
     valesDevueltos: [],
     estadoVales: 8,
   };
-
-  nuevoArregloVales = [];
-
+  valesLiquid = [];
   constructor(
     private service: DetalleService,
     private http: HttpClient,
@@ -50,6 +48,11 @@ export class TablaDetalleComponent implements OnInit {
 
         this.valesAsignados = data;
         this.vales = this.valesAsignados.vales;
+
+        this.valesAsignados.vales.forEach(element => {
+          this.valesLiquid.push(element.idVale);
+        });
+        console.log("aquí van los vales liquidar: ", this.valesLiquid);
         console.log("aquí van los vales: ", this.valesAsignados.vales);
       },
     });
@@ -92,10 +95,10 @@ export class TablaDetalleComponent implements OnInit {
         this.service.devolverVales(this.valesADevoler).subscribe({
           next: (data: any) => {
             // Cerrar SweetAlert de carga
-            this.devolucionExito = true;
             Swal.close();
+            this.mostrarVales();
+            this.buttonDisabled = true;
             this.vales = this.valesADevoler.valesDevueltos;
-            this.nuevoArreglo();
             this.mensajesService.mensajesToast("success", "Vales devueltos");
             resolve(); // Resuelve la promesa sin argumentos
           },
@@ -112,15 +115,6 @@ export class TablaDetalleComponent implements OnInit {
         });
       });
     }
-  }
-  nuevoArreglo() {
-    const encontrado = this.vales.indexOf(this.valesADevoler.valesDevueltos);
-    for (let i = 0; i < this.vales.length; i++) {
-      if (encontrado !== -1) {
-        this.vales.splice(encontrado, 1);
-      }
-    }
-    this.nuevoArregloVales = this.vales;
   }
   mostrar() {
     let currentUrl = this.router.url;

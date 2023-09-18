@@ -137,7 +137,7 @@ export class UsuarioService {
         this.router.navigateByUrl('/account/login');
       });
   }
-  
+
   //servicio que forsa cerrar la sesion activa
 /*   ForsarSesion(){
     this.http.put(`${this.baseUrl}/usuario/auth/sesion`, this.codUsuario)

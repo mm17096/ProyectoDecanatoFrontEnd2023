@@ -14,3 +14,8 @@ export interface IValesADevolver {
   valesDevueltos:string [];
   estadoVales: number;
 }
+
+export interface ILiquidacion{
+  idAsignacionVale: string;
+  valesLiquidar:string [];
+}

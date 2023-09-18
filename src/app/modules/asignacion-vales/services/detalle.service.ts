@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { IAsignacionDetalle, IValesADevolver } from '../interfaces/asignacion.interface';
 import { environment } from "src/environments/environment";
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { IDocumentosvale} from '../interface/IDocumentosvale';
 import { Observable } from 'rxjs';
 import Swal, { SweetAlertIcon } from "sweetalert2";
@@ -18,11 +18,23 @@ export class DetalleService {
 
   constructor(private http: HttpClient) { }
 
+  get ObtenerLista() {
+    return this.http.get<IDocumentosvale[]>(`${this.baseUrl}/document`);
+  }
+
+
   public NuevosDatos(document: IDocumentosvale, file: File): Observable<Object> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    const requestOptions = {
+      headers: headers
+    };
     const formData: FormData = new FormData();
     formData.append('imagen', file);
     formData.append('document', JSON.stringify(document));
-    return this.http.post(`${this.burl}/document/insertar`, formData);
+    return this.http.post(`${this.burl}/document/insertar`, formData, requestOptions);
   }
 
 

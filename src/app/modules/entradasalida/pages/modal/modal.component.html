@@ -1,11 +1,11 @@
 <span *ngIf="leyenda !== 'Entrada'" >
     <div class="text-sm-end">
-        <button type="button" class="btn btn-salida btn-separado" [disabled]="!salidaHabilitada" (click)="openModal(content)">{{titulo}}</button>
+        <button type="button" class="btn btn-salida btn-separado"  (click)="openModal(content)">{{titulo}}</button>
     </div>
 </span>
 <span *ngIf="leyenda !== 'Salida'" >
     <div class="text-sm-end">
-        <button type="button" class="btn btn-entrada" [disabled]="!entradaHabilitada" (click)="openModal(content)">{{titulo}}</button>
+        <button type="button" class="btn btn-entrada"  (click)="openModal(content)">{{titulo}}</button>
     </div>
 </span>
 <span *ngIf="leyenda === titulo && titulo == 'Editar'">

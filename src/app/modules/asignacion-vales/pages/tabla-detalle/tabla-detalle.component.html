@@ -6,19 +6,11 @@
         <th class="text-center">Acción</th>
       </tr>
     </thead>
-    <tbody *ngIf="devolucionExito == false">
+    <tbody>
       <tr *ngFor="let vale of vales">
         <th class="text-center" scope="row">{{ vale.correlativo }}</th>
         <td class="text-center">
           <input type="checkbox" class="form-check-input" (change)="valesDevolver(valesAsignados.vales,vale.idVale)" [(ngModel)]="vale.checked" />
-        </td>
-      </tr>
-    </tbody>
-    <tbody *ngIf="devolucionExito == true">
-      <tr *ngFor="let vale of nuevoArregloVales">
-        <th class="text-center" scope="row">{{ vale.correlativo }}</th>
-        <td class="text-center">
-          <input type="checkbox" class="form-check-input" (change)="valesDevolver(valesAsignados.vales, vale.idVale)" [(ngModel)]="vale.checked" />
         </td>
       </tr>
     </tbody>
@@ -31,5 +23,5 @@
     [leyenda]="'Nuevo'"
     [titulo]="'Agregar Documentos'"
   ></app-modal-documentos>
- 
+
 </div>

@@ -222,6 +222,7 @@ titulo1.style.font = { bold: true, size: 12,
           row.values = [item.fecha,'','','','','','','','',''];
           sheet.mergeCells('A'+(13+index), 'j'+(13+index));
         }else{
+          //este es un comendario
         row.values = [
             `${item.codigoVale}`,
             `${item.entradasCant}`,

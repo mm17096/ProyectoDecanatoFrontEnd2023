@@ -56,6 +56,7 @@
                         <td >{{ item.motorista.nombre + ' ' + item.motorista.apellido}}</td>
                        
                       <td *ngIf="item.estadoString=='Aprobada'"><button type="button" class="btn btn-primary" (click)="largeModal(largeDataModalvale,item)">Asignar Vale</button> </td>
+                      <td *ngIf="item.estadoString!='Aprobada'"><button type="button" class="btn btn-primary" (click)="largeModal(largeDataModaldetalle,item)">Detalle</button> </td>
                       <!-- <div *ngIf="item.estado=='En espera por jefe' || item.estado=='En espera por decano' ||  item.estado=='Asignado'">
                           <button type="button" class="btn btn-primary" (click)="largeModal(largeDataModaldetalle,item)">Detalle</button>
                         </div>

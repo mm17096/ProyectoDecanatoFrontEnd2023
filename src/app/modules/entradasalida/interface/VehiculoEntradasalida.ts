@@ -33,7 +33,7 @@ export interface IVehiculoentradaSalida{
     fecha_tarjeta: string;
     capacidad: string;
     capacidadTanque: string;
-    estado: string;
+    estado?: number;
     n_chasis: string;
     n_motor: string;
     tipo_gas: string;

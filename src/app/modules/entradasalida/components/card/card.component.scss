@@ -18,4 +18,80 @@
     margin-right: 30px; /* Ajusta el valor según lo necesites */
   }
 
+
+  .card-body{
+    padding: 10px;
+  }
+
+  .card {
+    position: center;
+    width: 180px;
+    height: 260px;
+    border-radius: 14px;
+    z-index: 11;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+    ;
+  }
+  
+  .bg {
+    position: center;
+    top: 5px;
+    left: 5px;
+    width: 170px;
+    height: 250px;//para lo alto del margen normal
+    z-index: 2;
+    background: rgba(255, 255, 255, .95);
+    backdrop-filter: blur(24px);
+    border-radius: 10px;
+    overflow: hidden;
+    outline: 2px solid white;
+  }
+  
+  .blob {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    width: 150px;
+    height: 200px;
+    border-radius: 50%;
+    background-color: #972727;
+    opacity: 1;
+    filter: blur(12px);
+    animation: blob-bounce 5s infinite ease;
+  }
+  
+  @keyframes blob-bounce {
+    0% {
+      transform: translate(-100%, -100%) translate3d(0, 0, 0);
+    }
+  
+    25% {
+      transform: translate(-100%, -100%) translate3d(100%, 0, 0);
+    }
+  
+    50% {
+      transform: translate(-100%, -100%) translate3d(100%, 100%, 0);
+    }
+  
+    75% {
+      transform: translate(-100%, -100%) translate3d(0, 100%, 0);
+    }
+  
+    100% {
+      transform: translate(-100%, -100%) translate3d(0, 0, 0);
+    }
+  }
+
+
+  .modal {
+    z-index: 9999; /* Un valor alto para asegurarse de que esté en la parte superior */
+    /* Otras propiedades de estilo para la modal */
+  }
+
   

@@ -70,7 +70,7 @@ export class ModalDocumentosComponent implements OnInit {
         });
   //reinicia el formulario
         this.formBuilder.reset();
-        //this.recargar();
+        this.recargar();
         this.modalService.dismissAll();
       }
     }, (err: any) => {

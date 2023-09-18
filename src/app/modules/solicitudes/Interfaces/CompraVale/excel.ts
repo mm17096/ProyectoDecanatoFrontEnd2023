@@ -5,15 +5,20 @@ export interface IConsultaExcelTabla{
 }
 
 export interface ITablaConsulta{
-    codigoVale1:string;
- /*   entradasCant:string;
-    entradasPU:string;
-    entradasTotal:string;
-    solidasCant:string;
-    salidasPU:string;
-    salidadTotal:string;
-    ExistCant:string;
-    ExistPU:string;
-    ExistTotal:string;
-    fecha:string;*/
+    codigoVale?:number;
+    entradasCant?:number;
+    entradasPU?:number;
+    entradasTotal?:number;
+    solidasCant?:number;
+    salidasPU?:number;
+    salidadTotal?:number;
+    ExistCant?:number;
+    ExistPU?:number;
+    ExistTotal?:number;
+    fecha?:Date;
+    estado?:number;
+    fechacompra?:Date;
+    precio?:number;
+    cantidad?:number;
+    idcompra:string;
 }

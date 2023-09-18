@@ -8,7 +8,7 @@ export interface Compra{
     cantidad:number;
     cod_inicio:number;
     cod_fin:number;
-    fecha:Date;
+    fecha_compra:Date;
+    fecha_vencimiento:Date;
     precio_unitario:number;
-    total_compra:number;
 }

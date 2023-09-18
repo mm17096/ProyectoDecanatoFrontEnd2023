@@ -48,14 +48,14 @@
       <input type="text"
       class="form-control"
       formControlName="nombre"
-      placeholder="EJ: Recursos Humanos"
+      placeholder="EJ: RECURSO HUMANO"
       [readonly]="leyenda == 'Detalle'"
       [class]="esCampoValido('nombre')">
       <div *ngIf="nombre?.errors?.['required'] && nombre?.touched">
         <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*El campo Nombre es obligatorio</span>
         </div>
         <div *ngIf="nombre?.errors?.['pattern'] && nombre?.touched">
-          <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*Solo letras Mayusculas</span>
+          <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*Solo letras y espacios</span>
           </div>
     </div>
 
@@ -126,7 +126,7 @@
    </button>
 
    <button type="button" class="btn btn-dark" (click)="activeModal.dismiss('Cross click')"
-   (click)="this.formDepto.reset()">Close</button>
+   (click)="this.formDepto.reset()">Cerrar</button>
   </div>
 
   </form>

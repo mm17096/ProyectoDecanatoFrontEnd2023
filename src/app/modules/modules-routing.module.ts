@@ -5,11 +5,10 @@ import {AuthGuard} from "../core/guards/auth.guard";
 const routes: Routes = [
   { path: 'solicitud-vehiculo', loadChildren: () => import('./solicitud-vehiculo/solicitud-vehiculo.module').then(m => m.SolicitudVehiculoModule), canActivate: [AuthGuard]}, //  canActivateChild: [AuthChildGuard]
 
+  { path: 'solicitud-vale-paginacion', loadChildren: () => import('./solicitud-vale-paginacion/solicitud-vale-paginacion.module').then(m => m.SolicitudValePaginacionModule), canActivate: [AuthGuard]}, //  canActivateChild: [AuthChildGuard]
+
   { path: 'asignacion-vale', loadChildren: () => import('./asignacion-vales/asignacion-vales.module').then(m => m.AsignacionValesModule), canActivate: [AuthGuard] },
-
-  { path: 'entrasalida', loadChildren: () => import('./entradasalida/entradasalida.module').then(m => m.EntradasalidaModule), canActivate: [AuthGuard] },
-  { path: 'document', loadChildren: () => import('./documentosolcitud-vale/documentosolcitud-vale.module').then(m => m.DocumentosolcitudValeModule), canActivate: [AuthGuard] },
-
+  { path: 'entrasalida', loadChildren: () => import('./entradasalida/entradasalida.module').then(m => m.EntradasalidaModule), canActivate: [AuthGuard] },  
   { path: 'compra',  loadChildren: () => import('./compra/compra.module').then(m => m.CompraModule) },
   { path: 'proveedor', loadChildren: () => import('./proveedor/proveedor.module').then(m => m.ProveedorModule) },
   { path: 'devolucion-vale',  loadChildren: () => import('./devolucion-vale/devolucion-vale.module').then(m => m.DevolucionValeModule) },

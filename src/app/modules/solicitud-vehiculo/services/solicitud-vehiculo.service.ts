@@ -23,8 +23,8 @@ export class SolicitudVehiculoService {
   getSolicitudesVehiculo(estado: number) {
     if (estado != null){
       this.http
-        .get(`${this.url}/solicitudvehiculo/listapage/${estado}`)
-        .pipe(map((resp: any) => resp.content as ISolicitudVehiculo[]))
+        .get(`${this.url}/solicitudvehiculo/lista/${estado}`)
+        .pipe(map((resp: any) => resp as ISolicitudVehiculo[]))
         .subscribe(
           (soliVe: ISolicitudVehiculo[]) => {
             this.listSoliVehiculo = soliVe;
@@ -35,11 +35,10 @@ export class SolicitudVehiculoService {
         );
     }else {
       this.http
-        .get(`${this.url}/solicitudvehiculo/listapage`)
-        .pipe(map((resp: any) => resp.content as ISolicitudVehiculo[]))
+        .get(`${this.url}/solicitudvehiculo/lista`)
+        .pipe(map((resp: any) => resp as ISolicitudVehiculo[]))
         .subscribe(
           (soliVe: ISolicitudVehiculo[]) => {
-            //console.log(soliVe);
             this.listSoliVehiculo = soliVe;
           },
           (error) => {
@@ -56,7 +55,7 @@ export class SolicitudVehiculoService {
 
   obtenerVehiculos() {
     this.http
-      .get(`${this.url}/api/vehiculo/listasinpagina`)
+      .get(`${this.url}/vehiculo/listasinpagina`)
       .pipe(map((resp: any) => resp as IVehiculos[]))
       .subscribe(
         (vehiculo: IVehiculos[])=> {
@@ -70,7 +69,7 @@ export class SolicitudVehiculoService {
 
   filtroPlacasVehiculo(clase: string): Observable<IVehiculos[]> {
     return this.http
-      .get(`${this.url}/api/vehiculo/clase/${clase}`)
+      .get(`${this.url}/vehiculo/clase/${clase}`)
       .pipe(map((resp: any) => resp as IVehiculos[]));
   }
 

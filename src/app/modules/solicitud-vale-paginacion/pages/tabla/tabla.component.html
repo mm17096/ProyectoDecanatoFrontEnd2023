@@ -1,0 +1,62 @@
+<div class="table-responsive mb-0">
+  <table class="table table-centered table-nowrap">
+    <thead class="table-light">
+      <tr>
+        <th class="align-middle">ID</th>
+        <th class="align-middle">Cantidad Vale</th>
+        <th class="align-middle">Estado Entrada</th>
+        <th class="align-middle text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="
+          let data of listDatos.content | filter : queryString;
+          let i = index
+        "
+      >
+        <td>
+          <a class="text-body fw-bold">
+            {{ data.idSolicitudVale }}
+          </a>
+        </td>
+        <td>
+          {{ data.cantidadVale }}
+        </td>
+        <td>{{ data.estadoEntrada }}</td>
+        <ng-template #estado>
+          <td>
+            <h5><span class="badge rounded-pill bg-danger">Inactivo</span></h5>
+          </td>
+        </ng-template>
+
+        <td class="d-flex justify-content-center gap-1">
+          <button
+            type="button"
+            class="btn btn-warning btn-sm btn-rounded mx-1"
+            ngbTooltip="Cambiar a {{
+              data.estado === 9 ? 'Activo' : 'Inactivo'
+            }}"
+          >
+            <i
+              [ngClass]="
+                data.estado === 8
+                  ? 'mdi mdi-18px mdi-lock-outline'
+                  : 'mdi mdi-18px mdi-key-outline'
+              "
+            ></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+<ngb-pagination
+    [pageSize]="solicitudes.pageable.pageSize"
+    [collectionSize]="solicitudes.totalElements"
+    (pageChange)="onPageChange($event)"
+    (page)="(currentPage)"
+  >
+  </ngb-pagination>
+<!-- end table -->

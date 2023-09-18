@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Consulta } from '../Interfaces/CompraVale/Consulta';
@@ -8,13 +9,15 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MensajesService } from "src/app/shared/global/mensajes.service";
 import Swal from 'sweetalert2';
 
+
 @Component({
-  selector: 'app-solicitudv',
-  templateUrl: './solicitudv.component.html',
-  styleUrls: ['./solicitudv.component.scss']
+  selector: "app-solicitudv",
+  templateUrl: "./solicitudv.component.html",
+  styleUrls: ["./solicitudv.component.scss"],
 })
 export class SolicitudvComponent implements OnInit {
   breadCrumbItems: Array<{}>;
+
   consultaExcel:Consulta[]=[];
   fechaDesde:Date;
   fechaAsta:Date;
@@ -29,14 +32,34 @@ export class SolicitudvComponent implements OnInit {
       show: false,
     },
   ];
+
   items = [
-    { solicitante: 'Erik Manrique Flores', objetivo: 'Objetivo 1', estado: 'Aprobado', fechaDeUso: '05-07-2023', cantidad: '5' },
-    { solicitante: 'Erik Manrique Flores', objetivo: 'Objetivo 2', estado: 'Por Aprobado', fechaDeUso: '05-07-2023', cantidad: '4' },
-    { solicitante: 'Erik Manrique Flores', objetivo: 'Objetivo 3', estado: 'En espera', fechaDeUso: '05-07-2023', cantidad: '8' },
+    {
+      solicitante: "Erik Manrique Flores",
+      objetivo: "Objetivo 1",
+      estado: "Aprobado",
+      fechaDeUso: "05-07-2023",
+      cantidad: "5",
+    },
+    {
+      solicitante: "Erik Manrique Flores",
+      objetivo: "Objetivo 2",
+      estado: "Por Aprobado",
+      fechaDeUso: "05-07-2023",
+      cantidad: "4",
+    },
+    {
+      solicitante: "Erik Manrique Flores",
+      objetivo: "Objetivo 3",
+      estado: "En espera",
+      fechaDeUso: "05-07-2023",
+      cantidad: "8",
+    },
   ]; // Aquí deberías tener tus datos
-  searchTerm = '';
+  searchTerm = "";
   itemsPerPage = 5;
   currentPage = 1;
+
 
   constructor(private modalService: NgbModal, 
     private excelService:ExcelService, 
@@ -46,8 +69,12 @@ export class SolicitudvComponent implements OnInit {
     this.formularioGeneral = this.iniciarFormulario();
    }
 
+
   ngOnInit() {
-    this.breadCrumbItems = [{ label: 'UI Elements' }, { label: 'Modals', active: true }];
+    this.breadCrumbItems = [
+      { label: "UI Elements" },
+      { label: "Modals", active: true },
+    ];
   }
   download(): void{
     if (this.formularioGeneral.valid) {
@@ -119,6 +146,7 @@ restaurarAlerts() {
 siMuestraAlertas() {
   return this.alerts.every((alert) => alert.show);
 }
+
   /**
    * Open modal
    * @param content modal content
@@ -132,7 +160,7 @@ siMuestraAlertas() {
    * @param exlargeModal extra large modal data
    */
   extraLarge(exlargeModal: any) {
-    this.modalService.open(exlargeModal, { size: 'xl', centered: true });
+    this.modalService.open(exlargeModal, { size: "xl", centered: true });
   }
 
   /**
@@ -140,7 +168,7 @@ siMuestraAlertas() {
    * @param largeDataModal large modal data
    */
   largeModal(largeDataModal: any) {
-    this.modalService.open(largeDataModal, { size: 'lg', centered: true });
+    this.modalService.open(largeDataModal, { size: "lg", centered: true });
   }
 
   /**
@@ -148,7 +176,7 @@ siMuestraAlertas() {
    * @param smallDataModal small modal data
    */
   smallModal(smallDataModal: any) {
-    this.modalService.open(smallDataModal, { size: 'sm', centered: true });
+    this.modalService.open(smallDataModal, { size: "sm", centered: true });
   }
 
   /**
@@ -167,12 +195,13 @@ siMuestraAlertas() {
     this.modalService.open(scrollDataModal, { scrollable: true });
   }
 
-
   get paginatedItems() {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    return this.items.filter(item =>
-      item.solicitante.toLowerCase().includes(this.searchTerm.toLowerCase())
-    ).slice(startIndex, startIndex + this.itemsPerPage);
+    return this.items
+      .filter((item) =>
+        item.solicitante.toLowerCase().includes(this.searchTerm.toLowerCase())
+      )
+      .slice(startIndex, startIndex + this.itemsPerPage);
   }
 
   get pageNumbers() {
@@ -182,7 +211,7 @@ siMuestraAlertas() {
   }
 
   get filteredItems() {
-    return this.items.filter(item =>
+    return this.items.filter((item) =>
       item.solicitante.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
@@ -190,5 +219,4 @@ siMuestraAlertas() {
   changePage(pageNumber: number) {
     this.currentPage = pageNumber;
   }
-
 }

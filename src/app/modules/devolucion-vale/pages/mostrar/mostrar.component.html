@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <app-page-title
-    title="Devolución de Vales"
+    title="Ajuste de Vales"
     [breadcrumbItems]="breadCrumbItems"
   ></app-page-title>
 
@@ -80,9 +80,9 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-sm-5 mb-4">
+              <div class="col-sm-3 mb-4">
                 <label for="proveedor"
-                  >Abonar a Proveedor: <span class="text-danger">*</span></label
+                  >Abonar a: <span class="text-danger">*</span></label
                 >
 
                 <ng-select
@@ -105,7 +105,7 @@
                   >
                 </div>
               </div>
-              <div class="col-sm-5 mb-4">
+              <div class="col-sm-3 mb-4">
                 <ng-container
                   *ngIf="formularioGeneral.get('tipo').value == 1; else tipo"
                 >
@@ -175,6 +175,43 @@
                   </div>
                 </ng-template>
               </div>
+              <div class="col-sm-4 mb-4">
+                <label for="direccion"
+                  >Descripción: <span class="text-danger">*</span></label
+                >
+                <textarea
+                  row="3"
+                  maxlength="750"
+                  class="form-control"
+                  placeholder="Concepto"
+                  formControlName="concepto"
+                  [class]="esCampoValido('concepto')"
+                ></textarea>
+                <div class="invalid-feedback">
+                  <span
+                    *ngIf="
+                      formularioGeneral.get('concepto').hasError('required')
+                    "
+                  >
+                    Requiere un concepto
+                  </span>
+                  <span
+                    *ngIf="
+                      formularioGeneral.get('concepto').hasError('minlength')
+                    "
+                  >
+                    Digite más de 2 caracteres
+                  </span>
+
+                  <span
+                    *ngIf="
+                      formularioGeneral.get('concepto').hasError('maxlength')
+                    "
+                  >
+                    Limite 750 caracteres
+                  </span>
+                </div>
+              </div>
               <div class="col-sm-2">
                 <label>Generar Vales</label>
                 <div class="d-grid gap-2 mx-auto text-center">
@@ -198,18 +235,16 @@
     <div class="col-12">
       <div class="card">
         <div class="card-body">
-          <ng-container *ngIf="tipoOpcion == 0 && montoGenerado != total_monetario">
-
-            <div
-            class="alert alert-info"
-            role="alert"
+          <ng-container
+            *ngIf="tipoOpcion == 0 && montoGenerado != total_monetario"
           >
-            <strong>Importante!</strong> No se pudo encontrar N cantidad de vales que su
-            suma total del valor (precio) sea igual a
-            {{ total_monetario | currency : "USD" : "symbol" : "1.2-2" }}, solo
-            se obtuvieron los siguientes vales que su suma del valor se acerca a dicho
-            monto.
-          </div>
+            <div class="alert alert-info" role="alert">
+              <strong>Importante!</strong> No se pudo encontrar N cantidad de
+              vales que su suma total del valor (precio) sea igual a
+              {{ total_monetario | currency : "USD" : "symbol" : "1.2-2" }},
+              solo se obtuvieron los siguientes vales que su suma del valor se
+              acerca a dicho monto.
+            </div>
           </ng-container>
           <div class="row mb-2 align-items-center">
             <div class="col-sm-3">
@@ -219,6 +254,7 @@
                     type="text"
                     class="form-control"
                     placeholder="Buscar..."
+                    [(ngModel)]="term"
                   />
                   <i class="bx bx-search-alt search-icon"></i>
                 </div>
@@ -247,7 +283,7 @@
                   class="btn btn-primary btn-rounded position-relative"
                   (click)="registrarDevolucion()"
                 >
-                  Registrar Devolución
+                  Registrar Transacción
                   <span
                     class="position-absolute top-100 start-0 translate-middle badge rounded-pill bg-warning"
                   >

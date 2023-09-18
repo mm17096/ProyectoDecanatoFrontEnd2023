@@ -223,9 +223,9 @@
                                 name="selectCargo" formControlName="cargo"
                                 [ngClass]="{'select-readonly': empleadOd != null && titulo == 'Detalle'}"
                                 [class]="titulo != 'Detalle' ? esCampoValido('cargo') : ''"
-                                [ngModel]="empleadOd != null ? empleadOd.cargo.codigoCargo : ''">
+                                [ngModel]="empleadOd != null ? empleadOd.cargo.id : ''">
                                 <option value="">Seleccione Cargo</option>
-                                <option *ngFor="let cargodata of Cargos" [ngValue]="cargodata.codigoCargo">
+                                <option *ngFor="let cargodata of Cargos" [ngValue]="cargodata.id">
                                     {{cargodata.nombreCargo}}
                                 </option>
                             </select>

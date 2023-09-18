@@ -19,7 +19,8 @@ export class ListarComponent implements OnInit {
   breadCrumbItems: Array<{}>;
   lstDeptos: IDepto[] = [];
   cambio: string;
-  term: string = 'asdasd';
+  term: string = '';
+  p: any;
 
   constructor(private deptoService : DeptoService,
     private modalService: NgbModal,
@@ -28,12 +29,13 @@ export class ListarComponent implements OnInit {
 
   ngOnInit(): void {
     this.breadCrumbItems = [{ label: 'Departamento' }, { label: 'Listar', active: true }];
-    this.getDeptos(8);
+    this.getDeptosAll();
   }
 
   cargaDeptos(event : any){
     const estado = event.target.value;
-    this.getDeptos(Number(estado));
+    //this.getDeptos(Number(estado));
+    this.getDeptosAll();
   }
 
   getDeptos(estado : number){
@@ -42,15 +44,16 @@ export class ListarComponent implements OnInit {
     });
   }
 
+  getDeptosAll(){
+    this.deptoService.getDeptosAll().subscribe((data: IDepto[]) => {
+      this.lstDeptos = data;
+    });
+  }
+
   cambiarEstado(data: IDepto, estado: number) {
 
-    if(estado == 8){
-      data.estado = 9;
-      this.cambio = 'Inactivo';
-    }else{
-      data.estado = 8;
-      this.cambio = 'Activo';
-    }
+
+
 
     Swal.fire({
       icon: 'question',
@@ -61,8 +64,18 @@ export class ListarComponent implements OnInit {
     denyButtonText: `No cambiar`,
     }).then((result) => {
       if (result.isConfirmed) {
+
+        if(estado == 8){
+          data.estado = 9;
+          this.cambio = 'Inactivo';
+        }else{
+          data.estado = 8;
+          this.cambio = 'Activo';
+        }
+
         this.deptoService.editDepto(data.codigoDepto, data).subscribe({
           next: (resp) => {
+
             this.mostrar();
           },
           error: (error) => {
@@ -71,8 +84,12 @@ export class ListarComponent implements OnInit {
               title: 'Error',
               text: 'Algo paso, hable con el administrador',
             });
+
           },
           complete: () => {
+
+
+
             const Toast = Swal.mixin({
               toast: true,
               position: 'top-end',
@@ -93,6 +110,7 @@ export class ListarComponent implements OnInit {
         });
       } else if (result.isDenied) {
         Swal.fire("Cambios no aplicados", "", "info");
+        
       }
 
 

@@ -31,9 +31,16 @@ export class ListaentradasalidaService {
   }
 
   getMisiones() {
-    this.http
-    
-      .get(`${this.baseUrl}/solicitudvehiculo/lista`, this.requestOptions)
+
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    const requestOptions = {
+      headers: headers
+    };
+
+    this.http.get(`${this.baseUrl}/solicitudvehiculo/lista`, requestOptions)
       
       .pipe(map((resp: any) => resp as IsolicitudVehiculo[]))
       .subscribe(
@@ -47,6 +54,7 @@ export class ListaentradasalidaService {
         }
       );
   }
+  
 
 
   get ObtenerLista(): Observable<IEntradaSalida[]> {
@@ -69,7 +77,7 @@ export class ListaentradasalidaService {
 
 
   NuevosDatos(entrasali: EntradaSalidaI): any {
-    return this.http.post(`${this.baseUrl}/entradasalida/insertar`,entrasali, this.requestOptions);
+    return this.http.post(`${this.baseUrl}/entradasalida/insertar`,entrasali);
   }
 
   public putEntradasalida(entrasali: EntradaSalidaI): Observable<Object> {
@@ -81,25 +89,41 @@ export class ListaentradasalidaService {
 
 
   buscarVehiculo(termino: string): Observable<IVehiculoentradaSalida[]> {
-       // Recupera el token de acceso desde el local storage
-       const token = localStorage.getItem('token');
+    // Recupera el token de acceso desde el local storage
+    const token = localStorage.getItem('token');
 
-       // Crea un objeto HttpHeaders para agregar el token de acceso en el encabezado 'Authorization'
-       const headers = new HttpHeaders({
-         Authorization: `Bearer ${token}`
-       });
-   
-       // Configura las opciones de la solicitud HTTP con los encabezados personalizados
-       const requestOptions = {
-         headers: headers
-       };
+    // Crea un objeto HttpHeaders para agregar el token de acceso en el encabezado 'Authorization'
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    // Configura las opciones de la solicitud HTTP con los encabezados personalizados
+    const requestOptions = {
+      headers: headers
+    };
 
     if (termino.length > 1) {
-      return this.http.get<IVehiculoentradaSalida[]>(`${this.baseUrl}/vehiculo/listasinpagina/${termino}`, requestOptions);
+      return this.http.get<IVehiculoentradaSalida[]>(`${this.baseUrl}/vehiculo/listasinpagina/${termino}`, requestOptions).pipe(
+          map(vehiculos=>vehiculos.filter(vehiculos=>vehiculos.estado===8))
+      );
     } else {
-      return this.http.get<IVehiculoentradaSalida[]>(`${this.baseUrl}/vehiculo/listasinpagina`, requestOptions);
+      return this.http.get<IVehiculoentradaSalida[]>(`${this.baseUrl}/vehiculo/listasinpagina`, requestOptions).pipe(
+        map(vehiculos=>vehiculos.filter(vehiculos=>vehiculos.estado===8))
+      )
     }
   }
+
+ /*obtenerImagenes(): Observable<IVehiculoentradaSalida[]> {
+
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    const requestOptions = {
+      headers: headers
+    };
+    return this.http.get<IVehiculoentradaSalida[]>(`${this.baseUrl}/vehiculo/listasinpagina`, requestOptions);
+  }*/
 
 
   

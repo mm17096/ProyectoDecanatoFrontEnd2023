@@ -369,7 +369,7 @@ export class SolicitudvaleComponent implements OnInit {
         next: (resp: any) => {
           // Cerrar SweetAlert de carga
           Swal.close();
-          // this.service.getCliente();
+          this.mostrar();
           this.modalService.dismissAll();
           this.limpiarCampos();
           this.mensajesService.mensajesToast("success", "Vales Asignados");
@@ -421,6 +421,14 @@ export class SolicitudvaleComponent implements OnInit {
   CargarDatos(sulici: SolicitudVv) {
     // localStorage.setItem('id', JSON.stringify(clien));
     // this.router.navigate(["edit"]);
+  }
+
+  mostrar(){
+    let currentUrl = this.router.url;
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.router.onSameUrlNavigation = 'reload';
+    this.router.navigate([currentUrl]);
+
   }
   get paginatedItems() {
     if (!this.searchText) {

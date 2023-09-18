@@ -52,13 +52,8 @@ export class ListarComponent implements OnInit {
 
   cambiarEstado(data: IDepto, estado: number) {
 
-    if(estado == 8){
-      data.estado = 9;
-      this.cambio = 'Inactivo';
-    }else{
-      data.estado = 8;
-      this.cambio = 'Activo';
-    }
+
+
 
     Swal.fire({
       icon: 'question',
@@ -69,8 +64,18 @@ export class ListarComponent implements OnInit {
     denyButtonText: `No cambiar`,
     }).then((result) => {
       if (result.isConfirmed) {
+
+        if(estado == 8){
+          data.estado = 9;
+          this.cambio = 'Inactivo';
+        }else{
+          data.estado = 8;
+          this.cambio = 'Activo';
+        }
+
         this.deptoService.editDepto(data.codigoDepto, data).subscribe({
           next: (resp) => {
+
             this.mostrar();
           },
           error: (error) => {
@@ -79,8 +84,12 @@ export class ListarComponent implements OnInit {
               title: 'Error',
               text: 'Algo paso, hable con el administrador',
             });
+
           },
           complete: () => {
+
+
+
             const Toast = Swal.mixin({
               toast: true,
               position: 'top-end',
@@ -101,6 +110,7 @@ export class ListarComponent implements OnInit {
         });
       } else if (result.isDenied) {
         Swal.fire("Cambios no aplicados", "", "info");
+        
       }
 
 

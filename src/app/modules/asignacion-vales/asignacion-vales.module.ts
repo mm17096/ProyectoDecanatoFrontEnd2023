@@ -14,14 +14,19 @@ import { NgxMaskModule } from 'ngx-mask';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgbDropdownModule, NgbModalModule, NgbModule, NgbNavModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { WidgetModule } from 'src/app/shared/widget/widget.module';
-
+import { DetalleDocumentosComponent } from './pages/detalle-documentos/detalle-documentos.component';
+import { HttpClientModule } from '@angular/common/http';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
     declarations: [
         TablaDetalleComponent,
         EncabezadoComponent,
-        ModalDocumentosComponent
+        ModalDocumentosComponent,
+        DetalleDocumentosComponent
     ],
+    
     imports: [
         CommonModule,
         AsignacionValesRoutingModule,
@@ -29,11 +34,14 @@ import { WidgetModule } from 'src/app/shared/widget/widget.module';
         FormsModule,
         Ng2SearchPipeModule,
         ReactiveFormsModule,
+        HttpClientModule,//para las peticiones
+        InfiniteScrollModule,//para scroll infinito
         DropzoneModule,
         Ng5SliderModule,
         NgxMaskModule.forRoot(), //para las mascaras
         NgSelectModule,
         NgbPaginationModule,
+        NgxPaginationModule,
         WidgetModule,
         NgbDropdownModule,
         NgbModalModule,

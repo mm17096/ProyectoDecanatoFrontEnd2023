@@ -12,13 +12,18 @@ export class CardComponent implements OnInit {
   @Input() obje!:IsolicitudVehiculo;
   @Input() queryString: string;
   @Input() entraoOd!: IVehiculoentradaSalida[];
+  objetos:IVehiculoentradaSalida[]=[];//array de vehiculos
   
+ 
   
   constructor(private listaentradasalidaservice: ListaentradasalidaService) { }
 
   ngOnInit(): void {
+
+    
+    
   }
 
-
+  
 
 }

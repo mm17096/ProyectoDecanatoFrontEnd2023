@@ -30,11 +30,6 @@ export class ModalComponent implements OnInit {
   fechaActual: string;
   modoEdicion = false;
 
-
-  //para habilitar o deshabilitar botones
-  entradaHabilitada = false;
-  salidaHabilitada = true;
-
   
   constructor(private modalService: NgbModal,private mensajesService: MensajesService, private fb: FormBuilder, private router: Router, private listaentradasalidaservice: ListaentradasalidaService) { }
 
@@ -52,10 +47,6 @@ export class ModalComponent implements OnInit {
       this.listaentradasalidaservice.getMisiones();
   }
 
-  guardarDatosDesdeBotonSalida() {
-    this.entradaHabilitada = true;
-    this.salidaHabilitada = false;
-  }
   
   // Función para obtener la fecha actual en formato "yyyy-MM-dd"
   getCurrentDate(): string {
@@ -129,7 +120,7 @@ export class ModalComponent implements OnInit {
   }
 
   openModal(content: any) {
-    this.modalService.open(content, { size: '', centered: true });
+    this.modalService.open(content, { size: 'sm', centered: true });
   }
   editando(){
     const ent = this.formBuilder.value;
@@ -214,7 +205,6 @@ export class ModalComponent implements OnInit {
           this.formBuilder.reset();
           this.recargar();
           this.modalService.dismissAll();
-          this.guardarDatosDesdeBotonSalida();
         }
       }, (err: any) => {
         this.mensajesService.mensajesSweet(

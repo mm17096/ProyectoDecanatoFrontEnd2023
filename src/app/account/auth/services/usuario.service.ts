@@ -110,7 +110,7 @@ export class UsuarioService {
 
   logout(){
     //este servicio cierra sesion si sirve el token
-   this.http.put(`${this.baseUrl}/usuario/auth/sesion`, this.codUsuario)
+/*    this.http.put(`${this.baseUrl}/usuario/auth/sesion`, this.codUsuario)
       .subscribe(
         () => {
           this.storage.removeItem("token");
@@ -127,11 +127,19 @@ export class UsuarioService {
           this.ForsarSesion();
           console.error('Ocurrió un error al cerrar sesión', error);
         }
-      );
+      ); */
+
+      this.storage.removeItem("token");
+      this.storage.removeItem("codEmpleado");
+      this.storage.removeItem("codUsuario");
+      this.storage.removeItem("empleadoFoto");
+      this.ngZone.run(() => {
+        this.router.navigateByUrl('/account/login');
+      });
   }
   
   //servicio que forsa cerrar la sesion activa
-  ForsarSesion(){
+/*   ForsarSesion(){
     this.http.put(`${this.baseUrl}/usuario/auth/sesion`, this.codUsuario)
     .subscribe(
       () => {
@@ -149,7 +157,7 @@ export class UsuarioService {
         console.error('Ocurrió un error al cerrar sesión', error);
       }
     );
-  }
+  } */
 
 
   validarToken(): Observable<boolean> {

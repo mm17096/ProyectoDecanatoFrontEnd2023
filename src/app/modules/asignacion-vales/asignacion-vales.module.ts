@@ -7,7 +7,7 @@ import { EncabezadoComponent } from './pages/encabezado/encabezado.component';
 import { UIModule } from "../../shared/ui/ui.module";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
-import { DropzoneModule } from 'ngx-dropzone-wrapper';
+import { DROPZONE_CONFIG, DropzoneConfigInterface, DropzoneModule } from 'ngx-dropzone-wrapper';
 import { ModalDocumentosComponent } from './components/modal-documentos/modal-documentos.component';
 import { Ng5SliderModule } from 'ng5-slider';
 import { NgxMaskModule } from 'ngx-mask';
@@ -18,6 +18,9 @@ import { DetalleDocumentosComponent } from './pages/detalle-documentos/detalle-d
 import { HttpClientModule } from '@angular/common/http';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { NgxPaginationModule } from 'ngx-pagination';
+const config: DropzoneConfigInterface={
+    url: 'http://'
+}
 
 @NgModule({
     declarations: [
@@ -47,8 +50,14 @@ import { NgxPaginationModule } from 'ngx-pagination';
         NgbModalModule,
         NgbModule,
         NgbNavModule,
+        DropzoneModule
 
 
+    ], providers:[
+        {
+            provide: DROPZONE_CONFIG,
+            useValue: config,
+        }
     ]
 })
 export class AsignacionValesModule { }

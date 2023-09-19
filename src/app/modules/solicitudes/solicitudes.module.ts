@@ -8,21 +8,23 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { UIModule } from "../../shared/ui/ui.module";
 
 
 @NgModule({
-  declarations: [
-    SolicitudvComponent,
-    SolicitudvaleComponent,
-  ],
-  imports: [
-    CommonModule,
-    SolicitudesRoutingModule,
-    FormsModule,
-    HttpClientModule,
-    ReactiveFormsModule,
-    NgxPaginationModule,
-    Ng2SearchPipeModule,
-  ]
+    declarations: [
+        SolicitudvComponent,
+        SolicitudvaleComponent,
+    ],
+    imports: [
+        CommonModule,
+        SolicitudesRoutingModule,
+        FormsModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        NgxPaginationModule,
+        Ng2SearchPipeModule,
+        UIModule
+    ]
 })
 export class SolicitudesModule { }

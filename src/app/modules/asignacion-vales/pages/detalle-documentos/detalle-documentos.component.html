@@ -42,9 +42,9 @@
                             <td>{{data.foto}}</td>
                             <td></td>
                             <td class="align-middle text-center text-center">
-                                <a href="ruta_del_archivo_a_descargar" download>
-                                    <button class="btn-custom">Descargar</button>
-                                </a>
+                                <!--<a href="ruta_del_archivo_a_descargar" download>--->
+                                    <button class="btn-custom" (click)="descargar(data.codigodocumentos, data.foto)">Descargar</button>
+                                
                             </td>
                         </tr>
                     </tbody>

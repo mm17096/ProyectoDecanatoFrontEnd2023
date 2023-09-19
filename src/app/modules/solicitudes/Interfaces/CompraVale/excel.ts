@@ -22,3 +22,48 @@ export interface ITablaConsulta{
     cantidad?:number;
     idcompra:string;
 }
+
+export interface IConsultaExcelTablaC{
+    tablaConsultaC: ITablaConsultaC[];
+}
+
+export interface ITablaConsultaC{
+    id:string;
+    cantidad:number;
+    cod_inicio:number;
+    cod_fin:number;
+    fecha_compra:Date;
+    fecha_vencimiento:Date;
+    precio_unitario:number;
+}
+
+export interface IConsultaExcelTablaDto{
+    tablaConsultaConsulta: ITablaConsultaDto[];
+}
+
+export interface ITablaConsultaDto{
+    valor:number;
+    fecha:Date;
+    correlativo:number;
+    estadosv:number;
+    estadoentrada:number;
+    estadoav:number;
+    cantidadvale:number;
+    estadovale:number;
+    fechavencimiento:Date;
+    iddetalleasignacionvale:String;
+}
+
+export interface IConsultaExcelTablaCompraDto{
+    tablaConsultaCompra: ITablaConsultaCompraDto[];
+}
+
+export interface ITablaConsultaCompraDto{
+    cantidad:number;
+    codigofin:number;
+    fechacompra:Date;
+    codigocompra:String;
+    preciounitario:number;
+    codigoinicio:number;
+    fechavencimientovale:Date;
+}

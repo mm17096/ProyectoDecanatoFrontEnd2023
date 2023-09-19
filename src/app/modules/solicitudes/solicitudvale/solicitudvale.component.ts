@@ -90,6 +90,9 @@ export class SolicitudvaleComponent implements OnInit {
   formularioSolicitudVale: FormGroup;
   formularioSolicitudValev: FormGroup;
   existenciaI!: IExistenciaVales;
+  term: any; // para buscar
+
+  breadCrumbItems: Array<{}>;
 
   constructor(
     private modalService: NgbModal,
@@ -137,13 +140,12 @@ export class SolicitudvaleComponent implements OnInit {
       nombreJefeDepto: new FormControl("", [Validators.required]),
     });
   }
-  breadCrumbItems: Array<{}>;
 
   ngOnInit() {
     this.breadCrumbItems = [
-      { label: "UI Elements" },
-      { label: "Modals", active: true },
-    ];
+      { label: "Solicitud de Vales" },
+      { label: "Mis Solicitudes", active: true },
+    ]; // miga de pan
     this.service.getCliente().subscribe((data: any) => {
       this.solicitudvv = data.content;
       console.log(this.solicitudvv);
@@ -176,17 +178,15 @@ export class SolicitudvaleComponent implements OnInit {
     });
   }
 
-
-
   liquidarVales(solicitudVehiculo: SolicitudVv) {
     console.log(
       "el codigo del vehiculo es: " + solicitudVehiculo.codigoSolicitudVehiculo
     );
 
-   // this.obtenerIdSolicitudVale( solicitudVehiculo.codigoSolicitudVehiculo);
+    // this.obtenerIdSolicitudVale( solicitudVehiculo.codigoSolicitudVehiculo);
 
     console.log(
-      this.obtenerIdSolicitudVale( solicitudVehiculo.codigoSolicitudVehiculo)
+      this.obtenerIdSolicitudVale(solicitudVehiculo.codigoSolicitudVehiculo)
     );
 
     /* const codAsignacion = this.obtenerCodigoAsignacion(
@@ -203,9 +203,9 @@ export class SolicitudvaleComponent implements OnInit {
       next: (response) => {
         this.codigoSolicitudVale = response;
 
-         this.paramSolicitudV = this.codigoSolicitudVale.codigoSolicitudVale;
-         console.log("el método, codigoSolicitudVale:", this.paramSolicitudV);
-         this.obtenerCodigoAsignacion(this.paramSolicitudV)
+        this.paramSolicitudV = this.codigoSolicitudVale.codigoSolicitudVale;
+        console.log("el método, codigoSolicitudVale:", this.paramSolicitudV);
+        this.obtenerCodigoAsignacion(this.paramSolicitudV);
       },
     });
   }
@@ -219,7 +219,7 @@ export class SolicitudvaleComponent implements OnInit {
         console.log("metodo, códigoAsignacion: ", this.paramAsignacion);
       },
     });
-    this.router.navigate(["/asignacion-vale/asignacion",  this.paramAsignacion]);
+    this.router.navigate(["/asignacion-vale/asignacion", this.paramAsignacion]);
   }
 
   /**
@@ -423,12 +423,11 @@ export class SolicitudvaleComponent implements OnInit {
     // this.router.navigate(["edit"]);
   }
 
-  mostrar(){
+  mostrar() {
     let currentUrl = this.router.url;
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-    this.router.onSameUrlNavigation = 'reload';
+    this.router.onSameUrlNavigation = "reload";
     this.router.navigate([currentUrl]);
-
   }
   get paginatedItems() {
     if (!this.searchText) {

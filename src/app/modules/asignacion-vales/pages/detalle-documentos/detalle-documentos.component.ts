@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IDocumentosvale } from '../../interface/IDocumentosvale';
 import { DetalleService } from '../../services/detalle.service';
+import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
+import { UploadService } from '../../services/upload.service';
 
 @Component({
   selector: 'app-detalle-documentos',
@@ -17,8 +19,22 @@ export class DetalleDocumentosComponent implements OnInit {
   @Input() busqueda: string = '';
   termBusca: string = ''; // Variable para rastrear el término de búsqueda
   b: number = 1;
+  //para descargar documentos
+  myFiles: File[]=[];
+  allFiles: IDocumentosvale[]=[];
 
-  constructor(private modalService: NgbModal, private detalleservice: DetalleService) { }
+  //configuracion de dropzone
+  config: DropzoneConfigInterface={
+    maxFilesize: 500,
+    addRemoveLinks: true,
+    uploadMultiple: true,
+    accept:(file:File)=>{
+      this.myFiles.push(file);
+    }
+  }
+
+
+  constructor(private modalService: NgbModal, private detalleservice: DetalleService, private uploadservice: UploadService) { }
 
   ngOnInit(): void {
     this.obtenerLista();
@@ -30,6 +46,26 @@ export class DetalleDocumentosComponent implements OnInit {
       data.tipo.includes(this.termBusca) ||
       data.foto.includes(this.termBusca)
     );
+  }
+//para descargar documentos
+  descargar(id: string, name: string){
+    this.uploadservice.download1(id).subscribe(resp=>{
+      this.administradorDescarga(name, resp);
+    })
+  }
+
+  administradorDescarga(name: string, resp: File){
+    const dataType= resp.type;
+    const dataBinary= [];
+    dataBinary.push(resp);
+
+    const filePath= window.URL.createObjectURL(new Blob(dataBinary, {type: dataType}));
+    const downloadlink=document.createElement('a');
+    downloadlink.href=filePath;
+    downloadlink.setAttribute('download', name);
+    document.body.appendChild(downloadlink);
+    downloadlink.click();
+
   }
 
   openModal(content: any) {

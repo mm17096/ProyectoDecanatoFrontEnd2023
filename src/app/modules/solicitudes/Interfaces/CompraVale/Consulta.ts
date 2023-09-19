@@ -1,12 +1,12 @@
+import { SolicitudVale } from "./SolicitudVale";
 import { Vale } from "./Vale";
 
 export interface Consulta{
     idDetalleAsignacionVale:string;
-    valeId:string;
-    fechaAsignacion:Date;
-    estadoAsignacion:number;
-    cantidad:number;
-    estadoSolicitud:number;
-    vale:Vale[];
-    idAsignacionVale:string;
+    asignacionVale:string;
+    valeid:String;
+    vale:Vale;
+    estado:number;
+    fecha:Date;
+    solicitudVale:SolicitudVale;
 }

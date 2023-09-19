@@ -1,7 +1,10 @@
 export interface Proveedor{
     id:string;
     nombre:string;
+    encargado:string;
     telefono:string;
-    direccion:string;
     email:string;
+    direccion:string;
+    tipo:number;
+    estado:number;
 }

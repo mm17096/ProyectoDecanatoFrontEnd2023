@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { IAsignacionDetalle, IValesADevolver } from '../interfaces/asignacion.interface';
+import { IAsignacionDetalle, IValesADevolver, ILiquidacion } from '../interfaces/asignacion.interface';
 import { environment } from "src/environments/environment";
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -48,6 +48,11 @@ export class DetalleService {
     return this.http.post<IValesADevolver>(`${this.baseUrl}/asignacionvale/devolver`, valesParaDevolucion);
   }
 
+  liquidarVales(valesParaLiquidar:ILiquidacion) {
+    console.log("interfaz: ", valesParaLiquidar);
+    return this.http.post<ILiquidacion>(`${this.baseUrl}/asignacionvale/liquidar`, valesParaLiquidar);
+  }
+
   async mensajesConfirmarDevolucion(
     icono: SweetAlertIcon = "warning",
     title: string = "¿Está seguro de devolver?",
@@ -86,9 +91,9 @@ export class DetalleService {
   }
   async mensajesConfirmarLiquidacion(
     icono: SweetAlertIcon = "warning",
-    title: string = "¿Está seguro de guardar?",
+    title: string = "¿Está seguro de liquidar?",
     label: string = "Algunos datos no se podrán revertir, digite: ",
-    palabraClave: string = "guardar"
+    palabraClave: string = "liquidar"
   ) {
     let estado = false;
     const palabra = palabraClave;

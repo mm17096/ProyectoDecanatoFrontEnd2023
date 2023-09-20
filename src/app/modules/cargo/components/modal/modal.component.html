@@ -5,7 +5,7 @@
  -->
 
   <div class="modal-header ">
-    <h5 class="modal-title mt-0">{{leyenda}} Cargos</h5>
+    <h5 class="modal-title mt-0">{{leyenda}} Cargo</h5>
     <!-- aqui inicia el botton la alerta -->
     <div class="btn-alerta" *ngIf="alerts">
       <i
@@ -54,7 +54,7 @@
       <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*El campo Nombre es obligatorio</span>
       </div>
       <div *ngIf="nombreCargo?.errors?.['pattern'] && nombreCargo?.touched">
-        <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*Solo letras Mayusculas</span>
+        <span [ngStyle]="{color:'tomato', 'font-size': '12'}">*Solo letras y espacios</span>
         </div>
   </div>
 
@@ -62,7 +62,7 @@
 
   <!--inicio del campo descripcion-->
   <div class="form-group row m-4">
-    <label class="control-label">Descripcion:<span class="text-danger"> *</span></label>
+    <label class="control-label">Descripción:<span class="text-danger"> *</span></label>
     <textarea type="text"
     class="form-control"
     formControlName="descripcion"
@@ -97,7 +97,7 @@
  </button>
 
  <button type="button" class="btn btn-dark" (click)="activeModal.dismiss('Cross click')"
- >Close</button>
+ >Cerrar</button>
 </div>
 
 </form>

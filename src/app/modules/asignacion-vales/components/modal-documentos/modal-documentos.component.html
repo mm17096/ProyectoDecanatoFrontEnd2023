@@ -24,6 +24,8 @@
                                     <label class="control-label" for="file">Foto: </label>
                                     <input id="file" type="file" name="file" multiple class="form-control" formControlName="foto" (change)="onFileSelected($event)" />
                             </div>
+
+                            
                     </div>
                     <div class="col-md-12">
                         <div class="mb-3">
@@ -79,16 +81,3 @@
     </ng-template>
 </div>
 <!-- Modal -->
-
-<script>
-    // Deshabilitar el cursor en el campo de entrada
-    const readonlyInput = document.getElementById("readonlyInput");
-
-    readonlyInput.addEventListener("mousedown", (event) => {
-        event.preventDefault();
-    });
-
-    readonlyInput.addEventListener("keydown", (event) => {
-        event.preventDefault();
-    });
-</script>

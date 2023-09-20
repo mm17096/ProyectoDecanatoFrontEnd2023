@@ -1,26 +1,121 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Consulta } from '../../Interfaces/CompraVale/Consulta';
+import { CompraDto, Consulta, ConsultaDto } from '../../Interfaces/CompraVale/Consulta';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { IConsultaExcelTabla, ITablaConsulta } from '../../Interfaces/CompraVale/excel';
+import { IConsultaExcelTabla, IConsultaExcelTablaC, IConsultaExcelTablaCompraDto, IConsultaExcelTablaDto, ITablaConsulta, ITablaConsultaC, ITablaConsultaCompraDto, ITablaConsultaDto } from '../../Interfaces/CompraVale/excel';
+import { ICompra } from 'src/app/modules/compra/interfaces/compra.interface';
+import { environment } from "src/environments/environment";
+import { IVale } from 'src/app/modules/devolucion-vale/interfaces/vale.interface';
+import { Vale } from '../../Interfaces/CompraVale/Vale';
+import { Compra } from '../../Interfaces/CompraVale/Compra';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConsultaService {
+  listCompra: ICompra[] = [];
 
   constructor(private http:HttpClient) { }
-  url = 'http://localhost:8080/api'
+  url = 'http://localhost:8080/api/consulta'
+  private baseUrl: string = environment.baseUrl;
   getCliente(){
-    return this.http.get<Consulta>(this.url+'/consulta');
+    return this.http.get<Consulta>(this.url+'/listaconsulta');
   }
 
-  
+  getConsultaValeDto(fechaI:Date, fechaF:Date){
+    return this.http.get<Consulta>(this.url+'/listarconsultadto?fechaI='+fechaI+'&fechaF='+fechaF);
+  }
+
+  getConsultaCompraValeDto(fechaI:Date, fechaF:Date){
+    return this.http.get<Consulta>(this.url+'/listarcompradto?fechaI='+fechaI+'&fechaF='+fechaF);
+  }
+
+  getConsultaValeGDto(fechaI:Date, fechaF:Date): Observable<IConsultaExcelTablaDto>{
+    return this.http.get<ConsultaDto[]>(this.url+'/listarconsultadto?fechaI='+fechaI+'&fechaF='+fechaF)
+     .pipe(map((resp)=> {
+      resp.length = 2000;
+      const dataExcel: IConsultaExcelTablaDto ={
+        tablaConsultaConsulta: this.getConsultaTablaConsulta(resp)
+      };
+      return dataExcel;
+     })
+     );
+  }
+  private getConsultaTablaConsulta(response: ConsultaDto[]): ITablaConsultaDto[]{
+    return response.map((item:ConsultaDto) =>({
+      valor:item.valor,
+      fecha:item.fecha,
+      correlativo:item.correlativo,
+      estadosv:item.estadosv,
+      estadoentrada:item.estadoentrada,
+      estadoav:item.estadoav,
+      cantidadvale:item.cantidadvale,
+      estadovale:item.estadovale,
+      fechavencimiento:item.fechavencimiento,
+      iddetalleasignacionvale:item.iddetalleasignacionvale,
+    }));
+  }
+
+  getConsultaCompraValeGDto(fechaI:Date, fechaF:Date): Observable<IConsultaExcelTablaCompraDto>{
+    return this.http.get<CompraDto[]>(this.url+'/listarcompradto?fechaI='+fechaI+'&fechaF='+fechaF)
+    .pipe(map((resp)=> {
+     resp.length = 2000;
+     const dataExcel: IConsultaExcelTablaCompraDto ={
+       tablaConsultaCompra: this.getConsultaTablaCompra(resp)
+     };
+     return dataExcel;
+    })
+    );
+  }
+
+  private getConsultaTablaCompra(response: CompraDto[]): ITablaConsultaCompraDto[]{
+    return response.map((item:CompraDto) =>({
+      cantidad:item.cantidad,
+    codigofin:item.codigofin,
+    fechacompra:item.fechacompra,
+    codigocompra:item.codigocompra,
+    preciounitario:item.preciounitario,
+    codigoinicio:item.codigoinicio,
+    fechavencimientovale:item.fechavencimientovale,
+    }));
+  }
+  getCompras() {
+    this.http
+      .get(`${this.baseUrl}/compra/listasinpagina`)
+      .pipe(map((resp: any) => resp as ICompra[]))
+      .subscribe((compras: ICompra[]) => {
+        this.listCompra = compras;
+      });
+  }
+  getCompraC(): Observable<IConsultaExcelTablaC>{
+     return this.http.get<Compra[]>(this.baseUrl+'/compra/listasinpagina?orderBy=fecha_compra:asc')
+     .pipe(map((resp)=> {
+      resp.length = 2000;
+      const dataExcel: IConsultaExcelTablaC ={
+        tablaConsultaC: this.getConsultaTablaC(resp)
+      };
+      return dataExcel;
+     })
+     );
+  }
+  private getConsultaTablaC(response: Compra[]): ITablaConsultaC[]{
+    return response.map((item:Compra) =>({
+      id:item.id,
+      cantidad:item.cantidad,
+      cod_inicio:item.cod_inicio,
+      cod_fin:item.cod_fin,
+      fecha_compra:item.fecha_compra,
+      fecha_vencimiento:item.fecha_vencimiento,
+      precio_unitario:item.precio_unitario
+    }));
+  }
+
   getConsultaExporExcel(): Observable<IConsultaExcelTabla>{
-    return this.http.get<Consulta[]>(this.url+'/consulta')
-    .pipe(map((resp:Consulta[]) => {
-    resp.length = 20;
+    return this.http.get<Consulta[]>(this.url+'/listaconsulta')
+    .pipe(map((resp) => {
+    resp.length = 2000;
+    //console.log(resp);
     const dataExcel: IConsultaExcelTabla ={
       tablaConsulta: this.getConsultaTabla(resp)
        };
@@ -31,17 +126,22 @@ export class ConsultaService {
    
   private getConsultaTabla(response: Consulta[]): ITablaConsulta[]{
     return response.map((item:Consulta) =>({
-      codigoVale1: `${item.valeId}`,
-      entradasCant:`${item.idAsignacionVale}`,
-      entradasPU:`${item.cantidad}`,
-      entradasTotal:`${item.cantidad}`,
-      solidasCant:`${item.cantidad}`,
-      salidasPU:`${item.cantidad}`,
-      salidadTotal:`${item.cantidad}`,
-      ExistCant:`${item.cantidad}`,
-      ExistPU:`${item.cantidad}`,
-      ExistTotal:`${item.cantidad}`,
-      fecha:`${item.fechaAsignacion}`,
+      codigoVale: item.vale.correlativo,
+      entradasCant:item.vale.compra.cantidad,
+      entradasPU:item.vale.compra.precio_unitario,
+      entradasTotal:item.estado,
+      solidasCant:item.solicitudVale.cantidadVale,
+      salidasPU:item.vale.compra.precio_unitario,
+      salidadTotal:item.estado,
+      ExistCant:item.solicitudVale.cantidadVale,
+      ExistPU:item.vale.compra.precio_unitario,
+      ExistTotal:item.estado,
+      fecha:item.fecha,
+      estado:item.vale.estado,
+      fechacompra:item.vale.compra.fecha_compra,
+      precio:item.vale.compra.precio_unitario,
+      cantidad:item.vale.compra.cantidad,
+      idcompra:item.vale.compra.id,
     }));
   }
 }

@@ -1,8 +1,15 @@
-import { Component, OnInit } from "@angular/core";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { Consulta } from "../Interfaces/CompraVale/Consulta";
-import { ExcelService } from "../Service/Excel/excel.service";
-import { ConsultaService } from "../Service/Excel/consulta.service";
+
+import { Component, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Consulta } from '../Interfaces/CompraVale/Consulta';
+import { ExcelService } from '../Service/Excel/excel.service';
+import { ConsultaService } from '../Service/Excel/consulta.service';
+import { IConsultaExcelTabla, IConsultaExcelTablaC, IConsultaExcelTablaCompraDto, IConsultaExcelTablaDto } from '../Interfaces/CompraVale/excel';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MensajesService } from "src/app/shared/global/mensajes.service";
+import Swal from 'sweetalert2';
+import { IExistenciaVales } from '../Interfaces/existenciavales.interface';
+import { ServiceService } from '../Service/service.service';
 
 
 @Component({
@@ -12,8 +19,26 @@ import { ConsultaService } from "../Service/Excel/consulta.service";
 })
 export class SolicitudvComponent implements OnInit {
   breadCrumbItems: Array<{}>;
-  consultaExcel: Consulta[] = [];
 
+  consultaExcel:Consulta[]=[];
+  fechaDesde:Date;
+  fechaAsta:Date;
+  formularioGeneral: FormGroup;
+  resultado!: string;
+  existenciaI!: IExistenciaVales;
+  dataExcel!: IConsultaExcelTabla; 
+  dataExcelC!: IConsultaExcelTablaC;
+  dataExcelConsulta!: IConsultaExcelTablaDto;
+  dataExcelCompra!: IConsultaExcelTablaCompraDto;
+  alerts = [
+    {
+      id: 1,
+      type: "info",
+      message:
+        " Seleccione y complete los campos obligatorios (*).",
+      show: false,
+    },
+  ];
 
   items = [
     {
@@ -42,11 +67,16 @@ export class SolicitudvComponent implements OnInit {
   itemsPerPage = 5;
   currentPage = 1;
 
-  constructor(
-    private modalService: NgbModal,
-    private excelService: ExcelService,
-    private consultaService: ConsultaService,
-  ) {}
+
+  constructor(private modalService: NgbModal, 
+    private excelService:ExcelService, 
+    private consultaService: ConsultaService, 
+    private fb:FormBuilder,
+    private existenciaService: ServiceService,
+    private mensajesService: MensajesService) {
+    this.formularioGeneral = this.iniciarFormulario();
+   }
+
 
   ngOnInit() {
     this.breadCrumbItems = [
@@ -54,13 +84,102 @@ export class SolicitudvComponent implements OnInit {
       { label: "Modals", active: true },
     ];
   }
-  download(): void {
-    //  this.consultaService.getConsultaExporExcel().subscribe((response:IConsultaExcelTabla)=>{
-    //this.excelService.dowloadExcel(response);
-    this.excelService.dowloadExcel();
-    // });
+  cargarConsulta(){
+    this.consultaService.getConsultaExporExcel().subscribe((response)=>{
+      this.dataExcel = response;
+
+      });
+  }
+  cargarCompraDto(){
+    this.consultaService.getConsultaCompraValeGDto(this.fechaDesde,this.fechaAsta).subscribe((consulta)=>{
+      this.dataExcelCompra = consulta;
+  });
   }
 
+  cargarConsultaDto(){
+    this.consultaService.getConsultaValeGDto(this.fechaDesde,this.fechaAsta).subscribe((consulta)=>{
+      this.dataExcelConsulta = consulta;
+     });
+  }
+
+  cargarCompraC(){
+      this.consultaService.getCompraC().subscribe((response)=>{
+        this.dataExcelC = response;
+      });
+  }
+  download(): void{
+   // getCompraC();
+   
+   // this.obtnerExistenciaVales();
+    if (this.formularioGeneral.valid) {
+      const consulta = this.formularioGeneral.value;
+      if(consulta.fechaDesde < consulta.fechaAsta){
+      this.cargarConsulta();
+      this.cargarConsultaDto();
+      this.cargarCompraDto();
+      this.cargarCompraC();
+        this.excelService.dowloadExcel(this.dataExcel,this.dataExcelC,this.dataExcelConsulta,this.dataExcelCompra,this.fechaDesde,this.fechaAsta);
+      }else{
+        this.mensajesService.mensajesSweet(
+          "warning",
+          "Ups... Algo salió mal",
+          "El Campo 'Fecha Desde' debe ser menor a 'Fecha Hasta'"
+        );
+      }
+  }else{
+    this.mensajesService.mensajesToast(
+      "warning",
+      "Complete los que se indican"
+    );
+    return Object.values(this.formularioGeneral.controls).forEach((control) =>
+      control.markAsTouched()
+    );
+  }
+ }
+
+private iniciarFormulario() {
+  return this.fb.group({
+    fechaDesde: [
+      "",
+      [
+        Validators.required,
+      ],
+    ],
+    fechaAsta: [
+      "",
+      [
+        Validators.required,
+      ],
+    ],
+  });
+}
+esCampoValido(campo: string) {
+  const validarCampo = this.formularioGeneral.get(campo);
+  return !validarCampo?.valid && validarCampo?.touched
+    ? "is-invalid"
+    : validarCampo?.touched
+    ? "is-valid"
+    : "";
+}
+
+limpiarCampos() {
+  this.formularioGeneral.reset();
+}
+
+
+CambiarAlert(alert) {
+  alert.show = !alert.show;
+}
+
+restaurarAlerts() {
+  this.alerts.forEach((alert) => {
+    alert.show = true;
+  });
+}
+
+siMuestraAlertas() {
+  return this.alerts.every((alert) => alert.show);
+}
 
   /**
    * Open modal

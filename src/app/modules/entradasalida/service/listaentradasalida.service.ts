@@ -11,14 +11,36 @@ import { environment } from 'src/environments/environment';
 })
 export class ListaentradasalidaService {
   private baseUrl: string = environment.baseUrl;///base url
+  // Declarar requestOptions como una variable global
+  private requestOptions: any;
 
   listDeMisiones: IsolicitudVehiculo[] = [];
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { 
+        // Recupera el token de acceso desde el local storage
+        const token = localStorage.getItem('token');
+
+        // Crea un objeto HttpHeaders para agregar el token de acceso en el encabezado 'Authorization'
+        const headers = new HttpHeaders({
+          Authorization: `Bearer ${token}`
+        });
+    
+        // Configura las opciones de la solicitud HTTP con los encabezados personalizados
+        this.requestOptions = {
+          headers: headers
+        };
+  }
 
   getMisiones() {
-    this.http
-    
-      .get(`${this.baseUrl}/solicitudvehiculo/lista`)
+
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    const requestOptions = {
+      headers: headers
+    };
+
+    this.http.get(`${this.baseUrl}/solicitudvehiculo/lista`, requestOptions)
       
       .pipe(map((resp: any) => resp as IsolicitudVehiculo[]))
       .subscribe(
@@ -32,10 +54,24 @@ export class ListaentradasalidaService {
         }
       );
   }
+  
 
 
-  get ObtenerLista() {
-    return this.http.get<IEntradaSalida[]>(`${this.baseUrl}/entradasalida`);
+  get ObtenerLista(): Observable<IEntradaSalida[]> {
+     // Recupera el token de acceso desde el local storage
+     const token = localStorage.getItem('token');
+
+     // Crea un objeto HttpHeaders para agregar el token de acceso en el encabezado 'Authorization'
+     const headers = new HttpHeaders({
+       Authorization: `Bearer ${token}`
+     });
+ 
+     // Configura las opciones de la solicitud HTTP con los encabezados personalizados
+     const requestOptions = {
+       headers: headers
+     };
+     
+    return this.http.get<IEntradaSalida[]>(`${this.baseUrl}/entradasalida`, requestOptions);
   }
 
 
@@ -45,10 +81,10 @@ export class ListaentradasalidaService {
   }
 
   public putEntradasalida(entrasali: EntradaSalidaI): Observable<Object> {
-    return this.http.put(`${this.baseUrl}/entradasalida/{{id}}`,entrasali);
+    return this.http.put(`${this.baseUrl}/entradasalida/{{id}}`,entrasali, this.requestOptions);
   }
   public putEmpleado(ent: IEntradaSalida): any {
-    return this.http.put(`${this.baseUrl}/entradasalida/editar/${ent.id}`, ent);
+    return this.http.put(`${this.baseUrl}/entradasalida/editar/${ent.id}`, ent, this.requestOptions);
   }
 
 
@@ -67,11 +103,27 @@ export class ListaentradasalidaService {
     };
 
     if (termino.length > 1) {
-      return this.http.get<IVehiculoentradaSalida[]>(`${this.baseUrl}/vehiculo/listasinpagina/${termino}`, requestOptions);
+      return this.http.get<IVehiculoentradaSalida[]>(`${this.baseUrl}/vehiculo/listasinpagina/${termino}`, requestOptions).pipe(
+          map(vehiculos=>vehiculos.filter(vehiculos=>vehiculos.estado===8))
+      );
     } else {
-      return this.http.get<IVehiculoentradaSalida[]>(`${this.baseUrl}/vehiculo/listasinpagina`, requestOptions);
+      return this.http.get<IVehiculoentradaSalida[]>(`${this.baseUrl}/vehiculo/listasinpagina`, requestOptions).pipe(
+        map(vehiculos=>vehiculos.filter(vehiculos=>vehiculos.estado===8))
+      )
     }
   }
+
+ /*obtenerImagenes(): Observable<IVehiculoentradaSalida[]> {
+
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    const requestOptions = {
+      headers: headers
+    };
+    return this.http.get<IVehiculoentradaSalida[]>(`${this.baseUrl}/vehiculo/listasinpagina`, requestOptions);
+  }*/
 
 
   

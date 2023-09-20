@@ -4,22 +4,71 @@ import { environment } from "src/environments/environment";
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { IDocumentosvale} from '../interface/IDocumentosvale';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import Swal, { SweetAlertIcon } from "sweetalert2";
+import { catchError, map } from "rxjs/operators";
+import { SolicitudVale } from "../interface/IsolicitudvaleDocument";
 
 @Injectable({
   providedIn: "root",
 })
 export class DetalleService {
-
-  //url='http://localhost:8080/document';
+  listDeMisiones: SolicitudVale[] = [];
   private burl: string = environment.baseUrl;
   private baseUrl: string = environment.baseUrl;
+  private requestOptions: any;
+  constructor(private http: HttpClient) { 
 
-  constructor(private http: HttpClient) { }
+    // Recupera el token de acceso desde el local storage
+    const token = localStorage.getItem('token');
 
-  get ObtenerLista() {
+    // Crea un objeto HttpHeaders para agregar el token de acceso en el encabezado 'Authorization'
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    // Configura las opciones de la solicitud HTTP con los encabezados personalizados
+    this.requestOptions = {
+      headers: headers
+    };
+  }
+
+  /*get ObtenerLista() {
     return this.http.get<IDocumentosvale[]>(`${this.baseUrl}/document`);
+  }*/
+
+  getMisiones() {
+
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    const requestOptions = {
+      headers: headers
+    };
+
+    this.http.get(`${this.baseUrl}/solicitudvale/listasinpagina`, requestOptions)
+      
+      .pipe(map((resp: any) => resp as SolicitudVale[]))
+      .subscribe(
+        (lista: SolicitudVale[]) => {
+          console.log(lista);
+          this.listDeMisiones = lista;
+          console.log(lista);
+        },
+        (error) => {
+          console.error("Error al obtener las misiones:", error);
+        }
+      );
+  }
+  ObtenerLista(): Observable<IDocumentosvale[]> {
+    return this.http.get<IDocumentosvale[]>(`${this.baseUrl}/document`).pipe(
+      map(documentos => documentos.reverse()),
+      catchError(error => {
+        console.error('Error en la solicitud HTTP:', error);
+        return throwError(error);
+      })
+    );
   }
 
 

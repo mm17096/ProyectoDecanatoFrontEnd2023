@@ -19,6 +19,24 @@
             <form (ngSubmit)="guardar()" [formGroup]="formBuilder" enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-md-12">
+                        <div class="mb-3">
+                          <label>Misión</label><span class="text-danger"> *</span>
+                        <select class="form-control form-select" id="Selectsolicitudvale" name="Selectsolicitudvale" placeholder="Elige el tipo de mision"
+                            formControlName="solicitudvale" [class]="esCampoValido('solicitudvale')" >
+                            <option value="">Seleccione tipo de registro</option>
+                            
+                            <option *ngFor="let solicitu of Listamisiones"
+                            [ngValue]="solicitu.idSolicitudVale">
+                                {{solicitu.solicitudVehiculo.idSolicitudVale}}
+                            </option>
+                        </select>
+                            <div class="invalid-feedback">
+                              <!-- aqui la validación-->
+                              <span *ngIf="formBuilder.get('solicitudvale')?.errors?.['required']">Requiere que seleccione la misión correspondiente</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
                         <!-----INICIA SUBIR DOCUMENTO-->
                             <div class="mb-3" >
                                     <label class="control-label" for="file">Foto: </label>

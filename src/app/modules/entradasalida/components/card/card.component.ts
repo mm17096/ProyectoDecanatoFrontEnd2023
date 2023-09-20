@@ -8,11 +8,11 @@ import { ListaentradasalidaService } from '../../service/listaentradasalida.serv
   styleUrls: ['./card.component.scss']
 })
 export class CardComponent implements OnInit {
-  @Input() obj!:IVehiculoentradaSalida;
+  //@Input() obj!:IVehiculoentradaSalida;
   @Input() obje!:IsolicitudVehiculo;
   @Input() queryString: string;
   @Input() entraoOd!: IVehiculoentradaSalida[];
-  objetos:IVehiculoentradaSalida[]=[];//array de vehiculos
+  //objetos:IVehiculoentradaSalida[]=[];//array de vehiculos
   
  
   

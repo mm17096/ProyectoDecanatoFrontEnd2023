@@ -1,9 +1,13 @@
 <div class="card">
     <!-- Inicio del bucle que muestra las imágenes -->
     <div class="bg">
-      <img [src]="obj.nombrefoto" class="card-img-top col-img" alt="" style="margin-right: 10px;">
+      <img [src]="obje.vehiculo.nombrefoto" class="card-img-top col-img" alt="" style="margin-right: 10px;">
       <div class="card-body">
-        <p><strong>Placa: </strong>{{obj.placa}}</p>
+        <p><strong>Fecha misión:</strong></p>
+        <p>{{obje.fechaSalida}}</p>
+        <p><strong>Motorista: </strong></p>
+        <p>{{obje.motorista.nombre}} {{obje.motorista.apellido}}</p>
+        <p><strong>Placa: </strong>{{obje.vehiculo.placa}}</p>
         <div class="d-flex justify-content-between">
           <!--<a class="btn btn-salida btn-separado">+ Salida</a>-->
           <app-modal [leyenda]="'Salida'" [titulo]="'Salida'" [leyendas]="'Salida'"></app-modal>
@@ -15,3 +19,8 @@
     <div class="blob"></div>
     <!-- Fin del bucle que muestra las imágenes -->
   </div>
+  <style>
+    p {
+        margin: 0; /* Elimina el margen entre párrafos */
+    }
+</style>

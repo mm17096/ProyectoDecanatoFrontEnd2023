@@ -10,12 +10,14 @@ import {ModalComponent} from "../modal/modal.component";
 })
 export class TablaComponent implements OnInit {
   @Input() solicitudesVehiculo!: ISolicitudVehiculo[];
+  @Input() opc!: string;
   @Input() term!: any; // para buscar
   p: any; // paginacion
   selectedData: any; // Almacena los datos del registro seleccionado
   constructor(private modalService: NgbModal) { }
 
   ngOnInit(): void {
+    console.log(this.solicitudesVehiculo)
   }
 
   abrirModal(leyenda: string, data: any) {

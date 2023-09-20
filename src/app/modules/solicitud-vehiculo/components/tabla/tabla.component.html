@@ -41,6 +41,11 @@
                   (click)="abrirModal('Detalle', data)"
                   ngbTooltip="Más información">
             <i class="mdi mdi-18px mdi-eye-outline"></i></button>
+
+            <button type="button" *ngIf="opc == 'DECANO' || opc == 'JEFE_DEPTO'" class="btn btn-success btn-sm btn-rounded boton-cuadrado mx-1"
+                  (click)="abrirModal('Detalle', data)"
+                  ngbTooltip="Aprobar">
+            <i class="mdi mdi-18px mdi-check-outline"></i></button>
         </td>
 
       </tr>

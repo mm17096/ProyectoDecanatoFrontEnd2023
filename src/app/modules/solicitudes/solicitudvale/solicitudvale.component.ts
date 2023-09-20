@@ -75,7 +75,7 @@ export class SolicitudvaleComponent implements OnInit {
 
   codigoAsignacion: ICodigoAsignacion;
 
-  public paramAsignacion!: string;
+  public paramAsignacion: string = "";
 
   public paramSolicitudV!: string;
 
@@ -151,7 +151,6 @@ export class SolicitudvaleComponent implements OnInit {
       console.log(this.solicitudvv);
     });
     this.obtnerExistenciaVales();
-    //this.obtenerIdSolicitudVale();
   }
 
   valesAsignar(valesAsignarModal: any) {
@@ -163,8 +162,6 @@ export class SolicitudvaleComponent implements OnInit {
         console.log(this.valesAsingar);
       },
     });
-    /* (data: any) => {
-      this.valesAsingar = data; */
     console.log(this.valesAsingar);
     this.modalService.open(valesAsignarModal, { size: "lg", centered: true });
   }
@@ -182,20 +179,9 @@ export class SolicitudvaleComponent implements OnInit {
     console.log(
       "el codigo del vehiculo es: " + solicitudVehiculo.codigoSolicitudVehiculo
     );
-
-    // this.obtenerIdSolicitudVale( solicitudVehiculo.codigoSolicitudVehiculo);
-
     console.log(
       this.obtenerIdSolicitudVale(solicitudVehiculo.codigoSolicitudVehiculo)
     );
-
-    /* const codAsignacion = this.obtenerCodigoAsignacion(
-      soliVale.codigoSolicitudVale
-    ); */
-
-    //console.log("el codigo del asignación es: " + codAsignacion);
-
-    //this.router.navigate(["/asignacion-vale/asignacion", codAsignacion]);
   }
 
   obtenerIdSolicitudVale(codigoSolicitudVehiculo: string) {
@@ -217,9 +203,10 @@ export class SolicitudvaleComponent implements OnInit {
         this.codigoAsignacion = response;
         this.paramAsignacion = this.codigoAsignacion.codigoAsignacion;
         console.log("metodo, códigoAsignacion: ", this.paramAsignacion);
+        this.router.navigate(["/asignacion-vale/asignacion", this.paramAsignacion]);
       },
     });
-    this.router.navigate(["/asignacion-vale/asignacion", this.paramAsignacion]);
+
   }
 
   /**

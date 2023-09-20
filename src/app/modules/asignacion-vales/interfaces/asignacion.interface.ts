@@ -19,3 +19,8 @@ export interface ILiquidacion{
   idAsignacionVale: string;
   valesLiquidar:string [];
 }
+
+export interface IAnularMision{
+  cosdigoAsignacion: string;
+  valesAsignacion: string [];
+}

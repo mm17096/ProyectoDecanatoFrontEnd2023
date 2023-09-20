@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ImagePosition, Workbook } from 'exceljs';
 import { ConsultaService } from './consulta.service';
-import { IConsultaExcelTabla, ITablaConsulta } from '../../Interfaces/CompraVale/excel';
+import { IConsultaExcelTabla, IConsultaExcelTablaC, IConsultaExcelTablaCompraDto, IConsultaExcelTablaDto, ITablaConsulta, ITablaConsultaC, ITablaConsultaCompraDto, ITablaConsultaDto } from '../../Interfaces/CompraVale/excel';
 import * as fs from 'file-saver';
 import { LOGO } from '../../Interfaces/logo';
 import { Consulta } from '../../Interfaces/CompraVale/Consulta';
@@ -12,24 +12,35 @@ import { Veri } from '../../Interfaces/CompraVale/Veri';
 export class ExcelService {
   consulta:Consulta[]=[];
   fecha:Date;
+  cantvale:number;
   idcompra:string;
   precio:number;
   items:Veri[]=[];
   private workbook!:Workbook
   constructor(private consultaService: ConsultaService) { }
 
-dowloadExcel(dataExcel: IConsultaExcelTabla, fechaDesde:Date, fechaAsta:Date) {
+dowloadExcel(dataExcel: IConsultaExcelTabla, 
+  dataExcelC: IConsultaExcelTablaC,
+  dataExcelConsulta: IConsultaExcelTablaDto,
+  dataExcelCompra: IConsultaExcelTablaCompraDto,
+  fechaDesde:Date, 
+  fechaAsta:Date) {
   this.workbook = new Workbook(); 
   this.workbook.creator = 'ues.edu.sv';
 // this.workbook.addWorksheet('CONSULTAS');
-this.crearTablaConsulta(dataExcel.tablaConsulta,fechaDesde,fechaAsta);
+this.crearTablaConsulta(dataExcel.tablaConsulta,dataExcelC.tablaConsultaC,dataExcelConsulta.tablaConsultaConsulta,dataExcelCompra.tablaConsultaCompra,fechaDesde,fechaAsta);
 //this.crearTablaConsulta();
 this.workbook.xlsx.writeBuffer().then((data) => {
 const blob = new Blob([data]);
 fs.saveAs(blob, 'consulta.xlsx');
 });
 }
-private crearTablaConsulta(dataConsultaTaTable: ITablaConsulta[], fechaDesde:Date, fechaAsta:Date) {
+private crearTablaConsulta(dataConsultaTaTable: ITablaConsulta[],
+  dataConsultaTaTableC: ITablaConsultaC[],
+  dataConsultaTaTableConsulta: ITablaConsultaDto[],
+  dataConsultaTaTableCompra: ITablaConsultaCompraDto[],
+  fechaDesde:Date,
+  fechaAsta:Date) {
   const sheet = this.workbook.addWorksheet('CONSULTAS');
   sheet.getColumn("A").width = 15;
   sheet.getColumn("B").width = 15;
@@ -193,36 +204,54 @@ titulo1.style.font = { bold: true, size: 12,
       });
       
       let j = 0;
+      let cant = 0;
       let jj =0;
       dataConsultaTaTable.forEach((item)=>{
+        jj++
         if(item.fechacompra <= fechaDesde && item.idcompra != this.idcompra){
-          if(item.precio != this.precio){
-            j = item.cantidad;
-            this.items = [{cantidad:j,preciou:item.precio}];
-            this.precio = item.precio;
-          }else{
+        
             j += item.cantidad;
             this.precio = item.precio;
             this.items = [{cantidad:j,preciou:item.precio}];
-          }
-        }
+
+       }
         this.idcompra = item.idcompra;
       });
-      console.log(this.items)
       const titulo9 = sheet.getCell('H12');
       titulo9.value = `${j}`;
-      const fileInsertar = sheet.getRows(13,dataConsultaTaTable.length)!;
+      const fileInsertar = sheet.getRows(13,jj+31)!;
       let index = 0;
-      dataConsultaTaTable.forEach((item)=>{
-        const row = fileInsertar[index];
+      let row = fileInsertar[index];
+      dataConsultaTaTable.forEach((item)=>{ 
+        
         if(item.fecha >= fechaDesde && item.fecha <= fechaAsta){
-
-        }
         if(item.fecha != this.fecha){
+          dataConsultaTaTableC.forEach((itemC)=>{
+  
+          });
+
+          row = fileInsertar[index];
           row.values = [item.fecha,'','','','','','','','',''];
-          sheet.mergeCells('A'+(13+index), 'j'+(13+index));
-        }else{
-          //este es un comendario
+          index++
+          row = fileInsertar[index];
+          cant = j-item.ExistCant;
+          row.values = [
+            `${item.codigoVale}`,
+                `${''}`,
+              `${'$'}`,
+                `${'$'}`,
+                  `${item.solidasCant}`,
+                    `${'$'+ item.salidasPU}`,
+                      `${'$'+(item.solidasCant*item.salidasPU)}`,
+                        `${cant}`,
+                          `${'$'+item.ExistPU}`,
+                            `${'$'+(cant*item.ExistPU)}`,
+                             // `${item.fecha}`
+         ];
+         j=cant;
+         index++      
+        }else {
+        row = fileInsertar[index];
         row.values = [
             `${item.codigoVale}`,
             `${item.entradasCant}`,
@@ -236,9 +265,11 @@ titulo1.style.font = { bold: true, size: 12,
                             `${'$'+(item.ExistCant*item.ExistPU)}`,
                               `${item.fecha}`
          ];
-        }
          index++
+        this.cantvale = item.solidasCant;
+        }
          this.fecha = item.fecha;
+      }
       });
     
 

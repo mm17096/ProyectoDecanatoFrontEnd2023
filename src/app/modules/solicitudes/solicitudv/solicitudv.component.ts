@@ -4,10 +4,12 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Consulta } from '../Interfaces/CompraVale/Consulta';
 import { ExcelService } from '../Service/Excel/excel.service';
 import { ConsultaService } from '../Service/Excel/consulta.service';
-import { IConsultaExcelTabla } from '../Interfaces/CompraVale/excel';
+import { IConsultaExcelTabla, IConsultaExcelTablaC, IConsultaExcelTablaCompraDto, IConsultaExcelTablaDto } from '../Interfaces/CompraVale/excel';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MensajesService } from "src/app/shared/global/mensajes.service";
 import Swal from 'sweetalert2';
+import { IExistenciaVales } from '../Interfaces/existenciavales.interface';
+import { ServiceService } from '../Service/service.service';
 
 
 @Component({
@@ -23,6 +25,11 @@ export class SolicitudvComponent implements OnInit {
   fechaAsta:Date;
   formularioGeneral: FormGroup;
   resultado!: string;
+  existenciaI!: IExistenciaVales;
+  dataExcel!: IConsultaExcelTabla; 
+  dataExcelC!: IConsultaExcelTablaC;
+  dataExcelConsulta!: IConsultaExcelTablaDto;
+  dataExcelCompra!: IConsultaExcelTablaCompraDto;
   alerts = [
     {
       id: 1,
@@ -65,6 +72,7 @@ export class SolicitudvComponent implements OnInit {
     private excelService:ExcelService, 
     private consultaService: ConsultaService, 
     private fb:FormBuilder,
+    private existenciaService: ServiceService,
     private mensajesService: MensajesService) {
     this.formularioGeneral = this.iniciarFormulario();
    }
@@ -76,14 +84,41 @@ export class SolicitudvComponent implements OnInit {
       { label: "Modals", active: true },
     ];
   }
+  cargarConsulta(){
+    this.consultaService.getConsultaExporExcel().subscribe((response)=>{
+      this.dataExcel = response;
+
+      });
+  }
+  cargarCompraDto(){
+    this.consultaService.getConsultaCompraValeGDto(this.fechaDesde,this.fechaAsta).subscribe((consulta)=>{
+      this.dataExcelCompra = consulta;
+  });
+  }
+
+  cargarConsultaDto(){
+    this.consultaService.getConsultaValeGDto(this.fechaDesde,this.fechaAsta).subscribe((consulta)=>{
+      this.dataExcelConsulta = consulta;
+     });
+  }
+
+  cargarCompraC(){
+      this.consultaService.getCompraC().subscribe((response)=>{
+        this.dataExcelC = response;
+      });
+  }
   download(): void{
+   // getCompraC();
+   
+   // this.obtnerExistenciaVales();
     if (this.formularioGeneral.valid) {
       const consulta = this.formularioGeneral.value;
       if(consulta.fechaDesde < consulta.fechaAsta){
-    this.consultaService.getConsultaExporExcel().subscribe((response)=>{
-    this.excelService.dowloadExcel(response,this.fechaDesde,this.fechaAsta);
-   // this.excelService.dowloadExcel();
-   });
+      this.cargarConsulta();
+      this.cargarConsultaDto();
+      this.cargarCompraDto();
+      this.cargarCompraC();
+        this.excelService.dowloadExcel(this.dataExcel,this.dataExcelC,this.dataExcelConsulta,this.dataExcelCompra,this.fechaDesde,this.fechaAsta);
       }else{
         this.mensajesService.mensajesSweet(
           "warning",
@@ -101,7 +136,6 @@ export class SolicitudvComponent implements OnInit {
     );
   }
  }
-
 
 private iniciarFormulario() {
   return this.fb.group({

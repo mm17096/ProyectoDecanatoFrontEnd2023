@@ -9,6 +9,7 @@ import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { TablaDetalleComponent } from "../tabla-detalle/tabla-detalle.component";
 import Swal from "sweetalert2";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
+import { IAnularMision } from '../../interfaces/asignacion.interface';
 
 @Component({
   selector: "app-encabezado",
@@ -17,9 +18,13 @@ import { MensajesService } from "src/app/shared/global/mensajes.service";
 })
 export class EncabezadoComponent implements OnInit {
   detalleAsignacion: IAsignacionDetalle;
+
+
+
   breadCrumbItems: Array<{}>;
 
   @ViewChild(TablaDetalleComponent) valesLiquidar;
+
 
   p: any;
   term: string = "";
@@ -29,6 +34,10 @@ export class EncabezadoComponent implements OnInit {
     idAsignacionVale: "",
     valesLiquidar: [],
   };
+  misionAnulada: IAnularMision = {
+    cosdigoAsignacion: "",
+    valesAsignacion: [],
+  }
   arregloVales = [];
   mision: string = "";
   constructor(
@@ -55,8 +64,11 @@ export class EncabezadoComponent implements OnInit {
   }
   ngAfterViewInit() {
     this.liquidacion.idAsignacionVale = this.codigoAsignacion;
+    this.misionAnulada.cosdigoAsignacion = this.codigoAsignacion;
     this.liquidacion.valesLiquidar = this.valesLiquidar.valesLiquid;
+    this.misionAnulada.valesAsignacion = this.valesLiquidar.valesLiquid;
     console.log("interfaz liquidar:", this.liquidacion);
+    console.log("interfaz anular:", this.liquidacion);
   }
 
   obtnerEncabezado(codigoA: string) {
@@ -90,6 +102,41 @@ export class EncabezadoComponent implements OnInit {
             // Cerrar SweetAlert de carga
             Swal.close();
             this.mensajesService.mensajesToast("success", "Misión Finalizada");
+            this.router.navigate(["/solicitudes/solicitudvale"]);
+            resolve(); // Resuelve la promesa sin argumentos
+          },
+          error: (err) => {
+            // Cerrar SweetAlert de carga
+            Swal.close();
+            this.mensajesService.mensajesSweet(
+              "error",
+              "Ups... Algo salió mal",
+              err.error.message
+            );
+            reject(err); // Rechaza la promesa con el error
+          },
+        });
+      });
+    }
+  }
+
+  async anular(){
+    if ((await this.service.mensajesConfirmarAnular()) == true) {
+      Swal.fire({
+        title: "Espere",
+        text: "Realizando la acción...",
+        icon: "info",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showCancelButton: false,
+        showConfirmButton: false,
+      });
+      return new Promise<void>((resolve, reject) => {
+        this.service.anularMision(this.misionAnulada).subscribe({
+          next: (data: any) => {
+            // Cerrar SweetAlert de carga
+            Swal.close();
+            this.mensajesService.mensajesToast("success", "Misión Anulada");
             this.router.navigate(["/solicitudes/solicitudvale"]);
             resolve(); // Resuelve la promesa sin argumentos
           },

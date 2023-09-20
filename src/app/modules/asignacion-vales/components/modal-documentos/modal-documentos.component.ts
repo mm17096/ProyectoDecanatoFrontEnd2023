@@ -111,7 +111,8 @@ export class ModalDocumentosComponent implements OnInit {
       fecha: ['', [Validators.required,this.maxDateValidator() ]],
       comprobante: ['', [Validators.required]],
       foto: [''],
-      url: ['']
+      url: [''],
+      solicitudvale:['', [Validators.required]]
   
     });
   }
@@ -133,6 +134,10 @@ export class ModalDocumentosComponent implements OnInit {
 
       return null;
     };
+  }
+
+  get Listamisiones() {
+    return this.detalleservice.listDeMisiones;
   }
 
 

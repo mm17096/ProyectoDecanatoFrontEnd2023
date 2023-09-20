@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IEntradaSalida } from '../../interface/EntSalinterface';
-import { IVehiculoentradaSalida } from '../../interface/VehiculoEntradasalida';
+import { IVehiculoentradaSalida, IsolicitudVehiculo } from '../../interface/VehiculoEntradasalida';
 import { ListaentradasalidaService } from '../../service/listaentradasalida.service';
 
 @Component({
@@ -10,7 +10,8 @@ import { ListaentradasalidaService } from '../../service/listaentradasalida.serv
 })
 export class ListarComponent implements OnInit {
    // bread crumb items
-   vehiculos:IVehiculoentradaSalida[]=[];//array de vehiculos
+   //vehiculos:IVehiculoentradaSalida[]=[];//array de vehiculos
+   vehiculos:IsolicitudVehiculo[]=[];//array de vehiculos
    breadCrumbItems: Array<{}>;
    entradasalidas: IEntradaSalida[]=[];
    term: string='';
@@ -113,7 +114,7 @@ export class ListarComponent implements OnInit {
 buscar():void{
   //metodo para buscar
   this.parametroBuscar=this.parametroBuscar.toLocaleLowerCase();
-  this.listavehiculos.buscarVehiculo(this.parametroBuscar).subscribe((resp:IVehiculoentradaSalida[])=>{this.vehiculos=resp;});
+  this.listavehiculos.buscarVehiculo(this.parametroBuscar).subscribe((resp:IsolicitudVehiculo[])=>{this.vehiculos=resp;});
 
 }
 

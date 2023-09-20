@@ -4,13 +4,14 @@ import { IDocumentosvale } from '../../interface/IDocumentosvale';
 import { DetalleService } from '../../services/detalle.service';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { UploadService } from '../../services/upload.service';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-detalle-documentos',
   templateUrl: './detalle-documentos.component.html',
   styleUrls: ['./detalle-documentos.component.scss']
 })
-export class DetalleDocumentosComponent implements OnInit {
+export class DetalleDocumentosComponent  {
   @Input() leyenda!: string;
   @Input() titulo!: string;
   entradasalidas: IDocumentosvale[]=[];
@@ -23,6 +24,8 @@ export class DetalleDocumentosComponent implements OnInit {
   myFiles: File[]=[];
   allFiles: IDocumentosvale[]=[];
 
+  
+
   //configuracion de dropzone
   config: DropzoneConfigInterface={
     maxFilesize: 500,
@@ -31,7 +34,7 @@ export class DetalleDocumentosComponent implements OnInit {
     accept:(file:File)=>{
       this.myFiles.push(file);
     }
-  }
+  };
 
 
   constructor(private modalService: NgbModal, private detalleservice: DetalleService, private uploadservice: UploadService) { }
@@ -51,7 +54,7 @@ export class DetalleDocumentosComponent implements OnInit {
   descargar(id: string, name: string){
     this.uploadservice.download1(id).subscribe(resp=>{
       this.administradorDescarga(name, resp);
-    })
+    });
   }
 
   administradorDescarga(name: string, resp: File){
@@ -69,14 +72,30 @@ export class DetalleDocumentosComponent implements OnInit {
   }
 
   openModal(content: any) {
-    this.modalService.open(content, { size: 'xl', centered: true });
+    this.modalService.open(content, { size: 'ls', centered: true });
   }
-  private obtenerLista() {//para poder mostrar e la tabla
+  /*private obtenerLista() {//para poder mostrar e la tabla
     this.detalleservice.ObtenerLista.subscribe((resp: IDocumentosvale[]) => {
-      this.entradasalidas = resp;
+      this.entradasalidas = resp.reverse();
       console.log(resp);
     });
 
+  }*/
+  private obtenerLista() {//para poder mostrar e la tabla
+    this.detalleservice.ObtenerLista().subscribe(
+      (resp: IDocumentosvale[]) => {
+        this.entradasalidas = resp;
+        console.log(resp);
+      },
+      error => {
+        // Manejar errores aquí
+      }
+    );
+  }
+  
+
+  obtenerDatosParaTabla(): any[]{
+     return [this.obtenerLista()]
   }
 
 }

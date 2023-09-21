@@ -43,8 +43,12 @@ export class CompraService {
       });
   }
 
-  guardar(compra: ICompra) {
-    return this.http.post(`${this.baseUrl}/compra/insertar`, compra);
+  guardar(compra: ICompra, idusuariologueado: string) {
+    const data = {
+      compra: compra,
+      idusuariologueado: idusuariologueado,
+    };
+    return this.http.post(`${this.baseUrl}/compra/insertar`, data);
   }
 
   modificar(compra: ICompra): any {

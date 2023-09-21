@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { IProveedor } from "src/app/modules/proveedor/interfaces/proveedor.interface";
 import { DevolucionValeService } from "../../services/devolucion-vale.service";
@@ -23,7 +24,7 @@ export class MostrarComponent implements OnInit {
   proveedor?: IProveedor;
 
   formularioUsuario: FormGroup;
-  @ViewChild("content") contentTemplate: any;
+  @ViewChild("content") contentTemplate: ElementRef;
   public showPassword: boolean = false;
   usuarioRespuestaDto?: IUsuarioRespuestaDto;
 
@@ -61,7 +62,8 @@ export class MostrarComponent implements OnInit {
     private fb: FormBuilder,
     private devolucionValeService: DevolucionValeService,
     private mensajesService: MensajesService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private usuarioService: UsuarioService
   ) {
     this.formularioGeneral = this.iniciarFormulario();
     this.formularioGeneral.get("total_monetario").disable();
@@ -76,6 +78,7 @@ export class MostrarComponent implements OnInit {
     this.devolucionValeService.getProveedor();
     this.devolucionValeService.getValesPorCantidad();
     this.devolucionValeService.getValesPorMonto();
+    this.usuarioService.getUsuario();
   }
 
   private iniciarFormularioUsuario() {
@@ -210,9 +213,9 @@ export class MostrarComponent implements OnInit {
   }
 
   editando() {
-    const concepto = this.formularioGeneral.get("concepto").value;
     this.proveedor = this.formularioGeneral.get("proveedor").value;
-
+    const concepto = this.formularioGeneral.get("concepto").value;
+    const idusuariologueado = this.usuarioService.usuario.codigoUsuario;
     const nuevoconcepto =
       "Ajuste a " +
       this.proveedor.nombre +
@@ -237,7 +240,7 @@ export class MostrarComponent implements OnInit {
     });
 
     this.devolucionValeService
-      .modificarPorCantidad(this.listDatos, nuevoconcepto)
+      .modificarPorCantidad(this.listDatos, nuevoconcepto, idusuariologueado)
       .subscribe({
         next: (resp: any) => {
           // Ocultar SweetAlert de carga
@@ -319,6 +322,7 @@ export class MostrarComponent implements OnInit {
       size: "sm", // 'lg' para modal grande, 'sm' para modal pequeño
       backdrop: "static" as "static",
       keyboard: false, // Configura backdrop como 'static'
+      windowClass: 'modal-holder'
     };
     this.modalService.open(content, modalOptions);
   }

@@ -299,7 +299,7 @@ export class ModalComponent implements OnInit {
     // Lógica para determinar si el cargo seleccionado es "Motorista"
 
     //obtenemos el objeto que tenga como nombreCargo Motorista
-    const motoristaOb = this.Cargos.find(cargo => cargo.nombreCargo === "Motorista");
+    const motoristaOb = this.Cargos.find(cargo => cargo.nombreCargo === "MOTORISTA");
     //Comparamos que el ID sea igual al seleccionado y cambiamos la variable para mostrar los demas campos
     this.esMotorista = (this.formBuilder.get('cargo').value === motoristaOb.id);
     this.motoristaOd = this.esMotorista;

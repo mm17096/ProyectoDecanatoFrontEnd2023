@@ -58,6 +58,16 @@ export class MostrarComponent implements OnInit {
     },
   ];
 
+  alertsUsuario = [
+    {
+      id: 1,
+      type: "info",
+      message:
+        " Al ingresar las credenciales pertenecientes a Jefe Financiera, clic en botón 'Registrar', se realizará el ajuste y los datos no se podrán revertir.",
+      show: true,
+    },
+  ];
+
   constructor(
     private fb: FormBuilder,
     private devolucionValeService: DevolucionValeService,
@@ -301,14 +311,28 @@ export class MostrarComponent implements OnInit {
     alert.show = !alert.show;
   }
 
+  CambiarAlertUsuario(alertsUsuario) {
+    alertsUsuario.show = !alertsUsuario.show;
+  }
+
   restaurarAlerts() {
     this.alerts.forEach((alert) => {
       alert.show = true;
     });
   }
 
+  restaurarAlertsUsuario() {
+    this.alertsUsuario.forEach((alertsUsuario) => {
+      alertsUsuario.show = true;
+    });
+  }
+
   siMuestraAlertas() {
     return this.alerts.every((alert) => alert.show);
+  }
+
+  siMuestraAlertasUsuario() {
+    return this.alertsUsuario.every((alertsUsuario) => alertsUsuario.show);
   }
 
   public togglePasswordVisibility(): void {
@@ -319,7 +343,6 @@ export class MostrarComponent implements OnInit {
     this.formularioUsuario.reset();
     const modalOptions = {
       centered: false,
-      size: "sm", // 'lg' para modal grande, 'sm' para modal pequeño
       backdrop: "static" as "static",
       keyboard: false, // Configura backdrop como 'static'
       windowClass: 'modal-holder'

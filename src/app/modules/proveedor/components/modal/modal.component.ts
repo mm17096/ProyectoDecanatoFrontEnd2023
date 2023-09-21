@@ -79,7 +79,6 @@ export class ModalComponent implements OnInit {
   }
 
   async guardar() {
-    this;
     if (this.formularioGeneral.valid) {
       if (this.proveedor?.id) {
         //Modificar

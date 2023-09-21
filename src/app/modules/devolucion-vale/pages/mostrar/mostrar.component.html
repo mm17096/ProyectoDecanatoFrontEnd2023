@@ -93,7 +93,7 @@
                   labelForId="proveedor"
                   [class]="esCampoValido('proveedor')"
                 >
-                  <ng-option *ngFor="let x of listProveedor" [value]="x.id">{{
+                  <ng-option *ngFor="let x of listProveedor" [value]="x">{{
                     x.nombre
                   }}</ng-option>
                 </ng-select>
@@ -281,22 +281,10 @@
               <div class="text-sm-end">
                 <button
                   type="button"
-                  class="btn btn-primary btn-rounded position-relative"
+                  class="btn btn-primary btn-rounded"
                   (click)="registrarDevolucion()"
                 >
                   Registrar Transacción
-                  <span
-                    class="position-absolute top-100 start-0 translate-middle badge rounded-pill bg-warning"
-                  >
-                    {{ cantidaGenerada }}
-                    <span class="visually-hidden">unread messages</span>
-                  </span>
-                  <span
-                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
-                  >
-                    {{ montoGenerado | currency : "USD" : "symbol" : "1.2-2" }}
-                    <span class="visually-hidden">unread messages</span>
-                  </span>
                 </button>
               </div>
             </div>
@@ -309,4 +297,124 @@
       </div>
     </div>
   </div>
+
+  <ng-template #content role="document" let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title mt-0">Ingresar Credenciales</h5>
+      <button
+        type="button"
+        class="btn-close"
+        aria-hidden="true"
+        (click)="modal.dismiss('Cross click')"
+      ></button>
+    </div>
+    <div class="modal-body">
+      <form
+        id="formUsuario"
+        name="formUsuario"
+        (ngSubmit)="validarUsuario()"
+        [formGroup]="formularioUsuario"
+      >
+        <div class="row">
+          <div class="mb-4 col-md-12">
+            <label for="nombre"
+              >Correo: <span class="text-danger">*</span></label
+            >
+            <input
+              id="nombre"
+              name="nombre"
+              maxlength="200"
+              minlength="2"
+              type="text"
+              class="form-control"
+              placeholder="Correo"
+              formControlName="nombre"
+              [class]="esCampoValidoUsuario('nombre')"
+            />
+            <div class="invalid-feedback">
+              <span
+                *ngIf="formularioUsuario.get('nombre').hasError('required')"
+              >
+                Requiere un correo
+              </span>
+              <span
+                *ngIf="formularioUsuario.get('nombre').hasError('pattern')"
+              >
+                Email no válido, debe ser '@ues.edu.sv'
+              </span>
+            </div>
+          </div>
+          <div class="mb-4 col-md-12">
+            <label for="clave">Contraseña:</label>
+            <div class="input-group auth-pass-inputgroup">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                type="password"
+                class="form-control"
+                formControlName="clave"
+                placeholder="Escriba contraseña"
+                aria-label="Password"
+                aria-describedby="password-addon"
+                [class]="esCampoValidoUsuario('clave')"
+              />
+
+              <button
+                class="btn btn-light ms-0"
+                type="button"
+                id="password-addon"
+                (click)="togglePasswordVisibility()"
+              >
+                <i
+                  [class]="
+                    showPassword
+                      ? 'mdi mdi-eye-off-outline'
+                      : 'mdi mdi-eye-outline'
+                  "
+                ></i>
+              </button>
+              <div class="invalid-feedback">
+                <span
+                  *ngIf="formularioUsuario.get('clave').hasError('required')"
+                >
+                  Requiere una contraseña
+                </span>
+                <span
+                  *ngIf="
+                    formularioUsuario.get('clave').hasError('maxlength')
+                  "
+                >
+                  Limite 50 caracteres
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button
+        class="btn btn-primary w-sm me-2 position-relative"
+        type="submit"
+        form="formUsuario"
+      >
+        Registrar
+
+        <span
+        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning"
+      >
+        {{ cantidaGenerada }}
+        <span class="visually-hidden">unread messages</span>
+      </span>
+      <span
+        class="position-absolute top-100 start-0 translate-middle badge rounded-pill bg-success"
+      >
+        {{ montoGenerado | currency : "USD" : "symbol" : "1.2-2" }}
+        <span class="visually-hidden">unread messages</span>
+      </span>
+      </button>
+      <button class="btn btn-dark w-sm" (click)="modal.close('Close click')">
+        Cancelar
+      </button>
+    </div>
+  </ng-template>
 </div>

@@ -88,7 +88,7 @@ export class UsuarioService {
         (usuario: any) => {
           const { codigoUsuario, nombre, clave, nuevo, role, token, empleado } = usuario;
           this.usuario = new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
-          console.log("usuario service :", this.usuario);
+          //console.log("usuario service :", this.usuario);
         },
         (error) => {
           console.error("Error al obtener los usuario:", error);

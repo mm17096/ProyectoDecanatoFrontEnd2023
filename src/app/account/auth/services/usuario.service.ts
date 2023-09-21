@@ -86,8 +86,9 @@ export class UsuarioService {
       .pipe(tap((resp: any) => resp.content as any))
       .subscribe(
         (usuario: any) => {
-          const { codigoUsuario, nombre, clave, nuevo, rol, token, empleado } = usuario;
-          this.usuario = new Usuario(codigoUsuario, nombre, "", nuevo, "", token, empleado);
+          const { codigoUsuario, nombre, clave, nuevo, role, token, empleado } = usuario;
+          this.usuario = new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
+          console.log("usuario service :", this.usuario);
         },
         (error) => {
           console.error("Error al obtener los usuario:", error);

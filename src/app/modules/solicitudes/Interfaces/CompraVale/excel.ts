@@ -52,6 +52,8 @@ export interface ITablaConsultaDto{
     estadovale:number;
     fechavencimiento:Date;
     iddetalleasignacionvale:String;
+    idasignacionvale:String;
+    valeid:String;
 }
 
 export interface IConsultaExcelTablaCompraDto{

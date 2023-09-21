@@ -107,6 +107,16 @@ export class SolicitudvComponent implements OnInit {
         this.dataExcelC = response;
       });
   }
+
+  obtnerExistenciaVales() {
+    this.existenciaService.getCantidadVales().subscribe({
+      next: (response) => {
+        this.existenciaI = response;
+        console.log(this.existenciaI);
+      },
+    });
+  }
+
   download(): void{
    // getCompraC();
    
@@ -114,11 +124,12 @@ export class SolicitudvComponent implements OnInit {
     if (this.formularioGeneral.valid) {
       const consulta = this.formularioGeneral.value;
       if(consulta.fechaDesde < consulta.fechaAsta){
-      this.cargarConsulta();
+     // this.cargarConsulta();
       this.cargarConsultaDto();
       this.cargarCompraDto();
-      this.cargarCompraC();
-        this.excelService.dowloadExcel(this.dataExcel,this.dataExcelC,this.dataExcelConsulta,this.dataExcelCompra,this.fechaDesde,this.fechaAsta);
+      this.obtnerExistenciaVales();
+      //this.cargarCompraC();
+        this.excelService.dowloadExcel(this.existenciaI,this.dataExcelConsulta,this.dataExcelCompra,this.fechaDesde,this.fechaAsta);
       }else{
         this.mensajesService.mensajesSweet(
           "warning",

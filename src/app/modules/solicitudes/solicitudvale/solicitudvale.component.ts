@@ -24,6 +24,7 @@ import {
 } from "../Interfaces/asignacionvale.interface";
 import { NUMBER_VALIDATE } from "src/app/constants/constants";
 import { Router } from "@angular/router";
+import { ISolicitudValeAprobar } from "../Interfaces/solicitudValeAprobar.interface";
 
 @Component({
   selector: "app-solicitudvale",
@@ -54,6 +55,8 @@ export class SolicitudvaleComponent implements OnInit {
       motorista: "Erik Manrique Flores",
     },
   ]; // Aquí deberías tener tus datos
+  //interfaz para las solicitudes de vale
+  solicitudesVales: ISolicitudValeAprobar;
   searchTerm = "";
   itemsPerPage = 5;
   currentPage = 1;
@@ -61,7 +64,7 @@ export class SolicitudvaleComponent implements OnInit {
   p: any;
   private isNumber: string = NUMBER_VALIDATE;
 
-  filtroEstado: string = "";
+  filtroEstado: number;
 
   solicitud: any[] = [];
 
@@ -93,7 +96,13 @@ export class SolicitudvaleComponent implements OnInit {
   term: any; // para buscar
 
   breadCrumbItems: Array<{}>;
+  //para pasar los estados a string
+  estadoSoli = "";
 
+  //fecha de Salida
+  fechaSalida: string;
+  //fecha con formato
+  fechaformateada = [];
   constructor(
     private modalService: NgbModal,
     private service: ServiceService,
@@ -151,8 +160,10 @@ export class SolicitudvaleComponent implements OnInit {
       console.log(this.solicitudvv);
     });
     this.obtnerExistenciaVales();
+    this.getSolicitudesVale(8);
   }
 
+  //Obtniene los vales a asignar según la cantidad deseada
   valesAsignar(valesAsignarModal: any) {
     const cantidadVales =
       this.formularioSolicitudValev.get("cantidadVales")?.value;
@@ -166,6 +177,7 @@ export class SolicitudvaleComponent implements OnInit {
     this.modalService.open(valesAsignarModal, { size: "lg", centered: true });
   }
 
+  //Obtitne la existencia de los vales
   obtnerExistenciaVales() {
     this.existenciaService.getCantidadVales().subscribe({
       next: (response) => {
@@ -175,6 +187,7 @@ export class SolicitudvaleComponent implements OnInit {
     });
   }
 
+  //Liquida los valos y finaliza las solicitudes
   liquidarVales(solicitudVehiculo: SolicitudVv) {
     console.log(
       "el codigo del vehiculo es: " + solicitudVehiculo.codigoSolicitudVehiculo
@@ -184,6 +197,7 @@ export class SolicitudvaleComponent implements OnInit {
     );
   }
 
+  //Obtiene el id de la solicitud de vale
   obtenerIdSolicitudVale(codigoSolicitudVehiculo: string) {
     this.service.getIdSolicitudVale(codigoSolicitudVehiculo).subscribe({
       next: (response) => {
@@ -196,6 +210,7 @@ export class SolicitudvaleComponent implements OnInit {
     });
   }
 
+  //Obtiene el código de asignación
   obtenerCodigoAsignacion(codigoSolitudVale: string) {
     //this.obtenerIdSolicitudVale(this.solicitudvv.codigoSolicitudVehiculo)
     this.service.getCodigoAsignacion(codigoSolitudVale).subscribe({
@@ -203,10 +218,70 @@ export class SolicitudvaleComponent implements OnInit {
         this.codigoAsignacion = response;
         this.paramAsignacion = this.codigoAsignacion.codigoAsignacion;
         console.log("metodo, códigoAsignacion: ", this.paramAsignacion);
-        this.router.navigate(["/asignacion-vale/asignacion", this.paramAsignacion]);
+        this.router.navigate([
+          "/asignacion-vale/asignacion",
+          this.paramAsignacion,
+        ]);
       },
     });
+  }
 
+  getSolicitudesVale(estado: number) {
+    this.service.getSolicitdValePorEstado(estado).subscribe({
+      next: (data) => {
+        this.solicitudesVales = data;
+        this.obtenerFechaFormateada(data);
+        this.asignacionEstados(estado);
+      },
+    });
+  }
+
+  obtenerFechaFormateada(data: any) {
+    if (Array.isArray(data) && data.length > 0) {
+      //vacio las fechas
+      this.vaciarFechas();
+      // Accedemos a la propiedad fechaSalida del primer elemento del arreglo
+      for (let index = 0; index < data.length; index++) {
+        this.fechaSalida = data[index].fechaSalida;
+
+        const fechaf = this.service.obtenerNombreDiaYMes(this.fechaSalida);
+        const anio = this.service.dividirFecha(this.fechaSalida);
+        const dia = this.service.dividirFecha(this.fechaSalida);
+        this.fechaformateada.push(
+          fechaf.nombreDia +
+            ", " +
+            dia.día +
+            " de " +
+            fechaf.nombreMes +
+            " de " +
+            anio.anio
+        );
+      }
+      // Por ejemplo, data[0].nombreSolicitante para acceder al nombre del solicitante del primer elemento
+    }
+  }
+  vaciarFechas() {
+    while (this.fechaformateada.length > 0) {
+      this.fechaformateada.pop();
+    }
+  }
+
+  asignacionEstados(estado: number) {
+    if (estado == 1) {
+      this.estadoSoli = "Por Aprobar";
+    }else if (estado == 4) {
+      this.estadoSoli = "Aprobada";
+    } else if (estado == 5) {
+      this.estadoSoli = "Asignado";
+    } else if (estado == 6) {
+      this.estadoSoli = "Revisión";
+    }else if (estado == 7) {
+      this.estadoSoli = "Finalizada";
+    }else if (estado == 8) {
+      this.estadoSoli = "Nueva";
+    }else {
+      this.estadoSoli = "Anulada";
+    }
   }
 
   /**
@@ -307,6 +382,7 @@ export class SolicitudvaleComponent implements OnInit {
       ?.setValue(String(nombreJefeDepto));
   }
 
+  //Guardar la asignación de vales
   async guardar() {
     if (this.formularioSolicitudValev.valid) {
       if ((await this.mensajesService.mensajeAsignar()) == true) {
@@ -324,6 +400,7 @@ export class SolicitudvaleComponent implements OnInit {
     }
   }
 
+  //Regitra la asignación de los vales
   registrando() {
     //Asignaré los campos necesario para guardar la asignación
     const cantidadVales =
@@ -378,7 +455,7 @@ export class SolicitudvaleComponent implements OnInit {
   limpiarCampos() {
     this.formularioSolicitudVale.reset();
   }
-  filteredItems3() {
+  /* filteredItems3() {
     const currentDate = new Date();
     //console.log(this.solicitudvv)
     return this.solicitudvv.filter(
@@ -403,11 +480,11 @@ export class SolicitudvaleComponent implements OnInit {
           this.searchText === "") &&
         (item.estadoString === this.filtroEstado || this.filtroEstado === "")
     );
-  }
+  } */
 
-  CargarDatos(sulici: SolicitudVv) {
-    // localStorage.setItem('id', JSON.stringify(clien));
-    // this.router.navigate(["edit"]);
+  filtrar(event: any) {
+    this.filtroEstado = event;
+    this.getSolicitudesVale(this.filtroEstado);
   }
 
   mostrar() {
@@ -453,22 +530,6 @@ export class SolicitudvaleComponent implements OnInit {
    */
   openModal(content: any) {
     this.modalService.open(content);
-  }
-
-  /**
-   * Open extra large modal
-   * @param exlargeModal extra large modal data
-   */
-  extraLarge(exlargeModal: any) {
-    this.modalService.open(exlargeModal, { size: "xl", centered: true });
-  }
-
-  /**
-   * Open small modal
-   * @param smallDataModal small modal data
-   */
-  smallModal(smallDataModal: any) {
-    this.modalService.open(smallDataModal, { size: "sm", centered: true });
   }
 
   /**

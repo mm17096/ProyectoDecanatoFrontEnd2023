@@ -1,59 +1,106 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { IAsignacionVale, ICodigoAsignacion, IValesAsignar } from '../Interfaces/asignacionvale.interface';
-import { IExistenciaVales, ISolicitudValeID } from '../Interfaces/existenciavales.interface';
-import { SolicitudVv } from '../Interfaces/SolicitudVv';
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { environment } from "src/environments/environment";
+import {
+  IAsignacionVale,
+  ICodigoAsignacion,
+  IValesAsignar,
+} from "../Interfaces/asignacionvale.interface";
+import {
+  IExistenciaVales,
+  ISolicitudValeID,
+} from "../Interfaces/existenciavales.interface";
+import { ISolicitudValeAprobar } from '../Interfaces/solicitudValeAprobar.interface';
+import { SolicitudVv } from "../Interfaces/SolicitudVv";
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ServiceService {
-
   private baseUrl: string = environment.baseUrl;
+  listSolicitudes: ISolicitudValeAprobar;
+  constructor(private http: HttpClient) {}
 
-  constructor(private http:HttpClient) { }
-
-
-  getCliente(){
-    return this.http.get<SolicitudVv>(this.baseUrl+'/consulta/listapage');
+  getCliente() {
+    return this.http.get<SolicitudVv>(this.baseUrl + "/consulta/listapage");
   }
 
-  getCantidadVales(){
-    return this.http.get<IExistenciaVales>(this.baseUrl+'/asignacionvale/cantidadvales');
+  getCantidadVales() {
+    return this.http.get<IExistenciaVales>(
+      this.baseUrl + "/asignacionvale/cantidadvales"
+    );
   }
 
-  getIdSolicitudVale(codigoSolicitudVale: string){
-    return this.http.get<ISolicitudValeID>(`${this.baseUrl}/asignacionvale/solitudvale/${codigoSolicitudVale}`);
+  getIdSolicitudVale(codigoSolicitudVale: string) {
+    return this.http.get<ISolicitudValeID>(
+      `${this.baseUrl}/asignacionvale/solitudvale/${codigoSolicitudVale}`
+    );
   }
 
-  insertar(asignacionVale: IAsignacionVale){
+  insertar(asignacionVale: IAsignacionVale) {
     console.log("en el servicio:" + asignacionVale);
 
-    return this.http.post<IAsignacionVale>(`${this.baseUrl}/asignacionvale/insertar`, asignacionVale);
+    return this.http.post<IAsignacionVale>(
+      `${this.baseUrl}/asignacionvale/insertar`,
+      asignacionVale
+    );
   }
 
-  getValesAignar(cantidadVales: number){
-    return this.http.get<IValesAsignar>(`${this.baseUrl}/asignacionvale/listarvalesasignar/${cantidadVales}`);
+  getValesAignar(cantidadVales: number) {
+    return this.http.get<IValesAsignar>(
+      `${this.baseUrl}/asignacionvale/listarvalesasignar/${cantidadVales}`
+    );
   }
 
-  getCodigoAsignacion(codigoSolitudVale: string){
-    return this.http.get<ICodigoAsignacion>(`${this.baseUrl}/asignacionvale/codigoasignacionvale/${codigoSolitudVale}`);
+  getCodigoAsignacion(codigoSolitudVale: string) {
+    return this.http.get<ICodigoAsignacion>(
+      `${this.baseUrl}/asignacionvale/codigoasignacionvale/${codigoSolitudVale}`
+    );
   }
 
- /* createCliente(cliente:Cliente){
-    return this.http.post<Cliente>(this.url+'/add',cliente);
- }
+  //Consulta las solitudes de vale por estado
+  getSolicitdValePorEstado(estado: number) {
+    return this.http.get<ISolicitudValeAprobar>(
+      `${this.baseUrl}/asignacionvale/listarsolicitudvaleestado/${estado}`
+    );
+  }
 
- getClienteId(id:number){
-    return this.http.get<Cliente>(this.url+'/'+id)
- }
+  obtenerNombreDiaYMes(
+    fechaStr: string
+  ): { nombreDia: string; nombreMes: string } | null {
+    const fecha = new Date(fechaStr);
 
- updateCliente(cliente:Cliente){
-   return this.http.put<Cliente>(this.url+'/update/'+cliente.idCliente,cliente);
- }
+    // Verificar si la fecha es válida
+    if (isNaN(fecha.getTime())) {
+      return null; // La fecha no es válida
+    }
 
- deleteCliente(cliente:Cliente){
-   return this.http.delete<Cliente>(this.url+'/delete/'+cliente.idCliente);
- }*/
+    const opcionesDia: Intl.DateTimeFormatOptions = { weekday: "long" }; // 'long' para obtener el nombre completo del día
+    const opcionesMes: Intl.DateTimeFormatOptions = { month: "long" }; // 'long' para obtener el nombre completo del mes
+
+    const nombreDia = fecha.toLocaleDateString(undefined, opcionesDia);
+    const nombreMes = fecha.toLocaleDateString(undefined, opcionesMes);
+
+    return { nombreDia, nombreMes };
+  }
+
+  dividirFecha(
+    fechaStr: string
+  ): { anio: string; mes: string; día: string } | null {
+    // Dividir la cadena de fecha en sus componentes utilizando '/'
+    const partes = fechaStr.split("-");
+
+    // Verificar si hay tres componentes (año, mes y día)
+    if (partes.length === 3) {
+      const anio = partes[0];
+      const mes = partes[1];
+      const día = partes[2];
+
+      return { anio, mes, día };
+    } else {
+      return null; // La cadena de fecha no tiene el formato esperado
+    }
+  }
 }

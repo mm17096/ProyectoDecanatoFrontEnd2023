@@ -52,7 +52,7 @@ export class ModalComponent implements OnInit {
   pasajeroFormControls: FormControl[] = [];
   soliSave : ISolicitudVehiculo [] = [];
   file!: File;
-  opc : string = "JEFE_DEPTO";
+  opc : string = "";
 
   alerts = [
     {
@@ -74,10 +74,11 @@ export class ModalComponent implements OnInit {
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router,
               private soliVeService: SolicitudVehiculoService, public activeModal: NgbActiveModal,
               private mensajesService: MensajesService,
-              ) { }
+              ) {
+  }
 
   ngOnInit(): void {
-    //console.log(this.usuarioActivo);
+    console.log(this.usuarioActivo);
     //console.log("data",this.soliVeOd);
     console.log("modal", this.vista);
     this.iniciarFormulario();

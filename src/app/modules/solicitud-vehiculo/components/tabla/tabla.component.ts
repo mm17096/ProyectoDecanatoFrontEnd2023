@@ -5,6 +5,7 @@ import {ModalComponent} from "../modal/modal.component";
 import {MensajesService} from "../../../../shared/global/mensajes.service";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 import Swal from "sweetalert2";
+import {Usuario} from "../../../../account/auth/models/usuario.models";
 
 @Component({
   selector: 'app-tabla',
@@ -16,6 +17,7 @@ export class TablaComponent implements OnInit {
   @Input() opc!: string;
   @Input() term!: any; // para buscar
   @Input() vista!: string;
+  @Input() userAcivo!: Usuario;
   p: any; // paginacion
   selectedData: any; // Almacena los datos del registro seleccionado
   constructor(private modalService: NgbModal,
@@ -23,9 +25,11 @@ export class TablaComponent implements OnInit {
               private soliService: SolicitudVehiculoService) { }
 
   ngOnInit(): void {
-    console.log("tabla",this.vista);
-    console.log("ver: ",this.solicitudesVehiculo)
+    // console.log("tabla",this.vista);
+    // console.log("ver: ",this.solicitudesVehiculo)
+    console.log("userACtivo:", this.userAcivo);
   }
+
 
   abrirModal(leyenda: string, data: any) {
     this.selectedData = data; // Almacena los datos del registro seleccionado
@@ -47,8 +51,8 @@ export class TablaComponent implements OnInit {
     return new Promise<void>((resolve, reject) => {
       this.soliService.updateSolciitudVehiculo(data).subscribe({
         next: (resp: any) => {
-          this.soliService.getSolicitudesRol("JEFE_DEPTO");
-          this.mensajesService.mensajesToast("success", "Registro agregado");
+          this.soliService.getSolicitudesRol(this.userAcivo.role);
+          this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
           resolve();
         },
         error: (error) => {

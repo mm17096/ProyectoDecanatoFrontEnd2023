@@ -3,8 +3,9 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {IActualizarSoliVe, IEstados, IPais, ISolicitudVehiculo} from "../interfaces/data.interface";
 import {environment} from "../../../../environments/environment";
-import {map} from "rxjs/operators";
+import {map, tap} from "rxjs/operators";
 import {IVehiculos} from "../../vehiculo/interfaces/vehiculo-interface";
+import {Usuario} from "../../../account/auth/models/usuario.models";
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +17,25 @@ export class SolicitudVehiculoService {
   listSoliVehiculo : ISolicitudVehiculo [] = [];
   listSoliVehiculoRol : ISolicitudVehiculo [] = [];
   listVehiculos: IVehiculos [] = [];
+  usuario!: Usuario;
 
   constructor(private http: HttpClient) { }
+
+  get codUsuario(): string {
+    return localStorage.getItem("codUsuario" || "");
+  }
+
+  getUsuarioSV(): Observable<Usuario> {
+    return this.http
+      .get(`${this.url}/usuario/${this.codUsuario}`)
+      .pipe(
+        tap((usuario: any) => {
+          const { codigoUsuario, nombre, clave, nuevo, role, token, empleado } = usuario;
+          const usuarioObj = new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
+          return usuarioObj;
+        })
+      );
+  }
 
   // Servicio para obtener todas las solicitudes de vehiculo
 

@@ -24,7 +24,10 @@
           </div>
 
           <!-- Table data -->
-          <app-tabla [solicitudesVehiculo]="listSoliVeData" [opc]="'JEFE_DEPTO'" [vista]="'listado'" [term]="term"></app-tabla>
+          <app-tabla *ngIf="usuario"
+                     [solicitudesVehiculo]="listSoliVeData"
+                     [userAcivo]="usuario" [opc]="'JEFE_DEPTO'" [vista]="'listado'" [term]="term"></app-tabla>
+
           <!-- end table -->
         </div>
       </div>

@@ -24,6 +24,7 @@ import {
 } from "../Interfaces/asignacionvale.interface";
 import { NUMBER_VALIDATE } from "src/app/constants/constants";
 import { Router } from "@angular/router";
+import { ISolicitudValeAprobar } from '../Interfaces/solicitudValeAprobar.interface';
 
 @Component({
   selector: "app-solicitudvale",
@@ -94,6 +95,8 @@ export class SolicitudvaleComponent implements OnInit {
 
   breadCrumbItems: Array<{}>;
 
+
+
   constructor(
     private modalService: NgbModal,
     private service: ServiceService,
@@ -153,6 +156,7 @@ export class SolicitudvaleComponent implements OnInit {
     this.obtnerExistenciaVales();
   }
 
+  //Obtniene los vales a asignar según la cantidad deseada
   valesAsignar(valesAsignarModal: any) {
     const cantidadVales =
       this.formularioSolicitudValev.get("cantidadVales")?.value;
@@ -166,6 +170,7 @@ export class SolicitudvaleComponent implements OnInit {
     this.modalService.open(valesAsignarModal, { size: "lg", centered: true });
   }
 
+  //Obtitne la existencia de los vales
   obtnerExistenciaVales() {
     this.existenciaService.getCantidadVales().subscribe({
       next: (response) => {
@@ -175,6 +180,7 @@ export class SolicitudvaleComponent implements OnInit {
     });
   }
 
+  //Liquida los valos y finaliza las solicitudes
   liquidarVales(solicitudVehiculo: SolicitudVv) {
     console.log(
       "el codigo del vehiculo es: " + solicitudVehiculo.codigoSolicitudVehiculo
@@ -184,6 +190,7 @@ export class SolicitudvaleComponent implements OnInit {
     );
   }
 
+  //Obtiene el id de la solicitud de vale
   obtenerIdSolicitudVale(codigoSolicitudVehiculo: string) {
     this.service.getIdSolicitudVale(codigoSolicitudVehiculo).subscribe({
       next: (response) => {
@@ -196,6 +203,7 @@ export class SolicitudvaleComponent implements OnInit {
     });
   }
 
+  //Obtiene el código de asignación
   obtenerCodigoAsignacion(codigoSolitudVale: string) {
     //this.obtenerIdSolicitudVale(this.solicitudvv.codigoSolicitudVehiculo)
     this.service.getCodigoAsignacion(codigoSolitudVale).subscribe({
@@ -307,6 +315,9 @@ export class SolicitudvaleComponent implements OnInit {
       ?.setValue(String(nombreJefeDepto));
   }
 
+
+
+  //Guardar la asignación de vales
   async guardar() {
     if (this.formularioSolicitudValev.valid) {
       if ((await this.mensajesService.mensajeAsignar()) == true) {
@@ -324,6 +335,7 @@ export class SolicitudvaleComponent implements OnInit {
     }
   }
 
+  //Regitra la asignación de los vales
   registrando() {
     //Asignaré los campos necesario para guardar la asignación
     const cantidadVales =

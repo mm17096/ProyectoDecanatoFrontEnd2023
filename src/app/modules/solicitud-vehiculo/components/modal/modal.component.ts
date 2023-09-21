@@ -29,6 +29,7 @@ export class ModalComponent implements OnInit {
   @Input() estadoSelecionado!: number;
   @Input() soliVeOd!: ISolicitudVehiculo;
   @Input() usuarioActivo !: Usuario;
+  @Input() vista!: string;
 
   private isInteger: string = INTEGER_VALIDATE;
   private isDate: string = "";
@@ -51,7 +52,7 @@ export class ModalComponent implements OnInit {
   pasajeroFormControls: FormControl[] = [];
   soliSave : ISolicitudVehiculo [] = [];
   file!: File;
-  documentoSoliVe: IDocumentoSoliVe [] = [];
+  opc : string = "JEFE_DEPTO";
 
   alerts = [
     {
@@ -78,6 +79,7 @@ export class ModalComponent implements OnInit {
   ngOnInit(): void {
     //console.log(this.usuarioActivo);
     //console.log("data",this.soliVeOd);
+    console.log("modal", this.vista);
     this.iniciarFormulario();
     this.llenarSelectDepartamentos();
     this.soliVeService.obtenerVehiculos();

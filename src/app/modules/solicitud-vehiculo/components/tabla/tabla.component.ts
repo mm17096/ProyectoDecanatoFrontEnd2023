@@ -15,6 +15,7 @@ export class TablaComponent implements OnInit {
   @Input() solicitudesVehiculo!: ISolicitudVehiculo[];
   @Input() opc!: string;
   @Input() term!: any; // para buscar
+  @Input() vista!: string;
   p: any; // paginacion
   selectedData: any; // Almacena los datos del registro seleccionado
   constructor(private modalService: NgbModal,
@@ -22,6 +23,7 @@ export class TablaComponent implements OnInit {
               private soliService: SolicitudVehiculoService) { }
 
   ngOnInit(): void {
+    console.log("tabla",this.vista);
     console.log("ver: ",this.solicitudesVehiculo)
   }
 
@@ -29,7 +31,8 @@ export class TablaComponent implements OnInit {
     this.selectedData = data; // Almacena los datos del registro seleccionado
     const modalRef = this.modalService.open(ModalComponent, {size:'xl', backdrop: 'static'});
     modalRef.componentInstance.leyenda = leyenda; // Pasa la leyenda al componente modal
-    modalRef.componentInstance.soliVeOd = data; // Pasa la data al componente modal
+    modalRef.componentInstance.soliVeOd = data;
+    modalRef.componentInstance.vista = this.vista;
   }
 
   async aprobarSolicitud(data: any){

@@ -553,6 +553,10 @@
               *ngIf="leyenda == 'Nueva'">
         Enviar
       </button>
+      <button type="submit" class="btn btn-success w-sm me-2" id="btn-detalle_save" name="btn-save"
+              *ngIf="(opc == 'JEFE_DEPTO' || opc == 'DECANO') && vista === 'listado'">
+        Aprobar
+      </button>
       <button type="button" class="btn btn-dark w-sm" id="btn-cancel" name="btn-cancel"
               aria-hidden="true" (click)="activeModal.close('Close click')">Cancelar</button>
     </div>

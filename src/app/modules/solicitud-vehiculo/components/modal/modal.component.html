@@ -284,7 +284,9 @@
                 [selectOnTab]="true"
                 labelForId="tipoVehiculo"
                  [class]="esCampoValido('tipoVehiculo')"
-                (change)="cargarPlacas(formularioSoliVe.get('tipoVehiculo').value)"
+                (change)="cargarPlacas(formularioSoliVe.get('tipoVehiculo').value,
+                formularioSoliVe.get('fechaSalida').value,
+                formularioSoliVe.get('fechaEntrada').value)"
               >
                 <ng-option
                   *ngFor="let x of listVehiculos"

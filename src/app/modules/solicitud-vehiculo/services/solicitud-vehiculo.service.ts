@@ -67,9 +67,9 @@ export class SolicitudVehiculoService {
         );
   }
 
-  filtroPlacasVehiculo(clase: string): Observable<IVehiculos[]> {
+  filtroPlacasVehiculo(clase: string,fechaSalida:string,fechaEntrada:string): Observable<IVehiculos[]> {
     return this.http
-      .get(`${this.url}/vehiculo/clase/${clase}`)
+      .get(`${this.url}/vehiculo/disponibilidad?claseName=${clase}&fechaSalida=${fechaSalida}&fechaEntrada=${fechaEntrada}`)
       .pipe(map((resp: any) => resp as IVehiculos[]));
   }
 

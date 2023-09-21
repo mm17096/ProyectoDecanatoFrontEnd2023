@@ -46,7 +46,7 @@
                     *ngIf="opc == 'DECANO' && solicitudesVehiculo.length > 0 && solicitudesVehiculo[0].estado  == 3 ||
                     opc == 'JEFE_DEPTO' && solicitudesVehiculo.length>0 && solicitudesVehiculo[0].estado == 1"
                     class="btn btn-success btn-sm btn-rounded boton-cuadrado mx-1"
-                  (click)="abrirModal('Detalle', data)"
+                  (click)="aprobarSolicitud(data)"
                   ngbTooltip="Aprobar">
             <i class="mdi mdi-18px mdi-check-outline"></i></button>
         </td>

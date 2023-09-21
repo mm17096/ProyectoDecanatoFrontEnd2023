@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {IEstados, IPais, ISolicitudVehiculo} from "../interfaces/data.interface";
+import {IActualizarSoliVe, IEstados, IPais, ISolicitudVehiculo} from "../interfaces/data.interface";
 import {environment} from "../../../../environments/environment";
 import {map} from "rxjs/operators";
 import {IVehiculos} from "../../vehiculo/interfaces/vehiculo-interface";
@@ -101,5 +101,10 @@ export class SolicitudVehiculoService {
             console.log("Error al obtener las solicitudes de vehiculo", error);
           }
         );
+  }
+
+  updateSolciitudVehiculo(data: IActualizarSoliVe){
+    console.log("dataAc: ", data);
+    return this.http.put<ISolicitudVehiculo>( `${this.url}/solicitudvehiculo/estadoupdate`, data);
   }
 }

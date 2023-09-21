@@ -2,8 +2,7 @@ export interface ISolicitudValeAprobar{
   codigoEmpleado: string;
   cantidadVales: number;
   cantidadPersonas: number;
-  lugarMision: string;
-  objetivoMision: string;
+  mision: string;
   fechaSalida: string;
   fechaEntrada: string;
   nombreMotorista: string;

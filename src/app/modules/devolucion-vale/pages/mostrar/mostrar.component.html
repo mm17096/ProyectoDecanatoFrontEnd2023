@@ -301,6 +301,14 @@
   <ng-template #content role="document" let-modal>
     <div class="modal-header">
       <h5 class="modal-title mt-0">Ingresar Credenciales</h5>
+      <div class="btn-alerta" *ngIf="alertsUsuario">
+        <i
+          class="mdi mdi-18px mdi-lightbulb-on-outline custom-cursor"
+          ngbTooltip="Mostrar Ayuda"
+          *ngIf="!siMuestraAlertasUsuario()"
+          (click)="restaurarAlertsUsuario()"
+        ></i>
+      </div>
       <button
         type="button"
         class="btn-close"
@@ -309,6 +317,26 @@
       ></button>
     </div>
     <div class="modal-body">
+
+
+      <div *ngFor="let alertsUsuario of alertsUsuario">
+        <div
+          class="alert alert-{{ alertsUsuario.type }} alert-dismissible fade show"
+          role="alert"
+          *ngIf="alertsUsuario.show"
+        >
+          <strong>{{
+            alertsUsuario.type === "warning" ? "Precaución!" : "Importante!"
+          }}</strong>
+          {{ alertsUsuario.message }}
+          <button
+            type="button"
+            class="btn-close"
+            (click)="CambiarAlertUsuario(alertsUsuario)"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
       <form
         id="formUsuario"
         name="formUsuario"

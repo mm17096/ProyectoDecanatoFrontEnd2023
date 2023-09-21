@@ -199,6 +199,7 @@ export class ModalComponent implements OnInit {
   openModal(content: any) {
     this.modalService.open(content, {size: 'lg', backdrop: 'static'});
   }
+  
   CambiarAlert(alert) {
     alert.show = !alert.show;
   }

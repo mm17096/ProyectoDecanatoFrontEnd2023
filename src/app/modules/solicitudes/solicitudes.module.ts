@@ -10,9 +10,10 @@ import { Ng2SearchPipeModule } from "ng2-search-filter";
 import { NgxPaginationModule } from "ngx-pagination";
 import { UIModule } from "../../shared/ui/ui.module";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import { SolicitudValeAprobarComponent } from './solicitud-vale-aprobar/solicitud-vale-aprobar.component';
 
 @NgModule({
-  declarations: [SolicitudvComponent, SolicitudvaleComponent],
+  declarations: [SolicitudvComponent, SolicitudvaleComponent, SolicitudValeAprobarComponent],
   imports: [
     CommonModule,
     SolicitudesRoutingModule,

@@ -44,9 +44,9 @@
               <tr>
                 <th>Solicitante</th>
                 <th>Mision</th>
-                <th>Estado</th>
-                <th>Fecha de Uso</th>
                 <th>Motorista</th>
+                <th>Fecha de Uso</th>
+                <th>Estado</th>
                 <th style="text-align: center">Acciones</th>
               </tr>
             </thead>
@@ -67,9 +67,9 @@
                 </td>
                 <td>{{ item.lugarMision }}</td>
 
-                <td>{{ item.fechaSalida }}</td>
+                <td>{{ item.motorista?.nombre + " " + item.motorista?.apellido }}</td>
                 <td>
-                  {{ item.motorista?.nombre + " " + item.motorista?.apellido }}
+                  {{ item.fechaSalida }}
                 </td>
                 <td>
                   <h5>

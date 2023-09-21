@@ -1,0 +1,131 @@
+<app-loader></app-loader>
+<div class="container-fluid">
+  <app-page-title
+    title="Solicitudes de Vales de Combustible por Aprobar"
+    [breadcrumbItems]="breadCrumbItems"
+  ></app-page-title>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row mb-2">
+            <div class="col-sm-4">
+              <div class="search-box me-2 mb-2 d-inline-block">
+                <div class="position-relative">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Buscar"
+                    [(ngModel)]="term"
+                  />
+                  <i class="bx bx-search-alt search-icon"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <select
+                  class="form-control"
+                  id="exampleCombobox"
+                  (change)="filtrar($event.target.value)"
+                >
+                  <option value="">filtro por estado</option>
+                  <option value="1">Por Aprobar</option>
+                  <option value="6">Revisión</option>
+                  <option value="4">Aprobadas</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Solicitante</th>
+                <th>Mision</th>
+                <th>Motorista</th>
+                <th>Fecha de Uso</th>
+                <th>Estado</th>
+                <th style="text-align: center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let item of solicitudesVales
+                    | filter : term
+                    | paginate : { itemsPerPage: 10, currentPage: p }; let i = index
+                "
+              >
+                <td>
+                  {{
+                    item.nombreSolicitante
+                  }}
+                </td>
+                <td>{{ item.lugarMision }}</td>
+
+                <td>{{ item.nombreMotorista }}</td>
+                <td>
+                  {{ fechaformateada[i] }}
+                </td>
+                <td >
+                  <h5>
+                    <span
+                      [class]="
+                        item.estadoSolicitud == 1
+                          ? 'badge rounded-pill bg-info'
+                          : item.estadoSolicitud == 6
+                          ? 'badge rounded-pill bg-warning'
+                          : item.estadoSolicitud == 4
+                          ? 'badge rounded-pill bg-success'
+                          : ''
+                      "
+                    >
+                      {{ estadoSoli }}
+                    </span>
+                  </h5>
+                </td>
+                <td style="text-align: center">
+                  <button
+                    type="button"
+                    class="btn btn-warning btn-sm btn-rounded mx-1"
+                    (click)="revision()"
+                    ngbTooltip="Enviar a revisión"
+                  >
+                    <i class="mdi mdi-18px mdi-book-edit-outline"></i>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn btn-info btn-sm btn-rounded mx-1"
+                    (click)="aprobar()"
+                    ngbTooltip="Aprobar"
+                  >
+                  <i class="mdi mdi-18px mdi-application-import"></i>
+                  </button>
+                  <button
+                    pe="button"
+                    class="btn btn-primary btn-sm btn-rounded mx-1"
+                    (click)="verDetalle()"
+                    ngbTooltip="Detalle"
+                  >
+                  <i class="mdi mdi-18px mdi-eye-outline"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="pagination pagination-rounded justify-content-end mb-2">
+            <pagination-controls
+              (pageChange)="p = $event"
+              [nextLabel]="''"
+              [previousLabel]="''"
+            ></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end row -->
+</div>

@@ -12,6 +12,7 @@ import {
   DECIMAL_VALIDATE,
   INTEGER_VALIDATE,
 } from "src/app/constants/constants";
+import { UsuarioService } from "src/app/account/auth/services/usuario.service";
 
 @Component({
   selector: "app-modal",
@@ -57,7 +58,8 @@ export class ModalComponent implements OnInit {
     private modalService: NgbModal,
     private fb: FormBuilder,
     private compraService: CompraService,
-    private mensajesService: MensajesService
+    private mensajesService: MensajesService,
+    private usuarioService: UsuarioService
   ) {
     this.formularioGeneral = this.iniciarFormulario();
   }
@@ -76,6 +78,7 @@ export class ModalComponent implements OnInit {
       });
     }
     this.compraService.getProveedor();
+    this.usuarioService.getUsuario();
   }
 
   private iniciarFormulario() {
@@ -259,6 +262,7 @@ export class ModalComponent implements OnInit {
 
   registrando(): Promise<void> {
     const compra = this.formularioGeneral.value;
+    const idusuariologueado = this.usuarioService.usuario.codigoUsuario;
 
     // Mostrar SweetAlert de carga
     Swal.fire({
@@ -272,7 +276,7 @@ export class ModalComponent implements OnInit {
     });
 
     return new Promise<void>((resolve, reject) => {
-      this.compraService.guardar(compra).subscribe({
+      this.compraService.guardar(compra, idusuariologueado).subscribe({
         next: (resp: any) => {
           // Cerrar SweetAlert de carga
           Swal.close();

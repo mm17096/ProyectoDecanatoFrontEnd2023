@@ -476,7 +476,8 @@
         <!-- fin solicitante -->
 
        <!-- tabla de personas -->
-       <div class="row" *ngIf="cantidadPersonas >= 2 || leyenda=='Detalle' && soliVeOd != null && soliVeOd.cantidadPersonas >= 2">
+       <div class="row" *ngIf="cantidadPersonas >= 2 || leyenda=='Detalle' &&
+       soliVeOd != null && soliVeOd.cantidadPersonas >= 2">
         <div class="mt-2">
           <div *ngIf="mostrarTabla; else archivoAdjunto">
             <label for="tablaPasajeros">Ingrese los nombres de los pasajeros: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
@@ -518,18 +519,28 @@
               </tr>
               </tbody>
             </table>
+
           </div>
 
           <ng-template #archivoAdjunto>
-            <div *ngIf="mostrarArchivoAdjunto" class="alert alert-warning">
+            <div *ngIf="mostrarArchivoAdjunto && leyenda === 'Nueva'" class="alert alert-warning">
               Por favor, adjunta la lista de pasajeros: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
                                                               class="text-danger">*</span>
               <input type="file"
-              id="file"
+              id="file" accept=".pdf"
               (change)="cambioDeArchivo($event)"
               formControlName="file" />
             </div>
           </ng-template>
+
+            <div *ngIf="btnVerPdf" class="alert alert-warning">
+              Lista de pasajeros
+              <div>
+                <button class="btn btn-primary" type="button">
+                  Descargar pdf
+                </button>
+              </div>
+            </div>
 
         </div>
       </div>

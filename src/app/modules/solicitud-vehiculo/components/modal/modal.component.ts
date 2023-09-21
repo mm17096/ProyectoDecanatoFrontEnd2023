@@ -44,6 +44,7 @@ export class ModalComponent implements OnInit {
   pasajeros: IPasajero[] = [];
   username: string = 'Usuario que inicia';
   mostrarTabla: boolean = true;
+  btnVerPdf: boolean = false;
   mostrarArchivoAdjunto: boolean = false;
   cantidadPersonas: number = 0;
 
@@ -123,6 +124,10 @@ export class ModalComponent implements OnInit {
           + this.soliVeOd.solicitante.empleado.apellido: '');
 
 
+      if (solicitudVehiculo.cantidadPersonas > 5){
+        this.mostrarTabla = false;
+        this.btnVerPdf = true;
+      }
       for (const persona of this.soliVeOd.listaPasajeros) {
         //console.log(persona);
         this.pasajeros.push({id: persona.id, nombrePasajero: persona.nombrePasajero});
@@ -544,7 +549,7 @@ export class ModalComponent implements OnInit {
     if (this.cantidadPersonas > 5) {
       this.mostrarTabla = false; // Ocultar la tabla
       this.mostrarArchivoAdjunto = true; // Mostrar el campo de entrada de archivo
-    } else {
+    } else if (this.cantidadPersonas <= 5 && this.cantidadPersonas >= 2){
       this.mostrarTabla = true; // Mostrar la tabla
       this.mostrarArchivoAdjunto = false; // Ocultar el campo de entrada de archivo
     }

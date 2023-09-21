@@ -55,7 +55,7 @@ export class ModalComponent implements OnInit {
 
       })
     }
-
+//prueba de push
 
     guardar(){
 
@@ -141,7 +141,7 @@ export class ModalComponent implements OnInit {
     ;
 
     data.nombreCargo = data.nombreCargo.toUpperCase();
-    
+
     this.cargoService.editCargo(data.id,data).subscribe({
       next : (resp) => {
         this.formCargo.reset();
@@ -199,7 +199,7 @@ export class ModalComponent implements OnInit {
   openModal(content: any) {
     this.modalService.open(content, {size: 'lg', backdrop: 'static'});
   }
-  
+
   CambiarAlert(alert) {
     alert.show = !alert.show;
   }

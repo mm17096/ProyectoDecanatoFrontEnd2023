@@ -22,7 +22,7 @@ export class AuthGuard implements CanActivate {
                 })
             );
         }
-    
+
         canLoad(): Observable<boolean> | boolean {
        return this.usuarioService.validarToken().pipe(
                 tap(isAuth => {
@@ -33,4 +33,6 @@ export class AuthGuard implements CanActivate {
                 })
             );
         }
+
+        
 }

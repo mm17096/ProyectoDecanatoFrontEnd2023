@@ -6,6 +6,7 @@ import { IDocumentosvale, valeDocumentosI } from '../../interface/IDocumentosval
 import Swal from 'sweetalert2';
 import { DetalleService } from '../../services/detalle.service';
 import { MensajesService } from 'src/app/shared/global/mensajes.service';
+import { IAsignacionValeSolicitud } from '../../interfaces/asignacion.interface';
 
 @Component({
   selector: 'app-modal-documentos',
@@ -15,16 +16,33 @@ import { MensajesService } from 'src/app/shared/global/mensajes.service';
 export class ModalDocumentosComponent implements OnInit {
   @Input() leyenda!: string;
   @Input() titulo!: string;
+  @Input() codigoAsignacion: string = "";
+  @Input() mision: string = "";
   formBuilder!: FormGroup;
   @Input() documentovaleOd!: IDocumentosvale;
   imagen: string = 'no hay';
   private file!: File;
+  asignacionSolicitud: IAsignacionValeSolicitud;
+  idSolicitud: string;
+  entradasalidas: IDocumentosvale[]=[];
+  
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router, private detalleservice: DetalleService , private mensajesService: MensajesService) {}
 
   ngOnInit(): void {
     this.formBuilder=this.Iniciarformulario();
-    
+    this.ObtenerSolicitudValeById(this.codigoAsignacion);
+  }
+  private obtenerLista(id:string) {//para poder mostrar e la tabla
+    this.detalleservice.ObtenerLista(id).subscribe(
+      (resp: IDocumentosvale[]) => {
+        this.entradasalidas = resp;
+        console.log(resp);
+      },
+      error => {
+        // Manejar errores aquí
+      }
+    );
   }
 
   guardar(){
@@ -45,41 +63,104 @@ export class ModalDocumentosComponent implements OnInit {
     }
     
   }
+  
+  ObtenerSolicitudValeById(codigoA: string) {
+    this.detalleservice.getAsignacionValeSolicitudVale(codigoA).subscribe({
+      next: (data) => {
+        this.asignacionSolicitud = data;
+        this.idSolicitud=this.asignacionSolicitud.solicitudVale.idSolicitudVale;
+        this.obtenerLista(this.idSolicitud);
+      },
+    });
+  }
+
   registrando(){
     //obtiene los valores del formulario
-    const listando = this.formBuilder.value;
-      //const entsali: valeDocumentosI = new valeDocumentosI(listando.tipo,listando.foto,listando.url,listando.comprobante, listando.fecha);
-     console.log(listando);
-  
-     this.detalleservice.NuevosDatos(listando, this.file).subscribe((resp: any) => {
-      if (resp) {
-        const Toast = Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 3000,
-          //timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-          }
-        });
-        Toast.fire({
-          icon: 'success',
-          text: 'Almacenamiento exitoso'
-        });
-  //reinicia el formulario
-        this.formBuilder.reset();
-        this.recargar();
-        this.modalService.dismissAll();
-      }
-    }, (err: any) => {
-      this.mensajesService.mensajesSweet(
-        "error",
-        "Ups... Algo salió mal",
-        err
-      )
+    this.formBuilder.patchValue({
+      solicitudvale:this.asignacionSolicitud.solicitudVale.idSolicitudVale
     });
+    const datotipo=this.formBuilder.get('tipo').value;
+    const listando = this.formBuilder.value;
+    if(this.entradasalidas.length<2){
+      if(this.entradasalidas.length==0){
+        this.detalleservice.NuevosDatos(listando, this.file).subscribe((resp: any) => {
+          if (resp) {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              //timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+            });
+            Toast.fire({
+              icon: 'success',
+              text: 'Almacenamiento exitoso'
+            });
+      //reinicia el formulario
+            this.formBuilder.reset();
+            this.recargar();
+            this.modalService.dismissAll();
+          }
+        }, (err: any) => {
+          this.mensajesService.mensajesSweet(
+            "error",
+            "Ups... Algo salió mal",
+            err
+          )
+        });
+      }else{
+        if(this.entradasalidas[0].tipo!=datotipo){
+          this.detalleservice.NuevosDatos(listando, this.file).subscribe((resp: any) => {
+            if (resp) {
+              const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                //timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener('mouseenter', Swal.stopTimer)
+                  toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+              });
+              Toast.fire({
+                icon: 'success',
+                text: 'Almacenamiento exitoso'
+              });
+        //reinicia el formulario
+              this.formBuilder.reset();
+              this.recargar();
+              this.modalService.dismissAll();
+            }
+          }, (err: any) => {
+            this.mensajesService.mensajesSweet(
+              "error",
+              "Ups... Algo salió mal",
+              err
+            )
+          });
+        }else{
+          Swal.fire({
+            position: 'center',
+            title: 'Debe seleccionar otro tipo de comprobante',
+            text: 'Dato no valido',
+            icon: 'warning',
+          });
+        }
+      }
+      
+    }else{
+      Swal.fire({
+        position: 'center',
+        title: 'Datos completos de comprobante',
+        text: 'Registros completos',
+        icon: 'warning',
+      });
+    }    
   }
 
   onFileSelected(event: Event) {
@@ -96,7 +177,7 @@ export class ModalDocumentosComponent implements OnInit {
     this.router.navigate([currentUrl]);
   }
   openModal(content: any) {
-    this.modalService.open(content, { size: 'sm', centered: true });
+    this.modalService.open(content, { size: 'lx', centered: true });
   }
 
   esCampoValido(campo: string){
@@ -112,11 +193,10 @@ export class ModalDocumentosComponent implements OnInit {
       comprobante: ['', [Validators.required]],
       foto: [''],
       url: [''],
-      solicitudvale:['', [Validators.required]]
+      solicitudvale:['']
   
     });
   }
-
 
   //funcion para obtener la fecha actual.
   getToday(): Date{

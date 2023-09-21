@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { IAsignacionDetalle, IValesADevolver, ILiquidacion, IAnularMision } from '../interfaces/asignacion.interface';
+import { IAsignacionDetalle, IValesADevolver, ILiquidacion, IAnularMision, IAsignacionValeSolicitud } from '../interfaces/asignacion.interface';
 import { environment } from "src/environments/environment";
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -61,17 +61,13 @@ export class DetalleService {
         }
       );
   }
-  ObtenerLista(): Observable<IDocumentosvale[]> {
-    return this.http.get<IDocumentosvale[]>(`${this.baseUrl}/document`).pipe(
-      map(documentos => documentos.reverse()),
-      catchError(error => {
-        console.error('Error en la solicitud HTTP:', error);
-        return throwError(error);
-      })
-    );
+  
+  ObtenerLista(id: string){
+    return this.http.get<IDocumentosvale[]>(`${this.baseUrl}/document/${id}`);
   }
 
 
+  
   public NuevosDatos(document: IDocumentosvale, file: File): Observable<Object> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
@@ -90,7 +86,11 @@ export class DetalleService {
   getDetalleAsignacionVale(codigoAsignacion: string) {
     return this.http.get<IAsignacionDetalle>(`${this.baseUrl}/asignacionvale/listar/${codigoAsignacion}`);
   }
+  getAsignacionValeSolicitudVale(codigoAsignacion: string) {
+    return this.http.get<IAsignacionValeSolicitud>(`${this.baseUrl}/asignacionvale/ver/${codigoAsignacion}`);
+  }
 
+  
   devolverVales(valesParaDevolucion:IValesADevolver) {
     console.log("interfaz: ", valesParaDevolucion);
 

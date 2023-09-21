@@ -5,6 +5,7 @@ import { DetalleService } from '../../services/detalle.service';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { UploadService } from '../../services/upload.service';
 import { Observable, Subscription } from 'rxjs';
+import { IAsignacionValeSolicitud } from '../../interfaces/asignacion.interface';
 
 @Component({
   selector: 'app-detalle-documentos',
@@ -16,9 +17,12 @@ export class DetalleDocumentosComponent  {
   @Input() titulo!: string;
   entradasalidas: IDocumentosvale[]=[];
   @Input() queryString: string;
+  @Input() codigoAsignacion: string = "";
+  asignacionSolicitud: IAsignacionValeSolicitud;
   p: any;
   @Input() busqueda: string = '';
   termBusca: string = ''; // Variable para rastrear el término de búsqueda
+  idSolicitud: string;
   b: number = 1;
   //para descargar documentos
   myFiles: File[]=[];
@@ -40,7 +44,7 @@ export class DetalleDocumentosComponent  {
   constructor(private modalService: NgbModal, private detalleservice: DetalleService, private uploadservice: UploadService) { }
 
   ngOnInit(): void {
-    this.obtenerLista();
+    this.ObtenerSolicitudValeById(this.codigoAsignacion);
   }
   filtrarDatos() {
     return this.entradasalidas.filter(data =>
@@ -81,8 +85,8 @@ export class DetalleDocumentosComponent  {
     });
 
   }*/
-  private obtenerLista() {//para poder mostrar e la tabla
-    this.detalleservice.ObtenerLista().subscribe(
+  private obtenerLista(id:string) {//para poder mostrar e la tabla
+    this.detalleservice.ObtenerLista(id).subscribe(
       (resp: IDocumentosvale[]) => {
         this.entradasalidas = resp;
         console.log(resp);
@@ -92,10 +96,16 @@ export class DetalleDocumentosComponent  {
       }
     );
   }
-  
 
-  obtenerDatosParaTabla(): any[]{
-     return [this.obtenerLista()]
+  
+  ObtenerSolicitudValeById(codigoA: string) {
+    this.detalleservice.getAsignacionValeSolicitudVale(codigoA).subscribe({
+      next: (data) => {
+        this.asignacionSolicitud = data;
+        this.idSolicitud=this.asignacionSolicitud.solicitudVale.idSolicitudVale;
+        this.obtenerLista(this.idSolicitud);
+      },
+    });
   }
 
 }

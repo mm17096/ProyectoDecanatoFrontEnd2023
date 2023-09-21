@@ -14,7 +14,7 @@
       <div class="row">
         <div class="col-2"></div>
         <div class="col-lg-6">
-          <app-tabla-detalle [codigoAsignacion]="codigoAsignacion"></app-tabla-detalle>
+          <app-tabla-detalle [codigoAsignacion]="codigoAsignacion" [mision]="mision"></app-tabla-detalle>
         </div>
         <div class="col-2"></div>
       </div>
@@ -30,7 +30,8 @@
           <div style="margin-left: 10px;">
             <app-detalle-documentos
             [leyenda]="'Detalle'"
-            [titulo]="'Detalle documentos'">
+            [titulo]="'Detalle documentos'"  [codigoAsignacion]="codigoAsignacion"
+            >
             </app-detalle-documentos>
           </div>
 

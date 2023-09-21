@@ -279,27 +279,18 @@ titulo1.style.font = { bold: true, size: 12,
              conn++;
              con1++;
             // console.log(conn)
+            this.valor.push({inde:index,
+              cantidad:item.cantidadvale,
+              valor:item.valor,valorAntes:this.precio,
+            idA:item.idasignacionvale,
+          con:conn,conv:conn1});
              cell1 = 0;
           }
           row = fileInsertar[index];
         row.values = [
             `${item.correlativo}`,
             `${''}`,
-             /* `${'$'}`,
-                `${'$'}`,
-                  `${''}`,
-                    `${'$'}`,
-                      `${'$'}`,
-                        `${''}`,
-                          `${'$'}`,
-                            `${'$'}`,*/
-/*`${item.cantidadvale}`,
-                    `${'$'+ item.valor}`,
-                      `${'$'+(item.cantidadvale*item.valor)}`,
-                        `${''}`,
-                          `${'$'+item.valor}`,
-                            `${'$'+(item.cantidadvale*item.valor)}`,*/
-                              //`${item.fecha}`
+            
          ];
          index++
         if(item.idasignacionvale != this.cantvale){
@@ -311,9 +302,6 @@ titulo1.style.font = { bold: true, size: 12,
                   `${item.cantidadvale}`,
                     `${'$'+ item.valor}`,
                       `${'$'+(item.cantidadvale*item.valor)}`,
-                       /* `${''}`,
-                          `${'$'+item.valor}`,
-                            `${'$'+item.valor}`,*/
                                `${item.fecha}`
          ];
          this.cantvale = item.idasignacionvale;
@@ -324,7 +312,12 @@ titulo1.style.font = { bold: true, size: 12,
         }else if(item.valor != this.precio){
           con++;
           cell=index;
-          this.valor.push({inde:index,cantidad:item.cantidadvale,valor:item.valor,valorAntes:this.precio});
+          conn1++;
+          this.valor.push({inde:index,
+            cantidad:item.cantidadvale,
+            valor:item.valor,valorAntes:this.precio,
+          idA:item.idasignacionvale,
+        con:conn,conv:conn1});
           row.values = [
             `${item.correlativo}`,
              `${''}`,
@@ -333,9 +326,7 @@ titulo1.style.font = { bold: true, size: 12,
                   `${item.cantidadvale}`,
                     `${'$'+ item.valor}`,
                       `${'$'+(item.cantidadvale*item.valor)}`,
-                       /* `${''}`,
-                          `${'$'+item.valor}`,
-                            `${'$'+item.valor}`,*/
+                      
                                `${item.fecha}`
          ];
          this.precio = item.valor;
@@ -345,6 +336,7 @@ titulo1.style.font = { bold: true, size: 12,
         this.fecha = item.fecha;
       }
       });
+      //------------
       ['A','B', 'C', 'D', 'E', 'F', 'G', 'H'].forEach((columnKey) => {
         sheet.getCell(`${columnKey}${index+13}`).font = {
         bold: true,
@@ -400,7 +392,7 @@ titulo1.style.font = { bold: true, size: 12,
          ];
          index++
          cantcompra = cantcompra + item.cantidad;
-         cantcomprapu = cantcomprapu + item.preciounitario;
+         cantcomprapu = cantcomprapu + item.cantidad*item.preciounitario;
         }else{
       row.values = [
         'DEl '+ `${item.codigoinicio}`+' AL '+`${item.codigofin}`,
@@ -417,7 +409,7 @@ titulo1.style.font = { bold: true, size: 12,
      ];
      index++
      cantcompra = cantcompra + item.cantidad;
-     cantcomprapu = cantcomprapu + item.preciounitario;
+     cantcomprapu = cantcomprapu + item.cantidad*item.preciounitario;
       }
       this.fechac = item.fechacompra;
     }
@@ -453,16 +445,8 @@ titulo1.style.font = { bold: true, size: 12,
         argb: 'FF000000'
         }
         };
-       /* const titulo022 = sheet.getCell('C'+`${index+13}`);
-      titulo022.value = `${cantcomprapu}`;
-      titulo022.style.font = { bold: true, size: 12,
-        name: 'Antique Olive', 
-        color: {
-        argb: 'FF000000'
-        }
-        };*/
         const titulo023 = sheet.getCell('D'+`${index+13}`);
-      titulo023.value = `${cantcompra*cantcomprapu}`;
+      titulo023.value = `${cantcomprapu}`;
       titulo023.style.font = { bold: true, size: 12,
         name: 'Antique Olive', 
         color: {
@@ -492,37 +476,7 @@ titulo1.style.font = { bold: true, size: 12,
           color: {
           argb: 'FF000000'
           }
-          };
-        /*  sheet.mergeCells('A'+`${index+15}`, 'E'+`${index+15}`);
-          ['A','B', 'C', 'D'].forEach((columnKey) => {
-            sheet.getCell(`${columnKey}${index+15}`).font = {
-            bold: true,
-            color: {argb: '000000' },
-            size: 12,
-            italic: true,
-             };
-            sheet.getCell(`${columnKey}${index+15}`).fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: {argb: 'C7F6FF' }, 
-            bgColor: {argb: ''},
-            };
-            });*/
-           /* ['A','B', 'C', 'D', 'E', 'F', 'G', 'H'].forEach((columnKey) => {
-              sheet.getCell(`${columnKey}${index+15}`).font = {
-              bold: true,
-              color: {argb: '000000' },
-              size: 12,
-              italic: true,
-               };
-              sheet.getCell(`${columnKey}${index+15}`).fill = {
-              type: 'pattern',
-              pattern: 'solid',
-              fgColor: {argb: 'C7F6FF' }, 
-              bgColor: {argb: ''},
-              };
-              });*/
-             
+          };      
            // this.fechaActual = new Date();
            sheet.mergeCells('A'+`${index+15}`, 'E'+`${index+15}`);
            ['A','B', 'C', 'D'].forEach((columnKey) => {
@@ -547,16 +501,23 @@ titulo1.style.font = { bold: true, size: 12,
           argb: 'FF000000'
           }
           };
-      console.log('Es'+`${this.valor.length}`)
-      //-------------------------------------------
+
       for(let i=0; i<this.valor.length; i++){
-      const titulo10 = sheet.getCell('E'+`${this.valor[i].inde+12}`);
-      titulo10.value = `${this.cantidad1[i].cant}`;
-     /* const titulo11 = sheet.getCell('E'+`${(this.valor[i].inde+12)-this.cantidad1[i].cant}`);
-      titulo11.value = `${(this.valor[i].cantidad-this.cantidad1[i].cant)}`;
-      console.log(this.valor);*/
+        if(this.valor[i].valor != this.valor[i].valorAntes){
+            const tituloff0= sheet.getCell('E'+`${this.valor[i].inde+12-(this.valor[i].cantidad-this.valor[i].conv)}`);
+            tituloff0.value = `${this.valor[i].cantidad-this.valor[i].conv}`+' DE '+ `${this.valor[i].cantidad}`;
+
+            const tituloff = sheet.getCell('E'+`${this.valor[i].inde+12}`);
+            tituloff.value = `${this.valor[i].conv}`+' DE '+ `${this.valor[i].cantidad}`;
+            const tituloff1 = sheet.getCell('G'+`${this.valor[i].inde+12}`);
+            tituloff1.value = `${this.valor[i].conv*this.valor[i].valor}`;
+
+            const tituloff2 = sheet.getCell('G'+`${this.valor[i].inde+12-(this.valor[i].cantidad-this.valor[i].conv)}`);
+            tituloff2.value = `${(this.valor[i].cantidad-this.valor[i].conv)*this.valor[i].valorAntes}`;
+            console.log(this.valor[i]);
+        }
       }
-      
+      //---------------------------------------------------------
      /* let j = 0;
       let cant = 0;
       let jj =0;

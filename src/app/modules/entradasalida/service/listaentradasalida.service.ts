@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { EntradaSalidaI, IEntradaSalida, IsolicitudVehiculo } from '../interface/EntSalinterface';
+import { EntradaSalidaI, IEntradaSalida } from '../interface/EntSalinterface';
+import {  IsolicitudVehiculo } from '../interface/VehiculoEntradasalida';
 import { Observable } from 'rxjs';
 import { IVehiculoentradaSalida } from '../interface/VehiculoEntradasalida';
 import { map } from 'rxjs/operators';
@@ -88,7 +89,7 @@ export class ListaentradasalidaService {
   }
 
 
-  buscarVehiculo(termino: string): Observable<IVehiculoentradaSalida[]> {
+  buscarVehiculo(termino: string): Observable<IsolicitudVehiculo[]> {
     // Recupera el token de acceso desde el local storage
     const token = localStorage.getItem('token');
 
@@ -103,12 +104,12 @@ export class ListaentradasalidaService {
     };
 
     if (termino.length > 1) {
-      return this.http.get<IVehiculoentradaSalida[]>(`${this.baseUrl}/vehiculo/listasinpagina/${termino}`, requestOptions).pipe(
-          map(vehiculos=>vehiculos.filter(vehiculos=>vehiculos.estado===8))
+     return this.http.get<IsolicitudVehiculo[]>(`${this.baseUrl}/solicitudvehiculo/listasinpagina/${termino}`, requestOptions).pipe(
+          map(vehiculos=>vehiculos.filter(vehiculos=>vehiculos.estado===4))
       );
     } else {
-      return this.http.get<IVehiculoentradaSalida[]>(`${this.baseUrl}/vehiculo/listasinpagina`, requestOptions).pipe(
-        map(vehiculos=>vehiculos.filter(vehiculos=>vehiculos.estado===8))
+      return this.http.get<IsolicitudVehiculo[]>(`${this.baseUrl}/solicitudvehiculo/lista`, requestOptions).pipe(
+        map(vehiculos=>vehiculos.filter(vehiculos=>vehiculos.estado===4))
       )
     }
   }

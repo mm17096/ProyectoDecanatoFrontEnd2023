@@ -57,11 +57,7 @@ export class SolicitudValeAprobarComponent implements OnInit {
       },
     });
   }
-  vaciarFechas() {
-    while (this.fechaformateada.length > 0) {
-      this.fechaformateada.pop();
-    }
-  }
+
   filtrar(event: any) {
     this.filtroEstado = event;
     this.getSolicitudesVale(this.filtroEstado);
@@ -77,7 +73,7 @@ export class SolicitudValeAprobarComponent implements OnInit {
     }
   }
 
-  obtenerFechaFormateada(data: ISolicitudValeAprobar) {
+  obtenerFechaFormateada(data: any) {
     if (Array.isArray(data) && data.length > 0) {
       //vacio las fechas
       this.vaciarFechas();
@@ -86,9 +82,9 @@ export class SolicitudValeAprobarComponent implements OnInit {
 
         this.fechaSalida = data[index].fechaSalida;
 
-        const fechaf = this.obtenerNombreDiaYMes(this.fechaSalida);
-        const anio = this.dividirFecha(this.fechaSalida);
-        const dia = this.dividirFecha(this.fechaSalida);
+        const fechaf = this.service.obtenerNombreDiaYMes(this.fechaSalida);
+        const anio = this.service.dividirFecha(this.fechaSalida);
+        const dia = this.service.dividirFecha(this.fechaSalida);
         this.fechaformateada.push(
           fechaf.nombreDia +
             ", " +
@@ -102,6 +98,11 @@ export class SolicitudValeAprobarComponent implements OnInit {
       // Por ejemplo, data[0].nombreSolicitante para acceder al nombre del solicitante del primer elemento
     }
   }
+  vaciarFechas() {
+    while (this.fechaformateada.length > 0) {
+      this.fechaformateada.pop();
+    }
+  }
 
   verDetalle() {}
 
@@ -109,40 +110,5 @@ export class SolicitudValeAprobarComponent implements OnInit {
 
   aprobar() {}
 
-  obtenerNombreDiaYMes(
-    fechaStr: string
-  ): { nombreDia: string; nombreMes: string } | null {
-    const fecha = new Date(fechaStr);
 
-    // Verificar si la fecha es válida
-    if (isNaN(fecha.getTime())) {
-      return null; // La fecha no es válida
-    }
-
-    const opcionesDia: Intl.DateTimeFormatOptions = { weekday: "long" }; // 'long' para obtener el nombre completo del día
-    const opcionesMes: Intl.DateTimeFormatOptions = { month: "long" }; // 'long' para obtener el nombre completo del mes
-
-    const nombreDia = fecha.toLocaleDateString(undefined, opcionesDia);
-    const nombreMes = fecha.toLocaleDateString(undefined, opcionesMes);
-
-    return { nombreDia, nombreMes };
-  }
-
-  dividirFecha(
-    fechaStr: string
-  ): { anio: string; mes: string; día: string } | null {
-    // Dividir la cadena de fecha en sus componentes utilizando '/'
-    const partes = fechaStr.split("-");
-
-    // Verificar si hay tres componentes (año, mes y día)
-    if (partes.length === 3) {
-      const anio = partes[0];
-      const mes = partes[1];
-      const día = partes[2];
-
-      return { anio, mes, día };
-    } else {
-      return null; // La cadena de fecha no tiene el formato esperado
-    }
-  }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { IAsignacionDetalle, IValesADevolver } from '../interfaces/asignacion.interface';
+import { IAsignacionDetalle, IValesADevolver, ILiquidacion, IAnularMision } from '../interfaces/asignacion.interface';
 import { environment } from "src/environments/environment";
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -48,6 +48,16 @@ export class DetalleService {
     return this.http.post<IValesADevolver>(`${this.baseUrl}/asignacionvale/devolver`, valesParaDevolucion);
   }
 
+  liquidarVales(valesParaLiquidar:ILiquidacion) {
+    console.log("interfaz: ", valesParaLiquidar);
+    return this.http.post<ILiquidacion>(`${this.baseUrl}/asignacionvale/liquidar`, valesParaLiquidar);
+  }
+
+  anularMision(misionAnulada: IAnularMision){
+    console.log("interfaz: ", misionAnulada);
+    return this.http.post<IAnularMision>(`${this.baseUrl}/asignacionvale/anular`, misionAnulada);
+  }
+
   async mensajesConfirmarDevolucion(
     icono: SweetAlertIcon = "warning",
     title: string = "¿Está seguro de devolver?",
@@ -86,9 +96,46 @@ export class DetalleService {
   }
   async mensajesConfirmarLiquidacion(
     icono: SweetAlertIcon = "warning",
-    title: string = "¿Está seguro de guardar?",
+    title: string = "¿Está seguro de liquidar?",
     label: string = "Algunos datos no se podrán revertir, digite: ",
-    palabraClave: string = "guardar"
+    palabraClave: string = "liquidar"
+  ) {
+    let estado = false;
+    const palabra = palabraClave;
+
+    const { value: valorPalabra } = await Swal.fire({
+      icon: icono,
+      title: title,
+      input: "text",
+      inputLabel: label + palabraClave,
+      inputValue: "",
+      showCancelButton: true,
+      confirmButtonColor: '#972727',
+      confirmButtonText: "Aceptar",
+      cancelButtonColor: '#2c3136',
+      cancelButtonText: "Cancelar",
+      inputValidator: (value) => {
+        if (!value) {
+          return "¡Tiene que escribir algo!";
+        }
+        if (value != palabra) {
+          return "¡No coincide!";
+        }
+      },
+    });
+
+    if (valorPalabra) {
+      estado = true;
+    }
+
+    return estado;
+  }
+
+  async mensajesConfirmarAnular(
+    icono: SweetAlertIcon = "warning",
+    title: string = "¿Está seguro de Anular?",
+    label: string = "Algunos datos no se podrán revertir, digite: ",
+    palabraClave: string = "anular"
   ) {
     let estado = false;
     const palabra = palabraClave;

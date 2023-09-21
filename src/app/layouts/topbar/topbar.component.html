@@ -54,14 +54,15 @@
       <div class="dropdown d-inline-block" ngbDropdown>
         <div class="content">
           <img class="rounded-circle header-profile-user"
-            [src]="fotoEmpleado !== '' ? fotoEmpleado : './../../../assets/images/Default-Avatar.png'" alt="Header Avatar">
+            [src]="fotoEmpleado !== '' ? fotoEmpleado : './../../../assets/images/Default-Avatar.png'"
+            alt="Header Avatar">
           <div class="vertical-line"></div>
           <button type="button" class="btn header-item header-profile-name" ngbDropdownToggle
             id="page-header-user-dropdown">
             <span class="user-text-name">{{empleado?.nombre | slice:0:10}}{{ empleado?.nombre.length > 10? '...' : ''
               }}</span>
             <i class="mdi mdi-chevron-down ms-1"></i>
-            <p class="user-text">{{ empleado?.cargo.nombreCargo }}</p>
+            <p [class]="empleado?.cargo.nombreCargo.length > 8? 'user-text-long' : 'user-text'">{{ empleado?.cargo.nombreCargo | slice:0:20}}{{ empleado?.cargo.nombreCargo.length > 20? '...' : ''}}</p>
             <span class="user-text-2" *ngIf="empleado?.jefe">Jefe Dpto</span>
           </button>
         </div>
@@ -69,24 +70,24 @@
 
         <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
           <!-- item-->
-          <a class="dropdown-item" routerLink="/contacts/profile"><i
-              class="bx bx-user font-size-16 align-middle me-1"></i>
-            {{ 'Perfil' | translate}}</a>
-          <a class="dropdown-item d-block" href="javascript: void(0);"><i
+          <app-modal [leyenda]="'Datos'"></app-modal>
+
+          <app-modal [leyenda]="'Credenciales'" [usuario]="usuario"></app-modal>
+
+<!--           <a class="dropdown-item d-block" href="javascript: void(0);"><i
               class="bx bx-wrench font-size-16 align-middle me-1"></i>{{
             'Configuración' | translate}} </a>
           <a class="dropdown-item" href="javascript: void(0);"><i
               class="bx bx-lock-open font-size-16 align-middle me-1"></i>
             {{ 'Bloquear' | translate}}</a>
-          <div class="dropdown-divider"></div>
+          <div class="dropdown-divider"></div> -->
           <a class="dropdown-item text-danger" href="javascript: void(0);" (click)="logout()"><i
               class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i>
             {{ 'Cerrar Sesión' | translate}}</a>
         </div>
+
       </div>
 
     </div>
   </div>
 </header>
-
-<app-modal></app-modal>

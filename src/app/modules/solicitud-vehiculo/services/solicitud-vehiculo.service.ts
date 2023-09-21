@@ -14,6 +14,7 @@ export class SolicitudVehiculoService {
   private url= environment.baseUrl;
 
   listSoliVehiculo : ISolicitudVehiculo [] = [];
+  listSoliVehiculoRol : ISolicitudVehiculo [] = [];
   listVehiculos: IVehiculos [] = [];
 
   constructor(private http: HttpClient) { }
@@ -81,5 +82,24 @@ export class SolicitudVehiculoService {
 
   registrarSoliVe(solicitudVehiculo: ISolicitudVehiculo){
     return this.http.post<ISolicitudVehiculo>( `${this.url}/solicitudvehiculo/insert`, solicitudVehiculo);
+  }
+
+  enviarPdfPasajeros(multiPart: FormData){
+    console.log("docus:", multiPart);
+    return this.http.post<any>(`${this.url}/documentosoli/upload`, multiPart);
+  }
+
+  getSolicitudesRol(rol: string){
+    this.http
+        .get(`${this.url}/solicitudvehiculo/listado/${rol}`)
+        .pipe(map((resp: any) => resp as ISolicitudVehiculo[]))
+        .subscribe(
+          (soliVe: ISolicitudVehiculo[]) => {
+            this.listSoliVehiculoRol = soliVe;
+          },
+          (error) => {
+            console.log("Error al obtener las solicitudes de vehiculo", error);
+          }
+        );
   }
 }

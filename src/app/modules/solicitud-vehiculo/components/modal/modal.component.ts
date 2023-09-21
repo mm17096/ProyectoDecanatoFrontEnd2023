@@ -8,7 +8,7 @@ import {
   Validators
 } from "@angular/forms";
 import {Router} from "@angular/router";
-import {IPais, IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
+import {IDocumentoSoliVe, IPais, IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 
 import {map} from "rxjs/operators";
@@ -48,6 +48,9 @@ export class ModalComponent implements OnInit {
   cantidadPersonas: number = 0;
 
   pasajeroFormControls: FormControl[] = [];
+  soliSave : ISolicitudVehiculo [] = [];
+  file!: File;
+  documentoSoliVe: IDocumentoSoliVe [] = [];
 
   alerts = [
     {
@@ -72,8 +75,8 @@ export class ModalComponent implements OnInit {
               ) { }
 
   ngOnInit(): void {
-    console.log(this.usuarioActivo);
-    console.log("data",this.soliVeOd);
+    //console.log(this.usuarioActivo);
+    //console.log("data",this.soliVeOd);
     this.iniciarFormulario();
     this.llenarSelectDepartamentos();
     this.soliVeService.obtenerVehiculos();
@@ -142,47 +145,55 @@ export class ModalComponent implements OnInit {
        if(this.validarfecha(solicitudVehiculo.fechaSolicitud)){
          if (this.validarfecha(solicitudVehiculo.fechaSalida)){
            if(this.validarfecha(solicitudVehiculo.fechaEntrada)){
-             //  vacío para almacenar los datos de los pasajeros
-             const pasajerosData = [];
+             if(this.file  != null
+              || solicitudVehiculo.cantidadPersonas < 6){
+                  //  vacío para almacenar los datos de los pasajeros
+               const pasajerosData = [];
 
-             // Recorrer los controles de los pasajeros
-             for (const control of this.pasajeroFormControls) {
-               // Obtener el valor del control
-               const nombrePasajero = control.value;
+               // Recorrer los controles de los pasajeros
+               for (const control of this.pasajeroFormControls) {
+                 // Obtener el valor del control
+                 const nombrePasajero = control.value;
 
-               // objeto con el valor del control y un ID vacío
-               const pasajero = { id: '', nombrePasajero };
+                 // objeto con el valor del control y un ID vacío
+                 const pasajero = { id: '', nombrePasajero };
 
-               // Agregar el objeto al arreglo de pasajerosData
-               pasajerosData.push(pasajero);
-             }
-
-             solicitudVehiculo.listaPasajeros = pasajerosData;
-
-             //console.log("dataPas: ",pasajerosData);
-
-             // validacion lista de pasajeros
-             const todosLlenos = pasajerosData.every((pasajero) => {
-               const value = pasajero.nombrePasajero;
-
-               if (typeof value === 'string' && value.trim() !== '') {
-                 return true;
+                 // Agregar el objeto al arreglo de pasajerosData
+                 pasajerosData.push(pasajero);
                }
 
-               return false;
-             });
+               solicitudVehiculo.listaPasajeros = pasajerosData;
 
-             if (!todosLlenos) {
-               this.mensajesService.mensajesToast(
-                 "warning",
-                 "Por favor, completa todos los nombres de los pasajeros."
-               );
-               // fin validacion de lista de pasajeros
+               //console.log("dataPas: ",pasajerosData);
+
+               // validacion lista de pasajeros
+               const todosLlenos = pasajerosData.every((pasajero) => {
+                 const value = pasajero.nombrePasajero;
+
+                 if (typeof value === 'string' && value.trim() !== '') {
+                   return true;
+                 }
+
+                 return false;
+               });
+
+               if (!todosLlenos) {
+                 this.mensajesService.mensajesToast(
+                   "warning",
+                   "Por favor, completa todos los nombres de los pasajeros."
+                 );
+                 // fin validacion de lista de pasajeros
+               } else {
+                 // Todos los nombres de los pasajeros están llenos, continuar con el envío de la solicitud.
+                 if ((await this.mensajesService.mensajesConfirmar()) == true) {
+                   this.registrarSoliVe();
+                 }
+               }
              } else {
-               // Todos los nombres de los pasajeros están llenos, continuar con el envío de la solicitud.
-               if ((await this.mensajesService.mensajesConfirmar()) == true) {
-                 this.registrarSoliVe();
-               }
+              this.mensajesService.mensajesToast(
+                "warning",
+                "Debe subir pdf de la lista de pasajeros"
+              );
              }
            } else {
              this.mensajesService.mensajesToast(
@@ -217,6 +228,12 @@ export class ModalComponent implements OnInit {
         control.markAsTouched()
       );
     }
+  }
+
+  // subir el archivo
+  cambioDeArchivo(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.file = (target.files as FileList)[0];
   }
 
   registrarSoliVe() : Promise<void> {
@@ -279,19 +296,56 @@ export class ModalComponent implements OnInit {
     return new Promise<void> ((resolve, reject) => {
       this.soliVeService.registrarSoliVe(solicitudVehiculo).subscribe({
         next: (resp: any) => {
+          this.soliSave = resp;
           Swal.close();
-          this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
-          this.mensajesService.mensajesToast("success", "Registro agregado");
-          this.modalService.dismissAll();
-          this.formularioSoliVe.reset();
-          resolve();
+
+          if (solicitudVehiculo.file != null && solicitudVehiculo.cantidadPersonas > 5) {
+              // enviar pdf
+            const formData = new FormData();
+            let obj = {
+              nombreDocumento: '',
+              urlDocumento: '',
+              fecha: this.obtenerFechaActual(new Date()),
+              codigoSolicitudVehiculo: {
+                codigoSolicitudVehiculo: resp.codigoSolicitudVehiculo,
+              }
+            }
+            formData.append('archivo', this.file!);
+            formData.append('entidad', new Blob([JSON.stringify(obj)], {type: 'application/json'}));
+
+            this.soliVeService.enviarPdfPasajeros(formData).subscribe({
+              next: (pdfResp: any) => {
+                //console.log(pdfResp);
+                this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
+                this.mensajesService.mensajesToast("success", "Registro agregado");
+                this.modalService.dismissAll();
+                this.formularioSoliVe.reset();
+                resolve();
+              },
+              error: (pdfError) => {
+                Swal.close();
+                this.mensajesService.mensajesSweet(
+                  'error',
+                  'Ups... Algo salió mal al enviar el PDF',
+                  pdfError.error.message
+                );
+                reject(pdfError);
+              },
+            });
+          } else {
+            this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
+            this.mensajesService.mensajesToast("success", "Registro agregado");
+            this.modalService.dismissAll();
+            this.formularioSoliVe.reset();
+            resolve();
+          }
         },
         error : (err) => {
           // Cerrar SweetAlert de carga
           Swal.close();
           this.mensajesService.mensajesSweet(
             "error",
-            "Ups... Algo salió mal",
+            "Ups... Algo salió mal al registrar la solicitud",
             err.error.message
           );
           reject(err); // Rechaza la promesa con el error
@@ -299,7 +353,6 @@ export class ModalComponent implements OnInit {
       });
     });
   }
-
 
   editarSoliVe(){}
 
@@ -360,6 +413,7 @@ export class ModalComponent implements OnInit {
       ],
       solicitante: [this.usuarioActivo?.codigoUsuario || '', [Validators.required]],
       listaPasajeros: this.fb.array([]),
+      file: ['',],
     });
   }
 
@@ -506,10 +560,5 @@ export class ModalComponent implements OnInit {
   }
   CambiarAlert(alert) {
     alert.show = !alert.show;
-  }
-
-  // subir el archivo
-  cambioDeArchivo(event: Event) {
-
   }
 }

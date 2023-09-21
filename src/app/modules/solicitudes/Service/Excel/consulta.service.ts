@@ -54,6 +54,8 @@ export class ConsultaService {
       estadovale:item.estadovale,
       fechavencimiento:item.fechavencimiento,
       iddetalleasignacionvale:item.iddetalleasignacionvale,
+      idasignacionvale:item.idasignacionvale,
+      valeid:item.valeid,
     }));
   }
 

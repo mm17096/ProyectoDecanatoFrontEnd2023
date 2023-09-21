@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { IProveedor } from "../../proveedor/interfaces/proveedor.interface";
 import { environment } from "src/environments/environment";
-import { IVale } from "../interfaces/vale.interface";
+import { IUsuarioMandarDto, IVale } from "../interfaces/vale.interface";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
 import { Observable } from "rxjs";
 import Swal from "sweetalert2";
@@ -128,7 +128,6 @@ export class DevolucionValeService {
 
   modificarPorCantidad(
     vales: IVale[],
-    idProveedor: string,
     concepto: string
   ): Observable<any> {
     const url = `${this.baseUrl}/vale/actualizarValesCantidad`;
@@ -136,7 +135,6 @@ export class DevolucionValeService {
     // Crea un objeto que coincide con la estructura de ActualizacionValesRequest
     const requestBody = {
       vales: vales,
-      idProveedor: idProveedor,
       concepto: concepto,
     };
 
@@ -146,5 +144,9 @@ export class DevolucionValeService {
 
     // Realiza la solicitud HTTP con el objeto modificado y devuelve un Observable
     return this.http.put(url, requestBody, options);
+  }
+
+  validarUsuario(usuarioMardarDto: IUsuarioMandarDto) {
+    return this.http.post(`${this.baseUrl}/vale/validarusuario`, usuarioMardarDto);
   }
 }

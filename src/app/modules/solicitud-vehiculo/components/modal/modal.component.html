@@ -526,7 +526,10 @@
             <div *ngIf="mostrarArchivoAdjunto" class="alert alert-warning">
               Por favor, adjunta la lista de pasajeros: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
                                                               class="text-danger">*</span>
-              <input type="file" (change)="cambioDeArchivo($event)" />
+              <input type="file"
+              id="file"
+              (change)="cambioDeArchivo($event)"
+              formControlName="file" />
             </div>
           </ng-template>
 

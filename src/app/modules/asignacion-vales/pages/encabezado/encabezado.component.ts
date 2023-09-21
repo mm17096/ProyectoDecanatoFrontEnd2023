@@ -76,7 +76,7 @@ export class EncabezadoComponent implements OnInit {
       next: (data) => {
         this.detalleAsignacion = data;
         this.mision = this.detalleAsignacion.mision;
-        console.log(this.detalleAsignacion);
+        console.log('asignacion vale:',this.detalleAsignacion);
       },
     });
   }

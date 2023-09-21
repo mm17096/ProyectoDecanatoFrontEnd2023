@@ -32,4 +32,19 @@ export interface ConsultaDto{
     estadovale:number;
     fechavencimiento:Date;
     iddetalleasignacionvale:String;
+    idasignacionvale:String;
+    valeid:String;
+}
+
+export interface ValidarVale{
+    inde:number;
+    cantidad:number;
+    valor:number;
+    valorAntes:number
+}
+
+export interface Cantidad{
+    cant:number;
+    veri:number;
+    conta:number;
 }

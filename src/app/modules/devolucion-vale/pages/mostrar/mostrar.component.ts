@@ -1,13 +1,16 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { IProveedor } from "src/app/modules/proveedor/interfaces/proveedor.interface";
 import { DevolucionValeService } from "../../services/devolucion-vale.service";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
 import {
   DECIMAL_VALIDATE,
+  EMAIL_VALIDATE_UES,
   INTEGER_VALIDATE,
 } from "src/app/constants/constants";
 import Swal from "sweetalert2";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { IUsuarioRespuestaDto } from "../../interfaces/vale.interface";
 
 @Component({
   selector: "app-mostrar",
@@ -17,6 +20,12 @@ import Swal from "sweetalert2";
 export class MostrarComponent implements OnInit {
   breadCrumbItems: Array<{}>;
   formularioGeneral: FormGroup;
+  proveedor?: IProveedor;
+
+  formularioUsuario: FormGroup;
+  @ViewChild("content") contentTemplate: any;
+  public showPassword: boolean = false;
+  usuarioRespuestaDto?: IUsuarioRespuestaDto;
 
   term: string = "";
 
@@ -29,6 +38,7 @@ export class MostrarComponent implements OnInit {
 
   private isNumber: string = DECIMAL_VALIDATE;
   private isInteger: string = INTEGER_VALIDATE;
+  private isEmail: string = EMAIL_VALIDATE_UES;
 
   alerts = [
     {
@@ -50,10 +60,12 @@ export class MostrarComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private devolucionValeService: DevolucionValeService,
-    private mensajesService: MensajesService
+    private mensajesService: MensajesService,
+    private modalService: NgbModal
   ) {
     this.formularioGeneral = this.iniciarFormulario();
     this.formularioGeneral.get("total_monetario").disable();
+    this.formularioUsuario = this.iniciarFormularioUsuario();
   }
 
   ngOnInit(): void {
@@ -64,6 +76,13 @@ export class MostrarComponent implements OnInit {
     this.devolucionValeService.getProveedor();
     this.devolucionValeService.getValesPorCantidad();
     this.devolucionValeService.getValesPorMonto();
+  }
+
+  private iniciarFormularioUsuario() {
+    return this.fb.group({
+      nombre: ["", [Validators.required, Validators.pattern(this.isEmail)]],
+      clave: ["", [Validators.required, Validators.maxLength(50)]],
+    });
   }
 
   private iniciarFormulario() {
@@ -149,18 +168,9 @@ export class MostrarComponent implements OnInit {
     }
   }
 
-  async registrarDevolucion() {
+  registrarDevolucion() {
     if (this.formularioGeneral.valid) {
-      if (
-        (await this.mensajesService.mensajesConfirmar(
-          "warning",
-          "¿Continuar con la acción?",
-          "No se podrá revertir acción, digite: ",
-          "devolver"
-        )) == true
-      ) {
-        this.editando();
-      }
+      this.openModal(this.contentTemplate);
     } else {
       this.mensajesService.mensajesToast(
         "warning",
@@ -172,9 +182,48 @@ export class MostrarComponent implements OnInit {
     }
   }
 
+  validarUsuario() {
+    const usuarioMardarDto = this.formularioUsuario.value;
+    if (this.formularioUsuario.valid) {
+      this.devolucionValeService.validarUsuario(usuarioMardarDto).subscribe({
+        next: (resp: IUsuarioRespuestaDto) => {
+          this.usuarioRespuestaDto = resp;
+          this.editando();
+        },
+        error: (err) => {
+          this.mensajesService.mensajesSweet(
+            "error",
+            "Ups... Algo salió mal",
+            err.error.message
+          );
+        },
+      });
+    } else {
+      this.mensajesService.mensajesToast(
+        "warning",
+        "Complete los que se indican"
+      );
+      return Object.values(this.formularioUsuario.controls).forEach((control) =>
+        control.markAsTouched()
+      );
+    }
+  }
+
   editando() {
-    const idproveedor = this.formularioGeneral.get("proveedor").value;
     const concepto = this.formularioGeneral.get("concepto").value;
+    this.proveedor = this.formularioGeneral.get("proveedor").value;
+
+    const nuevoconcepto =
+      "Ajuste a " +
+      this.proveedor.nombre +
+      ", autorizado por " +
+      this.usuarioRespuestaDto.empleado.nombre +
+      " " +
+      this.usuarioRespuestaDto.empleado.apellido +
+      " con cargo de " +
+      this.usuarioRespuestaDto.empleado.cargo.nombreCargo +
+      " en concepto de: " +
+      concepto;
 
     // Mostrar SweetAlert de carga
     Swal.fire({
@@ -188,16 +237,20 @@ export class MostrarComponent implements OnInit {
     });
 
     this.devolucionValeService
-      .modificarPorCantidad(this.listDatos, idproveedor, concepto)
+      .modificarPorCantidad(this.listDatos, nuevoconcepto)
       .subscribe({
         next: (resp: any) => {
           // Ocultar SweetAlert de carga
           Swal.close();
-          this.mensajesService.mensajesToast(
+          this.mensajesService.mensajesSweet(
             "success",
-            "Acción completada con éxito"
+            "Ajuste de vales completado",
+            "Acción realizada por "+this.usuarioRespuestaDto.empleado.nombre +
+            " " +
+            this.usuarioRespuestaDto.empleado.apellido
           );
           this.limpiarCampos();
+          this.modalService.dismissAll();
         },
         error: (err) => {
           // Ocultar SweetAlert de carga
@@ -232,6 +285,15 @@ export class MostrarComponent implements OnInit {
       : "";
   }
 
+  esCampoValidoUsuario(campo: string) {
+    const validarCampo = this.formularioUsuario.get(campo);
+    return !validarCampo?.valid && validarCampo?.touched
+      ? "is-invalid"
+      : validarCampo?.touched
+      ? "is-valid"
+      : "";
+  }
+
   CambiarAlert(alert) {
     alert.show = !alert.show;
   }
@@ -244,5 +306,20 @@ export class MostrarComponent implements OnInit {
 
   siMuestraAlertas() {
     return this.alerts.every((alert) => alert.show);
+  }
+
+  public togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  openModal(content: any) {
+    this.formularioUsuario.reset();
+    const modalOptions = {
+      centered: false,
+      size: "sm", // 'lg' para modal grande, 'sm' para modal pequeño
+      backdrop: "static" as "static",
+      keyboard: false, // Configura backdrop como 'static'
+    };
+    this.modalService.open(content, modalOptions);
   }
 }

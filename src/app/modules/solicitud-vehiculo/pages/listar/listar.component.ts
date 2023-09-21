@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 import {ISolicitudVehiculo} from "../../interfaces/data.interface";
+import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
 
 @Component({
   selector: 'app-listar',
@@ -16,11 +17,21 @@ export class ListarComponent implements OnInit {
 
   solicitudesVehiculo: ISolicitudVehiculo [] = [];
 
-  constructor( private soliVeService: SolicitudVehiculoService) { }
+  constructor( private soliVeService: SolicitudVehiculoService,
+    private userService: UsuarioService) { }
 
   ngOnInit(): void {
     this.breadCrumbItems = [{ label: 'Solicitud de Vehículo' }, { label: 'Lista', active: true }]; // miga de pan
+    this.userService.getUsuario();
+    this.soliVeService.getSolicitudesRol("JEFE_DEPTO");
+  }
 
+  get usuarioActivo(){
+    return this.userService.usuario;
+  }
+
+  get listSoliVeData(){
+    return this.soliVeService.listSoliVehiculoRol;
   }
 
   calcularNumeroCorrelativo(index: number): number {

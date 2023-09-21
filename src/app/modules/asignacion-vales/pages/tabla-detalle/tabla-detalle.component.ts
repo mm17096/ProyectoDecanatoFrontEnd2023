@@ -36,9 +36,11 @@ export class TablaDetalleComponent implements OnInit {
   ) {}
 
   @Input() codigoAsignacion: string = "";
+  @Input() mision: string = "";
 
   ngOnInit(): void {
     this.mostrarVales();
+    console.log('idtabla:',this.codigoAsignacion);
   }
 
   mostrarVales() {

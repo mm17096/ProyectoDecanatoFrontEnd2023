@@ -23,7 +23,7 @@ export class ListarComponent implements OnInit {
   ngOnInit(): void {
     this.breadCrumbItems = [{ label: 'Solicitud de Vehículo' }, { label: 'Lista', active: true }]; // miga de pan
     this.userService.getUsuario();
-    this.soliVeService.getSolicitudesRol("JEFE_DEPTO");
+    this.soliVeService.getSolicitudesRol("SECR_DECANATO");
   }
 
   get usuarioActivo(){

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {IEstados, IPais, ISolicitudVehiculo} from "../interfaces/data.interface";
+import {IEstados, IMotorista, IPais, ISolicitudVehiculo} from "../interfaces/data.interface";
 import {environment} from "../../../../environments/environment";
 import {map} from "rxjs/operators";
 import {IVehiculos} from "../../vehiculo/interfaces/vehiculo-interface";
@@ -16,6 +16,7 @@ export class SolicitudVehiculoService {
   listSoliVehiculo : ISolicitudVehiculo [] = [];
   listSoliVehiculoRol : ISolicitudVehiculo [] = [];
   listVehiculos: IVehiculos [] = [];
+  listMotorista: IMotorista[] = [];
 
   constructor(private http: HttpClient) { }
 
@@ -67,6 +68,21 @@ export class SolicitudVehiculoService {
           }
         );
   }
+
+  obtenerMotoristas() {
+    this.http
+      .get(`${this.url}/empleado/lista`)
+      .pipe(map((resp: any) => resp.content as IMotorista[]))
+      .subscribe(
+        (empleados: IMotorista[]) => {
+          console.log(empleados);
+          this.listMotorista = empleados; // Actualiza la propiedad listEmpleados
+        },
+        (error) => {
+          console.error("Error al obtener los empleados:", error);
+        }
+      );
+    }
 
   filtroPlacasVehiculo(clase: string,fechaSalida:string,fechaEntrada:string): Observable<IVehiculos[]> {
     return this.http

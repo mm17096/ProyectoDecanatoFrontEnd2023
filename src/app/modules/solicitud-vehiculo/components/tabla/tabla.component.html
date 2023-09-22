@@ -49,6 +49,13 @@
                   (click)="abrirModal('Detalle', data)"
                   ngbTooltip="Aprobar">
             <i class="mdi mdi-18px mdi-check-outline"></i></button>
+
+            <button type="button"
+                    *ngIf="opc == 'SECR_DECANATO' && solicitudesVehiculo.length>0 && solicitudesVehiculo[0].estado == 2"
+                    class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1"
+                  (click)="abrirModalSecre('Edicion', data)"
+                  ngbTooltip="Asignar">
+              <i class="mdi mdi-18px mdi-book-edit-outline"></i></button>
         </td>
 
       </tr>

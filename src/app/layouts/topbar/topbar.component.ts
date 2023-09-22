@@ -13,6 +13,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { MensajesService } from 'src/app/shared/global/mensajes.service';
 import { IEmpleado } from 'src/app/modules/empleado/interface/empleado.interface';
+import { IEmail } from 'src/app/account/auth/interfaces/usuario';
 
 @Pipe({ name: 'slice' })
 export class SlicePipe implements PipeTransform {
@@ -150,6 +151,44 @@ export class TopbarComponent implements OnInit {
       }
     });
   }
+
+  /* Enviar email */
+Email(){
+  const email: IEmail = {
+    asunto: 'mensaje de prueba',
+    receptor: 'kevineliasmejia@gmail.com',
+    mensaje: 'Este es un mensaje de prueba usando SendGrid'
+  }
+  
+  console.log(email);
+
+  this.usuarioService.SendEmail(email).subscribe(
+    (resp) => {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 2500,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      });
+      
+      Toast.fire({
+        icon: 'success',
+        text: '¡Email enviado!'
+      });
+    },
+    (err) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: err,
+      });
+    }
+  );
+}
 
   //// metodo par abrir la modal ////
   openModal(content: any) {

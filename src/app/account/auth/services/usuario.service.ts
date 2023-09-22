@@ -2,7 +2,7 @@ import { Injectable, NgZone, inject } from '@angular/core';
 import { Empleado, Usuario } from '../models/usuario.models';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { ILoginUsuario, IRegistroUsuario } from '../interfaces/usuario';
+import { IEmail, ILoginUsuario, IRegistroUsuario } from '../interfaces/usuario';
 import { environment } from 'src/environments/environment';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Observable, of, throwError } from 'rxjs';
@@ -25,7 +25,7 @@ export class UsuarioService {
   ) { }
 
   /* Creacion de usuario */
-  crearUsuario(forData: IRegistroUsuario) {
+/*   crearUsuario(forData: IRegistroUsuario) {
     console.log();
     return this.http.post(`${this.baseUrl}/usuarios`, forData).pipe(
       tap((resp: any) => {
@@ -33,7 +33,7 @@ export class UsuarioService {
         this.usuario = resp.usuario;
       })
     );
-  }
+  } */
 
   /* Para autentificar la entrada */
   login(forData: ILoginUsuario) {
@@ -147,6 +147,17 @@ export class UsuarioService {
     this.ngZone.run(() => {
       this.router.navigateByUrl('/account/login');
     });
+  }
+
+  SendEmail(body: IEmail){
+    return this.http.post(`${this.baseUrl}/correo/enviarmail`, body).pipe(
+      tap((resp: any) => {
+        console.log(resp);
+      }),
+      catchError(err => {
+        return throwError(err.error.message);
+      })
+    );
   }
 
   //servicio que forsa cerrar la sesion activa

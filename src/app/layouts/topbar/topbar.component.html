@@ -74,6 +74,8 @@
 
           <app-modal [leyenda]="'Credenciales'" [usuario]="usuario"></app-modal>
 
+          <a class="dropdown-item" (click)="Email()"><i class="bx bx-mail font-size-16 align-middle me-1"></i>
+            {{ 'Enviar Email' | translate}}</a>
 <!--           <a class="dropdown-item d-block" href="javascript: void(0);"><i
               class="bx bx-wrench font-size-16 align-middle me-1"></i>{{
             'Configuración' | translate}} </a>

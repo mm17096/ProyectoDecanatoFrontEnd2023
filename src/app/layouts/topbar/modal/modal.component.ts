@@ -28,6 +28,10 @@ export class ModalComponent implements OnInit {
   seguridad!: string;
   msjclaveconfir!: string;
   confirma!: string;
+  media!: boolean;
+  public showPassword: boolean = false;
+  public password: string = "";
+  public showPassword2: boolean = false;
 
   alerts = [
     {
@@ -39,13 +43,12 @@ export class ModalComponent implements OnInit {
     },
   ];
 
-  
   alerts2 = [
     {
       id: 1,
       type: "info",
       message:
-        "Complete los campos obligatorios (*); asegurece que las claves coincidan",
+        "Por favor, complete todos los campos obligatorios (*). Asegúrese de que las claves coincidan y tengan un nivel de seguridad medio. La clave debe incluir letras mayúsculas y minúsculas, tener más de 5 caracteres y contener caracteres especiales como '!@#$%^&'",
       show: false,
     },
   ];
@@ -66,6 +69,10 @@ export class ModalComponent implements OnInit {
     this.fotoEmpleado = this.usuarioService.empleadofoto;
     this.usuarioService.getEmpleado();
     this.usuarioService.getUsuario();
+    
+    if (this.leyenda == "Credenciales") {
+      this.restaurarAlerts2();
+    }
   }
 
   private iniciarFormularioE() {
@@ -130,13 +137,13 @@ export class ModalComponent implements OnInit {
       if (this.leyenda == "Datos") {
         this.registrandoE();
       } else {
-        if(this.confirma == "confirmada"){
+        if (this.confirma == "confirmada" && this.media) {
           this.registrandoU();
-        }else{
+        } else {
           Swal.fire({
             position: "center",
-            title: "Las claves no coinciden",
-            html: 'Asegurece de que las claves coincidan',
+            title: "Faltan parametros de seguridad",
+            html: "Las claves deben coincidir y tener seguridad media como minimo",
             icon: "warning",
           });
         }
@@ -154,6 +161,8 @@ export class ModalComponent implements OnInit {
   registrandoE() {
     this.EstructurandoFormE();
     const empleado = this.formEmpleado.value;
+
+    console.log(empleado);
 
     if (this.imagen === "no hay") {
       this.empleadoService.putEmpleado(empleado).subscribe(
@@ -233,9 +242,9 @@ export class ModalComponent implements OnInit {
   }
 
   EstructurandoFormE() {
-    const nombre = this.formEmpleado.get('nombre').value;
-    const apellido = this.formEmpleado.get('apellido').value;
-    const telefono = this.formEmpleado.get('telefono').value;
+    const nombre = this.formEmpleado.get("nombre").value;
+    const apellido = this.formEmpleado.get("apellido").value;
+    const telefono = this.formEmpleado.get("telefono").value;
 
     const objeto = this.usuarioService.empleado;
     objeto.nombre = nombre;
@@ -250,7 +259,6 @@ export class ModalComponent implements OnInit {
       departamento: objeto.departamento.codigoDepto,
     });
   }
-
 
   registrandoU() {
     this.EstructurandoFormU();
@@ -294,9 +302,8 @@ export class ModalComponent implements OnInit {
     );
   }
 
-
   EstructurandoFormU() {
-    const clave = this.formUsuario.get('clave').value;
+    const clave = this.formUsuario.get("clave").value;
 
     const objeto = this.usuarioService.usuario;
     objeto.clave = clave;
@@ -308,8 +315,8 @@ export class ModalComponent implements OnInit {
     return !validarCampo?.valid && validarCampo?.touched
       ? "is-invalid"
       : validarCampo?.touched
-        ? "is-valid"
-        : "";
+      ? "is-valid"
+      : "";
   }
 
   esCampoValidoU(campo: string) {
@@ -317,8 +324,8 @@ export class ModalComponent implements OnInit {
     return !validarCampo?.valid && validarCampo?.touched
       ? "is-invalid"
       : validarCampo?.touched
-        ? "is-valid"
-        : "";
+      ? "is-valid"
+      : "";
   }
 
   ///// Metodo para recargar la pagina /////
@@ -361,7 +368,6 @@ export class ModalComponent implements OnInit {
     return this.alerts2.every((alert2) => alert2.show);
   }
 
-
   SeguridadClave(event: any) {
     const clave = event.target.value;
 
@@ -374,7 +380,6 @@ export class ModalComponent implements OnInit {
       this.msjclave = "La clave es poco segura";
     }
   }
-
 
   VerificarClaves(event: any) {
     const clave = this.formUsuario.get("clave").value;
@@ -391,15 +396,31 @@ export class ModalComponent implements OnInit {
   }
 
   evaluarSeguridadClave(clave: string): "baja" | "media" | "alta" {
-    if (clave.length < 8) {
+    if (clave.length < 5) {
+      this.media = false;
       return "baja";
     }
     if (/^[a-zA-Z]+$/.test(clave)) {
-      return "baja";
+      this.media = true;
+      return "media";
     }
-    if (/[0-9]/.test(clave) && /[A-Z]/.test(clave) && /[!@#$%^&*]/.test(clave)) {
+    if (
+      /[0-9]/.test(clave) &&
+      /[A-Z]/.test(clave) &&
+      /[!@#$%^&*]/.test(clave)
+    ) {
+      this.media = true;
       return "alta";
     }
+    this.media = true;
     return "media";
+  }
+
+  public togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  public togglePasswordVisibility2(): void {
+    this.showPassword2 = !this.showPassword2;
   }
 }

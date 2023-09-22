@@ -124,6 +124,12 @@ export const MENU: MenuItem[] = [
         link: "/solicitudes/solicitudv",
         parentId: 11,
       },
+      {
+        id: 13,
+        label: "Solicitud de Transporte",
+        link: "/solicitudes/solicitante",
+        parentId: 11,
+      },
     ],
   },
   {

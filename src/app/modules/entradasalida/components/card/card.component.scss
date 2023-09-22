@@ -25,8 +25,8 @@
 
   .card {
     position: center;
-    width: 180px;
-    height: 300px;
+    width: 205px;//180
+    height: 340px;//350
     border-radius: 14px;
     z-index: 11;
     overflow: hidden;
@@ -42,7 +42,7 @@
     position: center;
     top: 5px;
     left: 5px;
-    width: 170px;
+    width: 195px;//170
     height: 600px;//para lo alto del margen normal
     z-index: 2;
     background: rgba(255, 255, 255, .95);

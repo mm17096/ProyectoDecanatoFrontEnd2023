@@ -11,9 +11,10 @@ import { NgxPaginationModule } from "ngx-pagination";
 import { UIModule } from "../../shared/ui/ui.module";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { SolicitudValeAprobarComponent } from './solicitud-vale-aprobar/solicitud-vale-aprobar.component';
+import { ValesAsignarComponent } from './solicitudvale/components/vales-asignar/vales-asignar.component';
 
 @NgModule({
-  declarations: [SolicitudvComponent, SolicitudvaleComponent, SolicitudValeAprobarComponent],
+  declarations: [SolicitudvComponent, SolicitudvaleComponent, SolicitudValeAprobarComponent, ValesAsignarComponent],
   imports: [
     CommonModule,
     SolicitudesRoutingModule,

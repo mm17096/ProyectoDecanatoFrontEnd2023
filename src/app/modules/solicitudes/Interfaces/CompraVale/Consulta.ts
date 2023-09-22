@@ -40,7 +40,10 @@ export interface ValidarVale{
     inde:number;
     cantidad:number;
     valor:number;
-    valorAntes:number
+    valorAntes:number;
+    idA:String;
+    con:number;
+    conv:number;
 }
 
 export interface Cantidad{

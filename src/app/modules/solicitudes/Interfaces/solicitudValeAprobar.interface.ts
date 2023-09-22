@@ -1,18 +1,22 @@
-export interface ISolicitudValeAprobar{
+export interface ISolicitudValeAprobar {
   codigoEmpleado: string;
-  cantidadVales: number;
-  cantidadPersonas: number;
-  mision: string;
+  cantidadVales: number
+  fechaSolicitud: string;
   fechaSalida: string;
   fechaEntrada: string;
-  nombreMotorista: string;
-  modeloVehiculo: string;
-  correoEmpleado: string;
+  cantidadPersonas: number;
+  unidadSolicitante: string;
+  estadoSolicitudVehiculo: number;
+  mision: string;
   estadoSolicitud: number;
   direccionMision: string;
-  estadoSolicitudVehiculo: number;
-  codigoSolicitudVehiculoS: string;
+  nombreMotorista: string;
+  correoEmpleado: string;
+  modeloVehiculo:string;
+  placaVehiculo: string;
+  codigoSolicitudVale: string;
   estadoEntradaSolicitudVale: number;
   nombreSolicitante: string;
-  codigoSolicitudVale: string;
+  observacionesSolicitudVale: string;
+  codigoSolicitudVehiculoS:string;
 }

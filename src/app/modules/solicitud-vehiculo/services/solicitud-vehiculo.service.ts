@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {IActualizarSoliVe, IEstados, IPais, ISolicitudVehiculo} from "../interfaces/data.interface";
+import {IActualizarSoliVe, IEstados, IPais, ISolicitudVehiculo, IMotorista} from "../interfaces/data.interface";
 import {environment} from "../../../../environments/environment";
 import {map, tap} from "rxjs/operators";
 import {IVehiculos} from "../../vehiculo/interfaces/vehiculo-interface";
@@ -18,7 +18,7 @@ export class SolicitudVehiculoService {
   listSoliVehiculo : ISolicitudVehiculo [] = [];
   listSoliVehiculoRol : ISolicitudVehiculo [] = [];
   listVehiculos: IVehiculos [] = [];
-  usuario!: Usuario;
+  listMotorista: IMotorista [] = [];
 
   constructor(private http: HttpClient) { }
 
@@ -87,9 +87,24 @@ export class SolicitudVehiculoService {
         );
   }
 
-  filtroPlacasVehiculo(clase: string): Observable<IVehiculos[]> {
+  obtenerMotoristas() {
+    this.http
+      .get(`${this.url}/empleado/lista`)
+      .pipe(map((resp: any) => resp.content as IMotorista[]))
+      .subscribe(
+        (empleados: IMotorista[]) => {
+          console.log(empleados);
+          this.listMotorista = empleados; // Actualiza la propiedad listEmpleados
+        },
+        (error) => {
+          console.error("Error al obtener los empleados:", error);
+        }
+      );
+    }
+
+  filtroPlacasVehiculo(clase: string,fechaSalida:string,fechaEntrada:string): Observable<IVehiculos[]> {
     return this.http
-      .get(`${this.url}/vehiculo/clase/${clase}`)
+      .get(`${this.url}/vehiculo/disponibilidad?claseName=${clase}&fechaSalida=${fechaSalida}&fechaEntrada=${fechaEntrada}`)
       .pipe(map((resp: any) => resp as IVehiculos[]));
   }
 
@@ -106,6 +121,10 @@ export class SolicitudVehiculoService {
   enviarPdfPasajeros(multiPart: FormData){
     console.log("docus:", multiPart);
     return this.http.post<any>(`${this.url}/documentosoli/upload`, multiPart);
+  }
+
+  updateSolicitudVehiculo(data: ISolicitudVehiculo){
+    return this.http.put<ISolicitudVehiculo>( `${this.url}/solicitudvehiculo/edit/${data.codigoSolicitudVehiculo}`, data);
   }
 
   getSolicitudesRol(rol: string){

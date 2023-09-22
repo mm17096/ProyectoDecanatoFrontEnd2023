@@ -3,25 +3,26 @@ import { Injectable } from "@angular/core";
 import { IVehiculos } from "../interfaces/vehiculo-interface";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { environment } from "src/environments/environment";
 
 @Injectable({
   providedIn: "root",
 })
 export class VehiculoService {
-  url = "http://localhost:8080/";
+  url = environment.baseUrl;
   listVehiclos:IVehiculos[]=[];
 
   constructor(private http: HttpClient) {}
 
   public gyetVehi(): Observable<IVehiculos[]> {
     return this.http
-      .get<IVehiculos[]>(this.url + "api/vehiculo/lista")
+      .get<IVehiculos[]>(this.url + "/vehiculo/lista")
       .pipe(map((resp: any) => resp.content as IVehiculos[]));
   }
 
   getVehiculos() {
     this.http
-      .get(`${this.url}api/vehiculo/lista`)
+      .get(`${this.url}/vehiculo/lista`)
       .pipe(map((resp: any) => resp.content as IVehiculos[]))
       .subscribe(
         (automovil: IVehiculos[]) => {
@@ -34,11 +35,11 @@ export class VehiculoService {
   }
 
   public guardarVehiculo(part:FormData){
-    return this.http.post(`${this.url}api/vehiculo/insertar`, part);
+    return this.http.post(`${this.url}/vehiculo/insertar`, part);
   }
 
   public editarVehiculo(part:FormData){
-    return this.http.put(`${this.url}api/vehiculo/editar`, part);
+    return this.http.put(`${this.url}/vehiculo/editar`, part);
   }
 
 }

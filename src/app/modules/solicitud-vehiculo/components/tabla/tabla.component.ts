@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {ModalComponent} from "../modal/modal.component";
+import { ModalSecretariaComponent } from '../modal-secretaria/modal-secretaria.component';
 import {MensajesService} from "../../../../shared/global/mensajes.service";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 import Swal from "sweetalert2";
@@ -47,6 +48,14 @@ export class TablaComponent implements OnInit {
     modalRef.componentInstance.leyenda = leyenda; // Pasa la leyenda al componente modal
     modalRef.componentInstance.soliVeOd = data;
     modalRef.componentInstance.vista = this.vista;
+    modalRef.componentInstance.usuarioActivo = this.userAcivo;
+  }
+
+  abrirModalSecre(leyenda: string, data: any) {
+    this.selectedData = data;
+    const modalRef = this.modalService.open(ModalSecretariaComponent, {size:'xl', backdrop: 'static'});
+    modalRef.componentInstance.leyenda = leyenda;
+    modalRef.componentInstance.soliVeOd = data;
     modalRef.componentInstance.usuarioActivo = this.userAcivo;
   }
 

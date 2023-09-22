@@ -58,9 +58,11 @@ interface ICargo {
 }
 
 interface IDepartamento {
-  codigoDepto: string;
-  nombre: string;
-  estado: number;
+  codigoDepto ?: string;
+  nombre :      string;
+  descripcion : string;
+  tipo :        string;
+  estado :      number;
 }
 
 export interface IPasajero {
@@ -68,22 +70,22 @@ export interface IPasajero {
   nombrePasajero: string;
 }
 
-interface IMotorista {
-  codigoEmpleado: string;
-  dui: string;
-  nombre: string;
-  apellido: string;
-  telefono: string;
-  licencia: string;
-  tipo_licencia: string;
-  fecha_licencia: Date;
-  estado: number;
-  jefe: boolean;
-  correo: string;
-  nombrefoto: string;
-  urlfoto: string;
-  cargo: ICargo;
-  departamento: IDepartamento;
+export interface IMotorista {
+  codigoEmpleado: string,
+    dui: string;
+    nombre: string;
+    apellido: string;
+    telefono: string;
+    licencia: string;
+    tipolicencia: string;
+    fechalicencia: Date;
+    estado: number;
+    jefe: boolean;
+    correo: string;
+    nombrefoto: string;
+    urlfoto: string;
+    cargo: ICargo;
+    departamento: IDepartamento;
 }
 
 interface IDocumento {

@@ -105,114 +105,81 @@ export class MensajesService {
 
     return estado;
   }
-
-  async mensajeAprobar(
+async mensajeSolicitarAprobacion(
     icono: SweetAlertIcon = "warning",
-    title: string = "¿Está seguro de aprobar la solicitud?",
-    label: string = "La acción no se podrá deshacer, digite: ",
-    palabraClave: string = "confirmar"
+    title: string = "Se solicitará al jefe de unidad la aprobación de la solicitud",
+    label: string = "¿Esta seguro?"
   ) {
     let estado = false;
-    const palabra = palabraClave;
 
-    const { value: valorPalabra } = await Swal.fire({
+    await Swal.fire({
       icon: icono,
       title: title,
-      input: "text",
-      inputLabel: label + palabraClave,
-      inputValue: "",
+      text: label,
       showCancelButton: true,
       confirmButtonColor: '#972727',
       confirmButtonText: "Aceptar",
       cancelButtonColor: '#2c3136',
       cancelButtonText: "Cancelar",
-      inputValidator: (value) => {
-        if (!value) {
-          return "¡Tiene que escribir algo!";
-        }
-        if (value != palabra) {
-          return "¡No coincide!";
-        }
-      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        estado = true;
+      }else{
+        estado = false;
+      }
     });
-
-    if (valorPalabra) {
-      estado = true;
-    }
 
     return estado;
   }
-
-  async mensajeRevision(
+  async mensajeSolicitudAprobada( cantVales: number,
     icono: SweetAlertIcon = "warning",
-    title: string = "¿Está seguro de mandar la solicitud a la secretaria para revisión?",
-    label: string = "La acción no se podrá deshacer, digite: ",
-    palabraClave: string = "confirmar"
+    title: string = "Aprobará la solicutd con " + cantVales + " Vales",
+    label: string = "¿Esta seguro?"
   ) {
     let estado = false;
-    const palabra = palabraClave;
 
-    const { value: valorPalabra } = await Swal.fire({
+    await Swal.fire({
       icon: icono,
       title: title,
-      input: "text",
-      inputLabel: label + palabraClave,
-      inputValue: "",
+      text: label,
       showCancelButton: true,
       confirmButtonColor: '#972727',
       confirmButtonText: "Aceptar",
       cancelButtonColor: '#2c3136',
       cancelButtonText: "Cancelar",
-      inputValidator: (value) => {
-        if (!value) {
-          return "¡Tiene que escribir algo!";
-        }
-        if (value != palabra) {
-          return "¡No coincide!";
-        }
-      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        estado = true;
+      }else{
+        estado = false;
+      }
     });
-
-    if (valorPalabra) {
-      estado = true;
-    }
 
     return estado;
   }
-
-  async mensajeAnular(
+  async mensajeSolicitudRevision(
     icono: SweetAlertIcon = "warning",
-    title: string = "¿Está seguro de anular la solicitud?",
-    label: string = "La acción no se podrá deshacer, digite: ",
-    palabraClave: string = "confirmar"
+    title: string = "Se enviará para que pueda ser revisada",
+    label: string = "¿Esta seguro?"
   ) {
     let estado = false;
-    const palabra = palabraClave;
 
-    const { value: valorPalabra } = await Swal.fire({
+    await Swal.fire({
       icon: icono,
       title: title,
-      input: "text",
-      inputLabel: label + palabraClave,
-      inputValue: "",
+      text: label,
       showCancelButton: true,
       confirmButtonColor: '#972727',
       confirmButtonText: "Aceptar",
       cancelButtonColor: '#2c3136',
       cancelButtonText: "Cancelar",
-      inputValidator: (value) => {
-        if (!value) {
-          return "¡Tiene que escribir algo!";
-        }
-        if (value != palabra) {
-          return "¡No coincide!";
-        }
-      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        estado = true;
+      }else{
+        estado = false;
+      }
     });
-
-    if (valorPalabra) {
-      estado = true;
-    }
 
     return estado;
   }

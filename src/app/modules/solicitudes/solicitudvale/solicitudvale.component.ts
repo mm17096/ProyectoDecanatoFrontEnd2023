@@ -24,7 +24,10 @@ import {
 } from "../Interfaces/asignacionvale.interface";
 import { NUMBER_VALIDATE } from "src/app/constants/constants";
 import { Router } from "@angular/router";
-import { ISolicitudValeAprobar } from "../Interfaces/solicitudValeAprobar.interface";
+import {
+  ISolcitudAprobar,
+  ISolicitudValeAprobar,
+} from "../Interfaces/solicitudValeAprobar.interface";
 
 @Component({
   selector: "app-solicitudvale",
@@ -109,6 +112,13 @@ export class SolicitudvaleComponent implements OnInit {
   //fecha de Salida
   fechaSalida: string;
 
+  //codigo de la oslicitud de vale
+  codigoSolicitudValeAprobar: string;
+
+  observacionesSolicitudVale: string;
+
+
+
   cantidadValesA: number;
   //fecha con formato
   fechaformateada = [];
@@ -129,21 +139,19 @@ export class SolicitudvaleComponent implements OnInit {
         Validators.required,
         Validators.pattern(this.isNumber),
       ]),
-      concepto: new FormControl("", [Validators.required]),
+
       fechaSolicitud: new FormControl("", [Validators.required]),
       fechaEntrada: new FormControl("", [Validators.required]),
       fechaSalida: new FormControl("", [Validators.required]),
-      tipo: new FormControl("", [Validators.required]),
       mision: new FormControl("", [Validators.required]),
-      estado: new FormControl("", [Validators.required]),
+      estado: new FormControl(""),
       motorista: new FormControl("", [Validators.required]),
       solicitante: new FormControl("", [Validators.required]),
       placa: new FormControl("", [Validators.required]),
       cantidadPersonas: new FormControl("", [Validators.required]),
       direccion: new FormControl("", [Validators.required]),
       unidadSolicitante: new FormControl("", [Validators.required]),
-      nombreJefeDepto: new FormControl("", [Validators.required]),
-      observacionRevision: new FormControl("", [Validators.required]),
+      observacionRevision: new FormControl(""),
     });
     this.cantidadValesA =
       this.formularioSolicitudVale.get("cantidadVales")?.value;
@@ -190,8 +198,8 @@ export class SolicitudvaleComponent implements OnInit {
   }
 
   //Liquida los valos y finaliza las solicitudes
-  liquidarVales(solicitudVehiculo: SolicitudVv) {
-    this.obtenerIdSolicitudVale(solicitudVehiculo.codigoSolicitudVehiculo);
+  liquidarVales(codigoSolicitudVale: ISolicitudValeAprobar) {
+    this.obtenerCodigoAsignacion(codigoSolicitudVale.codigoSolicitudVale);
   }
 
   //Obtiene el id de la solicitud de vale
@@ -282,11 +290,13 @@ export class SolicitudvaleComponent implements OnInit {
   mdAsignarVales(modal: any, solici: ISolicitudValeAprobar) {
     //esto es para obtener el id de la solicitud de vale
     const estadoSolicitud = solici.estadoSolicitud;
+    const codSolicitud = solici.codigoSolicitudVale;
 
-    if (estadoSolicitud === 4) {
+    this.codigoSolicitudVehiculo = solici.codigoSolicitudVehiculoS;
+    /* if (estadoSolicitud === 4) {
       this.codigoSolicitudVehiculo = solici.codigoSolicitudVehiculoS;
       this.obtenerIdSolicitudVale(this.codigoSolicitudVehiculo);
-    }
+    } */
 
     this.modalService.open(modal, { size: "lg", centered: true });
 
@@ -302,14 +312,18 @@ export class SolicitudvaleComponent implements OnInit {
     const cantidadPersonas = solici.cantidadPersonas;
     const direccion = solici.direccionMision;
     const unidadSolicitante = solici.unidadSolicitante;
+    const cantidadVales = solici.cantidadVales;
     let observacionRevision = solici.observacionesSolicitudVale;
     if (observacionRevision) {
       observacionRevision = solici.observacionesSolicitudVale;
+
     } else {
       observacionRevision = "";
     }
 
     //modal de detalle de solicitud de vehiculo
+    this.codigoSolicitudValeAprobar = codSolicitud;
+    this.formularioSolicitudVale.get("cantidadVales")?.setValue(cantidadVales);
     this.formularioSolicitudVale
       .get("fechaSolicitud")
       ?.setValue(String(fechaSolicitud));
@@ -339,16 +353,20 @@ export class SolicitudvaleComponent implements OnInit {
 
   //Guardar la asignación de vales
   async guardar() {
-    if (this.formularioSolicitudVale.valid) {
-      if (this.estadoSoli = "Nueva") {
+    console.log("form: ", this.formularioSolicitudVale);
 
+    if (this.formularioSolicitudVale.valid) {
+      if ((this.estadoSoli == "Nueva")) {
+        if ((await this.mensajesService.mensajeSolicitarAprobacion()) == true) {
+          // solicitar aprobación
+          this.solicitarAprobacion();
+        }
       } else {
         if ((await this.mensajesService.mensajeAsignar()) == true) {
-        // Guardar
-        this.registrando();
+          // Guardar
+          this.registrando();
+        }
       }
-      }
-
     } else {
       this.mensajesService.mensajesToast(
         "warning",
@@ -373,10 +391,9 @@ export class SolicitudvaleComponent implements OnInit {
     const asignarVales: IAsignacionVale = {
       estadoAsignacion: estadoAsignacion,
       fechaAsignacion: fechaAsignacion,
-      solicitudVale: this.codigoSolicitudVale.codigoSolicitudVale,
+      solicitudVale: this.codigoSolicitudValeAprobar,
       cantidadVales: cantidadVales,
     };
-
 
     Swal.fire({
       title: "Espere",
@@ -396,6 +413,58 @@ export class SolicitudvaleComponent implements OnInit {
           this.modalService.dismissAll();
           this.limpiarCampos();
           this.mensajesService.mensajesToast("success", "Vales Asignados");
+          resolve(); // Resuelve la promesa sin argumentos
+        },
+        error: (err) => {
+          // Cerrar SweetAlert de carga
+          Swal.close();
+          this.mensajesService.mensajesSweet(
+            "error",
+            "Ups... Algo salió mal",
+            err.error.message
+          );
+          reject(err); // Rechaza la promesa con el error
+        },
+      });
+    });
+  }
+
+  async solicitarAprobacion() {
+    //Asignaré los campos necesario para modificar la asignación
+    const cantidadVales =
+    this.formularioSolicitudVale.get("cantidadVales")?.value;
+    this.observacionesSolicitudVale = this.formularioSolicitudVale.get("observacionRevision")?.value;
+    const codigoSolicitud = this.paramSolicitudV;
+    const estadoSolicitud = 1;
+    new Date().toLocaleDateString();
+    const fechaAsignacion = this.obtenerFechaConFormato();
+
+    const solicitud: ISolcitudAprobar = {
+      codigoSolicitudVale: this.codigoSolicitudValeAprobar,
+      cantidadVales: cantidadVales,
+      estadoSolicitudVale: estadoSolicitud,
+      observaciones: this.observacionesSolicitudVale,
+    };
+    console.log("solictud: ", solicitud);
+
+    Swal.fire({
+      title: "Espere",
+      text: "Realizando la acción...",
+      icon: "info",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showCancelButton: false,
+      showConfirmButton: false,
+    });
+    return new Promise<void>((resolve, reject) => {
+      this.service.solicitarAprobacion(solicitud).subscribe({
+        next: (resp: any) => {
+          // Cerrar SweetAlert de carga
+          Swal.close();
+          this.getSolicitudesVale(8);
+          this.modalService.dismissAll();
+          this.limpiarCampos();
+          this.mensajesService.mensajesToast("success", "Enviada para Aprobar");
           resolve(); // Resuelve la promesa sin argumentos
         },
         error: (err) => {

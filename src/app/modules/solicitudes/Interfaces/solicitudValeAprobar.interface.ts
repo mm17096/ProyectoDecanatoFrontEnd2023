@@ -1,6 +1,6 @@
 export interface ISolicitudValeAprobar {
   codigoEmpleado: string;
-  cantidadVales: number
+  cantidadVales: number;
   fechaSolicitud: string;
   fechaSalida: string;
   fechaEntrada: string;
@@ -12,11 +12,18 @@ export interface ISolicitudValeAprobar {
   direccionMision: string;
   nombreMotorista: string;
   correoEmpleado: string;
-  modeloVehiculo:string;
+  modeloVehiculo: string;
   placaVehiculo: string;
   codigoSolicitudVale: string;
   estadoEntradaSolicitudVale: number;
   nombreSolicitante: string;
   observacionesSolicitudVale: string;
-  codigoSolicitudVehiculoS:string;
+  codigoSolicitudVehiculoS: string;
+}
+
+export interface ISolcitudAprobar {
+  codigoSolicitudVale: string;
+  cantidadVales: number;
+  estadoSolicitudVale: number;
+  observaciones: string;
 }

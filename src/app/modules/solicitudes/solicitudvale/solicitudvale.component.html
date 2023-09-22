@@ -37,6 +37,7 @@
                   <option value="6">Revisión</option>
                   <option value="5">Asignada</option>
                   <option value="16">Anuladas</option>
+                  <option value="7">Finalizadas</option>
                 </select>
               </div>
             </div>
@@ -191,7 +192,7 @@
     >
       <div class="row mt-2">
         <div class="col-lg-6">
-          <div class="row mb-4">
+          <div *ngIf="estadoSoli != 'Aprobada'" class="row mb-4">
             <label for="formrow-firstname-input"
               >Cantidad de vales
               <span
@@ -217,7 +218,30 @@
               />
             </div>
             <div class="col-sm-4">
-              <app-vales-asignar [cantidadVales]="formularioSolicitudVale"></app-vales-asignar>
+              <app-vales-asignar
+                [cantidadVales]="formularioSolicitudVale"
+              ></app-vales-asignar>
+            </div>
+          </div>
+          <div *ngIf="estadoSoli == 'Aprobada'" class="row mb-4">
+            <label for="formrow-firstname-input">Cantidad de vales</label>
+
+            <div class="col-sm-12">
+              <input
+                type="number"
+                class="form-control"
+                id="horizontal-firstname-input"
+                min="1"
+                max="20"
+                placeholder="0"
+                formControlName="cantidadVales"
+                disabled
+              />
+            </div>
+            <div *ngIf="estadoSoli != 'Aprobada'" class="col-sm-4">
+              <app-vales-asignar
+                [cantidadVales]="formularioSolicitudVale"
+              ></app-vales-asignar>
             </div>
           </div>
           <div class="row mb-4">
@@ -357,9 +381,14 @@
             </div>
           </div>
           <div class="row mb-4">
-            <label for="formrow-firstname-input">Observación</label>
+            <label
+              *ngIf="estadoSoli != 'Aprobada'"
+              for="formrow-firstname-input"
+              >Observación</label
+            >
             <div class="col-sm-12">
               <textarea
+                *ngIf="estadoSoli != 'Aprobada'"
                 row="3"
                 maxlength="750"
                 class="form-control"
@@ -374,10 +403,20 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button *ngIf="estadoSoli == 'Aprobada'" type="submit" class="btn btn-primary" form="formSoliVale">
+    <button
+      *ngIf="estadoSoli == 'Aprobada'"
+      type="submit"
+      class="btn btn-primary"
+      form="formSoliVale"
+    >
       Asignar
     </button>
-    <button *ngIf="estadoSoli == 'Nueva' || estadoSoli == 'Revisión'" type="submit" class="btn btn-primary" form="formSoliVale">
+    <button
+      *ngIf="estadoSoli == 'Nueva' || estadoSoli == 'Revisión'"
+      type="submit"
+      class="btn btn-primary"
+      form="formSoliVale"
+    >
       Solcitar Asignación
     </button>
     <button

@@ -103,4 +103,19 @@ export class ServiceService {
       return null; // La cadena de fecha no tiene el formato esperado
     }
   }
+
+  fechaFormatoGenerico(fecha: string) {
+    const fechaf = this.obtenerNombreDiaYMes(fecha);
+    const anio = this.dividirFecha(fecha);
+    const dia = this.dividirFecha(fecha);
+    const fechaLista =
+      fechaf.nombreDia +
+      ", " +
+      dia.día +
+      " de " +
+      fechaf.nombreMes +
+      " de " +
+      anio.anio;
+    return fechaLista;
+  }
 }

@@ -55,13 +55,12 @@
                 *ngFor="
                   let item of solicitudesVales
                     | filter : term
-                    | paginate : { itemsPerPage: 10, currentPage: p }; let i = index
+                    | paginate : { itemsPerPage: 10, currentPage: p };
+                  let i = index
                 "
               >
                 <td>
-                  {{
-                    item.nombreSolicitante
-                  }}
+                  {{ item.nombreSolicitante }}
                 </td>
                 <td>{{ item.mision }}</td>
 
@@ -69,7 +68,7 @@
                 <td>
                   {{ fechaformateada[i] }}
                 </td>
-                <td >
+                <td>
                   <h5>
                     <span
                       [class]="
@@ -102,15 +101,15 @@
                     (click)="aprobar()"
                     ngbTooltip="Aprobar"
                   >
-                  <i class="mdi mdi-18px mdi-application-import"></i>
+                    <i class="mdi mdi-18px mdi-application-import"></i>
                   </button>
                   <button
                     pe="button"
                     class="btn btn-primary btn-sm btn-rounded mx-1"
-                    (click)="verDetalle(mdDetalleSolicitudVale,  item)"
+                    (click)="verDetalle(mdDetalleSolicitudVale, item)"
                     ngbTooltip="Detalle"
                   >
-                  <i class="mdi mdi-18px mdi-eye-outline"></i>
+                    <i class="mdi mdi-18px mdi-eye-outline"></i>
                   </button>
                 </td>
               </tr>
@@ -133,6 +132,7 @@
 <ng-template #mdDetalleSolicitudVale let-modal>
   <div class="modal-header">
     <h5 class="modal-title mt-0">Detalle solicitud de vehiculo</h5>
+
     <button
       type="button"
       class="btn-close"
@@ -141,9 +141,44 @@
     ></button>
   </div>
   <div class="modal-body">
+    <div *ngFor="let alert of alerts">
+      <div
+        class="alert alert-{{ alert.type }} alert-dismissible fade show"
+        role="alert"
+        *ngIf="alert.show"
+      >
+        <strong>{{
+          alert.type === "info" ? "Importante!" : "Precaución!"
+        }}</strong>
+        {{ alert.message }}
+        <button
+          type="button"
+          class="btn-close"
+          (click)="CambiarAlert(alert)"
+          aria-label="Close"
+        ></button>
+      </div>
+    </div>
     <form [formGroup]="formularioSolicitudVale">
       <div class="row mt-2">
         <div class="col-lg-6">
+          <div class="row mb-4">
+            <label for="formrow-firstname-input"
+              >Cantidad de vales solicitados</label
+            >
+            <div class="col-sm-12">
+              <input
+                type="number"
+                class="form-control"
+                id="horizontal-firstname-input"
+                min="1"
+                max="20"
+                placeholder="0"
+                formControlName="cantidadVales"
+                disabled
+              />
+            </div>
+          </div>
           <div class="row mb-4">
             <label for="formrow-firstname-input">Fecha de Solicitud</label>
             <div class="col-sm-12">
@@ -280,17 +315,52 @@
               />
             </div>
           </div>
+          <div class="row mb-4">
+            <label for="formrow-firstname-input">Observación</label>
+            <div class="col-sm-12">
+              <textarea
+                row="3"
+                maxlength="750"
+                class="form-control"
+                placeholder="Comentario"
+                formControlName="observacionRevision"
+                [class]="esCampoValido('concepto')"
+              ></textarea>
+            </div>
+          </div>
         </div>
       </div>
     </form>
   </div>
   <div class="modal-footer">
+    <div class="btn-alerta miDiv" *ngIf="alerts">
+      <i
+        class="mdi mdi-lightbulb-on-outline custom-cursor"
+        ngbTooltip="Mostrar Ayuda"
+        *ngIf="!siMuestraAlertas()"
+        (click)="restaurarAlerts()"
+      ></i>
+    </div>
+    <button
+      type="button"
+      class="btn btn-success"
+      (click)="modal.close('Close click')"
+    >
+      Aprobar
+    </button>
+    <button
+      type="button"
+      class="btn btn-warning"
+      (click)="modal.close('Close click')"
+    >
+      Revisión
+    </button>
     <button
       type="button"
       class="btn btn-light"
       (click)="modal.close('Close click')"
     >
-      Close
+      Cerrar
     </button>
     <!--<button type="button" class="btn btn-primary">Save changes</button>-->
   </div>

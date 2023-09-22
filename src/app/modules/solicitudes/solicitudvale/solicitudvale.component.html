@@ -101,7 +101,7 @@
                     *ngIf="estadoSoli == 'Nueva'"
                     type="button"
                     class="btn btn-info btn-sm btn-rounded mx-1"
-                    (click)="largeModal(largeDataModalvale, item)"
+                    (click)="mdAsignarVales(mdDetalleSolicitudVale, item)"
                     ngbTooltip="Solicitar Asignar Vales"
                   >
                     <i class="mdi mdi-18px mdi-book-plus-outline"></i>
@@ -110,7 +110,7 @@
                     *ngIf="estadoSoli == 'Aprobada'"
                     type="button"
                     class="btn btn-info btn-sm btn-rounded mx-1"
-                    (click)="largeModal(largeDataModalvale, item)"
+                    (click)="mdAsignarVales(mdDetalleSolicitudVale, item)"
                     ngbTooltip="Asignar Vales"
                   >
                     <i class="mdi mdi-18px mdi-book-plus-outline"></i>
@@ -129,7 +129,7 @@
                     *ngIf="estadoSoli == 'Activo'"
                     type="button"
                     class="btn btn-primary btn-sm btn-rounded mx-1"
-                    (click)="largeModal(largeDataModaldetalle, item)"
+                    (click)="mdAsignarVales(mdDetalleSolicitudVale, item)"
                     ngbTooltip="Detalle"
                   >
                     <i class="mdi mdi-18px mdi-eye-outline"></i>
@@ -138,7 +138,7 @@
                     *ngIf="estadoSoli == 'Revisión'"
                     type="button"
                     class="btn btn-warning btn-sm btn-rounded mx-1"
-                    (click)="largeModal(largeDataModaldetalle, item)"
+                    (click)="mdAsignarVales(mdDetalleSolicitudVale, item)"
                     ngbTooltip="Editar Solicitud"
                   >
                     <i class="mdi mdi-18px mdi-book-edit-outline"></i>
@@ -171,354 +171,7 @@
 </div>
 
 <!-- Large Modal -->
-<ng-template #largeDataModalnuevo let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title mt-0">Nueva Solicitud de Vehiculo</h5>
-    <button
-      type="button"
-      class="btn-close"
-      (click)="modal.dismiss('Cross click')"
-      aria-hidden="true"
-    ></button>
-  </div>
-  <div class="modal-body">
-    <div class="row mt-2">
-      <div class="col-lg-6">
-        <div class="row mb-4">
-          <label for="formrow-firstname-input">Tipo de Vehiculo:</label>
-          <div class="col-sm-12">
-            <input
-              type="number"
-              class="form-control"
-              id="horizontal-firstname-input"
-              placeholder="Camion"
-            />
-          </div>
-        </div>
-        <div class="row mb-4">
-          <label for="formrow-firstname-input">Fecha de uso:</label>
-          <div class="col-sm-12">
-            <input
-              type="date"
-              class="form-control"
-              id="horizontal-email-input"
-              placeholder="08-08-2023"
-            />
-          </div>
-        </div>
-        <div class="row mb-4">
-          <label for="formrow-firstname-input">Institucion:</label>
-          <div class="col-sm-12">
-            <input
-              type="number"
-              class="form-control"
-              id="horizontal-password-input"
-              placeholder="ues central"
-            />
-          </div>
-        </div>
-        <div class="row mb-4">
-          <label for="formrow-firstname-input">Departamento:</label>
-          <div class="col-sm-12">
-            <div class="form-group">
-              <!--<label for="exampleCombobox">filtro por estado:</label>-->
-              <select class="form-control" id="exampleCombobox">
-                <option value="">La paz</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="row mb-4">
-          <label for="formrow-firstname-input">Ciudad:</label>
-          <div class="col-sm-12">
-            <div class="form-group">
-              <!--<label for="exampleCombobox">filtro por estado:</label>-->
-              <select class="form-control" id="exampleCombobox">
-                <option value="">Santiago Nonuealco</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-6">
-        <div class="row mb-4">
-          <label for="formrow-firstname-input">Claca de vehiculo:</label>
-          <div class="col-sm-12">
-            <div class="form-group">
-              <!--<label for="exampleCombobox">filtro por estado:</label>-->
-              <select class="form-control" id="exampleCombobox">
-                <option value="">P374-488</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="row mb-4">
-          <label for="formrow-firstname-input">Objetivo:</label>
-          <div class="col-sm-12">
-            <input
-              type="number"
-              class="form-control"
-              id="horizontal-email-input"
-              placeholder="Objetivo 1"
-            />
-          </div>
-        </div>
-        <div class="row mb-4">
-          <label for="formrow-firstname-input">Cantidad de personas:</label>
-          <div class="col-sm-12">
-            <input
-              type="number"
-              class="form-control"
-              id="horizontal-password-input"
-              placeholder="5"
-            />
-          </div>
-        </div>
-        <div class="row mb-4">
-          <label for="formrow-firstname-input">Municipio:</label>
-          <div class="col-sm-12">
-            <div class="form-group">
-              <!--<label for="exampleCombobox">filtro por estado:</label>-->
-              <select class="form-control" id="exampleCombobox">
-                <option value="">Santiago Nonualco</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-light"
-      (click)="modal.close('Close click')"
-    >
-      Cancelar
-    </button>
-    <button type="button" class="btn btn-primary">Soliciar</button>
-  </div>
-</ng-template>
-
-<!-- Large Modal -->
-<ng-template #largeDataModaldetalle let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title mt-0">Detalle solicitud de vehiculo</h5>
-    <button
-      type="button"
-      class="btn-close"
-      (click)="modal.dismiss('Cross click')"
-      aria-hidden="true"
-    ></button>
-  </div>
-  <div class="modal-body">
-    <form [formGroup]="formularioSolicitudVale">
-      <div class="row mt-2">
-        <div class="col-lg-6">
-          <div class="row mb-4">
-            <label for="formrow-firstname-input">Fecha de solidad</label>
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-firstname-input"
-                placeholder=""
-                disabled
-                formControlName="fechaSolicitud"
-              />
-            </div>
-          </div>
-          <div class="row mb-4">
-            <label for="formrow-firstname-input">Fecha de entrada</label>
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-firstname-input"
-                placeholder=""
-                disabled
-                formControlName="fechaEntrada"
-              />
-            </div>
-          </div>
-          <div class="row mb-4">
-            <label for="formrow-firstname-input">Fecha de solida:</label>
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-email-input"
-                placeholder=""
-                disabled
-                formControlName="fechaSalida"
-              />
-            </div>
-          </div>
-          <div class="row mb-4">
-            <label for="formrow-firstname-input">Tipo de vehiculo:</label>
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-password-input"
-                placeholder=""
-                disabled
-                formControlName="tipo"
-              />
-            </div>
-          </div>
-          <div class="row mb-4">
-            <label for="formrow-firstname-input">Lugar:</label>
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-password-input"
-                placeholder=""
-                disabled
-                formControlName="lugarMision"
-              />
-            </div>
-          </div>
-          <div class="row mb-4">
-            <label for="formrow-firstname-input">Estado:</label>
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-password-input"
-                placeholder=""
-                disabled
-                formControlName="estado"
-              />
-            </div>
-          </div>
-          <div class="row mb-4">
-            <label for="formrow-firstname-input">Motorista:</label>
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-password-input"
-                placeholder=""
-                disabled
-                formControlName="motorista"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="row mb-4">
-            <label for="formrow-firstname-input">Nombre de solicitante:</label>
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-firstname-input"
-                placeholder=""
-                disabled
-                formControlName="solicitante"
-              />
-            </div>
-          </div>
-          <div class="row mb-4">
-            <label for="formrow-firstname-input">Objetivo:</label>
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-email-input"
-                placeholder=""
-                disabled
-                formControlName="objetivoMision"
-              />
-            </div>
-          </div>
-          <div class="row mb-4">
-            <label for="formrow-firstname-input">Placa de vehiculo:</label>
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-password-input"
-                placeholder=""
-                disabled
-                formControlName="placa"
-              />
-            </div>
-          </div>
-          <div class="row mb-4">
-            <label for="formrow-firstname-input">Cantidad de Personas:</label>
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-password-input"
-                placeholder=""
-                disabled
-                formControlName="cantidadPersonas"
-              />
-            </div>
-          </div>
-          <div class="row mb-4">
-            <label for="formrow-firstname-input">Direccion:</label>
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-password-input"
-                placeholder=""
-                disabled
-                formControlName="direccion"
-              />
-            </div>
-          </div>
-          <div class="row mb-4">
-            <label for="formrow-firstname-input">Unidad Solicitante:</label>
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-password-input"
-                placeholder=""
-                disabled
-                formControlName="unidadSolicitante"
-              />
-            </div>
-          </div>
-          <div class="row mb-4">
-            <label for="formrow-firstname-input"
-              >Nombre de jefe departamento:</label
-            >
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-password-input"
-                placeholder=""
-                disabled
-                formControlName="nombreJefeDepto"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-light"
-      (click)="modal.close('Close click')"
-    >
-      Close
-    </button>
-    <!--<button type="button" class="btn btn-primary">Save changes</button>-->
-  </div>
-</ng-template>
-
-<!-- Large Modal -->
-<ng-template #largeDataModalvale let-modal>
+<ng-template #mdDetalleSolicitudVale let-modal>
   <div class="modal-header">
     <h5 class="modal-title mt-0">Detalle de la solicitud de Vales</h5>
     <button
@@ -531,7 +184,7 @@
   <div class="modal-body">
     <form
       action=""
-      [formGroup]="formularioSolicitudValev"
+      [formGroup]="formularioSolicitudVale"
       id="formSoliVale"
       name="formSoliVale"
       (ngSubmit)="guardar()"
@@ -564,18 +217,11 @@
               />
             </div>
             <div class="col-sm-4">
-              <button
-                type="button"
-                class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1"
-                (click)="valesAsignar(valesAsignarModal)"
-                ngbTooltip="Ver Vales"
-              >
-                <i class="mdi mdi-18px mdi-eye-outline"></i>
-              </button>
+              <app-vales-asignar [cantidadVales]="formularioSolicitudVale"></app-vales-asignar>
             </div>
           </div>
           <div class="row mb-4">
-            <label for="formrow-firstname-input">Fecha de solidad</label>
+            <label for="formrow-firstname-input">Fecha de Solicitud</label>
             <div class="col-sm-12">
               <input
                 type="text"
@@ -601,7 +247,7 @@
             </div>
           </div>
           <div class="row mb-4">
-            <label for="formrow-firstname-input">Fecha de solida:</label>
+            <label for="formrow-firstname-input">Fecha de salida:</label>
             <div class="col-sm-12">
               <input
                 type="text"
@@ -613,8 +259,10 @@
               />
             </div>
           </div>
+          <!-- CANTIDAD DE PERSONAS -->
+
           <div class="row mb-4">
-            <label for="formrow-firstname-input">Tipo de vehiculo:</label>
+            <label for="formrow-firstname-input">Cantidad de Personas:</label>
             <div class="col-sm-12">
               <input
                 type="text"
@@ -622,33 +270,7 @@
                 id="horizontal-password-input"
                 placeholder=""
                 disabled
-                formControlName="tipo"
-              />
-            </div>
-          </div>
-          <div class="row mb-4">
-            <label for="formrow-firstname-input">Lugar:</label>
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-password-input"
-                placeholder=""
-                disabled
-                formControlName="lugarMision"
-              />
-            </div>
-          </div>
-          <div class="row mb-4">
-            <label for="formrow-firstname-input">Estado:</label>
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-password-input"
-                placeholder=""
-                disabled
-                formControlName="estado"
+                formControlName="cantidadPersonas"
               />
             </div>
           </div>
@@ -668,6 +290,19 @@
         </div>
         <div class="col-lg-6">
           <div class="row mb-4">
+            <label for="formrow-firstname-input">Unidad Solicitante:</label>
+            <div class="col-sm-12">
+              <input
+                type="text"
+                class="form-control"
+                id="horizontal-password-input"
+                placeholder=""
+                disabled
+                formControlName="unidadSolicitante"
+              />
+            </div>
+          </div>
+          <div class="row mb-4">
             <label for="formrow-firstname-input">Nombre de solicitante:</label>
             <div class="col-sm-12">
               <input
@@ -680,21 +315,9 @@
               />
             </div>
           </div>
+
           <div class="row mb-4">
-            <label for="formrow-firstname-input">Objetivo:</label>
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-email-input"
-                placeholder=""
-                disabled
-                formControlName="objetivoMision"
-              />
-            </div>
-          </div>
-          <div class="row mb-4">
-            <label for="formrow-firstname-input">Placa de vehiculo:</label>
+            <label for="formrow-firstname-input">Misión:</label>
             <div class="col-sm-12">
               <input
                 type="text"
@@ -702,20 +325,7 @@
                 id="horizontal-password-input"
                 placeholder=""
                 disabled
-                formControlName="placa"
-              />
-            </div>
-          </div>
-          <div class="row mb-4">
-            <label for="formrow-firstname-input">Cantidad de Personas:</label>
-            <div class="col-sm-12">
-              <input
-                type="text"
-                class="form-control"
-                id="horizontal-password-input"
-                placeholder=""
-                disabled
-                formControlName="cantidadPersonas"
+                formControlName="mision"
               />
             </div>
           </div>
@@ -732,8 +342,9 @@
               />
             </div>
           </div>
+          <!-- PLACA EL VAHICULO -->
           <div class="row mb-4">
-            <label for="formrow-firstname-input">Unidad Solicitante:</label>
+            <label for="formrow-firstname-input">Placa de vehiculo:</label>
             <div class="col-sm-12">
               <input
                 type="text"
@@ -741,23 +352,21 @@
                 id="horizontal-password-input"
                 placeholder=""
                 disabled
-                formControlName="unidadSolicitante"
+                formControlName="placa"
               />
             </div>
           </div>
           <div class="row mb-4">
-            <label for="formrow-firstname-input"
-              >Nombre de jefe departamento:</label
-            >
+            <label for="formrow-firstname-input">Observación</label>
             <div class="col-sm-12">
-              <input
-                type="text"
+              <textarea
+                row="3"
+                maxlength="750"
                 class="form-control"
-                id="horizontal-password-input"
-                placeholder=""
+                placeholder="Comentario"
+                formControlName="observacionRevision"
                 disabled
-                formControlName="nombreJefeDepto"
-              />
+              ></textarea>
             </div>
           </div>
         </div>
@@ -765,7 +374,10 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary" form="formSoliVale">
+    <button *ngIf="estadoSoli == 'Aprobada'" type="submit" class="btn btn-primary" form="formSoliVale">
+      Asignar
+    </button>
+    <button *ngIf="estadoSoli == 'Nueva' || estadoSoli == 'Revisión'" type="submit" class="btn btn-primary" form="formSoliVale">
       Solcitar Asignación
     </button>
     <button
@@ -781,60 +393,3 @@
 </ng-template>
 
 <!-- este modal me permite ver los vales que asignaré -->
-<ng-template #valesAsignarModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title mt-0">Vales a Asignar</h5>
-    <button
-      type="button"
-      class="btn-close"
-      (click)="modal.dismiss('Cross click')"
-      aria-hidden="true"
-    ></button>
-  </div>
-  <div class="modal-body">
-    <div class="table-responsive mb-0">
-      <table class="table table-centered table-nowrap">
-        <thead class="table-light">
-          <tr>
-            <th class="align-middle text-center">Codigo Vale</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            *ngFor="
-              let vale of valesAsingar
-                | filter : busqueda
-                | paginate : { itemsPerPage: 10, currentPage: p };
-              let i = index
-            "
-          >
-            <td class="align-middle text-center h3">
-              {{ vale.correlativoVale }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="pagination pagination-rounded justify-content-end mb-2">
-        <pagination-controls
-          previousLabel="Anterior"
-          nextLabel="Siguiente"
-          firstLabel="Primera"
-          lastLabel="Última"
-          itemsPerPageLabel="por página"
-          (pageChange)="p = $event"
-        ></pagination-controls>
-      </div>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-light"
-      (click)="modal.close('Close click')"
-    >
-      Cerrar
-    </button>
-
-    <!--<button type="button" class="btn btn-primary">Save changes</button>-->
-  </div>
-</ng-template>

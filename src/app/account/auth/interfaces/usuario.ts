@@ -10,3 +10,9 @@ export interface IRegistroUsuario {
     nombre: string;
     clave: string;
   }
+
+  export interface IEmail{
+    asunto: string;
+    receptor: string;
+    mensaje: string;
+ }

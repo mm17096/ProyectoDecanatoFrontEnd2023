@@ -25,10 +25,11 @@
                 <h5 class="modal-title mt-0">Modificar Credenciales</h5>
             </div>
 
-      
+
             <div class="btn-alerta" *ngIf="alerts">
                 <i class="mdi mdi-18px mdi-lightbulb-on-outline custom-cursor" ngbTooltip="Mostrar Ayuda"
-                    *ngIf="leyenda == 'Datos' ? !siMuestraAlertas() : !siMuestraAlertas2()" (click)="leyenda == 'Datos' ? restaurarAlerts() : restaurarAlerts2()"></i>
+                    *ngIf="leyenda == 'Datos' ? !siMuestraAlertas() : !siMuestraAlertas2()"
+                    (click)="leyenda == 'Datos' ? restaurarAlerts() : restaurarAlerts2()"></i>
             </div>
 
             <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
@@ -37,20 +38,24 @@
 
             <div *ngIf="leyenda == 'Datos'">
                 <div *ngFor="let alert of alerts">
-                    <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert" *ngIf="alert.show">
+                    <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert"
+                        *ngIf="alert.show">
                         <strong>Importante!</strong>
                         <div class="text-justify">{{ alert.message }}</div>
-                        <button type="button" class="btn-close" (click)="CambiarAlert(alert)" aria-label="Close"></button>
+                        <button type="button" class="btn-close" (click)="CambiarAlert(alert)"
+                            aria-label="Close"></button>
                     </div>
                 </div>
             </div>
 
             <div *ngIf="leyenda == 'Credenciales'">
                 <div *ngFor="let alert of alerts2">
-                    <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert" *ngIf="alert.show">
+                    <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert"
+                        *ngIf="alert.show">
                         <strong>Importante!</strong>
                         <div class="text-justify">{{ alert.message }}</div>
-                        <button type="button" class="btn-close" (click)="CambiarAlert2(alert)" aria-label="Close"></button>
+                        <button type="button" class="btn-close" (click)="CambiarAlert2(alert)"
+                            aria-label="Close"></button>
                     </div>
                 </div>
             </div>
@@ -75,14 +80,21 @@
                             <div class="form-group row m-4">
                                 <label class="control-label">Clave :
                                     <span class="text-danger">*</span>
-                                    <span class="msjclave" [ngClass]="seguridad">{{msjclave}}</span>    
+                                    <span class="msjclave" [ngClass]="seguridad">{{msjclave}}</span>
                                 </label>
-                                <input type="password" formControlName="clave" class="form-control" id="clave"
-                                    name="clave" placeholder="Ingrese clave" 
-                                    [class]="esCampoValidoU('clave')" (input)="SeguridadClave($event)"/>
-                                <div class="invalid-feedback">
-                                    <span *ngIf="formUsuario.get('clave')?.errors?.['required']">
-                                        Ingrese el clave</span>
+                                <div class="input-group auth-pass-inputgroup">
+                                    <input [type]="showPassword ? 'text' : 'password'" type="password"
+                                        formControlName="clave" class="form-control" id="clave" name="clave"
+                                        placeholder="Ingrese clave" [class]="esCampoValidoU('clave')"
+                                        (input)="SeguridadClave($event)" />
+
+                                    <button class="btn btn-light ms-0" type="button" id="password-addon"
+                                        (click)="togglePasswordVisibility()"><i
+                                            class="mdi mdi-eye-outline"></i></button>
+                                    <div class="invalid-feedback">
+                                        <span *ngIf="formUsuario.get('clave')?.errors?.['required']">
+                                            Ingrese el clave</span>
+                                    </div>
                                 </div>
                             </div>
                             <!-- fin de clave Empleado -->
@@ -91,13 +103,20 @@
                             <div class="form-group row m-4">
                                 <label class="control-label">Confirmar Clave :
                                     <span class="text-danger">*</span>
-                                    <span class="msjclave" [ngClass]="confirma">{{msjclaveconfir}}</span>  
+                                    <span class="msjclave" [ngClass]="confirma">{{msjclaveconfir}}</span>
                                 </label>
-                                <input type="password" class="form-control" id="confirclave" name="confirclave"
-                                    placeholder="Confirme la Clave" (input)="VerificarClaves($event)"/>
-                                <div class="invalid-feedback">
-                                    <span *ngIf="formEmpleado.get('confirclave')?.errors?.['required']">
-                                        Ingrese la confirmacion</span>
+                                <div class="input-group auth-pass-inputgroup">
+                                    <input [type]="showPassword2 ? 'text' : 'password'" type="password"
+                                        class="form-control" id="confirclave" name="confirclave"
+                                        placeholder="Confirme la Clave" (input)="VerificarClaves($event)" />
+
+                                    <button class="btn btn-light ms-0" type="button" id="password-addon"
+                                        (click)="togglePasswordVisibility2()"><i
+                                            class="mdi mdi-eye-outline"></i></button>
+                                    <div class="invalid-feedback">
+                                        <span *ngIf="formEmpleado.get('confirclave')?.errors?.['required']">
+                                            Ingrese la confirmacion</span>
+                                    </div>
                                 </div>
                             </div>
                             <!-- fin de apellido Empleado -->

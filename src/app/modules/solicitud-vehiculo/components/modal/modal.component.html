@@ -555,10 +555,20 @@
               *ngIf="leyenda == 'Nueva'">
         Enviar
       </button>
-      <button type="button" class="btn btn-success w-sm me-2" id="btn-detalle_save" name="btn-save"
+      <button type="button" class="btn btn-primary w-sm me-2" id="btn-detalle_save" name="btn-save"
               (click)="aprobarSolicitud()"
               *ngIf="(usuarioActivo.role == 'JEFE_DEPTO' || usuarioActivo.role == 'DECANO') && vista === 'listado'">
         Aprobar
+      </button>
+      <button type="button" class="btn btn-info w-sm me-2" id="btn-detalle_save" name="btn-save"
+              (click)="revisionSolicitud()"
+              *ngIf="(usuarioActivo.role == 'DECANO') && vista === 'listado'">
+        Revisión
+      </button>
+      <button type="button" class="btn btn-warning w-sm me-2" id="btn-detalle_save" name="btn-save"
+              (click)="anularSolicitud()"
+              *ngIf="(usuarioActivo.role == 'DECANO') && vista === 'listado'">
+        Denegar
       </button>
       <button type="button" class="btn btn-dark w-sm" id="btn-cancel" name="btn-cancel"
               aria-hidden="true" (click)="activeModal.close('Close click')">Cancelar</button>

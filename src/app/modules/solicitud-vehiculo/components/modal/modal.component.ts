@@ -590,6 +590,21 @@ export class ModalComponent implements OnInit {
     }
   }
 
+  async revisionSolicitud() {
+    if (await this.mensajesService.mensajeRevision() == true){
+      this.soliVeOd.estado = 6;
+      await this.actualizarSolicitud(this.soliVeOd);
+    }
+
+  }
+  async anularSolicitud() {
+    if (await this.mensajesService.mensajeAnular() == true){
+      this.soliVeOd.estado = 15;
+      await this.actualizarSolicitud(this.soliVeOd);
+    }
+
+  }
+
   actualizarSolicitud(data: any):Promise <void>{
     return new Promise<void>((resolve, reject) => {
       this.soliVeService.updateSolciitudVehiculo(data).subscribe({

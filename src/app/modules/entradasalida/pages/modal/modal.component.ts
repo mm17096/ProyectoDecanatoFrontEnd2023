@@ -8,6 +8,7 @@ import { EntradaSalidaI, IEntradaSalida } from '../../interface/EntSalinterface'
 import { Router } from '@angular/router';
 import { ListaentradasalidaService } from '../../service/listaentradasalida.service';
 import { MensajesService } from 'src/app/shared/global/mensajes.service';
+import { IsolicitudVehiculo } from '../../interface/VehiculoEntradasalida';
 
 @Component({
   selector: 'app-modal',
@@ -20,6 +21,9 @@ export class ModalComponent implements OnInit {
   @Input() titulo!: string;
   @Input() entradasalidaOd!: IEntradaSalida;
   @Input() salidaentradaOd!: boolean;
+  @Input() objetivoMision:IsolicitudVehiculo;
+  //objetivoMision="";
+  fechaSalida="";
 
   formBuilder!: FormGroup;
   //miFormulario: FormGroup;
@@ -29,6 +33,10 @@ export class ModalComponent implements OnInit {
   horaActual: string;
   fechaActual: string;
   modoEdicion = false;
+
+  /////esto para enviar el objetivo a la modal
+  //objetivoMision: IsolicitudVehiculo;
+ 
 
   
   constructor(private modalService: NgbModal,private mensajesService: MensajesService, private fb: FormBuilder, private router: Router, private listaentradasalidaservice: ListaentradasalidaService) { }
@@ -45,7 +53,10 @@ export class ModalComponent implements OnInit {
         this.horaActual = this.getCurrentTime();
       }
       this.listaentradasalidaservice.getMisiones();
+
   }
+
+  
 
   
   // Función para obtener la fecha actual en formato "yyyy-MM-dd"
@@ -120,7 +131,7 @@ export class ModalComponent implements OnInit {
   }
 
   openModal(content: any) {
-    this.modalService.open(content, { size: 'sm', centered: true });
+    this.modalService.open(content, { size: 'lx', centered: true });
   }
   editando(){
     const ent = this.formBuilder.value;
@@ -163,7 +174,7 @@ export class ModalComponent implements OnInit {
   guardar() {
     if (this.formBuilder.valid) {
       if (this.entradasalidaOd != null) {
-        this.editando();
+        //this.editando();
       } else {
         console.log("antes de registrar");
        this.registrando();
@@ -232,7 +243,13 @@ export class ModalComponent implements OnInit {
   }
   
   esCampoValido(campo: string){
+    
     const validarCampo= this.formBuilder.get(campo);
+    /*if(campo=="solicitudvehiculo"){
+      return 'is-valid';
+    }*/
+    
+    
     return !validarCampo?.valid && validarCampo?.touched ? 'is-invalid' : validarCampo?.touched? 'is-valid': '';
   
   }

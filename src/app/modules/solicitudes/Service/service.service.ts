@@ -10,7 +10,7 @@ import {
   IExistenciaVales,
   ISolicitudValeID,
 } from "../Interfaces/existenciavales.interface";
-import { ISolicitudValeAprobar } from '../Interfaces/solicitudValeAprobar.interface';
+import { ISolcitudAprobar, ISolicitudValeAprobar } from '../Interfaces/solicitudValeAprobar.interface';
 import { SolicitudVv } from "../Interfaces/SolicitudVv";
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -64,6 +64,13 @@ export class ServiceService {
   getSolicitdValePorEstado(estado: number) {
     return this.http.get<ISolicitudValeAprobar>(
       `${this.baseUrl}/asignacionvale/listarsolicitudvaleestado/${estado}`
+    );
+  }
+
+  //Cambia el estado, minserta la cantidad y añade observaciones a la solicitud de vale
+  solicitarAprobacion(solicitud: ISolcitudAprobar){
+    return this.http.post<ISolcitudAprobar>(
+      `${this.baseUrl}/asignacionvale/solitudaprobar`, solicitud
     );
   }
 

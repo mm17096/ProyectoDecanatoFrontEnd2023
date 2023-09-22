@@ -71,6 +71,24 @@ export class TablaComponent implements OnInit {
     }
   }
 
+  async revisionSolicitud(data: any) {
+    console.log(data);
+    if (await this.mensajesService.mensajeRevision() == true){
+      data.estado = 6;
+      await this.actualizarSolicitud(data);
+    }
+
+  }
+
+  async anularSolicitud(data: any) {
+    console.log(data);
+    if (await this.mensajesService.mensajeAnular() == true){
+      data.estado = 15;
+      await this.actualizarSolicitud(data);
+    }
+
+  }
+
   actualizarSolicitud(data: any):Promise <void>{
     return new Promise<void>((resolve, reject) => {
       this.soliService.updateSolciitudVehiculo(data).subscribe({

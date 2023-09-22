@@ -20,6 +20,7 @@ export interface ISolicitudVehiculo {
   estadoString: string;
   motorista: IMotorista;
   listDocumentos: IDocumento[];
+  observaciones:string;
 }
 
 interface ISolicitante {

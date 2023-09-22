@@ -222,8 +222,7 @@
                                 (change)="SelectCargo(formBuilder.get('telefono').value)" id="selectCargo"
                                 name="selectCargo" formControlName="cargo"
                                 [ngClass]="{'select-readonly': empleadOd != null && titulo == 'Detalle'}"
-                                [class]="titulo != 'Detalle' ? esCampoValido('cargo') : ''"
-                                [ngModel]="empleadOd != null ? empleadOd.cargo.id : ''">
+                                [class]="titulo != 'Detalle' ? esCampoValido('cargo') : ''">
                                 <option value="">Seleccione Cargo</option>
                                 <option *ngFor="let cargodata of Cargos" [ngValue]="cargodata.id">
                                     {{cargodata.nombreCargo}}

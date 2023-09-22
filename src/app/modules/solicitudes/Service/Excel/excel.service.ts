@@ -478,6 +478,7 @@ titulo1.style.font = { bold: true, size: 12,
           }
           };      
            // this.fechaActual = new Date();
+          // sheet.getCell('A11').le = 15;
            sheet.mergeCells('A'+`${index+15}`, 'E'+`${index+15}`);
            ['A','B', 'C', 'D'].forEach((columnKey) => {
              sheet.getCell(`${columnKey}${index+15}`).font = {
@@ -494,7 +495,7 @@ titulo1.style.font = { bold: true, size: 12,
              };
              });
           const titulo05 = sheet.getCell('A'+`${index+15}`);
-        titulo05.value = 'Vales disponibles a la fecha: "'+`${this.formatoFecha(this.fechaActual)}`+'" = '+`${eexistenciaI.valesDisponibles}`;
+        titulo05.value = 'Vales disponibles a la fecha de imprecion: "'+`${this.formatoFecha(this.fechaActual)}`+'" = '+`${eexistenciaI.valesDisponibles}`;
         titulo05.style.font = { bold: true, size: 12,
           name: 'Antique Olive', 
           color: {

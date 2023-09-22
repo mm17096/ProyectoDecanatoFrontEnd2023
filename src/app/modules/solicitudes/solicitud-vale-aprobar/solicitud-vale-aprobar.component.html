@@ -87,23 +87,6 @@
                 </td>
                 <td style="text-align: center">
                   <button
-                    type="button"
-                    class="btn btn-warning btn-sm btn-rounded mx-1"
-                    (click)="revision()"
-                    ngbTooltip="Enviar a revisión"
-                  >
-                    <i class="mdi mdi-18px mdi-book-edit-outline"></i>
-                  </button>
-
-                  <button
-                    type="button"
-                    class="btn btn-info btn-sm btn-rounded mx-1"
-                    (click)="aprobar()"
-                    ngbTooltip="Aprobar"
-                  >
-                    <i class="mdi mdi-18px mdi-application-import"></i>
-                  </button>
-                  <button
                     pe="button"
                     class="btn btn-primary btn-sm btn-rounded mx-1"
                     (click)="verDetalle(mdDetalleSolicitudVale, item)"
@@ -159,7 +142,12 @@
         ></button>
       </div>
     </div>
-    <form [formGroup]="formularioSolicitudVale">
+    <form
+      id="formSoliVale"
+      name="formSoliVale"
+      (ngSubmit)="guardar()"
+      [formGroup]="formularioSolicitudVale"
+    >
       <div class="row mt-2">
         <div class="col-lg-6">
           <div class="row mb-4">
@@ -324,7 +312,7 @@
                 class="form-control"
                 placeholder="Comentario"
                 formControlName="observacionRevision"
-                [class]="esCampoValido('concepto')"
+                [class]="esCampoValido('observacionRevision')"
               ></textarea>
             </div>
           </div>
@@ -341,18 +329,10 @@
         (click)="restaurarAlerts()"
       ></i>
     </div>
-    <button
-      type="button"
-      class="btn btn-success"
-      (click)="modal.close('Close click')"
-    >
+    <button type="button" class="btn btn-success"(click)="aprobar()">
       Aprobar
     </button>
-    <button
-      type="button"
-      class="btn btn-warning"
-      (click)="modal.close('Close click')"
-    >
+    <button type="submit" class="btn btn-warning" form="formSoliVale">
       Revisión
     </button>
     <button

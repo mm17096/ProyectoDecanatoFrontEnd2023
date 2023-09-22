@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EntradaSalidaI, IEntradaSalida } from '../interface/EntSalinterface';
 import {  IsolicitudVehiculo } from '../interface/VehiculoEntradasalida';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { IVehiculoentradaSalida } from '../interface/VehiculoEntradasalida';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -17,20 +17,16 @@ export class ListaentradasalidaService {
 
   listDeMisiones: IsolicitudVehiculo[] = [];
   constructor(private http: HttpClient) { 
-        // Recupera el token de acceso desde el local storage
-        const token = localStorage.getItem('token');
 
-        // Crea un objeto HttpHeaders para agregar el token de acceso en el encabezado 'Authorization'
+        const token = localStorage.getItem('token');
         const headers = new HttpHeaders({
           Authorization: `Bearer ${token}`
         });
-    
-        // Configura las opciones de la solicitud HTTP con los encabezados personalizados
         this.requestOptions = {
           headers: headers
         };
   }
-
+  
   getMisiones() {
 
     const token = localStorage.getItem('token');
@@ -78,7 +74,14 @@ export class ListaentradasalidaService {
 
 
   NuevosDatos(entrasali: EntradaSalidaI): any {
-    return this.http.post(`${this.baseUrl}/entradasalida/insertar`,entrasali);
+    const token = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+          Authorization: `Bearer ${token}`
+        });
+        this.requestOptions = {
+          headers: headers
+        };
+    return this.http.post(`${this.baseUrl}/entradasalida/insertar`,entrasali, this.requestOptions);
   }
 
   public putEntradasalida(entrasali: EntradaSalidaI): Observable<Object> {

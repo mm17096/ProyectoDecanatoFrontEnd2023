@@ -128,7 +128,8 @@ export class DevolucionValeService {
 
   modificarPorCantidad(
     vales: IVale[],
-    concepto: string
+    concepto: string,
+    idusuariologueado: string
   ): Observable<any> {
     const url = `${this.baseUrl}/vale/actualizarValesCantidad`;
 
@@ -136,6 +137,7 @@ export class DevolucionValeService {
     const requestBody = {
       vales: vales,
       concepto: concepto,
+      idusuariologueado: idusuariologueado
     };
 
     // Realiza la solicitud HTTP con el objeto requestBody y configura el encabezado para JSON

@@ -33,6 +33,11 @@ export const TEXTO_CARACTER_ESPECIAL = '^([A-Za-z/-_*.]+[ ]?){1,5}$';
 
 export const TEXTO_PLACA = '[a-zA-Z]{1,2}[a-zA-Z0-9]{0,3}[a-zA-Z0-9]{3}';
 
+// Validar Nombre reales
+export const NAME_TILDES_VALIDATE = '^(?!\\s)(?!.*\\s$)[A-Za-zÁáÉéÍíÓóÚúÜüÑñÀàÈèÌìÒòÙùÂâÊêÎîÔôÛûÄäËëÏïÖöŸÿ]+( [A-Za-zÁáÉéÍíÓóÚúÜüÑñÀàÈèÌìÒòÙùÂâÊêÎîÔôÛûÄäËëÏïÖöŸÿ]+)*$';
+
+export const NAME_STRING_NUMBER_VALIDATE = '^(?!\\s)(?!.*\\s$)[A-Za-zÁáÉéÍíÓóÚúÜüÑñÀàÈèÌìÒòÙùÂâÊêÎîÔôÛûÄäËëÏïÖöŸÿ0-9]+( [A-Za-zÁáÉéÍíÓóÚúÜüÑñÀàÈèÌìÒòÙùÂâÊêÎîÔôÛûÄäËëÏïÖöŸÿ0-9]+)*$';
+
 
 
 

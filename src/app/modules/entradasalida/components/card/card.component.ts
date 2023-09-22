@@ -9,21 +9,16 @@ import { ListaentradasalidaService } from '../../service/listaentradasalida.serv
 })
 export class CardComponent implements OnInit {
   //@Input() obj!:IVehiculoentradaSalida;
-  @Input() obje!:IsolicitudVehiculo;
+  @Input() obje:IsolicitudVehiculo;
   @Input() queryString: string;
   @Input() entraoOd!: IVehiculoentradaSalida[];
   //objetos:IVehiculoentradaSalida[]=[];//array de vehiculos
+  objetivoMision: IsolicitudVehiculo;
   
  
   
   constructor(private listaentradasalidaservice: ListaentradasalidaService) { }
 
-  ngOnInit(): void {
-
-    
-    
-  }
-
-  
+  ngOnInit(): void { }
 
 }

@@ -1,0 +1,101 @@
+<div class="container-fluid">
+    <app-page-title title="Solicitudes de Vehículos" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+  
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="row mb-2">
+              <div class="col-sm-4">
+                <div class="search-box me-2 mb-2 d-inline-block">
+                  <div class="position-relative">
+                    <input type="text" class="form-control" placeholder="Buscar" [(ngModel)]="term">
+                    <i class="bx bx-search-alt search-icon"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-3">
+
+  
+              </div>
+           
+              <div class="col-sm-5">
+                <div class="text-sm-end">
+  <!--                <app-modal [leyenda]="'Nueva'" [titulo]="'Agregar'"-->
+  <!--                ></app-modal>-->
+                  
+                </div>
+              </div>
+              <!-- end col-->
+            </div>
+  
+            <!-- Table data -->
+            <div class="table-responsive mb-0">
+                <table class="table table-centered table-nowrap">
+                  <thead class="table-light">
+                  <tr>
+                    <th class="align-middle">No.</th>
+                    <th class="align-middle">Departamento</th>
+                    <th class="align-middle">Lugar</th>
+                    <th class="align-middle">Fecha uso</th>
+                    <th class="align-middle" style="text-align: center">Solicitante</th>
+                    <th class="align-middle" style="text-align: center">Estado</th>
+                    <th class="align-middle"
+                        style="text-align: center;">
+                      Acciones
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                <!--  <ng-container *ngIf="solicitudesVehiculo.length > 0; else noDataTemplate">-->
+                    <!-- *ngFor="let data of cards | filter:queryString | paginate: { itemsPerPage: 10, currentPage: p }" -->
+                    <tr *ngFor="let data of solicitudesVehiculo | filter:term | paginate: { itemsPerPage: 10, currentPage: p };
+                                          let i = index">
+                      <td>{{calcularNumeroCorrelativo(i)}}</td>
+                      <td>{{data.solicitante.empleado.departamento.nombre}}</td>
+                      <td>{{data.lugarMision}}</td>
+                      <td>{{data.fechaSalida}}</td>
+                      <td style="text-align: center">{{data.solicitante.empleado.nombre+' '+data.solicitante.empleado.apellido}}</td>
+                      <td style="text-align: center">
+                        <h5><span class="{{data.estado === 1 ? 'badge rounded-pill bg-warning'
+                        : data.estado === 2 ? 'badge rounded-pill bg-info'
+                        : data.estado === 3 ? 'badge rounded-pill bg-esdec'
+                        : data.estado === 4 ? 'badge rounded-pill bg-success'
+                        : data.estado === 5 ? 'badge rounded-pill bg-purple'
+                        : data.estado === 6 ? 'badge rounded-pill bg-revision'
+                        : data.estado === 7 ? 'badge rounded-pill bg-prima'
+                        : data.estado === 15 ? 'badge rounded-pill bg-danger': ''}}">
+                          {{data.estadoString}}
+                        </span></h5>
+                      </td>
+                      <td style="text-align: center">
+                        <button type="button" (click)="cerarPDF(data)" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1">
+                                    <i class="mdi mdi-file-document-outline"></i></button>
+                        <!-- <i class="mdi mdi-account-lock-outline"></i>
+                         mdi-account-check-outline -->
+                      </td>
+              
+                    </tr>
+                  <!--</ng-container>-->
+                  <ng-template #noDataTemplate>
+                    <tr>
+                      <td colspan="6" style="text-align: center;">
+                        No hay datos disponibles.
+                      </td>
+                    </tr>
+                  </ng-template>
+                  </tbody>
+                </table>
+              
+                <div class="pagination pagination-rounded justify-content-end mb-2">
+                <pagination-controls (pageChange)="p = $event" [nextLabel]="''" [previousLabel]="''"></pagination-controls>
+                </div>
+              
+              </div>
+              
+            <!-- end table -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

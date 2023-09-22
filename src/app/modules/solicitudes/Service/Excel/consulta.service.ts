@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CompraDto, Consulta, ConsultaDto } from '../../Interfaces/CompraVale/Consulta';
+import { CompraDto, Consulta, ConsultaDto, IConsultaDelAl } from '../../Interfaces/CompraVale/Consulta';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { IConsultaExcelTabla, IConsultaExcelTablaC, IConsultaExcelTablaCompraDto, IConsultaExcelTablaDto, ITablaConsulta, ITablaConsultaC, ITablaConsultaCompraDto, ITablaConsultaDto } from '../../Interfaces/CompraVale/excel';
@@ -9,12 +9,14 @@ import { environment } from "src/environments/environment";
 import { IVale } from 'src/app/modules/devolucion-vale/interfaces/vale.interface';
 import { Vale } from '../../Interfaces/CompraVale/Vale';
 import { Compra } from '../../Interfaces/CompraVale/Compra';
+import { ISolicitudVehiculo } from 'src/app/modules/solicitud-vehiculo/interfaces/data.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConsultaService {
   listCompra: ICompra[] = [];
+  private urlbase= environment.baseUrl;
 
   constructor(private http:HttpClient) { }
   url = 'http://localhost:8080/api/consulta'
@@ -146,4 +148,12 @@ export class ConsultaService {
       idcompra:item.vale.compra.id,
     }));
   }
+  getSolicitudV(){
+    return this.http.get<ISolicitudVehiculo[]>(this.urlbase+'/solicitudvehiculo/lista');
+  }
+
+  getConsultaSolicitudVDelAl(id:string){
+    return this.http.get<IConsultaDelAl[]>(this.url+'/listarvalesdelal/'+id);
+  }
+
 }

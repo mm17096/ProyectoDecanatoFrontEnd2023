@@ -8,12 +8,17 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { SolicitanteComponent } from './solicitante/solicitante.component';
+import { UIModule } from 'src/app/shared/ui/ui.module';
+import {NgSelectModule} from "@ng-select/ng-select";
+import {NgbActiveModal, NgbModule, NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
 
 
 @NgModule({
   declarations: [
     SolicitudvComponent,
     SolicitudvaleComponent,
+    SolicitanteComponent,
   ],
   imports: [
     CommonModule,
@@ -23,6 +28,10 @@ import { NgxPaginationModule } from 'ngx-pagination';
     ReactiveFormsModule,
     NgxPaginationModule,
     Ng2SearchPipeModule,
+    UIModule,
+    NgSelectModule,
+    NgbTooltipModule,
+    NgbModule,
   ]
 })
 export class SolicitudesModule { }

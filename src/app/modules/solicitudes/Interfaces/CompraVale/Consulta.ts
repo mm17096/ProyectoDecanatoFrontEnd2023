@@ -51,3 +51,17 @@ export interface Cantidad{
     veri:number;
     conta:number;
 }
+
+export interface IConsultaDelAl{
+    valor:number;
+    correlativo:number;
+    valeid:string;
+    fechavencimiento:Date;
+    cantidadvale:number;
+    estadovale:number;
+}
+
+export interface Tabla{
+    i:number;
+    codi:number;
+}

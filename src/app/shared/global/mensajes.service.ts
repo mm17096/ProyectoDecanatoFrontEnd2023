@@ -109,7 +109,81 @@ export class MensajesService {
   async mensajeAprobar(
     icono: SweetAlertIcon = "warning",
     title: string = "¿Está seguro de aprobar la solicitud?",
-    label: string = "La acción no se podrá deshacer: ",
+    label: string = "La acción no se podrá deshacer, digite: ",
+    palabraClave: string = "confirmar"
+  ) {
+    let estado = false;
+    const palabra = palabraClave;
+
+    const { value: valorPalabra } = await Swal.fire({
+      icon: icono,
+      title: title,
+      input: "text",
+      inputLabel: label + palabraClave,
+      inputValue: "",
+      showCancelButton: true,
+      confirmButtonColor: '#972727',
+      confirmButtonText: "Aceptar",
+      cancelButtonColor: '#2c3136',
+      cancelButtonText: "Cancelar",
+      inputValidator: (value) => {
+        if (!value) {
+          return "¡Tiene que escribir algo!";
+        }
+        if (value != palabra) {
+          return "¡No coincide!";
+        }
+      },
+    });
+
+    if (valorPalabra) {
+      estado = true;
+    }
+
+    return estado;
+  }
+
+  async mensajeRevision(
+    icono: SweetAlertIcon = "warning",
+    title: string = "¿Está seguro de mandar la solicitud a la secretaria para revisión?",
+    label: string = "La acción no se podrá deshacer, digite: ",
+    palabraClave: string = "confirmar"
+  ) {
+    let estado = false;
+    const palabra = palabraClave;
+
+    const { value: valorPalabra } = await Swal.fire({
+      icon: icono,
+      title: title,
+      input: "text",
+      inputLabel: label + palabraClave,
+      inputValue: "",
+      showCancelButton: true,
+      confirmButtonColor: '#972727',
+      confirmButtonText: "Aceptar",
+      cancelButtonColor: '#2c3136',
+      cancelButtonText: "Cancelar",
+      inputValidator: (value) => {
+        if (!value) {
+          return "¡Tiene que escribir algo!";
+        }
+        if (value != palabra) {
+          return "¡No coincide!";
+        }
+      },
+    });
+
+    if (valorPalabra) {
+      estado = true;
+    }
+
+    return estado;
+  }
+
+  async mensajeAnular(
+    icono: SweetAlertIcon = "warning",
+    title: string = "¿Está seguro de anular la solicitud?",
+    label: string = "La acción no se podrá deshacer, digite: ",
     palabraClave: string = "confirmar"
   ) {
     let estado = false;

@@ -28,20 +28,13 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="mb-3">
-                          <label>Misión</label><span class="text-danger"> *</span>
-                        <select class="form-control form-select" id="Selectsolicitudvehiculo" name="Selectsolicitudvehiculo" placeholder="Escribe tipo de misión"
-                            formControlName="solicitudvehiculo" [class]="esCampoValido('solicitudvehiculo')" >
-                            <option value="">Seleccione tipo de registro</option>
-                            <option *ngFor="let lamision of Listamisiones"
-                                    [ngValue]="lamision.codigoSolicitudVehiculo">
-                                    {{lamision.objetivoMision}}
-                            </option>
-                        </select>
-                            <div class="invalid-feedback">
-                              <!-- aqui la validación-->
-                              <span *ngIf="formBuilder.get('solicitudvehiculo')?.errors?.['required']">Requiere un nombre para el campo</span>
-                            </div>
+                            <label>Misión</label><span class="text-danger"> *</span>
+                            <select class="form-control" id="Selectsolicitudvehiculo" name="Selectsolicitudvehiculo"
+                            formControlName="solicitudvehiculo" [class]="esCampoValido('solicitudvehiculo')" autocomplete="off" disabled="" [ngModel]="objetivoMision.codigoSolicitudVehiculo">
+                            <option [value]="objetivoMision.codigoSolicitudVehiculo" selected>{{objetivoMision.objetivoMision}}</option>
+                            </select>
                         </div>
+                        
                     </div>
                     <div class="row">
                         <div class="col-md-6">

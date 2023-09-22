@@ -105,7 +105,7 @@ export class MensajesService {
 
     return estado;
   }
-  async mensajeSolicitarAprobacion(
+async mensajeSolicitarAprobacion(
     icono: SweetAlertIcon = "warning",
     title: string = "Se solicitará al jefe de unidad la aprobación de la solicitud",
     label: string = "¿Esta seguro?"

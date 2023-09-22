@@ -4,6 +4,7 @@ import {ModalComponent} from "../../components/modal/modal.component";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import { IEstados } from '../../interfaces/data.interface';
 import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
+import {Usuario} from "../../../../account/auth/models/usuario.models";
 
 @Component({
   selector: 'app-mis-solicitudes',
@@ -22,12 +23,13 @@ export class MisSolicitudesComponent implements OnInit {
 
   estadoSeleccionado: any;
   estadosSoliVe: IEstados [] = [];
+  usuario!: Usuario;
 
   constructor( private soliVeService: SolicitudVehiculoService, private modalService: NgbModal,
                private userService: UsuarioService) { }
 
   ngOnInit(): void {
-    this.userService.getUsuario();
+    this.obtenerUsuarioActivo();
     this.breadCrumbItems = [{ label: 'Solicitud de Vehículo' }, { label: 'Mis Solicitudes', active: true }]; // miga de pan
     this.soliVeService.getSolicitudesVehiculo(this.estadoSeleccionado);
     this.getEstados();
@@ -38,6 +40,13 @@ export class MisSolicitudesComponent implements OnInit {
     modalRef.componentInstance.leyenda = leyenda;
     modalRef.componentInstance.estadoSeleccionado = this.estadoSeleccionado;
     modalRef.componentInstance.usuarioActivo = this.usuarioActivo;
+  }
+
+  obtenerUsuarioActivo(){
+    // Suscríbete al Observable para obtener el usuario
+    this.soliVeService.getUsuarioSV().subscribe((usuario: Usuario) => {
+      this.usuario = usuario;
+    });
   }
 
   get usuarioActivo(){

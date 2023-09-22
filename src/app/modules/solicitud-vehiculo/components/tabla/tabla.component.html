@@ -43,12 +43,26 @@
             <i class="mdi mdi-18px mdi-eye-outline"></i></button>
 
             <button type="button"
-                    *ngIf="opc == 'DECANO' && solicitudesVehiculo.length > 0 && solicitudesVehiculo[0].estado  == 3 ||
-                    opc == 'JEFE_DEPTO' && solicitudesVehiculo.length>0 && solicitudesVehiculo[0].estado == 1"
+                    *ngIf="userAcivo.role == 'DECANO' && solicitudesVehiculo.length > 0 && solicitudesVehiculo[0].estado  == 3 ||
+                    userAcivo.role == 'JEFE_DEPTO' && solicitudesVehiculo.length>0 && solicitudesVehiculo[0].estado == 1"
                     class="btn btn-success btn-sm btn-rounded boton-cuadrado mx-1"
-                  (click)="abrirModal('Detalle', data)"
+                  (click)="aprobarSolicitud(data)"
                   ngbTooltip="Aprobar">
             <i class="mdi mdi-18px mdi-check-outline"></i></button>
+
+          <button type="button"
+                  *ngIf="userAcivo.role == 'DECANO' && solicitudesVehiculo.length > 0 && solicitudesVehiculo[0].estado  == 3"
+                  class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1"
+                  (click)="revisionSolicitud(data)"
+                  ngbTooltip="Enviar a revisión">
+            <i class="mdi mdi-18px mdi-help-circle-outline"></i></button>
+
+          <button type="button"
+                  *ngIf="userAcivo.role == 'DECANO' && solicitudesVehiculo.length > 0 && solicitudesVehiculo[0].estado  == 3"
+                  class="btn btn-warning btn-sm btn-rounded boton-cuadrado mx-1"
+                  (click)="anularSolicitud(data)"
+                  ngbTooltip="Anular">
+            <i class="mdi mdi-18px mdi-alpha-x-circle-outline"></i></button>
         </td>
 
       </tr>

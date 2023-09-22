@@ -120,7 +120,7 @@ export class ModalSecretariaComponent implements OnInit {
       this.formularioSoliVe.get('tipoVehiculo')
         .setValue(this.soliVeOd != null ? this.soliVeOd.vehiculo.clase: '');
       this.formularioSoliVe.get('vehiculo')
-        .setValue(this.soliVeOd != null ? this.soliVeOd.vehiculo.placa: '');
+        .setValue(this.soliVeOd != null ? this.soliVeOd.vehiculo.codigoVehiculo: '');
       this.formularioSoliVe.get('cantidadPersonas')
         .setValue(this.soliVeOd != null ? this.soliVeOd.cantidadPersonas: '');
       this.formularioSoliVe.get('horaSalida')
@@ -128,8 +128,7 @@ export class ModalSecretariaComponent implements OnInit {
       this.formularioSoliVe.get('horaEntrada')
         .setValue(this.soliVeOd != null ? this.soliVeOd.horaEntrada: '');
       this.formularioSoliVe.get('solicitante')
-        .setValue(this.soliVeOd != null ? this.soliVeOd.solicitante.empleado.nombre+' '
-          + this.soliVeOd.solicitante.empleado.apellido: '');
+        .setValue(this.soliVeOd != null ? this.soliVeOd.solicitante.empleado.codigoEmpleado: '');
 
 
       for (const persona of this.soliVeOd.listaPasajeros) {
@@ -145,13 +144,11 @@ export class ModalSecretariaComponent implements OnInit {
   }
 
   async guardar(){
-    this.formularioSoliVe.value.unidadSolicitante = this.usuarioActivo.empleado.departamento.nombre;
+    //this.formularioSoliVe.value.unidadSolicitante = this.usuarioActivo.empleado.departamento.nombre;
+    this.formularioSoliVe.value.codigoSolicitudVehiculo = this.soliVeOd.codigoSolicitudVehiculo;
     const solicitudVehiculo = this.formularioSoliVe.value;
     console.log("formularo: ",this.formularioSoliVe);
     if (this.formularioSoliVe.valid){
-      if (this.soliVeOd != null){
-        this.editarSoliVe();
-      }else{
        if(this.validarfecha(solicitudVehiculo.fechaSolicitud)){
          if (this.validarfecha(solicitudVehiculo.fechaSalida)){
            if(this.validarfecha(solicitudVehiculo.fechaEntrada)){
@@ -183,7 +180,6 @@ export class ModalSecretariaComponent implements OnInit {
                  if (typeof value === 'string' && value.trim() !== '') {
                    return true;
                  }
-
                  return false;
                });
 
@@ -223,7 +219,6 @@ export class ModalSecretariaComponent implements OnInit {
            "Año de fecha de solicitud incorrecta"
          );
        }
-      }
     } else {
       // Mostrar nombres de campos inválidos por consola
       console.log('Campos inválidos:',
@@ -304,58 +299,58 @@ export class ModalSecretariaComponent implements OnInit {
 
     //console.log(solicitudVehiculo);
     return new Promise<void> ((resolve, reject) => {
-      this.soliVeService.registrarSoliVe(solicitudVehiculo).subscribe({
+      this.soliVeService.updateSolicitudVehiculo(solicitudVehiculo).subscribe({
         next: (resp: any) => {
           this.soliSave = resp;
           Swal.close();
 
-          if (solicitudVehiculo.file != null && solicitudVehiculo.cantidadPersonas > 5) {
-              // enviar pdf
-            const formData = new FormData();
-            let obj = {
-              nombreDocumento: '',
-              urlDocumento: '',
-              fecha: this.obtenerFechaActual(new Date()),
-              codigoSolicitudVehiculo: {
-                codigoSolicitudVehiculo: resp.codigoSolicitudVehiculo,
-              }
-            }
-            formData.append('archivo', this.file!);
-            formData.append('entidad', new Blob([JSON.stringify(obj)], {type: 'application/json'}));
+          // if (solicitudVehiculo.file != null && solicitudVehiculo.cantidadPersonas > 5) {
+          //     // enviar pdf
+          //   const formData = new FormData();
+          //   let obj = {
+          //     nombreDocumento: '',
+          //     urlDocumento: '',
+          //     fecha: this.obtenerFechaActual(new Date()),
+          //     codigoSolicitudVehiculo: {
+          //       codigoSolicitudVehiculo: resp.codigoSolicitudVehiculo,
+          //     }
+          //   }
+          //   formData.append('archivo', this.file!);
+          //   formData.append('entidad', new Blob([JSON.stringify(obj)], {type: 'application/json'}));
 
-            this.soliVeService.enviarPdfPasajeros(formData).subscribe({
-              next: (pdfResp: any) => {
-                //console.log(pdfResp);
-                this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
-                this.mensajesService.mensajesToast("success", "Registro agregado");
-                this.modalService.dismissAll();
-                this.formularioSoliVe.reset();
-                resolve();
-              },
-              error: (pdfError) => {
-                Swal.close();
-                this.mensajesService.mensajesSweet(
-                  'error',
-                  'Ups... Algo salió mal al enviar el PDF',
-                  pdfError.error.message
-                );
-                reject(pdfError);
-              },
-            });
-          } else {
+          //   this.soliVeService.enviarPdfPasajeros(formData).subscribe({
+          //     next: (pdfResp: any) => {
+          //       //console.log(pdfResp);
+          //       this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
+          //       this.mensajesService.mensajesToast("success", "Registro agregado");
+          //       this.modalService.dismissAll();
+          //       this.formularioSoliVe.reset();
+          //       resolve();
+          //     },
+          //     error: (pdfError) => {
+          //       Swal.close();
+          //       this.mensajesService.mensajesSweet(
+          //         'error',
+          //         'Ups... Algo salió mal al enviar el PDF',
+          //         pdfError.error.message
+          //       );
+          //       reject(pdfError);
+          //     },
+          //   });
+          // } else {
             this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
-            this.mensajesService.mensajesToast("success", "Registro agregado");
+            this.mensajesService.mensajesToast("success", "Asignacion exitosa");
             this.modalService.dismissAll();
             this.formularioSoliVe.reset();
             resolve();
-          }
+          //}
         },
         error : (err) => {
           // Cerrar SweetAlert de carga
           Swal.close();
           this.mensajesService.mensajesSweet(
             "error",
-            "Ups... Algo salió mal al registrar la solicitud",
+            "Ups... Algo salió mal en la asignacion",
             err.error.message
           );
           reject(err); // Rechaza la promesa con el error
@@ -364,7 +359,8 @@ export class ModalSecretariaComponent implements OnInit {
     });
   }
 
-  editarSoliVe(){}
+  editarSoliVe(){
+  }
 
   cargarPlacas(tipoVehiculo: string, fechaSalida:string, fechaEntrada:string) {
     this.soliVeService.filtroPlacasVehiculo(tipoVehiculo,fechaSalida,fechaEntrada).subscribe(
@@ -412,9 +408,10 @@ export class ModalSecretariaComponent implements OnInit {
       lugarMision: ['', [Validators.required]],
       direccion: [''],
       depto: ['', [Validators.required]],
-      municipio: ['', [Validators.required]],
-      distrito: ['', [Validators.required]],
-      canton: ['', [Validators.required]],
+      //modificado por sino se ocupa borrar
+      municipio: ['', []],
+      distrito: ['', []],
+      canton: ['', []],
       horaSalida: ['', [Validators.required]],
       horaEntrada: ['', [Validators.required]],
       cantidadPersonas: [

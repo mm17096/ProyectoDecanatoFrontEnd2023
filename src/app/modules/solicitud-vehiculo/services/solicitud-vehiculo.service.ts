@@ -105,6 +105,10 @@ export class SolicitudVehiculoService {
     return this.http.post<any>(`${this.url}/documentosoli/upload`, multiPart);
   }
 
+  updateSolicitudVehiculo(data: ISolicitudVehiculo){
+    return this.http.put<ISolicitudVehiculo>( `${this.url}/solicitudvehiculo/edit/${data.codigoSolicitudVehiculo}`, data);
+  }
+
   getSolicitudesRol(rol: string){
     this.http
         .get(`${this.url}/solicitudvehiculo/listado/${rol}`)

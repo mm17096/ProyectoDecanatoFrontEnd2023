@@ -18,6 +18,7 @@ export class SolicitudVehiculoService {
   listSoliVehiculo : ISolicitudVehiculo [] = [];
   listSoliVehiculoRol : ISolicitudVehiculo [] = [];
   listVehiculos: IVehiculos [] = [];
+  listMotorista: IMotorista [] = [];
 
   constructor(private http: HttpClient) { }
 

@@ -45,6 +45,7 @@ export class ModalSecretariaComponent implements OnInit {
   pasajeros: IPasajero[] = [];
   username: string = 'Usuario que inicia';
   mostrarTabla: boolean = true;
+  btnVerPdf: boolean = false;
   mostrarArchivoAdjunto: boolean = false;
   cantidadPersonas: number = 0;
 
@@ -128,7 +129,12 @@ export class ModalSecretariaComponent implements OnInit {
       this.formularioSoliVe.get('horaEntrada')
         .setValue(this.soliVeOd != null ? this.soliVeOd.horaEntrada: '');
       this.formularioSoliVe.get('solicitante')
-        .setValue(this.soliVeOd != null ? this.soliVeOd.solicitante.empleado.codigoEmpleado: '');
+        .setValue(this.soliVeOd != null ? this.soliVeOd.solicitante.codigoUsuario: '');
+
+      if (solicitudVehiculo.cantidadPersonas > 5){
+        this.mostrarTabla = false;
+        this.btnVerPdf = true;
+      }
 
 
       for (const persona of this.soliVeOd.listaPasajeros) {
@@ -140,6 +146,7 @@ export class ModalSecretariaComponent implements OnInit {
       }
 
       console.log(this.pasajeros);
+
     }
   }
 
@@ -338,7 +345,7 @@ export class ModalSecretariaComponent implements OnInit {
           //     },
           //   });
           // } else {
-            this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
+            this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
             this.mensajesService.mensajesToast("success", "Asignacion exitosa");
             this.modalService.dismissAll();
             this.formularioSoliVe.reset();
@@ -379,7 +386,6 @@ export class ModalSecretariaComponent implements OnInit {
 
 
   iniciarFormulario() {
-    const unidadSolicitante = this.usuarioActivo?.empleado?.departamento?.nombre || '';
     const fechaActual = this.obtenerFechaActual(new Date()) || '';
 
     this.formularioSoliVe = this.fb.group({
@@ -398,9 +404,7 @@ export class ModalSecretariaComponent implements OnInit {
         '',
         [Validators.required]
       ],
-      unidadSolicitante: [
-        unidadSolicitante,
-        [Validators.required]
+      unidadSolicitante: ['', [Validators.required]
       ],
       tipoVehiculo: ['', [Validators.required]],
       vehiculo: ['', [Validators.required]],
@@ -418,7 +422,7 @@ export class ModalSecretariaComponent implements OnInit {
         1,
         [Validators.required, Validators.min(1)]
       ],
-      solicitante: [this.usuarioActivo?.codigoUsuario || '', [Validators.required]],
+      solicitante: [],
       listaPasajeros: this.fb.array([]),
       motorista:['',[Validators.required]],
       observacion:['',[]],
@@ -521,7 +525,7 @@ export class ModalSecretariaComponent implements OnInit {
 
   actualizarFilas() {
 
-    this.cantidadPersonas = this.formularioSoliVe.get('cantidadPersonas').value;
+    this.cantidadPersonas = this.formularioSoliVe.get('cantidadPersonas').value - 1;
     const pasajerosArray = this.formularioSoliVe.get('listaPasajeros') as FormArray;
 
     // Calcula cuántas filas deberías tener

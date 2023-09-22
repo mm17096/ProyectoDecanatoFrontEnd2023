@@ -56,6 +56,7 @@ export class TablaComponent implements OnInit {
     const modalRef = this.modalService.open(ModalSecretariaComponent, {size:'xl', backdrop: 'static'});
     modalRef.componentInstance.leyenda = leyenda;
     modalRef.componentInstance.soliVeOd = data;
+    modalRef.componentInstance.usuarioActivo = this.userAcivo;
   }
 
   async aprobarSolicitud(data: any){

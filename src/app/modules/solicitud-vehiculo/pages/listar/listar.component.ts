@@ -26,8 +26,6 @@ export class ListarComponent implements OnInit {
   ngOnInit(): void {
     this.breadCrumbItems = [{ label: 'Solicitud de Vehículo' }, { label: 'Lista', active: true }]; // miga de pan
     this.userService.getUsuario();
-    this.soliVeService.getSolicitudesRol("SECR_DECANATO");
-
     this.obtenerUsuarioActivo();
   }
 

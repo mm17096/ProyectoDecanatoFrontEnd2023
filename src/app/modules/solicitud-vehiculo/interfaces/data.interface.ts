@@ -113,3 +113,7 @@ export interface IDocumentoSoliVe {
     codigoSolicitudVehiculo: String;
   }
 }
+export interface IActualizarSoliVe{
+  codigoSolicitudVehiculo: string;
+  estado: number;
+}

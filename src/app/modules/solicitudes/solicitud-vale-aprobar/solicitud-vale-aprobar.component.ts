@@ -42,6 +42,16 @@ export class SolicitudValeAprobarComponent implements OnInit {
   //formulario del detalle
   formularioSolicitudVale: FormGroup;
 
+  alerts = [
+    {
+      id: 1,
+      type: "info",
+      message:
+        " Si se envia a Revisión por favor escriba una observación porqué lo hace.",
+      show: false,
+    },
+  ];
+
   //  para validar que sea un numero
   private isNumber: string = NUMBER_VALIDATE;
 
@@ -51,25 +61,34 @@ export class SolicitudValeAprobarComponent implements OnInit {
     private modalService: NgbModal,
     public fb: FormBuilder
   ) {
-    this.formularioSolicitudVale = fb.group({
-      cantidadVales: new FormControl("", [
-        Validators.required,
-        Validators.pattern(this.isNumber),
-      ]),
+    this.iniciarFormulario();
+  }
+
+  private iniciarFormulario() {
+    this.formularioSolicitudVale = this.fb.group({
+      concepto: [
+        "",
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(750),
+        ],
+      ],
+      cantidadVales: new FormControl("", [Validators.required]),
       fechaSolicitud: new FormControl("", [Validators.required]),
       fechaEntrada: new FormControl("", [Validators.required]),
       fechaSalida: new FormControl("", [Validators.required]),
       tipo: new FormControl("", [Validators.required]),
-      lugarMision: new FormControl("", [Validators.required]),
+      mision: new FormControl("", [Validators.required]),
       estado: new FormControl("", [Validators.required]),
       motorista: new FormControl("", [Validators.required]),
       solicitante: new FormControl("", [Validators.required]),
-      objetivoMision: new FormControl("", [Validators.required]),
       placa: new FormControl("", [Validators.required]),
       cantidadPersonas: new FormControl("", [Validators.required]),
       direccion: new FormControl("", [Validators.required]),
       unidadSolicitante: new FormControl("", [Validators.required]),
       nombreJefeDepto: new FormControl("", [Validators.required]),
+      observacionRevision: new FormControl("", [Validators.required]),
     });
   }
 
@@ -136,29 +155,16 @@ export class SolicitudValeAprobarComponent implements OnInit {
     }
   }
 
-  fechaFormatoGenerico(fecha: string) {
-    const fechaf = this.service.obtenerNombreDiaYMes(fecha);
-    const anio = this.service.dividirFecha(fecha);
-    const dia = this.service.dividirFecha(fecha);
-    const fechaLista =
-      fechaf.nombreDia +
-      ", " +
-      dia.día +
-      " de " +
-      fechaf.nombreMes +
-      " de " +
-      anio.anio;
-    return fechaLista;
-  }
+
 
   verDetalle(modal: any, solicitud: ISolicitudValeAprobar) {
     //esto es para obtener el id de la solicitud de vale
 
     this.modalService.open(modal, { size: "lg", centered: true });
-    console.log(solicitud);
-    const fechaSolicitud = this.fechaFormatoGenerico(solicitud.fechaSolicitud);
-    const fechaEntrada = this.fechaFormatoGenerico(solicitud.fechaEntrada);
-    const fechaSalida = this.fechaFormatoGenerico(solicitud.fechaSalida);
+    const cantidadVales = solicitud.cantidadVales;
+    const fechaSolicitud = this.service.fechaFormatoGenerico(solicitud.fechaSolicitud);
+    const fechaEntrada = this.service.fechaFormatoGenerico(solicitud.fechaEntrada);
+    const fechaSalida = this.service.fechaFormatoGenerico(solicitud.fechaSalida);
     const mision = solicitud.mision;
     const motorista = solicitud.nombreMotorista;
     const solicitante = solicitud.nombreSolicitante;
@@ -167,6 +173,9 @@ export class SolicitudValeAprobarComponent implements OnInit {
     const direccion = solicitud.direccionMision;
     const unidadSolicitante = solicitud.unidadSolicitante;
     //modal de detalle de solicitud de vehiculo
+    this.formularioSolicitudVale
+      .get("cantidadVales")
+      ?.setValue(Number(cantidadVales));
     this.formularioSolicitudVale
       .get("fechaSolicitud")
       ?.setValue(String(fechaSolicitud));
@@ -189,43 +198,30 @@ export class SolicitudValeAprobarComponent implements OnInit {
     this.formularioSolicitudVale
       .get("unidadSolicitante")
       ?.setValue(String(unidadSolicitante));
-    //modal de solicitud de vale
-    /* this.formularioSolicitudValev
-      .get("fechaSolicitud")
-      ?.setValue(String(fechaSolicitud));
-    this.formularioSolicitudValev
-      .get("fechaEntrada")
-      ?.setValue(String(fechaEntrada));
-    this.formularioSolicitudValev
-      .get("fechaSalida")
-      ?.setValue(String(fechaSalida));
-    this.formularioSolicitudValev.get("tipo")?.setValue(String(tipo));
-    this.formularioSolicitudValev
-      .get("lugarMision")
-      ?.setValue(String(lugarMision));
-    this.formularioSolicitudValev.get("estado")?.setValue(String(estado));
-    this.formularioSolicitudValev.get("motorista")?.setValue(String(motorista));
-    this.formularioSolicitudValev
-      .get("solicitante")
-      ?.setValue(String(solicitante));
-    this.formularioSolicitudValev
-      .get("objetivoMision")
-      ?.setValue(String(objetivoMision));
-    this.formularioSolicitudValev.get("placa")?.setValue(String(placa));
-    this.formularioSolicitudValev.get("tipo")?.setValue(String(tipo));
-    this.formularioSolicitudValev
-      .get("cantidadPersonas")
-      ?.setValue(String(cantidadPersonas));
-    this.formularioSolicitudValev.get("direccion")?.setValue(String(direccion));
-    this.formularioSolicitudValev
-      .get("unidadSolicitante")
-      ?.setValue(String(unidadSolicitante));
-    this.formularioSolicitudValev
-      .get("nombreJefeDepto")
-      ?.setValue(String(nombreJefeDepto)); */
   }
 
   revision() {}
 
   aprobar() {}
+
+  esCampoValido(campo: string) {
+    const validarCampo = this.formularioSolicitudVale.get(campo);
+    return !validarCampo?.valid && validarCampo?.touched
+      ? "is-invalid"
+      : validarCampo?.touched
+      ? "is-valid"
+      : "";
+  }
+  CambiarAlert(alert) {
+    alert.show = !alert.show;
+  }
+  siMuestraAlertas() {
+    return this.alerts.every((alert) => alert.show);
+  }
+
+  restaurarAlerts() {
+    this.alerts.forEach((alert) => {
+      alert.show = true;
+    });
+  }
 }

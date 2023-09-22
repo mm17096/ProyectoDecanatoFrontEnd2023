@@ -60,8 +60,15 @@ export class SolicitudvaleComponent implements OnInit {
   searchTerm = "";
   itemsPerPage = 5;
   currentPage = 1;
+
   busqueda: string = "";
   p: any;
+
+  itemsPerPageVale = 10;
+  currentPageVale = 1;
+  buscarVale: string = "";
+  pVales: any;
+
   private isNumber: string = NUMBER_VALIDATE;
 
   filtroEstado: number;
@@ -101,6 +108,8 @@ export class SolicitudvaleComponent implements OnInit {
 
   //fecha de Salida
   fechaSalida: string;
+
+  cantidadValesA: number;
   //fecha con formato
   fechaformateada = [];
   constructor(
@@ -111,43 +120,33 @@ export class SolicitudvaleComponent implements OnInit {
     private mensajesService: MensajesService,
     private router: Router
   ) {
-    this.formularioSolicitudVale = fb.group({
+    this.iniciarFormulario();
+  }
+
+  private iniciarFormulario() {
+    this.formularioSolicitudVale = this.fb.group({
       cantidadVales: new FormControl("", [
         Validators.required,
         Validators.pattern(this.isNumber),
       ]),
+      concepto: new FormControl("", [Validators.required]),
       fechaSolicitud: new FormControl("", [Validators.required]),
       fechaEntrada: new FormControl("", [Validators.required]),
       fechaSalida: new FormControl("", [Validators.required]),
       tipo: new FormControl("", [Validators.required]),
-      lugarMision: new FormControl("", [Validators.required]),
+      mision: new FormControl("", [Validators.required]),
       estado: new FormControl("", [Validators.required]),
       motorista: new FormControl("", [Validators.required]),
       solicitante: new FormControl("", [Validators.required]),
-      objetivoMision: new FormControl("", [Validators.required]),
       placa: new FormControl("", [Validators.required]),
       cantidadPersonas: new FormControl("", [Validators.required]),
       direccion: new FormControl("", [Validators.required]),
       unidadSolicitante: new FormControl("", [Validators.required]),
       nombreJefeDepto: new FormControl("", [Validators.required]),
+      observacionRevision: new FormControl("", [Validators.required]),
     });
-    this.formularioSolicitudValev = fb.group({
-      cantidadVales: new FormControl("", [Validators.required]),
-      fechaSolicitud: new FormControl("", [Validators.required]),
-      fechaEntrada: new FormControl("", [Validators.required]),
-      fechaSalida: new FormControl("", [Validators.required]),
-      tipo: new FormControl("", [Validators.required]),
-      lugarMision: new FormControl("", [Validators.required]),
-      estado: new FormControl("", [Validators.required]),
-      motorista: new FormControl("", [Validators.required]),
-      solicitante: new FormControl("", [Validators.required]),
-      objetivoMision: new FormControl("", [Validators.required]),
-      placa: new FormControl("", [Validators.required]),
-      cantidadPersonas: new FormControl("", [Validators.required]),
-      direccion: new FormControl("", [Validators.required]),
-      unidadSolicitante: new FormControl("", [Validators.required]),
-      nombreJefeDepto: new FormControl("", [Validators.required]),
-    });
+    this.cantidadValesA =
+      this.formularioSolicitudVale.get("cantidadVales")?.value;
   }
 
   ngOnInit() {
@@ -157,7 +156,6 @@ export class SolicitudvaleComponent implements OnInit {
     ]; // miga de pan
     this.service.getCliente().subscribe((data: any) => {
       this.solicitudvv = data.content;
-      console.log(this.solicitudvv);
     });
     this.obtnerExistenciaVales();
     this.getSolicitudesVale(8);
@@ -166,15 +164,20 @@ export class SolicitudvaleComponent implements OnInit {
   //Obtniene los vales a asignar según la cantidad deseada
   valesAsignar(valesAsignarModal: any) {
     const cantidadVales =
-      this.formularioSolicitudValev.get("cantidadVales")?.value;
-    this.service.getValesAignar(cantidadVales).subscribe({
-      next: (response) => {
-        this.valesAsingar = response;
-        console.log(this.valesAsingar);
-      },
-    });
-    console.log(this.valesAsingar);
-    this.modalService.open(valesAsignarModal, { size: "lg", centered: true });
+      this.formularioSolicitudVale.get("cantidadVales")?.value;
+    if (cantidadVales == 0) {
+      this.mensajesService.mensajesToast(
+        "warning",
+        "Ingrese una cantidad válida"
+      );
+    } else {
+      this.service.getValesAignar(cantidadVales).subscribe({
+        next: (response) => {
+          this.valesAsingar = response;
+        },
+      });
+      this.modalService.open(valesAsignarModal, { size: "lg", centered: true });
+    }
   }
 
   //Obtitne la existencia de los vales
@@ -182,19 +185,13 @@ export class SolicitudvaleComponent implements OnInit {
     this.existenciaService.getCantidadVales().subscribe({
       next: (response) => {
         this.existenciaI = response;
-        console.log(this.existenciaI);
       },
     });
   }
 
   //Liquida los valos y finaliza las solicitudes
   liquidarVales(solicitudVehiculo: SolicitudVv) {
-    console.log(
-      "el codigo del vehiculo es: " + solicitudVehiculo.codigoSolicitudVehiculo
-    );
-    console.log(
-      this.obtenerIdSolicitudVale(solicitudVehiculo.codigoSolicitudVehiculo)
-    );
+    this.obtenerIdSolicitudVale(solicitudVehiculo.codigoSolicitudVehiculo);
   }
 
   //Obtiene el id de la solicitud de vale
@@ -202,9 +199,7 @@ export class SolicitudvaleComponent implements OnInit {
     this.service.getIdSolicitudVale(codigoSolicitudVehiculo).subscribe({
       next: (response) => {
         this.codigoSolicitudVale = response;
-
         this.paramSolicitudV = this.codigoSolicitudVale.codigoSolicitudVale;
-        console.log("el método, codigoSolicitudVale:", this.paramSolicitudV);
         this.obtenerCodigoAsignacion(this.paramSolicitudV);
       },
     });
@@ -217,7 +212,6 @@ export class SolicitudvaleComponent implements OnInit {
       next: (response) => {
         this.codigoAsignacion = response;
         this.paramAsignacion = this.codigoAsignacion.codigoAsignacion;
-        console.log("metodo, códigoAsignacion: ", this.paramAsignacion);
         this.router.navigate([
           "/asignacion-vale/asignacion",
           this.paramAsignacion,
@@ -269,49 +263,52 @@ export class SolicitudvaleComponent implements OnInit {
   asignacionEstados(estado: number) {
     if (estado == 1) {
       this.estadoSoli = "Por Aprobar";
-    }else if (estado == 4) {
+    } else if (estado == 4) {
       this.estadoSoli = "Aprobada";
     } else if (estado == 5) {
       this.estadoSoli = "Asignado";
     } else if (estado == 6) {
       this.estadoSoli = "Revisión";
-    }else if (estado == 7) {
+    } else if (estado == 7) {
       this.estadoSoli = "Finalizada";
-    }else if (estado == 8) {
+    } else if (estado == 8) {
       this.estadoSoli = "Nueva";
-    }else {
+    } else {
       this.estadoSoli = "Anulada";
     }
   }
 
-  /**
-   * Open Large modal
-   * @param largeDataModal large modal data
-   */
-  largeModal(largeDataModal: any, solici: SolicitudVv) {
+  //Obtiene los datos de la solicitud de vale
+  mdAsignarVales(modal: any, solici: ISolicitudValeAprobar) {
     //esto es para obtener el id de la solicitud de vale
-    this.codigoSolicitudVehiculo = solici.codigoSolicitudVehiculo;
-    this.obtenerIdSolicitudVale(this.codigoSolicitudVehiculo);
+    const estadoSolicitud = solici.estadoSolicitud;
 
-    this.modalService.open(largeDataModal, { size: "lg", centered: true });
-    console.log(solici);
-    const fechaSolicitud = solici.fechaSolicitud;
-    const fechaEntrada = solici.fechaEntrada;
-    const fechaSalida = solici.fechaSalida;
-    const tipo = solici.vehiculo.clase;
-    const lugarMision = solici.lugarMision;
-    const estado = solici.estado;
-    const motorista = solici.motorista.nombre + " " + solici.motorista.apellido;
-    const solicitante =
-      solici.solicitante.empleado.nombre +
-      " " +
-      solici.solicitante.empleado.apellido;
-    const objetivoMision = solici.objetivoMision;
-    const placa = solici.horaEntrada;
+    if (estadoSolicitud === 4) {
+      this.codigoSolicitudVehiculo = solici.codigoSolicitudVehiculoS;
+      this.obtenerIdSolicitudVale(this.codigoSolicitudVehiculo);
+    }
+
+    this.modalService.open(modal, { size: "lg", centered: true });
+
+    const fechaSolicitud = this.service.fechaFormatoGenerico(
+      solici.fechaSolicitud
+    );
+    const fechaEntrada = this.service.fechaFormatoGenerico(solici.fechaEntrada);
+    const fechaSalida = this.service.fechaFormatoGenerico(solici.fechaSalida);
+    const mision = solici.mision;
+    const motorista = solici.nombreMotorista;
+    const solicitante = solici.nombreSolicitante;
+    const placa = solici.placaVehiculo;
     const cantidadPersonas = solici.cantidadPersonas;
-    const direccion = solici.direccion;
+    const direccion = solici.direccionMision;
     const unidadSolicitante = solici.unidadSolicitante;
-    const nombreJefeDepto = solici.nombreJefeDepto;
+    let observacionRevision = solici.observacionesSolicitudVale;
+    if (observacionRevision) {
+      observacionRevision = solici.observacionesSolicitudVale;
+    } else {
+      observacionRevision = "";
+    }
+
     //modal de detalle de solicitud de vehiculo
     this.formularioSolicitudVale
       .get("fechaSolicitud")
@@ -322,20 +319,12 @@ export class SolicitudvaleComponent implements OnInit {
     this.formularioSolicitudVale
       .get("fechaSalida")
       ?.setValue(String(fechaSalida));
-    this.formularioSolicitudVale.get("tipo")?.setValue(String(tipo));
-    this.formularioSolicitudVale
-      .get("lugarMision")
-      ?.setValue(String(lugarMision));
-    this.formularioSolicitudVale.get("estado")?.setValue(String(estado));
+    this.formularioSolicitudVale.get("mision")?.setValue(String(mision));
     this.formularioSolicitudVale.get("motorista")?.setValue(String(motorista));
     this.formularioSolicitudVale
       .get("solicitante")
       ?.setValue(String(solicitante));
-    this.formularioSolicitudVale
-      .get("objetivoMision")
-      ?.setValue(String(objetivoMision));
     this.formularioSolicitudVale.get("placa")?.setValue(String(placa));
-    this.formularioSolicitudVale.get("tipo")?.setValue(String(tipo));
     this.formularioSolicitudVale
       .get("cantidadPersonas")
       ?.setValue(String(cantidadPersonas));
@@ -344,57 +333,28 @@ export class SolicitudvaleComponent implements OnInit {
       .get("unidadSolicitante")
       ?.setValue(String(unidadSolicitante));
     this.formularioSolicitudVale
-      .get("nombreJefeDepto")
-      ?.setValue(String(nombreJefeDepto));
-    //modal de solicitud de vale
-    this.formularioSolicitudValev
-      .get("fechaSolicitud")
-      ?.setValue(String(fechaSolicitud));
-    this.formularioSolicitudValev
-      .get("fechaEntrada")
-      ?.setValue(String(fechaEntrada));
-    this.formularioSolicitudValev
-      .get("fechaSalida")
-      ?.setValue(String(fechaSalida));
-    this.formularioSolicitudValev.get("tipo")?.setValue(String(tipo));
-    this.formularioSolicitudValev
-      .get("lugarMision")
-      ?.setValue(String(lugarMision));
-    this.formularioSolicitudValev.get("estado")?.setValue(String(estado));
-    this.formularioSolicitudValev.get("motorista")?.setValue(String(motorista));
-    this.formularioSolicitudValev
-      .get("solicitante")
-      ?.setValue(String(solicitante));
-    this.formularioSolicitudValev
-      .get("objetivoMision")
-      ?.setValue(String(objetivoMision));
-    this.formularioSolicitudValev.get("placa")?.setValue(String(placa));
-    this.formularioSolicitudValev.get("tipo")?.setValue(String(tipo));
-    this.formularioSolicitudValev
-      .get("cantidadPersonas")
-      ?.setValue(String(cantidadPersonas));
-    this.formularioSolicitudValev.get("direccion")?.setValue(String(direccion));
-    this.formularioSolicitudValev
-      .get("unidadSolicitante")
-      ?.setValue(String(unidadSolicitante));
-    this.formularioSolicitudValev
-      .get("nombreJefeDepto")
-      ?.setValue(String(nombreJefeDepto));
+      .get("observacionRevision")
+      ?.setValue(String(observacionRevision));
   }
 
   //Guardar la asignación de vales
   async guardar() {
-    if (this.formularioSolicitudValev.valid) {
-      if ((await this.mensajesService.mensajeAsignar()) == true) {
+    if (this.formularioSolicitudVale.valid) {
+      if (this.estadoSoli = "Nueva") {
+
+      } else {
+        if ((await this.mensajesService.mensajeAsignar()) == true) {
         // Guardar
         this.registrando();
       }
+      }
+
     } else {
       this.mensajesService.mensajesToast(
         "warning",
         "Complete los que se indican"
       );
-      return Object.values(this.formularioSolicitudValev.controls).forEach(
+      return Object.values(this.formularioSolicitudVale.controls).forEach(
         (control) => control.markAsTouched()
       );
     }
@@ -404,7 +364,7 @@ export class SolicitudvaleComponent implements OnInit {
   registrando() {
     //Asignaré los campos necesario para guardar la asignación
     const cantidadVales =
-      this.formularioSolicitudValev.get("cantidadVales")?.value;
+      this.formularioSolicitudVale.get("cantidadVales")?.value;
 
     const estadoAsignacion = 8;
     new Date().toLocaleDateString();
@@ -417,7 +377,6 @@ export class SolicitudvaleComponent implements OnInit {
       cantidadVales: cantidadVales,
     };
 
-    console.log(asignarVales);
 
     Swal.fire({
       title: "Espere",
@@ -455,32 +414,6 @@ export class SolicitudvaleComponent implements OnInit {
   limpiarCampos() {
     this.formularioSolicitudVale.reset();
   }
-  /* filteredItems3() {
-    const currentDate = new Date();
-    //console.log(this.solicitudvv)
-    return this.solicitudvv.filter(
-      (item) =>
-        ((
-          item.solicitante.empleado.nombre +
-          " " +
-          item.solicitante.empleado.apellido
-        )
-          .toLowerCase()
-          .includes(this.searchText.toLowerCase()) ||
-          item.lugarMision
-            .toLowerCase()
-            .includes(this.searchText.toLowerCase()) ||
-          item.estadoString
-            .toLowerCase()
-            .includes(this.searchText.toLowerCase()) ||
-          // item.fechaSalida.toLocaleDateString().includes(this.searchText.toLowerCase()) ||
-          (item.motorista.nombre + " " + item.motorista.apellido)
-            .toLowerCase()
-            .includes(this.searchText.toLowerCase()) ||
-          this.searchText === "") &&
-        (item.estadoString === this.filtroEstado || this.filtroEstado === "")
-    );
-  } */
 
   filtrar(event: any) {
     this.filtroEstado = event;
@@ -584,7 +517,7 @@ export class SolicitudvaleComponent implements OnInit {
   }
 
   esCampoValido(campo: string) {
-    const validarCampo = this.formularioSolicitudValev.get(campo);
+    const validarCampo = this.formularioSolicitudVale.get(campo);
     return !validarCampo?.valid && validarCampo?.touched
       ? "is-invalid"
       : validarCampo?.touched

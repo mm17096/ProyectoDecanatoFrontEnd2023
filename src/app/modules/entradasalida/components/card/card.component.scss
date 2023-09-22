@@ -26,7 +26,7 @@
   .card {
     position: center;
     width: 180px;
-    height: 260px;
+    height: 300px;
     border-radius: 14px;
     z-index: 11;
     overflow: hidden;
@@ -43,7 +43,7 @@
     top: 5px;
     left: 5px;
     width: 170px;
-    height: 250px;//para lo alto del margen normal
+    height: 600px;//para lo alto del margen normal
     z-index: 2;
     background: rgba(255, 255, 255, .95);
     backdrop-filter: blur(24px);
@@ -58,7 +58,7 @@
     top: 50%;
     left: 50%;
     width: 150px;
-    height: 200px;
+    height: 250px;
     border-radius: 50%;
     background-color: #972727;
     opacity: 1;

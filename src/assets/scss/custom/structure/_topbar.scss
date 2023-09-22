@@ -342,10 +342,18 @@ body[data-layout="horizontal"] {
   margin-top: 10px;
 }
 
+.user-text-long {
+  font-size: 8px;
+  display: grid;
+  margin-top: -5px;
+  margin-left: 8px;
+}
+
 .user-text {
   font-size: 10px;
   display: grid;
-  margin-left: -44px;
+  margin-top: -5px;
+  margin-left: -40px;
 }
 
 .user-text-2 {

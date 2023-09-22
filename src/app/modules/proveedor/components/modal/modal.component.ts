@@ -57,7 +57,7 @@ export class ModalComponent implements OnInit {
         ],
       ],
       encargado: ["", [Validators.maxLength(200)]],
-      telefono: ["", [Validators.required]],
+      telefono: ["", [Validators.required, this.validatePhoneNumber]],
       email: [
         "",
         [
@@ -79,7 +79,6 @@ export class ModalComponent implements OnInit {
   }
 
   async guardar() {
-    this;
     if (this.formularioGeneral.valid) {
       if (this.proveedor?.id) {
         //Modificar
@@ -179,6 +178,17 @@ export class ModalComponent implements OnInit {
 
   siMuestraAlertas() {
     return this.alerts.every((alert) => alert.show);
+  }
+
+  validatePhoneNumber(control: any) {
+    const phoneNumber = control.value;
+
+    // Verifica si el número comienza con 7, 6 o 2
+    if (/^[726][0-9]{7}$/.test(phoneNumber)) {
+      return null; // Válido
+    } else {
+      return { invalidPhoneNumber: true }; // Inválido
+    }
   }
 
   openModal(content: any, proveedor: IProveedor) {

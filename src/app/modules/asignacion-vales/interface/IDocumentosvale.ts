@@ -1,3 +1,5 @@
+import { SolicitudVale } from "./IsolicitudvaleDocument";
+
 export interface IDocumentosvale{
     codigodocumentos: string;
     comprobante: string;
@@ -5,7 +7,11 @@ export interface IDocumentosvale{
     foto:string;
     tipo:string;
     url:string;
+    solicitudvale: string;
 }
+
+
+
 export class valeDocumentosI{
     constructor(
     public tipo:string,

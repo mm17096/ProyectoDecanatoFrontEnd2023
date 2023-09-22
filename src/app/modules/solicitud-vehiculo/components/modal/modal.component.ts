@@ -8,7 +8,7 @@ import {
   Validators
 } from "@angular/forms";
 import {Router} from "@angular/router";
-import {IPais, IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
+import {IDocumentoSoliVe, IPais, IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 
 import {map} from "rxjs/operators";
@@ -17,6 +17,7 @@ import {MensajesService} from "../../../../shared/global/mensajes.service";
 import {IVehiculos} from "../../../vehiculo/interfaces/vehiculo-interface";
 import {INTEGER_VALIDATE} from "../../../../constants/constants";
 import { Usuario } from 'src/app/account/auth/models/usuario.models';
+import {ISolicitudvalep} from "../../../solicitud-vale-paginacion/interface/solicitudvalep.interface";
 
 @Component({
   selector: 'app-modal',
@@ -29,6 +30,7 @@ export class ModalComponent implements OnInit {
   @Input() estadoSelecionado!: number;
   @Input() soliVeOd!: ISolicitudVehiculo;
   @Input() usuarioActivo !: Usuario;
+  @Input() vista!: string;
 
   private isInteger: string = INTEGER_VALIDATE;
   private isDate: string = "";
@@ -44,10 +46,14 @@ export class ModalComponent implements OnInit {
   pasajeros: IPasajero[] = [];
   username: string = 'Usuario que inicia';
   mostrarTabla: boolean = true;
+  btnVerPdf: boolean = false;
   mostrarArchivoAdjunto: boolean = false;
   cantidadPersonas: number = 0;
 
   pasajeroFormControls: FormControl[] = [];
+  soliSave : ISolicitudVehiculo [] = [];
+  file!: File;
+  solicitudVale!: ISolicitudvalep;
 
   alerts = [
     {
@@ -69,11 +75,20 @@ export class ModalComponent implements OnInit {
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router,
               private soliVeService: SolicitudVehiculoService, public activeModal: NgbActiveModal,
               private mensajesService: MensajesService,
-              ) { }
+              ) {
+    this.solicitudVale = {
+      idSolicitudVale: '',
+      cantidadVale: 0,
+      estadoEntrada: 1,
+      estado: 8,
+      solicitudVehiculo: '' // Otra inicialización si es necesario
+    };
+  }
 
   ngOnInit(): void {
     console.log(this.usuarioActivo);
-    console.log("data",this.soliVeOd);
+    //console.log("data",this.soliVeOd);
+    console.log("modal", this.vista);
     this.iniciarFormulario();
     this.llenarSelectDepartamentos();
     this.soliVeService.obtenerVehiculos();
@@ -120,6 +135,10 @@ export class ModalComponent implements OnInit {
           + this.soliVeOd.solicitante.empleado.apellido: '');
 
 
+      if (solicitudVehiculo.cantidadPersonas > 5){
+        this.mostrarTabla = false;
+        this.btnVerPdf = true;
+      }
       for (const persona of this.soliVeOd.listaPasajeros) {
         //console.log(persona);
         this.pasajeros.push({id: persona.id, nombrePasajero: persona.nombrePasajero});
@@ -142,47 +161,55 @@ export class ModalComponent implements OnInit {
        if(this.validarfecha(solicitudVehiculo.fechaSolicitud)){
          if (this.validarfecha(solicitudVehiculo.fechaSalida)){
            if(this.validarfecha(solicitudVehiculo.fechaEntrada)){
-             //  vacío para almacenar los datos de los pasajeros
-             const pasajerosData = [];
+             if(this.file  != null
+              || solicitudVehiculo.cantidadPersonas < 6){
+                  //  vacío para almacenar los datos de los pasajeros
+               const pasajerosData = [];
 
-             // Recorrer los controles de los pasajeros
-             for (const control of this.pasajeroFormControls) {
-               // Obtener el valor del control
-               const nombrePasajero = control.value;
+               // Recorrer los controles de los pasajeros
+               for (const control of this.pasajeroFormControls) {
+                 // Obtener el valor del control
+                 const nombrePasajero = control.value;
 
-               // objeto con el valor del control y un ID vacío
-               const pasajero = { id: '', nombrePasajero };
+                 // objeto con el valor del control y un ID vacío
+                 const pasajero = { id: '', nombrePasajero };
 
-               // Agregar el objeto al arreglo de pasajerosData
-               pasajerosData.push(pasajero);
-             }
-
-             solicitudVehiculo.listaPasajeros = pasajerosData;
-
-             //console.log("dataPas: ",pasajerosData);
-
-             // validacion lista de pasajeros
-             const todosLlenos = pasajerosData.every((pasajero) => {
-               const value = pasajero.nombrePasajero;
-
-               if (typeof value === 'string' && value.trim() !== '') {
-                 return true;
+                 // Agregar el objeto al arreglo de pasajerosData
+                 pasajerosData.push(pasajero);
                }
 
-               return false;
-             });
+               solicitudVehiculo.listaPasajeros = pasajerosData;
 
-             if (!todosLlenos) {
-               this.mensajesService.mensajesToast(
-                 "warning",
-                 "Por favor, completa todos los nombres de los pasajeros."
-               );
-               // fin validacion de lista de pasajeros
+               //console.log("dataPas: ",pasajerosData);
+
+               // validacion lista de pasajeros
+               const todosLlenos = pasajerosData.every((pasajero) => {
+                 const value = pasajero.nombrePasajero;
+
+                 if (typeof value === 'string' && value.trim() !== '') {
+                   return true;
+                 }
+
+                 return false;
+               });
+
+               if (!todosLlenos) {
+                 this.mensajesService.mensajesToast(
+                   "warning",
+                   "Por favor, completa todos los nombres de los pasajeros."
+                 );
+                 // fin validacion de lista de pasajeros
+               } else {
+                 // Todos los nombres de los pasajeros están llenos, continuar con el envío de la solicitud.
+                 if ((await this.mensajesService.mensajesConfirmar()) == true) {
+                   this.registrarSoliVe();
+                 }
+               }
              } else {
-               // Todos los nombres de los pasajeros están llenos, continuar con el envío de la solicitud.
-               if ((await this.mensajesService.mensajesConfirmar()) == true) {
-                 this.registrarSoliVe();
-               }
+              this.mensajesService.mensajesToast(
+                "warning",
+                "Debe subir pdf de la lista de pasajeros"
+              );
              }
            } else {
              this.mensajesService.mensajesToast(
@@ -217,6 +244,12 @@ export class ModalComponent implements OnInit {
         control.markAsTouched()
       );
     }
+  }
+
+  // subir el archivo
+  cambioDeArchivo(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.file = (target.files as FileList)[0];
   }
 
   registrarSoliVe() : Promise<void> {
@@ -279,19 +312,56 @@ export class ModalComponent implements OnInit {
     return new Promise<void> ((resolve, reject) => {
       this.soliVeService.registrarSoliVe(solicitudVehiculo).subscribe({
         next: (resp: any) => {
+          this.soliSave = resp;
           Swal.close();
-          this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
-          this.mensajesService.mensajesToast("success", "Registro agregado");
-          this.modalService.dismissAll();
-          this.formularioSoliVe.reset();
-          resolve();
+
+          if (solicitudVehiculo.file != null && solicitudVehiculo.cantidadPersonas > 5) {
+              // enviar pdf
+            const formData = new FormData();
+            let obj = {
+              nombreDocumento: '',
+              urlDocumento: '',
+              fecha: this.obtenerFechaActual(new Date()),
+              codigoSolicitudVehiculo: {
+                codigoSolicitudVehiculo: resp.codigoSolicitudVehiculo,
+              }
+            }
+            formData.append('archivo', this.file!);
+            formData.append('entidad', new Blob([JSON.stringify(obj)], {type: 'application/json'}));
+
+            this.soliVeService.enviarPdfPasajeros(formData).subscribe({
+              next: (pdfResp: any) => {
+                //console.log(pdfResp);
+                this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
+                this.mensajesService.mensajesToast("success", "Registro agregado");
+                this.modalService.dismissAll();
+                this.formularioSoliVe.reset();
+                resolve();
+              },
+              error: (pdfError) => {
+                Swal.close();
+                this.mensajesService.mensajesSweet(
+                  'error',
+                  'Ups... Algo salió mal al enviar el PDF',
+                  pdfError.error.message
+                );
+                reject(pdfError);
+              },
+            });
+          } else {
+            this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
+            this.mensajesService.mensajesToast("success", "Registro agregado");
+            this.modalService.dismissAll();
+            this.formularioSoliVe.reset();
+            resolve();
+          }
         },
         error : (err) => {
           // Cerrar SweetAlert de carga
           Swal.close();
           this.mensajesService.mensajesSweet(
             "error",
-            "Ups... Algo salió mal",
+            "Ups... Algo salió mal al registrar la solicitud",
             err.error.message
           );
           reject(err); // Rechaza la promesa con el error
@@ -299,7 +369,6 @@ export class ModalComponent implements OnInit {
       });
     });
   }
-
 
   editarSoliVe(){}
 
@@ -360,6 +429,7 @@ export class ModalComponent implements OnInit {
       ],
       solicitante: [this.usuarioActivo?.codigoUsuario || '', [Validators.required]],
       listaPasajeros: this.fb.array([]),
+      file: ['',],
     });
   }
 
@@ -490,7 +560,7 @@ export class ModalComponent implements OnInit {
     if (this.cantidadPersonas > 5) {
       this.mostrarTabla = false; // Ocultar la tabla
       this.mostrarArchivoAdjunto = true; // Mostrar el campo de entrada de archivo
-    } else {
+    } else if (this.cantidadPersonas <= 5 && this.cantidadPersonas >= 2){
       this.mostrarTabla = true; // Mostrar la tabla
       this.mostrarArchivoAdjunto = false; // Ocultar el campo de entrada de archivo
     }
@@ -508,8 +578,95 @@ export class ModalComponent implements OnInit {
     alert.show = !alert.show;
   }
 
-  // subir el archivo
-  cambioDeArchivo(event: Event) {
+  async aprobarSolicitud(){
+    console.log(this.soliVeOd);
+    if ((await this.mensajesService.mensajeAprobar()) == true) {
+      //await this.actualizarSolicitud(data);
+      if (this.usuarioActivo.role=="JEFE_DEPTO"){
+        await this.actualizarSolicitud(this.soliVeOd);
+      }else{
+        await this.actualizarSolicitudDec(this.soliVeOd);
+      }
+    }
+  }
 
+  async revisionSolicitud() {
+    if (await this.mensajesService.mensajeRevision() == true){
+      this.soliVeOd.estado = 6;
+      await this.actualizarSolicitud(this.soliVeOd);
+    }
+
+  }
+  async anularSolicitud() {
+    if (await this.mensajesService.mensajeAnular() == true){
+      this.soliVeOd.estado = 15;
+      await this.actualizarSolicitud(this.soliVeOd);
+    }
+
+  }
+
+  actualizarSolicitud(data: any):Promise <void>{
+    return new Promise<void>((resolve, reject) => {
+      this.soliVeService.updateSolciitudVehiculo(data).subscribe({
+        next: (resp: any) => {
+          this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
+          this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
+          resolve();
+        },
+        error: (error) => {
+          Swal.close();
+          this.mensajesService.mensajesSweet(
+            'error',
+            'Ups... Algo salió mal',
+            error.error.message
+          );
+          reject (error);
+        },
+      });
+    });
+  }
+
+  actualizarSolicitudDec(data: any):Promise <void>{
+    console.log("emtro ");
+    return new Promise<void>((resolve, reject) => {
+      this.soliVeService.updateSolciitudVehiculo(data).subscribe({
+        next: (resp: any) => {
+
+          this.solicitudVale.cantidadVale =0 ;
+          this.solicitudVale.estadoEntrada = 1;
+          this.solicitudVale.estado = 8;
+          this.solicitudVale.solicitudVehiculo = data.codigoSolicitudVehiculo;
+
+          console.log("soliva," + this.solicitudVale);
+
+          this.soliVeService.registrarSolicitudVale(this.solicitudVale).subscribe({
+            next: (valeResp: any) => {
+              this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
+              this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
+              this.modalService.dismissAll();
+              resolve();
+            },
+            error: (errorSoli) => {
+              Swal.close();
+              this.mensajesService.mensajesSweet(
+                'error',
+                'Ups... Algo salió mal al aprobar la solicitud',
+                errorSoli.error.message
+              );
+              reject (errorSoli);
+            },
+          })
+        },
+        error: (error) => {
+          Swal.close();
+          this.mensajesService.mensajesSweet(
+            'error',
+            'Ups... Algo salió mal',
+            error.error.message
+          );
+          reject (error);
+        },
+      });
+    });
   }
 }

@@ -24,6 +24,10 @@ import {
 } from "../Interfaces/asignacionvale.interface";
 import { NUMBER_VALIDATE } from "src/app/constants/constants";
 import { Router } from "@angular/router";
+import {
+  ISolcitudAprobar,
+  ISolicitudValeAprobar,
+} from "../Interfaces/solicitudValeAprobar.interface";
 
 @Component({
   selector: "app-solicitudvale",
@@ -54,14 +58,23 @@ export class SolicitudvaleComponent implements OnInit {
       motorista: "Erik Manrique Flores",
     },
   ]; // Aquí deberías tener tus datos
+  //interfaz para las solicitudes de vale
+  solicitudesVales: ISolicitudValeAprobar;
   searchTerm = "";
   itemsPerPage = 5;
   currentPage = 1;
+
   busqueda: string = "";
   p: any;
+
+  itemsPerPageVale = 10;
+  currentPageVale = 1;
+  buscarVale: string = "";
+  pVales: any;
+
   private isNumber: string = NUMBER_VALIDATE;
 
-  filtroEstado: string = "";
+  filtroEstado: number;
 
   solicitud: any[] = [];
 
@@ -75,7 +88,7 @@ export class SolicitudvaleComponent implements OnInit {
 
   codigoAsignacion: ICodigoAsignacion;
 
-  public paramAsignacion!: string;
+  public paramAsignacion: string = "";
 
   public paramSolicitudV!: string;
 
@@ -90,7 +103,25 @@ export class SolicitudvaleComponent implements OnInit {
   formularioSolicitudVale: FormGroup;
   formularioSolicitudValev: FormGroup;
   existenciaI!: IExistenciaVales;
+  term: any; // para buscar
 
+  breadCrumbItems: Array<{}>;
+  //para pasar los estados a string
+  estadoSoli = "";
+
+  //fecha de Salida
+  fechaSalida: string;
+
+  //codigo de la oslicitud de vale
+  codigoSolicitudValeAprobar: string;
+
+  observacionesSolicitudVale: string;
+
+
+
+  cantidadValesA: number;
+  //fecha con formato
+  fechaformateada = [];
   constructor(
     private modalService: NgbModal,
     private service: ServiceService,
@@ -99,158 +130,200 @@ export class SolicitudvaleComponent implements OnInit {
     private mensajesService: MensajesService,
     private router: Router
   ) {
-    this.formularioSolicitudVale = fb.group({
+    this.iniciarFormulario();
+  }
+
+  private iniciarFormulario() {
+    this.formularioSolicitudVale = this.fb.group({
       cantidadVales: new FormControl("", [
         Validators.required,
         Validators.pattern(this.isNumber),
       ]),
+
       fechaSolicitud: new FormControl("", [Validators.required]),
       fechaEntrada: new FormControl("", [Validators.required]),
       fechaSalida: new FormControl("", [Validators.required]),
-      tipo: new FormControl("", [Validators.required]),
-      lugarMision: new FormControl("", [Validators.required]),
-      estado: new FormControl("", [Validators.required]),
+      mision: new FormControl("", [Validators.required]),
+      estado: new FormControl(""),
       motorista: new FormControl("", [Validators.required]),
       solicitante: new FormControl("", [Validators.required]),
-      objetivoMision: new FormControl("", [Validators.required]),
       placa: new FormControl("", [Validators.required]),
       cantidadPersonas: new FormControl("", [Validators.required]),
       direccion: new FormControl("", [Validators.required]),
       unidadSolicitante: new FormControl("", [Validators.required]),
-      nombreJefeDepto: new FormControl("", [Validators.required]),
+      observacionRevision: new FormControl(""),
     });
-    this.formularioSolicitudValev = fb.group({
-      cantidadVales: new FormControl("", [Validators.required]),
-      fechaSolicitud: new FormControl("", [Validators.required]),
-      fechaEntrada: new FormControl("", [Validators.required]),
-      fechaSalida: new FormControl("", [Validators.required]),
-      tipo: new FormControl("", [Validators.required]),
-      lugarMision: new FormControl("", [Validators.required]),
-      estado: new FormControl("", [Validators.required]),
-      motorista: new FormControl("", [Validators.required]),
-      solicitante: new FormControl("", [Validators.required]),
-      objetivoMision: new FormControl("", [Validators.required]),
-      placa: new FormControl("", [Validators.required]),
-      cantidadPersonas: new FormControl("", [Validators.required]),
-      direccion: new FormControl("", [Validators.required]),
-      unidadSolicitante: new FormControl("", [Validators.required]),
-      nombreJefeDepto: new FormControl("", [Validators.required]),
-    });
+    this.cantidadValesA =
+      this.formularioSolicitudVale.get("cantidadVales")?.value;
   }
-  breadCrumbItems: Array<{}>;
 
   ngOnInit() {
     this.breadCrumbItems = [
-      { label: "UI Elements" },
-      { label: "Modals", active: true },
-    ];
+      { label: "Solicitud de Vales" },
+      { label: "Mis Solicitudes", active: true },
+    ]; // miga de pan
     this.service.getCliente().subscribe((data: any) => {
       this.solicitudvv = data.content;
-      console.log(this.solicitudvv);
     });
     this.obtnerExistenciaVales();
-    //this.obtenerIdSolicitudVale();
+    this.getSolicitudesVale(8);
   }
 
+  //Obtniene los vales a asignar según la cantidad deseada
   valesAsignar(valesAsignarModal: any) {
     const cantidadVales =
-      this.formularioSolicitudValev.get("cantidadVales")?.value;
-    this.service.getValesAignar(cantidadVales).subscribe({
-      next: (response) => {
-        this.valesAsingar = response;
-        console.log(this.valesAsingar);
-      },
-    });
-    /* (data: any) => {
-      this.valesAsingar = data; */
-    console.log(this.valesAsingar);
-    this.modalService.open(valesAsignarModal, { size: "lg", centered: true });
+      this.formularioSolicitudVale.get("cantidadVales")?.value;
+    if (cantidadVales == 0) {
+      this.mensajesService.mensajesToast(
+        "warning",
+        "Ingrese una cantidad válida"
+      );
+    } else {
+      this.service.getValesAignar(cantidadVales).subscribe({
+        next: (response) => {
+          this.valesAsingar = response;
+        },
+      });
+      this.modalService.open(valesAsignarModal, { size: "lg", centered: true });
+    }
   }
 
+  //Obtitne la existencia de los vales
   obtnerExistenciaVales() {
     this.existenciaService.getCantidadVales().subscribe({
       next: (response) => {
         this.existenciaI = response;
-        console.log(this.existenciaI);
       },
     });
   }
 
-
-
-  liquidarVales(solicitudVehiculo: SolicitudVv) {
-    console.log(
-      "el codigo del vehiculo es: " + solicitudVehiculo.codigoSolicitudVehiculo
-    );
-
-   // this.obtenerIdSolicitudVale( solicitudVehiculo.codigoSolicitudVehiculo);
-
-    console.log(
-      this.obtenerIdSolicitudVale( solicitudVehiculo.codigoSolicitudVehiculo)
-    );
-
-    /* const codAsignacion = this.obtenerCodigoAsignacion(
-      soliVale.codigoSolicitudVale
-    ); */
-
-    //console.log("el codigo del asignación es: " + codAsignacion);
-
-    //this.router.navigate(["/asignacion-vale/asignacion", codAsignacion]);
+  //Liquida los valos y finaliza las solicitudes
+  liquidarVales(codigoSolicitudVale: ISolicitudValeAprobar) {
+    this.obtenerCodigoAsignacion(codigoSolicitudVale.codigoSolicitudVale);
   }
 
+  //Obtiene el id de la solicitud de vale
   obtenerIdSolicitudVale(codigoSolicitudVehiculo: string) {
     this.service.getIdSolicitudVale(codigoSolicitudVehiculo).subscribe({
       next: (response) => {
         this.codigoSolicitudVale = response;
-
-         this.paramSolicitudV = this.codigoSolicitudVale.codigoSolicitudVale;
-         console.log("el método, codigoSolicitudVale:", this.paramSolicitudV);
-         this.obtenerCodigoAsignacion(this.paramSolicitudV)
+        this.paramSolicitudV = this.codigoSolicitudVale.codigoSolicitudVale;
+        this.obtenerCodigoAsignacion(this.paramSolicitudV);
       },
     });
   }
 
+  //Obtiene el código de asignación
   obtenerCodigoAsignacion(codigoSolitudVale: string) {
     //this.obtenerIdSolicitudVale(this.solicitudvv.codigoSolicitudVehiculo)
     this.service.getCodigoAsignacion(codigoSolitudVale).subscribe({
       next: (response) => {
         this.codigoAsignacion = response;
         this.paramAsignacion = this.codigoAsignacion.codigoAsignacion;
-        console.log("metodo, códigoAsignacion: ", this.paramAsignacion);
+        this.router.navigate([
+          "/asignacion-vale/asignacion",
+          this.paramAsignacion,
+        ]);
       },
     });
-    this.router.navigate(["/asignacion-vale/asignacion",  this.paramAsignacion]);
   }
 
-  /**
-   * Open Large modal
-   * @param largeDataModal large modal data
-   */
-  largeModal(largeDataModal: any, solici: SolicitudVv) {
-    //esto es para obtener el id de la solicitud de vale
-    this.codigoSolicitudVehiculo = solici.codigoSolicitudVehiculo;
-    this.obtenerIdSolicitudVale(this.codigoSolicitudVehiculo);
+  getSolicitudesVale(estado: number) {
+    this.service.getSolicitdValePorEstado(estado).subscribe({
+      next: (data) => {
+        this.solicitudesVales = data;
+        this.obtenerFechaFormateada(data);
+        this.asignacionEstados(estado);
+      },
+    });
+  }
 
-    this.modalService.open(largeDataModal, { size: "lg", centered: true });
-    console.log(solici);
-    const fechaSolicitud = solici.fechaSolicitud;
-    const fechaEntrada = solici.fechaEntrada;
-    const fechaSalida = solici.fechaSalida;
-    const tipo = solici.vehiculo.clase;
-    const lugarMision = solici.lugarMision;
-    const estado = solici.estado;
-    const motorista = solici.motorista.nombre + " " + solici.motorista.apellido;
-    const solicitante =
-      solici.solicitante.empleado.nombre +
-      " " +
-      solici.solicitante.empleado.apellido;
-    const objetivoMision = solici.objetivoMision;
-    const placa = solici.horaEntrada;
+  obtenerFechaFormateada(data: any) {
+    if (Array.isArray(data) && data.length > 0) {
+      //vacio las fechas
+      this.vaciarFechas();
+      // Accedemos a la propiedad fechaSalida del primer elemento del arreglo
+      for (let index = 0; index < data.length; index++) {
+        this.fechaSalida = data[index].fechaSalida;
+
+        const fechaf = this.service.obtenerNombreDiaYMes(this.fechaSalida);
+        const anio = this.service.dividirFecha(this.fechaSalida);
+        const dia = this.service.dividirFecha(this.fechaSalida);
+        this.fechaformateada.push(
+          fechaf.nombreDia +
+            ", " +
+            dia.día +
+            " de " +
+            fechaf.nombreMes +
+            " de " +
+            anio.anio
+        );
+      }
+      // Por ejemplo, data[0].nombreSolicitante para acceder al nombre del solicitante del primer elemento
+    }
+  }
+  vaciarFechas() {
+    while (this.fechaformateada.length > 0) {
+      this.fechaformateada.pop();
+    }
+  }
+
+  asignacionEstados(estado: number) {
+    if (estado == 1) {
+      this.estadoSoli = "Por Aprobar";
+    } else if (estado == 4) {
+      this.estadoSoli = "Aprobada";
+    } else if (estado == 5) {
+      this.estadoSoli = "Asignado";
+    } else if (estado == 6) {
+      this.estadoSoli = "Revisión";
+    } else if (estado == 7) {
+      this.estadoSoli = "Finalizada";
+    } else if (estado == 8) {
+      this.estadoSoli = "Nueva";
+    } else {
+      this.estadoSoli = "Anulada";
+    }
+  }
+
+  //Obtiene los datos de la solicitud de vale
+  mdAsignarVales(modal: any, solici: ISolicitudValeAprobar) {
+    //esto es para obtener el id de la solicitud de vale
+    const estadoSolicitud = solici.estadoSolicitud;
+    const codSolicitud = solici.codigoSolicitudVale;
+
+    this.codigoSolicitudVehiculo = solici.codigoSolicitudVehiculoS;
+    /* if (estadoSolicitud === 4) {
+      this.codigoSolicitudVehiculo = solici.codigoSolicitudVehiculoS;
+      this.obtenerIdSolicitudVale(this.codigoSolicitudVehiculo);
+    } */
+
+    this.modalService.open(modal, { size: "lg", centered: true });
+
+    const fechaSolicitud = this.service.fechaFormatoGenerico(
+      solici.fechaSolicitud
+    );
+    const fechaEntrada = this.service.fechaFormatoGenerico(solici.fechaEntrada);
+    const fechaSalida = this.service.fechaFormatoGenerico(solici.fechaSalida);
+    const mision = solici.mision;
+    const motorista = solici.nombreMotorista;
+    const solicitante = solici.nombreSolicitante;
+    const placa = solici.placaVehiculo;
     const cantidadPersonas = solici.cantidadPersonas;
-    const direccion = solici.direccion;
+    const direccion = solici.direccionMision;
     const unidadSolicitante = solici.unidadSolicitante;
-    const nombreJefeDepto = solici.nombreJefeDepto;
+    const cantidadVales = solici.cantidadVales;
+    let observacionRevision = solici.observacionesSolicitudVale;
+    if (observacionRevision) {
+      observacionRevision = solici.observacionesSolicitudVale;
+
+    } else {
+      observacionRevision = "";
+    }
+
     //modal de detalle de solicitud de vehiculo
+    this.codigoSolicitudValeAprobar = codSolicitud;
+    this.formularioSolicitudVale.get("cantidadVales")?.setValue(cantidadVales);
     this.formularioSolicitudVale
       .get("fechaSolicitud")
       ?.setValue(String(fechaSolicitud));
@@ -260,20 +333,12 @@ export class SolicitudvaleComponent implements OnInit {
     this.formularioSolicitudVale
       .get("fechaSalida")
       ?.setValue(String(fechaSalida));
-    this.formularioSolicitudVale.get("tipo")?.setValue(String(tipo));
-    this.formularioSolicitudVale
-      .get("lugarMision")
-      ?.setValue(String(lugarMision));
-    this.formularioSolicitudVale.get("estado")?.setValue(String(estado));
+    this.formularioSolicitudVale.get("mision")?.setValue(String(mision));
     this.formularioSolicitudVale.get("motorista")?.setValue(String(motorista));
     this.formularioSolicitudVale
       .get("solicitante")
       ?.setValue(String(solicitante));
-    this.formularioSolicitudVale
-      .get("objetivoMision")
-      ?.setValue(String(objetivoMision));
     this.formularioSolicitudVale.get("placa")?.setValue(String(placa));
-    this.formularioSolicitudVale.get("tipo")?.setValue(String(tipo));
     this.formularioSolicitudVale
       .get("cantidadPersonas")
       ?.setValue(String(cantidadPersonas));
@@ -282,65 +347,42 @@ export class SolicitudvaleComponent implements OnInit {
       .get("unidadSolicitante")
       ?.setValue(String(unidadSolicitante));
     this.formularioSolicitudVale
-      .get("nombreJefeDepto")
-      ?.setValue(String(nombreJefeDepto));
-    //modal de solicitud de vale
-    this.formularioSolicitudValev
-      .get("fechaSolicitud")
-      ?.setValue(String(fechaSolicitud));
-    this.formularioSolicitudValev
-      .get("fechaEntrada")
-      ?.setValue(String(fechaEntrada));
-    this.formularioSolicitudValev
-      .get("fechaSalida")
-      ?.setValue(String(fechaSalida));
-    this.formularioSolicitudValev.get("tipo")?.setValue(String(tipo));
-    this.formularioSolicitudValev
-      .get("lugarMision")
-      ?.setValue(String(lugarMision));
-    this.formularioSolicitudValev.get("estado")?.setValue(String(estado));
-    this.formularioSolicitudValev.get("motorista")?.setValue(String(motorista));
-    this.formularioSolicitudValev
-      .get("solicitante")
-      ?.setValue(String(solicitante));
-    this.formularioSolicitudValev
-      .get("objetivoMision")
-      ?.setValue(String(objetivoMision));
-    this.formularioSolicitudValev.get("placa")?.setValue(String(placa));
-    this.formularioSolicitudValev.get("tipo")?.setValue(String(tipo));
-    this.formularioSolicitudValev
-      .get("cantidadPersonas")
-      ?.setValue(String(cantidadPersonas));
-    this.formularioSolicitudValev.get("direccion")?.setValue(String(direccion));
-    this.formularioSolicitudValev
-      .get("unidadSolicitante")
-      ?.setValue(String(unidadSolicitante));
-    this.formularioSolicitudValev
-      .get("nombreJefeDepto")
-      ?.setValue(String(nombreJefeDepto));
+      .get("observacionRevision")
+      ?.setValue(String(observacionRevision));
   }
 
+  //Guardar la asignación de vales
   async guardar() {
-    if (this.formularioSolicitudValev.valid) {
-      if ((await this.mensajesService.mensajeAsignar()) == true) {
-        // Guardar
-        this.registrando();
+    console.log("form: ", this.formularioSolicitudVale);
+
+    if (this.formularioSolicitudVale.valid) {
+      if ((this.estadoSoli == "Nueva")) {
+        if ((await this.mensajesService.mensajeSolicitarAprobacion()) == true) {
+          // solicitar aprobación
+          this.solicitarAprobacion();
+        }
+      } else {
+        if ((await this.mensajesService.mensajeAsignar()) == true) {
+          // Guardar
+          this.registrando();
+        }
       }
     } else {
       this.mensajesService.mensajesToast(
         "warning",
         "Complete los que se indican"
       );
-      return Object.values(this.formularioSolicitudValev.controls).forEach(
+      return Object.values(this.formularioSolicitudVale.controls).forEach(
         (control) => control.markAsTouched()
       );
     }
   }
 
+  //Regitra la asignación de los vales
   registrando() {
     //Asignaré los campos necesario para guardar la asignación
     const cantidadVales =
-      this.formularioSolicitudValev.get("cantidadVales")?.value;
+      this.formularioSolicitudVale.get("cantidadVales")?.value;
 
     const estadoAsignacion = 8;
     new Date().toLocaleDateString();
@@ -349,11 +391,9 @@ export class SolicitudvaleComponent implements OnInit {
     const asignarVales: IAsignacionVale = {
       estadoAsignacion: estadoAsignacion,
       fechaAsignacion: fechaAsignacion,
-      solicitudVale: this.codigoSolicitudVale.codigoSolicitudVale,
+      solicitudVale: this.codigoSolicitudValeAprobar,
       cantidadVales: cantidadVales,
     };
-
-    console.log(asignarVales);
 
     Swal.fire({
       title: "Espere",
@@ -388,47 +428,72 @@ export class SolicitudvaleComponent implements OnInit {
       });
     });
   }
+
+  async solicitarAprobacion() {
+    //Asignaré los campos necesario para modificar la asignación
+    const cantidadVales =
+    this.formularioSolicitudVale.get("cantidadVales")?.value;
+    this.observacionesSolicitudVale = this.formularioSolicitudVale.get("observacionRevision")?.value;
+    const codigoSolicitud = this.paramSolicitudV;
+    const estadoSolicitud = 1;
+    new Date().toLocaleDateString();
+    const fechaAsignacion = this.obtenerFechaConFormato();
+
+    const solicitud: ISolcitudAprobar = {
+      codigoSolicitudVale: this.codigoSolicitudValeAprobar,
+      cantidadVales: cantidadVales,
+      estadoSolicitudVale: estadoSolicitud,
+      observaciones: this.observacionesSolicitudVale,
+    };
+    console.log("solictud: ", solicitud);
+
+    Swal.fire({
+      title: "Espere",
+      text: "Realizando la acción...",
+      icon: "info",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showCancelButton: false,
+      showConfirmButton: false,
+    });
+    return new Promise<void>((resolve, reject) => {
+      this.service.solicitarAprobacion(solicitud).subscribe({
+        next: (resp: any) => {
+          // Cerrar SweetAlert de carga
+          Swal.close();
+          this.getSolicitudesVale(8);
+          this.modalService.dismissAll();
+          this.limpiarCampos();
+          this.mensajesService.mensajesToast("success", "Enviada para Aprobar");
+          resolve(); // Resuelve la promesa sin argumentos
+        },
+        error: (err) => {
+          // Cerrar SweetAlert de carga
+          Swal.close();
+          this.mensajesService.mensajesSweet(
+            "error",
+            "Ups... Algo salió mal",
+            err.error.message
+          );
+          reject(err); // Rechaza la promesa con el error
+        },
+      });
+    });
+  }
   limpiarCampos() {
     this.formularioSolicitudVale.reset();
   }
-  filteredItems3() {
-    const currentDate = new Date();
-    //console.log(this.solicitudvv)
-    return this.solicitudvv.filter(
-      (item) =>
-        ((
-          item.solicitante.empleado.nombre +
-          " " +
-          item.solicitante.empleado.apellido
-        )
-          .toLowerCase()
-          .includes(this.searchText.toLowerCase()) ||
-          item.lugarMision
-            .toLowerCase()
-            .includes(this.searchText.toLowerCase()) ||
-          item.estadoString
-            .toLowerCase()
-            .includes(this.searchText.toLowerCase()) ||
-          // item.fechaSalida.toLocaleDateString().includes(this.searchText.toLowerCase()) ||
-          (item.motorista.nombre + " " + item.motorista.apellido)
-            .toLowerCase()
-            .includes(this.searchText.toLowerCase()) ||
-          this.searchText === "") &&
-        (item.estadoString === this.filtroEstado || this.filtroEstado === "")
-    );
+
+  filtrar(event: any) {
+    this.filtroEstado = event;
+    this.getSolicitudesVale(this.filtroEstado);
   }
 
-  CargarDatos(sulici: SolicitudVv) {
-    // localStorage.setItem('id', JSON.stringify(clien));
-    // this.router.navigate(["edit"]);
-  }
-
-  mostrar(){
+  mostrar() {
     let currentUrl = this.router.url;
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-    this.router.onSameUrlNavigation = 'reload';
+    this.router.onSameUrlNavigation = "reload";
     this.router.navigate([currentUrl]);
-
   }
   get paginatedItems() {
     if (!this.searchText) {
@@ -467,22 +532,6 @@ export class SolicitudvaleComponent implements OnInit {
    */
   openModal(content: any) {
     this.modalService.open(content);
-  }
-
-  /**
-   * Open extra large modal
-   * @param exlargeModal extra large modal data
-   */
-  extraLarge(exlargeModal: any) {
-    this.modalService.open(exlargeModal, { size: "xl", centered: true });
-  }
-
-  /**
-   * Open small modal
-   * @param smallDataModal small modal data
-   */
-  smallModal(smallDataModal: any) {
-    this.modalService.open(smallDataModal, { size: "sm", centered: true });
   }
 
   /**
@@ -537,7 +586,7 @@ export class SolicitudvaleComponent implements OnInit {
   }
 
   esCampoValido(campo: string) {
-    const validarCampo = this.formularioSolicitudValev.get(campo);
+    const validarCampo = this.formularioSolicitudVale.get(campo);
     return !validarCampo?.valid && validarCampo?.touched
       ? "is-invalid"
       : validarCampo?.touched

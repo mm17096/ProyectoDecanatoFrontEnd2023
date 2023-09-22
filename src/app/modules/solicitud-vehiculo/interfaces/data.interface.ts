@@ -104,3 +104,15 @@ export interface IPais {
   nam: string;
   na2: string;
 }
+
+export interface IDocumentoSoliVe {
+  nombreDocumento: String;
+  urlDocumento: String;
+  codigoSolicitudVehiculo: {
+    codigoSolicitudVehiculo: String;
+  }
+}
+export interface IActualizarSoliVe{
+  codigoSolicitudVehiculo: string;
+  estado: number;
+}

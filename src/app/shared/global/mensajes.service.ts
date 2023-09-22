@@ -105,4 +105,82 @@ export class MensajesService {
 
     return estado;
   }
+async mensajeSolicitarAprobacion(
+    icono: SweetAlertIcon = "warning",
+    title: string = "Se solicitará al jefe de unidad la aprobación de la solicitud",
+    label: string = "¿Esta seguro?"
+  ) {
+    let estado = false;
+
+    await Swal.fire({
+      icon: icono,
+      title: title,
+      text: label,
+      showCancelButton: true,
+      confirmButtonColor: '#972727',
+      confirmButtonText: "Aceptar",
+      cancelButtonColor: '#2c3136',
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        estado = true;
+      }else{
+        estado = false;
+      }
+    });
+
+    return estado;
+  }
+  async mensajeSolicitudAprobada( cantVales: number,
+    icono: SweetAlertIcon = "warning",
+    title: string = "Aprobará la solicutd con " + cantVales + " Vales",
+    label: string = "¿Esta seguro?"
+  ) {
+    let estado = false;
+
+    await Swal.fire({
+      icon: icono,
+      title: title,
+      text: label,
+      showCancelButton: true,
+      confirmButtonColor: '#972727',
+      confirmButtonText: "Aceptar",
+      cancelButtonColor: '#2c3136',
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        estado = true;
+      }else{
+        estado = false;
+      }
+    });
+
+    return estado;
+  }
+  async mensajeSolicitudRevision(
+    icono: SweetAlertIcon = "warning",
+    title: string = "Se enviará para que pueda ser revisada",
+    label: string = "¿Esta seguro?"
+  ) {
+    let estado = false;
+
+    await Swal.fire({
+      icon: icono,
+      title: title,
+      text: label,
+      showCancelButton: true,
+      confirmButtonColor: '#972727',
+      confirmButtonText: "Aceptar",
+      cancelButtonColor: '#2c3136',
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        estado = true;
+      }else{
+        estado = false;
+      }
+    });
+
+    return estado;
+  }
 }

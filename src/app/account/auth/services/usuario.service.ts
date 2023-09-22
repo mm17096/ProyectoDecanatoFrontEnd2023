@@ -1,5 +1,5 @@
 import { Injectable, NgZone, inject } from '@angular/core';
-import { Usuario } from '../models/usuario.models';
+import { Empleado, Usuario } from '../models/usuario.models';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ILoginUsuario, IRegistroUsuario } from '../interfaces/usuario';
@@ -15,7 +15,7 @@ export class UsuarioService {
 
   storage: Storage = window.localStorage;
   public usuario!: Usuario;
-  public empleado!: IEmpleado;
+  public empleado!: Empleado;
   private http = inject(HttpClient);
   private baseUrl: string = environment.baseUrl;
 
@@ -44,6 +44,8 @@ export class UsuarioService {
 
     return this.http.post(`${this.baseUrl}/usuario/auth/login`, body).pipe(
       tap((resp: any) => {
+        const { codigoUsuario, nombre, clave, nuevo, rol, token, empleado } = resp.usuario;
+        this.usuario = new Usuario(codigoUsuario, nombre, "", nuevo, "", token, empleado);
         this.guardarLocalSotrage('token', resp.token);
         this.guardarLocalSotrage('codEmpleado', resp.empleado.codigoEmpleado);
         this.guardarLocalSotrage('empleadoFoto', resp.empleado.nombrefoto);
@@ -84,7 +86,9 @@ export class UsuarioService {
       .pipe(tap((resp: any) => resp.content as any))
       .subscribe(
         (usuario: any) => {
-          this.usuario = usuario; // guarda ususuario
+          const { codigoUsuario, nombre, clave, nuevo, role, token, empleado } = usuario;
+          this.usuario = new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
+          //console.log("usuario service :", this.usuario);
         },
         (error) => {
           console.error("Error al obtener los usuario:", error);
@@ -96,10 +100,12 @@ export class UsuarioService {
   getEmpleado() {
     this.http
       .get(`${this.baseUrl}/empleado/${this.codEmpleado}`)
-      .pipe(map((resp: IEmpleado) => resp as IEmpleado))
+      .pipe(map((resp: any) => resp as any))
       .subscribe(
-        (empleado: IEmpleado) => {
+        (empleado: any) => {
           this.empleado = empleado; // guarda Empleado
+          const { codigoEmpleado, dui, nombre, apellido, telefono, licencia, tipolicencia, fechalicencia, estado, jefe, correo, nombrefoto, urlfoto, cargo, departamento } = empleado;
+          this.empleado = new Empleado(codigoEmpleado, dui, nombre, apellido, telefono, licencia, tipolicencia, fechalicencia, estado, jefe, correo, nombrefoto, urlfoto, cargo, departamento);
         },
         (error) => {
           console.error("Error al obtener los empleado:", error);
@@ -108,12 +114,46 @@ export class UsuarioService {
   }
 
 
-  logout(){
+  public Credenciales(usuario: Usuario): any {
+    return this.http.put(`${this.baseUrl}/usuario/credenciales`, usuario);
+  }
+
+
+  logout() {
     //este servicio cierra sesion si sirve el token
-/*    this.http.put(`${this.baseUrl}/usuario/auth/sesion`, this.codUsuario)
+    /*    this.http.put(`${this.baseUrl}/usuario/auth/sesion`, this.codUsuario)
+          .subscribe(
+            () => {
+              this.storage.removeItem("token");
+              this.storage.removeItem("codEmpleado");
+              this.storage.removeItem("codUsuario");
+              this.storage.removeItem("empleadoFoto");
+              this.ngZone.run(() => {
+                this.router.navigateByUrl('/account/login');
+              });
+            },
+            (error) => {
+              //si el tokend es dañado Forsa cerrar la sesion y borra el token
+              this.storage.removeItem("token");
+              this.ForsarSesion();
+              console.error('Ocurrió un error al cerrar sesión', error);
+            }
+          ); */
+
+    this.storage.removeItem("token");
+    this.storage.removeItem("codEmpleado");
+    this.storage.removeItem("codUsuario");
+    this.storage.removeItem("empleadoFoto");
+    this.ngZone.run(() => {
+      this.router.navigateByUrl('/account/login');
+    });
+  }
+
+  //servicio que forsa cerrar la sesion activa
+  /*   ForsarSesion(){
+      this.http.put(`${this.baseUrl}/usuario/auth/sesion`, this.codUsuario)
       .subscribe(
         () => {
-          this.storage.removeItem("token");
           this.storage.removeItem("codEmpleado");
           this.storage.removeItem("codUsuario");
           this.storage.removeItem("empleadoFoto");
@@ -122,42 +162,13 @@ export class UsuarioService {
           });
         },
         (error) => {
-          //si el tokend es dañado Forsa cerrar la sesion y borra el token
-          this.storage.removeItem("token");
-          this.ForsarSesion();
+          this.storage.removeItem("codEmpleado");
+          this.storage.removeItem("codUsuario");
+          this.storage.removeItem("empleadoFoto");
           console.error('Ocurrió un error al cerrar sesión', error);
         }
-      ); */
-
-      this.storage.removeItem("token");
-      this.storage.removeItem("codEmpleado");
-      this.storage.removeItem("codUsuario");
-      this.storage.removeItem("empleadoFoto");
-      this.ngZone.run(() => {
-        this.router.navigateByUrl('/account/login');
-      });
-  }
-
-  //servicio que forsa cerrar la sesion activa
-/*   ForsarSesion(){
-    this.http.put(`${this.baseUrl}/usuario/auth/sesion`, this.codUsuario)
-    .subscribe(
-      () => {
-        this.storage.removeItem("codEmpleado");
-        this.storage.removeItem("codUsuario");
-        this.storage.removeItem("empleadoFoto");
-        this.ngZone.run(() => {
-          this.router.navigateByUrl('/account/login');
-        });
-      },
-      (error) => {
-        this.storage.removeItem("codEmpleado");
-        this.storage.removeItem("codUsuario");
-        this.storage.removeItem("empleadoFoto");
-        console.error('Ocurrió un error al cerrar sesión', error);
-      }
-    );
-  } */
+      );
+    } */
 
 
   validarToken(): Observable<boolean> {
@@ -168,6 +179,9 @@ export class UsuarioService {
     }).pipe(
       map((resp: any) => {
         this.guardarLocalSotrage('token', resp.token);
+        this.guardarLocalSotrage('codEmpleado', resp.empleado.codigoEmpleado);
+        this.guardarLocalSotrage('empleadoFoto', resp.empleado.nombrefoto);
+        this.guardarLocalSotrage('codUsuario', resp.codigoUsuario);
         return true;
       }),
       catchError((err) => {

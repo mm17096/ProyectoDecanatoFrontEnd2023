@@ -6,6 +6,7 @@ import {environment} from "../../../../environments/environment";
 import {map, tap} from "rxjs/operators";
 import {IVehiculos} from "../../vehiculo/interfaces/vehiculo-interface";
 import {Usuario} from "../../../account/auth/models/usuario.models";
+import {ISolicitudvalep} from "../../solicitud-vale-paginacion/interface/solicitudvalep.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -124,5 +125,10 @@ export class SolicitudVehiculoService {
   updateSolciitudVehiculo(data: IActualizarSoliVe){
     console.log("dataAc: ", data);
     return this.http.put<ISolicitudVehiculo>( `${this.url}/solicitudvehiculo/estadoupdate`, data);
+  }
+
+  registrarSolicitudVale(solicitudVale: ISolicitudvalep){
+    console.log("vale",solicitudVale);
+    return this.http.post<ISolicitudvalep>( `${this.url}/solicitudvale/insertar`, solicitudVale);
   }
 }

@@ -52,7 +52,6 @@ export class ModalComponent implements OnInit {
   pasajeroFormControls: FormControl[] = [];
   soliSave : ISolicitudVehiculo [] = [];
   file!: File;
-  opc : string = "";
 
   alerts = [
     {

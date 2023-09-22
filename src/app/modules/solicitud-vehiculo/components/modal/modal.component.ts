@@ -17,6 +17,7 @@ import {MensajesService} from "../../../../shared/global/mensajes.service";
 import {IVehiculos} from "../../../vehiculo/interfaces/vehiculo-interface";
 import {INTEGER_VALIDATE} from "../../../../constants/constants";
 import { Usuario } from 'src/app/account/auth/models/usuario.models';
+import {ISolicitudvalep} from "../../../solicitud-vale-paginacion/interface/solicitudvalep.interface";
 
 @Component({
   selector: 'app-modal',
@@ -29,6 +30,7 @@ export class ModalComponent implements OnInit {
   @Input() estadoSelecionado!: number;
   @Input() soliVeOd!: ISolicitudVehiculo;
   @Input() usuarioActivo !: Usuario;
+  @Input() vista!: string;
 
   private isInteger: string = INTEGER_VALIDATE;
   private isDate: string = "";
@@ -44,13 +46,14 @@ export class ModalComponent implements OnInit {
   pasajeros: IPasajero[] = [];
   username: string = 'Usuario que inicia';
   mostrarTabla: boolean = true;
+  btnVerPdf: boolean = false;
   mostrarArchivoAdjunto: boolean = false;
   cantidadPersonas: number = 0;
 
   pasajeroFormControls: FormControl[] = [];
   soliSave : ISolicitudVehiculo [] = [];
   file!: File;
-  documentoSoliVe: IDocumentoSoliVe [] = [];
+  solicitudVale!: ISolicitudvalep;
 
   alerts = [
     {
@@ -72,11 +75,20 @@ export class ModalComponent implements OnInit {
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router,
               private soliVeService: SolicitudVehiculoService, public activeModal: NgbActiveModal,
               private mensajesService: MensajesService,
-              ) { }
+              ) {
+    this.solicitudVale = {
+      idSolicitudVale: '',
+      cantidadVale: 0,
+      estadoEntrada: 1,
+      estado: 8,
+      solicitudVehiculo: '' // Otra inicialización si es necesario
+    };
+  }
 
   ngOnInit(): void {
-    //console.log(this.usuarioActivo);
+    console.log(this.usuarioActivo);
     //console.log("data",this.soliVeOd);
+    console.log("modal", this.vista);
     this.iniciarFormulario();
     this.llenarSelectDepartamentos();
     this.soliVeService.obtenerVehiculos();
@@ -123,6 +135,10 @@ export class ModalComponent implements OnInit {
           + this.soliVeOd.solicitante.empleado.apellido: '');
 
 
+      if (solicitudVehiculo.cantidadPersonas > 5){
+        this.mostrarTabla = false;
+        this.btnVerPdf = true;
+      }
       for (const persona of this.soliVeOd.listaPasajeros) {
         //console.log(persona);
         this.pasajeros.push({id: persona.id, nombrePasajero: persona.nombrePasajero});
@@ -544,7 +560,7 @@ export class ModalComponent implements OnInit {
     if (this.cantidadPersonas > 5) {
       this.mostrarTabla = false; // Ocultar la tabla
       this.mostrarArchivoAdjunto = true; // Mostrar el campo de entrada de archivo
-    } else {
+    } else if (this.cantidadPersonas <= 5 && this.cantidadPersonas >= 2){
       this.mostrarTabla = true; // Mostrar la tabla
       this.mostrarArchivoAdjunto = false; // Ocultar el campo de entrada de archivo
     }
@@ -560,5 +576,82 @@ export class ModalComponent implements OnInit {
   }
   CambiarAlert(alert) {
     alert.show = !alert.show;
+  }
+
+  async aprobarSolicitud(){
+    console.log(this.soliVeOd);
+    if ((await this.mensajesService.mensajeAprobar()) == true) {
+      //await this.actualizarSolicitud(data);
+      if (this.usuarioActivo.role=="JEFE_DEPTO"){
+        await this.actualizarSolicitud(this.soliVeOd);
+      }else{
+        await this.actualizarSolicitudDec(this.soliVeOd);
+      }
+    }
+  }
+
+  actualizarSolicitud(data: any):Promise <void>{
+    return new Promise<void>((resolve, reject) => {
+      this.soliVeService.updateSolciitudVehiculo(data).subscribe({
+        next: (resp: any) => {
+          this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
+          this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
+          resolve();
+        },
+        error: (error) => {
+          Swal.close();
+          this.mensajesService.mensajesSweet(
+            'error',
+            'Ups... Algo salió mal',
+            error.error.message
+          );
+          reject (error);
+        },
+      });
+    });
+  }
+
+  actualizarSolicitudDec(data: any):Promise <void>{
+    console.log("emtro ");
+    return new Promise<void>((resolve, reject) => {
+      this.soliVeService.updateSolciitudVehiculo(data).subscribe({
+        next: (resp: any) => {
+
+          this.solicitudVale.cantidadVale =0 ;
+          this.solicitudVale.estadoEntrada = 1;
+          this.solicitudVale.estado = 8;
+          this.solicitudVale.solicitudVehiculo = data.codigoSolicitudVehiculo;
+
+          console.log("soliva," + this.solicitudVale);
+
+          this.soliVeService.registrarSolicitudVale(this.solicitudVale).subscribe({
+            next: (valeResp: any) => {
+              this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
+              this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
+              this.modalService.dismissAll();
+              resolve();
+            },
+            error: (errorSoli) => {
+              Swal.close();
+              this.mensajesService.mensajesSweet(
+                'error',
+                'Ups... Algo salió mal al aprobar la solicitud',
+                errorSoli.error.message
+              );
+              reject (errorSoli);
+            },
+          })
+        },
+        error: (error) => {
+          Swal.close();
+          this.mensajesService.mensajesSweet(
+            'error',
+            'Ups... Algo salió mal',
+            error.error.message
+          );
+          reject (error);
+        },
+      });
+    });
   }
 }

@@ -51,51 +51,62 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="
-                  let item of solicitudesVales
-                    | filter : term
-                    | paginate : { itemsPerPage: 10, currentPage: p };
-                  let i = index
-                "
+              <ng-container
+                *ngIf="solicitudesVales != undefined; else noDataTemplate"
               >
-                <td>
-                  {{ item.nombreSolicitante }}
-                </td>
-                <td>{{ item.mision }}</td>
+                <tr
+                  *ngFor="
+                    let item of solicitudesVales
+                      | filter : term
+                      | paginate : { itemsPerPage: 10, currentPage: p };
+                    let i = index
+                  "
+                >
+                  <td>
+                    {{ item.nombreSolicitante }}
+                  </td>
+                  <td>{{ item.mision }}</td>
 
-                <td>{{ item.nombreMotorista }}</td>
-                <td>
-                  {{ fechaformateada[i] }}
-                </td>
-                <td>
-                  <h5>
-                    <span
-                      [class]="
-                        item.estadoSolicitud == 1
-                          ? 'badge rounded-pill bg-info'
-                          : item.estadoSolicitud == 6
-                          ? 'badge rounded-pill bg-warning'
-                          : item.estadoSolicitud == 4
-                          ? 'badge rounded-pill bg-success'
-                          : ''
-                      "
+                  <td>{{ item.nombreMotorista }}</td>
+                  <td>
+                    {{ fechaformateada[i] }}
+                  </td>
+                  <td>
+                    <h5>
+                      <span
+                        [class]="
+                          item.estadoSolicitud == 1
+                            ? 'badge rounded-pill bg-info'
+                            : item.estadoSolicitud == 6
+                            ? 'badge rounded-pill bg-warning'
+                            : item.estadoSolicitud == 4
+                            ? 'badge rounded-pill bg-success'
+                            : ''
+                        "
+                      >
+                        {{ estadoSoli }}
+                      </span>
+                    </h5>
+                  </td>
+                  <td style="text-align: center">
+                    <button
+                      pe="button"
+                      class="btn btn-primary btn-sm btn-rounded mx-1"
+                      (click)="verDetalle(mdDetalleSolicitudVale, item)"
+                      ngbTooltip="Detalle"
                     >
-                      {{ estadoSoli }}
-                    </span>
-                  </h5>
-                </td>
-                <td style="text-align: center">
-                  <button
-                    pe="button"
-                    class="btn btn-primary btn-sm btn-rounded mx-1"
-                    (click)="verDetalle(mdDetalleSolicitudVale, item)"
-                    ngbTooltip="Detalle"
-                  >
-                    <i class="mdi mdi-18px mdi-eye-outline"></i>
-                  </button>
-                </td>
-              </tr>
+                      <i class="mdi mdi-18px mdi-eye-outline"></i>
+                    </button>
+                  </td>
+                </tr>
+              </ng-container>
+              <ng-template #noDataTemplate>
+                <tr>
+                  <td colspan="6" style="text-align: center">
+                    {{mensajeTabla}}
+                  </td>
+                </tr>
+              </ng-template>
             </tbody>
           </table>
           <div class="pagination pagination-rounded justify-content-end mb-2">
@@ -329,7 +340,7 @@
         (click)="restaurarAlerts()"
       ></i>
     </div>
-    <button type="button" class="btn btn-success"(click)="aprobar()">
+    <button type="button" class="btn btn-success" (click)="aprobar()">
       Aprobar
     </button>
     <button type="submit" class="btn btn-warning" form="formSoliVale">

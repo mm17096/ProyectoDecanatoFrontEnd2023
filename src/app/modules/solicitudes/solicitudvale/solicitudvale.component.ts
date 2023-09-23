@@ -28,6 +28,7 @@ import {
   ISolcitudAprobar,
   ISolicitudValeAprobar,
 } from "../Interfaces/solicitudValeAprobar.interface";
+import { log } from "console";
 
 @Component({
   selector: "app-solicitudvale",
@@ -59,7 +60,7 @@ export class SolicitudvaleComponent implements OnInit {
     },
   ]; // Aquí deberías tener tus datos
   //interfaz para las solicitudes de vale
-  solicitudesVales: ISolicitudValeAprobar;
+  solicitudesVales: ISolicitudValeAprobar[];
   searchTerm = "";
   itemsPerPage = 5;
   currentPage = 1;
@@ -117,6 +118,7 @@ export class SolicitudvaleComponent implements OnInit {
 
   observacionesSolicitudVale: string;
 
+  mensajeTabla: string;
 
 
   cantidadValesA: number;
@@ -167,6 +169,20 @@ export class SolicitudvaleComponent implements OnInit {
     });
     this.obtnerExistenciaVales();
     this.getSolicitudesVale(8);
+  }
+
+  getSolicitudesVale(estado: number) {
+    this.service.getSolicitdValePorEstado(estado).subscribe({
+      next: (data) => {
+        this.solicitudesVales = data;
+        this.obtenerFechaFormateada(data);
+        this.asignacionEstados(estado);
+      },error: (err) => {
+        this.solicitudesVales = undefined
+        console.log("solicitudes: ", this.solicitudesVales);
+        this.mensajeTabla = "No hay datos para mostrar"
+      }
+    });
   }
 
   //Obtniene los vales a asignar según la cantidad deseada
@@ -228,15 +244,7 @@ export class SolicitudvaleComponent implements OnInit {
     });
   }
 
-  getSolicitudesVale(estado: number) {
-    this.service.getSolicitdValePorEstado(estado).subscribe({
-      next: (data) => {
-        this.solicitudesVales = data;
-        this.obtenerFechaFormateada(data);
-        this.asignacionEstados(estado);
-      },
-    });
-  }
+
 
   obtenerFechaFormateada(data: any) {
     if (Array.isArray(data) && data.length > 0) {

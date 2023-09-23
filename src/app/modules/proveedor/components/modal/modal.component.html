@@ -121,6 +121,9 @@
             <span *ngIf="formularioGeneral.get('nombre').hasError('maxlength')">
               Limite 200 caracteres
             </span>
+            <span *ngIf="formularioGeneral.get('nombre').hasError('pattern')"
+              >Solamente letras, numeros y respecte los espacios
+            </span>
           </div>
         </div>
         <div class="mb-4 col-md-6">
@@ -134,12 +137,16 @@
             class="form-control"
             placeholder="Encargado"
             formControlName="encargado"
+            [class]="esCampoValido('encargado')"
           />
           <div class="invalid-feedback">
             <span
               *ngIf="formularioGeneral.get('encargado').hasError('maxlength')"
             >
               Limite 200 caracteres
+            </span>
+            <span *ngIf="formularioGeneral.get('encargado').hasError('pattern')"
+              >Solamente nombres o apellidos correctos y respecte los espacios
             </span>
           </div>
         </div>

@@ -4,7 +4,11 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ProveedorService } from "../../services/proveedor.service";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
-import { EMAIL_VALIDATE_GENERAL } from "src/app/constants/constants";
+import {
+  EMAIL_VALIDATE_GENERAL,
+  NAME_STRING_NUMBER_VALIDATE,
+  NAME_TILDES_VALIDATE,
+} from "src/app/constants/constants";
 
 @Component({
   selector: "app-modal",
@@ -18,6 +22,8 @@ export class ModalComponent implements OnInit {
   formularioGeneral: FormGroup;
 
   private isEmail: string = EMAIL_VALIDATE_GENERAL;
+  private isNombre: string = NAME_TILDES_VALIDATE;
+  private isProveedor: string = NAME_STRING_NUMBER_VALIDATE;
 
   alerts = [
     {
@@ -52,11 +58,15 @@ export class ModalComponent implements OnInit {
         "",
         [
           Validators.required,
+          Validators.pattern(this.isProveedor),
           Validators.minLength(2),
           Validators.maxLength(200),
         ],
       ],
-      encargado: ["", [Validators.maxLength(200)]],
+      encargado: [
+        "",
+        [Validators.maxLength(200), Validators.pattern(this.isNombre)],
+      ],
       telefono: ["", [Validators.required, this.validatePhoneNumber]],
       email: [
         "",

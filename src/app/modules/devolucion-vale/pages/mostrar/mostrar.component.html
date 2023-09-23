@@ -346,7 +346,7 @@
         <div class="row">
           <div class="mb-4 col-md-12">
             <label for="nombre"
-              >Correo: <span class="text-danger">*</span></label
+              >Correo Institucional: <span class="text-danger">*</span><span class="text-success"> {{correoCompleto}}</span> </label
             >
             <input
               id="nombre"
@@ -355,20 +355,16 @@
               minlength="2"
               type="text"
               class="form-control"
-              placeholder="Correo"
+              placeholder="Omita @ues.edu.sv"
               formControlName="nombre"
               [class]="esCampoValidoUsuario('nombre')"
+              (keyup)="getCorreo()"
             />
             <div class="invalid-feedback">
               <span
                 *ngIf="formularioUsuario.get('nombre').hasError('required')"
               >
                 Requiere un correo
-              </span>
-              <span
-                *ngIf="formularioUsuario.get('nombre').hasError('pattern')"
-              >
-                Email no válido, debe ser '@ues.edu.sv'
               </span>
             </div>
           </div>
@@ -380,7 +376,7 @@
                 type="password"
                 class="form-control"
                 formControlName="clave"
-                placeholder="Escriba contraseña"
+                placeholder="Digite contraseña"
                 aria-label="Password"
                 aria-describedby="password-addon"
                 [class]="esCampoValidoUsuario('clave')"

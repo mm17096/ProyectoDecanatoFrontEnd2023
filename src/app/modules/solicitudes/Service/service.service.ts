@@ -62,7 +62,7 @@ export class ServiceService {
 
   //Consulta las solitudes de vale por estado
   getSolicitdValePorEstado(estado: number) {
-    return this.http.get<ISolicitudValeAprobar>(
+    return this.http.get<ISolicitudValeAprobar[]>(
       `${this.baseUrl}/asignacionvale/listarsolicitudvaleestado/${estado}`
     );
   }

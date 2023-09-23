@@ -9,7 +9,7 @@ import { TmplAstRecursiveVisitor } from "@angular/compiler";
 import Swal from "sweetalert2";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
 import { Router } from "@angular/router";
-import { IValesAsignar } from '../../../solicitudes/Interfaces/asignacionvale.interface';
+import { IValesAsignar } from "../../../solicitudes/Interfaces/asignacionvale.interface";
 
 @Component({
   selector: "app-tabla-detalle",
@@ -20,6 +20,10 @@ export class TablaDetalleComponent implements OnInit {
   buttonDisabled = true; // Estado del botón
 
   valesAsignados: IAsignacionDetalle;
+
+  busqueda: string = "";
+  p: any;
+  term: any; // para buscar
 
   devolucionExito: boolean = false;
   vales = [];
@@ -40,7 +44,7 @@ export class TablaDetalleComponent implements OnInit {
 
   ngOnInit(): void {
     this.mostrarVales();
-    console.log('idtabla:',this.codigoAsignacion);
+    console.log("idtabla:", this.codigoAsignacion);
   }
 
   mostrarVales() {
@@ -51,7 +55,7 @@ export class TablaDetalleComponent implements OnInit {
         this.valesAsignados = data;
         this.vales = this.valesAsignados.vales;
 
-        this.valesAsignados.vales.forEach(element => {
+        this.valesAsignados.vales.forEach((element) => {
           this.valesLiquid.push(element.idVale);
         });
         console.log("aquí van los vales liquidar: ", this.valesLiquid);

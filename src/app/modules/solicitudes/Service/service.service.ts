@@ -12,8 +12,9 @@ import {
 } from "../Interfaces/existenciavales.interface";
 import { ISolcitudAprobar, ISolicitudValeAprobar } from '../Interfaces/solicitudValeAprobar.interface';
 import { SolicitudVv } from "../Interfaces/SolicitudVv";
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { Usuario } from "src/app/account/auth/models/usuario.models";
 
 @Injectable({
   providedIn: "root",
@@ -21,7 +22,24 @@ import { Observable } from 'rxjs';
 export class ServiceService {
   private baseUrl: string = environment.baseUrl;
   listSolicitudes: ISolicitudValeAprobar;
+  listSolicitudesValeRol: ISolicitudValeAprobar[];
   constructor(private http: HttpClient) {}
+
+ /*  get codUsuario(): string {
+    return localStorage.getItem("codUsuario" || "");
+  }
+
+  getUsuarioSV(): Observable<Usuario> {
+    return this.http
+      .get(`${this.baseUrl}/usuario/${this.codUsuario}`)
+      .pipe(
+        tap((usuario: any) => {
+          const { codigoUsuario, nombre, clave, nuevo, role, token, empleado } = usuario;
+          const usuarioObj = new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
+          return usuarioObj;
+        })
+      );
+  } */
 
   getCliente() {
     return this.http.get<SolicitudVv>(this.baseUrl + "/consulta/listapage");
@@ -124,5 +142,19 @@ export class ServiceService {
       " de " +
       anio.anio;
     return fechaLista;
+  }
+
+  getSolicitudesValeRol(rol: string, estado: number){
+    this.http
+        .get(`${this.baseUrl}/asignacionvale/listarsolicitudvaleestado/${rol}/${estado}`)
+        .pipe(map((resp: any) => resp as ISolicitudValeAprobar[]))
+        .subscribe(
+          (soliVe: ISolicitudValeAprobar[]) => {
+            this.listSolicitudesValeRol = soliVe;
+          },
+          (error) => {
+            console.log("Error al obtener las solicitudes de vehiculo", error);
+          }
+        );
   }
 }

@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { DetalleService } from "../../services/detalle.service";
 import {
   IAsignacionDetalle,
+  IAsignacionValeSolicitud,
   ILiquidacion,
 } from "../../interfaces/asignacion.interface";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
@@ -12,7 +13,8 @@ import { MensajesService } from "src/app/shared/global/mensajes.service";
 import { IAnularMision } from "../../interfaces/asignacion.interface";
 import { DetalleDocumentosComponent } from "../detalle-documentos/detalle-documentos.component";
 import { arrayModel } from "../../../../pages/ecommerce/product.model";
-import { ModalDocumentosComponent } from '../../components/modal-documentos/modal-documentos.component';
+import { ModalDocumentosComponent } from "../../components/modal-documentos/modal-documentos.component";
+import { IDocumentosvale } from "../../interface/IDocumentosvale";
 
 @Component({
   selector: "app-encabezado",
@@ -25,7 +27,6 @@ export class EncabezadoComponent implements OnInit {
   breadCrumbItems: Array<{}>;
 
   @ViewChild(TablaDetalleComponent) valesLiquidar;
-  @ViewChild(ModalDocumentosComponent) listaDocSize;
 
   p: any;
   term: string = "";
@@ -43,7 +44,11 @@ export class EncabezadoComponent implements OnInit {
   arregloVales = [];
   mision: string = "";
 
-  listaDocumentos: number;
+  asignacionSolicitud: IAsignacionValeSolicitud;
+  idSolicitud: string;
+  entradasalidas: IDocumentosvale[] = [];
+
+  listaDocumentosSize: number;
   constructor(
     private service: DetalleService,
     private http: HttpClient,
@@ -62,19 +67,14 @@ export class EncabezadoComponent implements OnInit {
       this.codigoAsignacion = params.get("codigoAsignacion");
     });
 
-    console.log("codigoAsignacion en Líquidar: ", this.codigoAsignacion);
-
     this.obtnerEncabezado(this.codigoAsignacion);
+    this.ObtenerSolicitudValeById(this.codigoAsignacion);
   }
   ngAfterViewInit() {
     this.liquidacion.idAsignacionVale = this.codigoAsignacion;
     this.misionAnulada.cosdigoAsignacion = this.codigoAsignacion;
     this.liquidacion.valesLiquidar = this.valesLiquidar.valesLiquid;
     this.misionAnulada.valesAsignacion = this.valesLiquidar.valesLiquid;
-    this.listaDocumentos = this.listaDocSize.Listamisiones.length;
-    console.log("tamaño de las lista documentos:", this.listaDocumentos);
-    console.log("interfaz liquidar:", this.liquidacion);
-    console.log("interfaz anular:", this.liquidacion);
   }
 
   obtnerEncabezado(codigoA: string) {
@@ -82,7 +82,6 @@ export class EncabezadoComponent implements OnInit {
       next: (data) => {
         this.detalleAsignacion = data;
         this.mision = this.detalleAsignacion.mision;
-        console.log("asignacion vale:", this.detalleAsignacion);
       },
     });
   }
@@ -92,7 +91,7 @@ export class EncabezadoComponent implements OnInit {
   }
 
   async liquidar() {
-    if (this.listaDocSize == 2) {
+    if (this.listaDocumentosSize == 2) {
       if ((await this.service.mensajesConfirmarLiquidacion()) == true) {
         Swal.fire({
           title: "Espere",
@@ -128,6 +127,11 @@ export class EncabezadoComponent implements OnInit {
           });
         });
       }
+    } else if (this.listaDocumentosSize == 1) {
+      this.mensajesService.mensajesToast(
+        "warning",
+        "Falta un docuemnto de la misión"
+      );
     } else {
       this.mensajesService.mensajesToast(
         "warning",
@@ -169,5 +173,28 @@ export class EncabezadoComponent implements OnInit {
         });
       });
     }
+  }
+
+  /*** ESTOS MÉTODOS SON PARA OBTENER EL TAMAÑO DE LA LISTA DE ADOCUMENTOS */
+  ObtenerSolicitudValeById(codigoA: string) {
+    this.service.getAsignacionValeSolicitudVale(codigoA).subscribe({
+      next: (data) => {
+        this.asignacionSolicitud = data;
+        this.idSolicitud =
+          this.asignacionSolicitud.solicitudVale.idSolicitudVale;
+        this.obtenerLista(this.idSolicitud);
+      },
+    });
+  }
+  obtenerLista(id: string) {
+    this.service.ObtenerLista(id).subscribe(
+      (resp: IDocumentosvale[]) => {
+        this.entradasalidas = resp;
+        this.listaDocumentosSize = this.entradasalidas.length;
+      },
+      (error) => {
+        // Manejar errores aquí
+      }
+    );
   }
 }

@@ -30,6 +30,8 @@ export class DetalleDocumentosComponent  {
 
   @Output() listaDocSize: number;
 
+  mensajeTabla: string;
+
 
   //configuracion de dropzone
   config: DropzoneConfigInterface={
@@ -91,10 +93,9 @@ export class DetalleDocumentosComponent  {
       (resp: IDocumentosvale[]) => {
         this.entradasalidas = resp;
         this.listaDocSize = resp.length;
-        console.log("entradas, salidas: ", this.listaDocSize);
       },
       error => {
-        // Manejar errores aquí
+        this.mensajeTabla = "No hay datos para mostrar"
       }
     );
   }

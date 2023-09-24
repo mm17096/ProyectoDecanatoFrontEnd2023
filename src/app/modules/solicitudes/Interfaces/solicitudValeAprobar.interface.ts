@@ -27,3 +27,10 @@ export interface ISolcitudAprobar {
   estadoSolicitudVale: number;
   observaciones: string;
 }
+
+export interface IValesAsignarPage {
+  idVale: string;
+  fechaVencimiento: string;
+  correlativoVale: number;
+  valorVale: number;
+}

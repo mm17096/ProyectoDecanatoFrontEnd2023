@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { DetalleService } from "../../services/detalle.service";
 import {
   IAsignacionDetalle,
@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
 import { Router } from "@angular/router";
 import { IValesAsignar } from "../../../solicitudes/Interfaces/asignacionvale.interface";
+import { ModalDocumentosComponent } from "../../components/modal-documentos/modal-documentos.component";
 
 @Component({
   selector: "app-tabla-detalle",
@@ -20,6 +21,9 @@ export class TablaDetalleComponent implements OnInit {
   buttonDisabled = true; // Estado del botón
 
   valesAsignados: IAsignacionDetalle;
+
+  @ViewChild(ModalDocumentosComponent)
+  listaDocumentos: ModalDocumentosComponent;
 
   busqueda: string = "";
   p: any;
@@ -38,28 +42,26 @@ export class TablaDetalleComponent implements OnInit {
     private mensajesService: MensajesService,
     private router: Router
   ) {}
-
+  ngAfterViewInit() {
+    this.listDocSize = this.listaDocumentos;
+  }
   @Input() codigoAsignacion: string = "";
   @Input() mision: string = "";
 
+  listDocSize: any;
+
   ngOnInit(): void {
     this.mostrarVales();
-    console.log("idtabla:", this.codigoAsignacion);
   }
 
   mostrarVales() {
     this.service.getDetalleAsignacionVale(this.codigoAsignacion).subscribe({
       next: (data) => {
-        console.log("aquí llega:");
-
         this.valesAsignados = data;
         this.vales = this.valesAsignados.vales;
-
         this.valesAsignados.vales.forEach((element) => {
           this.valesLiquid.push(element.idVale);
         });
-        console.log("aquí van los vales liquidar: ", this.valesLiquid);
-        console.log("aquí van los vales: ", this.valesAsignados.vales);
       },
     });
   }
@@ -70,17 +72,14 @@ export class TablaDetalleComponent implements OnInit {
 
     if (this.valesADevoler.valesDevueltos.length == 0) {
       this.valesADevoler.valesDevueltos.push(vale);
-      console.log("vales a devolver: ", this.valesADevoler.valesDevueltos);
     } else {
       let valeABuscar: string = vale;
       const valeEncontrado =
         this.valesADevoler.valesDevueltos.indexOf(valeABuscar);
       if (valeEncontrado !== -1) {
         this.valesADevoler.valesDevueltos.splice(valeEncontrado, 1);
-        console.log("vale ya existe", this.valesADevoler.valesDevueltos);
       } else {
         this.valesADevoler.valesDevueltos.push(vale);
-        console.log("vales a devolver: ", this.valesADevoler.valesDevueltos);
       }
     }
   }

@@ -364,7 +364,7 @@ export class SolicitudvaleComponent implements OnInit {
     console.log("form: ", this.formularioSolicitudVale);
 
     if (this.formularioSolicitudVale.valid) {
-      if ((this.estadoSoli == "Nueva")) {
+      if ((this.estadoSoli == "Nueva" || this.estadoSoli == "Revisión")) {
         if ((await this.mensajesService.mensajeSolicitarAprobacion()) == true) {
           // solicitar aprobación
           this.solicitarAprobacion();

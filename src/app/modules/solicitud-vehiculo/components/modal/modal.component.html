@@ -142,8 +142,21 @@
           <div class="mt-2">
             <label for="direccion">Dirección:</label>
             <textarea cols="30" rows="2"
+                      id="direccion"
                       class="form-control"
-                      formControlName="direccion"></textarea>
+                      formControlName="direccion"
+                      [class]="esCampoValido('direccion')"
+            ></textarea>
+            <div class="invalid-feedback">
+                  <span
+                    *ngIf="formularioSoliVe.get('direccion')?.errors?.['required']">
+                    Requiere el obejetivo de la misión
+                  </span>
+              <span
+                *ngIf="formularioSoliVe.get('direccion')?.errors?.['minlength']">
+                    Digite más de 6 caracteres
+              </span>
+            </div>
           </div>
         </div>
         <div class="row" *ngIf="!isChecked">

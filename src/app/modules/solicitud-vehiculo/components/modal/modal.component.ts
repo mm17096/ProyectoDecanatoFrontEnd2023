@@ -155,6 +155,7 @@ export class ModalComponent implements OnInit {
     this.formularioSoliVe.value.unidadSolicitante = this.usuarioActivo.empleado.departamento.nombre;
     const solicitudVehiculo = this.formularioSoliVe.value;
     console.log("formularo: ",this.formularioSoliVe);
+
     if (this.formularioSoliVe.valid){
       if (this.soliVeOd != null){
         this.editarSoliVe();
@@ -419,12 +420,12 @@ export class ModalComponent implements OnInit {
       vehiculo: ['', [Validators.required]],
       objetivoMision: ['', [Validators.required]],
       lugarMision: ['', [Validators.required]],
-      direccion: [''],
+      direccion: [null,[]],
       direccionD: [''],
-      depto: ['', []],
-      municipio: ['', []],
-      distrito: ['', []],
-      canton: ['', []],
+      depto: ['', [Validators.required]],
+      municipio: ['', [Validators.required]],
+      distrito: ['', [Validators.required]],
+      canton: ['', [Validators.required]],
       horaSalida: ['', [Validators.required]],
       horaEntrada: ['', [Validators.required]],
       cantidadPersonas: [
@@ -435,6 +436,36 @@ export class ModalComponent implements OnInit {
       listaPasajeros: this.fb.array([]),
       file: ['',],
       isChecked: [false],
+    });
+
+    this.formularioSoliVe.get('isChecked').valueChanges.subscribe((isChecked) => {
+
+      const depto = this.formularioSoliVe.get('depto');
+      const municipio = this.formularioSoliVe.get('municipio');
+      const distrito = this.formularioSoliVe.get('distrito');
+      const canton = this.formularioSoliVe.get('canton');
+      const direccion = this.formularioSoliVe.get('direccion');
+
+
+      if (isChecked == true) {
+        direccion.setValidators([Validators.required]);
+        depto.clearValidators();
+        municipio.clearValidators();
+        distrito.clearValidators();
+        canton.clearValidators();
+      } else {
+        depto.setValidators([Validators.required]);
+        municipio.setValidators([Validators.required]);
+        distrito.setValidators([Validators.required]);
+        canton.setValidators([Validators.required]);
+        direccion.clearValidators();
+      }
+
+      depto.updateValueAndValidity();
+      municipio.updateValueAndValidity();
+      distrito.updateValueAndValidity();
+      canton.updateValueAndValidity();
+      direccion.updateValueAndValidity();
     });
   }
 

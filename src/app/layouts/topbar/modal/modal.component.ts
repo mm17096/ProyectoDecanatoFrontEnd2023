@@ -72,6 +72,7 @@ export class ModalComponent implements OnInit {
     if (this.leyenda == "Credenciales") {
       this.restaurarAlerts2();
     }
+
   }
 
   private iniciarFormularioE() {
@@ -160,8 +161,6 @@ export class ModalComponent implements OnInit {
   registrandoE() {
     this.EstructurandoFormE();
     const empleado = this.formEmpleado.value;
-
-    console.log(empleado);
 
     if (this.imagen === "no hay") {
       this.empleadoService.putEmpleado(empleado).subscribe(

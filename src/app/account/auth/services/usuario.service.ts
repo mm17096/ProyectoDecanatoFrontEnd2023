@@ -2,7 +2,7 @@ import { Injectable, NgZone, inject } from '@angular/core';
 import { Empleado, Usuario } from '../models/usuario.models';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { IEmail, ILoginUsuario, IRegistroUsuario } from '../interfaces/usuario';
+import { IEmail, ILoginUsuario, IRegistroUsuario, IRespass } from '../interfaces/usuario';
 import { environment } from 'src/environments/environment';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Observable, of, throwError } from 'rxjs';
@@ -44,11 +44,8 @@ export class UsuarioService {
 
     return this.http.post(`${this.baseUrl}/usuario/auth/login`, body).pipe(
       tap((resp: any) => {
-        const { codigoUsuario, nombre, clave, nuevo, rol, token, empleado } = resp.usuario;
-        this.usuario = new Usuario(codigoUsuario, nombre, "", nuevo, "", token, empleado);
-        console.log(this.usuario);
-        console.log(resp.usuario);
-        console.log(resp.codigoUsuario);
+/*         const { codigoUsuario, nombre, clave, nuevo, rol, token, empleado } = resp.usuario;
+        this.usuario = new Usuario(codigoUsuario, nombre, "", nuevo, "", token, empleado); */
         this.guardarLocalSotrage('token', resp.token);
         this.guardarLocalSotrage('codEmpleado', resp.empleado.codigoEmpleado);
         this.guardarLocalSotrage('empleadoFoto', resp.empleado.nombrefoto);
@@ -60,18 +57,26 @@ export class UsuarioService {
     );
   }
 
-  resetpass(correo: string, dui: string) {
-    return this.http.post(`${this.baseUrl}/usuario/resetpass`,'').pipe(
+  resetpass(rest: IRespass) {
+    return this.http.post(`${this.baseUrl}/usuario/resetpass`, rest).pipe(
       tap((resp: any) => {
-        const { codigoUsuario, nombre, clave, nuevo, rol, token, empleado } = resp.usuario;
-        this.usuario = new Usuario(codigoUsuario, nombre, "", nuevo, "", token, empleado);
-        console.log(this.usuario);
-        console.log(resp.usuario);
-        console.log(resp.codigoUsuario);
-        this.guardarLocalSotrage('token', resp.token);
-        this.guardarLocalSotrage('codEmpleado', resp.empleado.codigoEmpleado);
-        this.guardarLocalSotrage('empleadoFoto', resp.empleado.nombrefoto);
-        this.guardarLocalSotrage('codUsuario', resp.codigoUsuario);
+        const { codigoUsuario, codigo, empleado } = resp;
+        this.guardarLocalSotrage('codUsuario', codigoUsuario);
+        this.guardarLocalSotrage('restcodigo', codigo);
+        this.guardarLocalSotrage('correo', empleado.correo);
+        this.guardarLocalSotrage('nombre', empleado.nombre + empleado.apellido);
+      }),
+      catchError(err => {
+        return throwError(err.error.message);
+      })
+    );
+  }
+
+  confirmarcode(code: string) {
+    return this.http.get(`${this.baseUrl}/usuario/resetpass/confirmarcode/${code}`).pipe(
+      tap((resp: any) => {
+        const { codigoUsuario} = resp;
+        this.guardarLocalSotrage('codUsuario', codigoUsuario);
       }),
       catchError(err => {
         return throwError(err.error.message);
@@ -97,6 +102,18 @@ export class UsuarioService {
 
   get codEmpleado(): string {
     return this.storage.getItem("codEmpleado" || "");
+  }
+
+  get restcodigo(): string {
+    return this.storage.getItem("restcodigo" || "");
+  }
+
+  get correo(): string {
+    return this.storage.getItem("correo" || "");
+  }
+
+  get nombre(): string {
+    return this.storage.getItem("nombre" || "");
   }
 
   get empleadofoto(): string {

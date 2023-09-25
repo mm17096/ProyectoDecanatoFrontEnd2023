@@ -17,7 +17,6 @@ import Swal from "sweetalert2";
 export class ModalComponent implements OnInit {
   formEmpleado!: FormGroup;
   formUsuario!: FormGroup;
-  @Input() usuario!: Usuario;
   @Input() leyenda!: string;
   public imgTemp: string | ArrayBuffer = null;
   private file!: File;

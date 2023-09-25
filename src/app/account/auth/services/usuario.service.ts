@@ -46,6 +46,9 @@ export class UsuarioService {
       tap((resp: any) => {
         const { codigoUsuario, nombre, clave, nuevo, rol, token, empleado } = resp.usuario;
         this.usuario = new Usuario(codigoUsuario, nombre, "", nuevo, "", token, empleado);
+        console.log(this.usuario);
+        console.log(resp.usuario);
+        console.log(resp.codigoUsuario);
         this.guardarLocalSotrage('token', resp.token);
         this.guardarLocalSotrage('codEmpleado', resp.empleado.codigoEmpleado);
         this.guardarLocalSotrage('empleadoFoto', resp.empleado.nombrefoto);
@@ -56,6 +59,26 @@ export class UsuarioService {
       })
     );
   }
+
+  resetpass(correo: string, dui: string) {
+    return this.http.post(`${this.baseUrl}/usuario/resetpass`,'').pipe(
+      tap((resp: any) => {
+        const { codigoUsuario, nombre, clave, nuevo, rol, token, empleado } = resp.usuario;
+        this.usuario = new Usuario(codigoUsuario, nombre, "", nuevo, "", token, empleado);
+        console.log(this.usuario);
+        console.log(resp.usuario);
+        console.log(resp.codigoUsuario);
+        this.guardarLocalSotrage('token', resp.token);
+        this.guardarLocalSotrage('codEmpleado', resp.empleado.codigoEmpleado);
+        this.guardarLocalSotrage('empleadoFoto', resp.empleado.nombrefoto);
+        this.guardarLocalSotrage('codUsuario', resp.codigoUsuario);
+      }),
+      catchError(err => {
+        return throwError(err.error.message);
+      })
+    );
+  }
+
 
   /* Para guardar en el local storage del navegador */
   guardarLocalSotrage(tipo: string, contenido: string) {
@@ -83,12 +106,11 @@ export class UsuarioService {
   getUsuario() {
     this.http
       .get(`${this.baseUrl}/usuario/${this.codUsuario}`)
-      .pipe(tap((resp: any) => resp.content as any))
+      .pipe(tap((resp: any) => resp as any))
       .subscribe(
         (usuario: any) => {
           const { codigoUsuario, nombre, clave, nuevo, role, token, empleado } = usuario;
           this.usuario = new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
-          //console.log("usuario service :", this.usuario);
         },
         (error) => {
           console.error("Error al obtener los usuario:", error);

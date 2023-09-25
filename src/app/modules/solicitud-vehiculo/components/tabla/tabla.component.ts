@@ -36,9 +36,6 @@ export class TablaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log("tabla",this.vista);
-    // console.log("ver: ",this.solicitudesVehiculo)
-    console.log("userACtivo:", this.userAcivo);
   }
 
 

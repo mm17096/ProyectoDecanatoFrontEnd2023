@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 import {ISolicitudVehiculo} from "../../interfaces/data.interface";
-import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
+import {UsuarioService} from 'src/app/account/auth/services/usuario.service';
 import {Usuario} from "../../../../account/auth/models/usuario.models";
 
 @Component({

@@ -8,7 +8,7 @@ import {
   Validators
 } from "@angular/forms";
 import {Router} from "@angular/router";
-import {IDocumentoSoliVe, IPais, IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
+import {IPais, IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 
 import {map} from "rxjs/operators";
@@ -188,11 +188,9 @@ export class ModalComponent implements OnInit {
                const todosLlenos = pasajerosData.every((pasajero) => {
                  const value = pasajero.nombrePasajero;
 
-                 if (typeof value === 'string' && value.trim() !== '') {
-                   return true;
-                 }
+                 return typeof value === 'string' && value.trim() !== '';
 
-                 return false;
+
                });
 
                if (!todosLlenos) {
@@ -204,7 +202,7 @@ export class ModalComponent implements OnInit {
                } else {
                  // Todos los nombres de los pasajeros están llenos, continuar con el envío de la solicitud.
                  if ((await this.mensajesService.mensajesConfirmar()) == true) {
-                   this.registrarSoliVe();
+                   await this.registrarSoliVe();
                  }
                }
              } else {
@@ -302,7 +300,7 @@ export class ModalComponent implements OnInit {
     /* fin de la direccion */
 
     // Mostrar SweetAlert de carga
-    const loadingAlert = Swal.fire({
+   Swal.fire({
       title: "Espere",
       text: "Realizando la acción...",
       icon: "info",
@@ -334,8 +332,8 @@ export class ModalComponent implements OnInit {
             formData.append('entidad', new Blob([JSON.stringify(obj)], {type: 'application/json'}));
 
             this.soliVeService.enviarPdfPasajeros(formData).subscribe({
-              next: (pdfResp: any) => {
-                //console.log(pdfResp);
+              next: () => {
+                //console.log(pdfResp:any);
                 this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
                 this.mensajesService.mensajesToast("success", "Registro agregado");
                 this.modalService.dismissAll();
@@ -430,7 +428,7 @@ export class ModalComponent implements OnInit {
       horaEntrada: ['', [Validators.required]],
       cantidadPersonas: [
         1,
-        [Validators.required, Validators.min(1)]
+        [Validators.required, Validators.min(1), Validators.pattern(this.isInteger)]
       ],
       solicitante: [this.usuarioActivo?.codigoUsuario || '', [Validators.required]],
       listaPasajeros: this.fb.array([]),
@@ -472,12 +470,7 @@ export class ModalComponent implements OnInit {
 
   validarfecha(fecha: string) {
     const inputDate = new Date(fecha);
-
-    if (inputDate.getFullYear() > 999 && inputDate.getFullYear() < 10000) {
-      return true;
-    } else {
-      return false;
-    }
+    return inputDate.getFullYear() > 999 && inputDate.getFullYear() < 10000;
   }
 
   //// metodo para validar el campo si es valido o no ////
@@ -644,7 +637,8 @@ export class ModalComponent implements OnInit {
   actualizarSolicitud(data: any):Promise <void>{
     return new Promise<void>((resolve, reject) => {
       this.soliVeService.updateSolciitudVehiculo(data).subscribe({
-        next: (resp: any) => {
+        next: () => {
+          //resp:any
           this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
           this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
           this.modalService.dismissAll();
@@ -667,8 +661,8 @@ export class ModalComponent implements OnInit {
     console.log("emtro ");
     return new Promise<void>((resolve, reject) => {
       this.soliVeService.updateSolciitudVehiculo(data).subscribe({
-        next: (resp: any) => {
-
+        next: () => {
+          // resp: any
           this.solicitudVale.cantidadVale =0 ;
           this.solicitudVale.estadoEntrada = 1;
           this.solicitudVale.estado = 8;
@@ -677,7 +671,8 @@ export class ModalComponent implements OnInit {
           console.log("soliva," + this.solicitudVale);
 
           this.soliVeService.registrarSolicitudVale(this.solicitudVale).subscribe({
-            next: (valeResp: any) => {
+            next: () => {
+              // valeResp: any
               this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
               this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
               this.modalService.dismissAll();
@@ -708,10 +703,6 @@ export class ModalComponent implements OnInit {
   }
 
   actualizarEstadoCheckbox() {
-    if (this.isChecked == false){
-      this.isChecked = true;
-    } else{
-      this.isChecked = false;
-    }
+    this.isChecked = this.isChecked == false;
   }
 }

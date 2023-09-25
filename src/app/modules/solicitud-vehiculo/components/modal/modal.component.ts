@@ -54,6 +54,7 @@ export class ModalComponent implements OnInit {
   soliSave : ISolicitudVehiculo [] = [];
   file!: File;
   solicitudVale!: ISolicitudvalep;
+  isChecked: boolean = false;
 
   alerts = [
     {
@@ -114,7 +115,7 @@ export class ModalComponent implements OnInit {
         .setValue(this.soliVeOd != null ? this.soliVeOd.lugarMision: '');
       this.formularioSoliVe.get('depto')
         .setValue(this.soliVeOd != null ? this.soliVeOd.unidadSolicitante: '');
-      this.formularioSoliVe.get('direccion')
+      this.formularioSoliVe.get('direccionD')
         .setValue(this.soliVeOd != null ? this.soliVeOd.direccion: '');
       this.formularioSoliVe.get('fechaEntrada')
         .setValue(this.soliVeOd != null ? this.soliVeOd.fechaEntrada: '');
@@ -293,8 +294,10 @@ export class ModalComponent implements OnInit {
       nombreCanton = cantonSeleccionado.nam;
     }
 
-    solicitudVehiculo.direccion = nombreDepartamento+', '+nombreMunicipio+', '+
-      nombreDistrito+', '+nombreCanton;
+    if (this.isChecked != true){
+      solicitudVehiculo.direccion = nombreDepartamento+', '+nombreMunicipio+', '+
+        nombreDistrito+', '+nombreCanton;
+    }
     /* fin de la direccion */
 
     // Mostrar SweetAlert de carga
@@ -417,10 +420,11 @@ export class ModalComponent implements OnInit {
       objetivoMision: ['', [Validators.required]],
       lugarMision: ['', [Validators.required]],
       direccion: [''],
-      depto: ['', [Validators.required]],
-      municipio: ['', [Validators.required]],
-      distrito: ['', [Validators.required]],
-      canton: ['', [Validators.required]],
+      direccionD: [''],
+      depto: ['', []],
+      municipio: ['', []],
+      distrito: ['', []],
+      canton: ['', []],
       horaSalida: ['', [Validators.required]],
       horaEntrada: ['', [Validators.required]],
       cantidadPersonas: [
@@ -430,6 +434,7 @@ export class ModalComponent implements OnInit {
       solicitante: [this.usuarioActivo?.codigoUsuario || '', [Validators.required]],
       listaPasajeros: this.fb.array([]),
       file: ['',],
+      isChecked: [false],
     });
   }
 
@@ -668,5 +673,13 @@ export class ModalComponent implements OnInit {
         },
       });
     });
+  }
+
+  actualizarEstadoCheckbox() {
+    if (this.isChecked == false){
+      this.isChecked = true;
+    } else{
+      this.isChecked = false;
+    }
   }
 }

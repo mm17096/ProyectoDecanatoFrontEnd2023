@@ -12,6 +12,8 @@ export class Usuario {
   ) {}
 }
 
+
+
 export class Empleado{
   constructor(
     public codigoEmpleado: string,

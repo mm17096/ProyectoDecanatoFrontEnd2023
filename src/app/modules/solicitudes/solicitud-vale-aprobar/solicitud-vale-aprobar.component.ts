@@ -23,7 +23,7 @@ import Swal from "sweetalert2";
 })
 export class SolicitudValeAprobarComponent implements OnInit {
   //interfaz para las solicitudes de vale
-  solicitudesVales: ISolicitudValeAprobar;
+  solicitudesVales!: ISolicitudValeAprobar[];
 
   //para las migas de pan
   breadCrumbItems: Array<{}>;
@@ -59,6 +59,8 @@ export class SolicitudValeAprobarComponent implements OnInit {
   codigoSolicitudValeAprobar: string;
   cantVales: number;
   observaciones: string;
+
+  mensajeTabla: string;
 
   //  para validar que sea un numero
   private isNumber: string = NUMBER_VALIDATE;
@@ -105,7 +107,10 @@ export class SolicitudValeAprobarComponent implements OnInit {
         this.asignacionEstados(estado);
       },
       error: (error) =>{
-        this.getSolicitudesVale(6);
+        this.mensajeTabla = "No hay datos para mostrar"
+        this.solicitudesVales = undefined
+        console.log("solicitudes: ", this.solicitudesVales);
+
       }
     });
   }

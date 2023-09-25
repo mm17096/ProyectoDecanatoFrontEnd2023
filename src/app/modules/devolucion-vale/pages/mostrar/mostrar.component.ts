@@ -1,4 +1,5 @@
-import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
+import { IUsuarioMandarDto } from "./../../interfaces/vale.interface";
+import { UsuarioService } from "src/app/account/auth/services/usuario.service";
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { IProveedor } from "src/app/modules/proveedor/interfaces/proveedor.interface";
@@ -6,7 +7,6 @@ import { DevolucionValeService } from "../../services/devolucion-vale.service";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
 import {
   DECIMAL_VALIDATE,
-  EMAIL_VALIDATE_UES,
   INTEGER_VALIDATE,
 } from "src/app/constants/constants";
 import Swal from "sweetalert2";
@@ -22,6 +22,8 @@ export class MostrarComponent implements OnInit {
   breadCrumbItems: Array<{}>;
   formularioGeneral: FormGroup;
   proveedor?: IProveedor;
+
+  correoCompleto?: string;
 
   formularioUsuario: FormGroup;
   @ViewChild("content") contentTemplate: ElementRef;
@@ -39,7 +41,6 @@ export class MostrarComponent implements OnInit {
 
   private isNumber: string = DECIMAL_VALIDATE;
   private isInteger: string = INTEGER_VALIDATE;
-  private isEmail: string = EMAIL_VALIDATE_UES;
 
   alerts = [
     {
@@ -93,7 +94,7 @@ export class MostrarComponent implements OnInit {
 
   private iniciarFormularioUsuario() {
     return this.fb.group({
-      nombre: ["", [Validators.required, Validators.pattern(this.isEmail)]],
+      nombre: ["", [Validators.required]],
       clave: ["", [Validators.required, Validators.maxLength(50)]],
     });
   }
@@ -127,6 +128,16 @@ export class MostrarComponent implements OnInit {
         ],
       ],
     });
+  }
+
+  getCorreo(): void {
+    const nombre = this.formularioUsuario.get("nombre").value;
+
+    if (nombre == null || nombre == "") {
+      this.correoCompleto = null;
+    } else {
+      this.correoCompleto = nombre + "@ues.edu.sv";
+    }
   }
 
   cambiartipo1() {
@@ -196,7 +207,10 @@ export class MostrarComponent implements OnInit {
   }
 
   validarUsuario() {
-    const usuarioMardarDto = this.formularioUsuario.value;
+    const usuarioMardarDto: IUsuarioMandarDto = {
+      nombre: this.correoCompleto,
+      clave: this.formularioUsuario.get("clave").value,
+    };
     if (this.formularioUsuario.valid) {
       this.devolucionValeService.validarUsuario(usuarioMardarDto).subscribe({
         next: (resp: IUsuarioRespuestaDto) => {
@@ -258,9 +272,10 @@ export class MostrarComponent implements OnInit {
           this.mensajesService.mensajesSweet(
             "success",
             "Ajuste de vales completado",
-            "Acción realizada por "+this.usuarioRespuestaDto.empleado.nombre +
-            " " +
-            this.usuarioRespuestaDto.empleado.apellido
+            "Acción realizada por " +
+              this.usuarioRespuestaDto.empleado.nombre +
+              " " +
+              this.usuarioRespuestaDto.empleado.apellido
           );
           this.limpiarCampos();
           this.modalService.dismissAll();
@@ -340,12 +355,13 @@ export class MostrarComponent implements OnInit {
   }
 
   openModal(content: any) {
+    this.correoCompleto = null;
     this.formularioUsuario.reset();
     const modalOptions = {
       centered: false,
       backdrop: "static" as "static",
       keyboard: false, // Configura backdrop como 'static'
-      windowClass: 'modal-holder'
+      windowClass: "modal-holder",
     };
     this.modalService.open(content, modalOptions);
   }

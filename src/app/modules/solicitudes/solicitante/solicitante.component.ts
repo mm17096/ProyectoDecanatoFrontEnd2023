@@ -80,8 +80,11 @@ export class SolicitanteComponent implements OnInit {
     }
   }
   cerarPDF(soliVehi: ISolicitudVehiculo){
+    console.log("data: ", soliVehi);
+
+    console.log("codigo: ", soliVehi.codigoSolicitudVehiculo);
     this.cargarConsultaValeDelAl(soliVehi.codigoSolicitudVehiculo);
-   
+
      const pdfDefinicion: any = {content:[],}
     pdfDefinicion.content.push(
      {
@@ -92,12 +95,12 @@ export class SolicitanteComponent implements OnInit {
 				body: [
 					[{ image: LOGO, // Datos base64 de tu imagen .png
           width: 60, // Ancho de la imagen
-          height: 80,}, 
+          height: 80,},
           {text: 'UNIVERSIDAD DE EL SALVADOR\nFACULTAD MULTIDISCIPLINARIA PARACENTRAL\nSOLICITUD DE TRASPORTE',
-          alignment: 'center',style: 'subheader'} 
-          
+          alignment: 'center',style: 'subheader'}
+
          ],
-			
+
 				]
 			},
 			layout: 'noBorders'
@@ -121,13 +124,13 @@ export class SolicitanteComponent implements OnInit {
 				{
 
 					text: 'Fecha de Solicitud: '+soliVehi.fechaSolicitud,
-         
+
 				},
 				{
 					text: 'Fecha de Mision: '+soliVehi.fechaSalida,
-          
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -136,9 +139,9 @@ export class SolicitanteComponent implements OnInit {
 				{
 
 					text: 'Unidad Solicitud: '+soliVehi.unidadSolicitante,
-         
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -147,13 +150,13 @@ export class SolicitanteComponent implements OnInit {
 				{
 
 					text: 'Vehiculo: '+soliVehi.vehiculo.marca+', '+soliVehi.vehiculo.modelo+', '+soliVehi.vehiculo.clase+', '+soliVehi.vehiculo.tipo_gas+', '+soliVehi.vehiculo.color+', '+soliVehi.vehiculo.year,
-         
+
 				},
 				{
 					text: 'Placa: '+soliVehi.vehiculo.placa,
-          
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -162,9 +165,9 @@ export class SolicitanteComponent implements OnInit {
 				{
 
 					text: 'Objeto de la Mision: '+soliVehi.objetivoMision,
-         
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -173,9 +176,9 @@ export class SolicitanteComponent implements OnInit {
 				{
 
 					text: 'Lugar que visitara: '+soliVehi.direccion,
-         
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -184,17 +187,17 @@ export class SolicitanteComponent implements OnInit {
 				{
 
 					text: 'N* de Personas que viajan: '+soliVehi.cantidadPersonas,
-          
+
 				},
 				{
 					text: 'Hora de Salida: '+soliVehi.horaSalida,
-          
+
 				},
         {
 					text: 'Hora de Regreso: '+soliVehi.horaEntrada,
-          
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -210,7 +213,7 @@ export class SolicitanteComponent implements OnInit {
 				},
 			]
 		},
-    
+
     {text:'\n'},
     {
 			columns: [
@@ -219,7 +222,7 @@ export class SolicitanteComponent implements OnInit {
           style: 'tableHeader',
           alignment: 'center'
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -248,10 +251,10 @@ export class SolicitanteComponent implements OnInit {
       const tableRow = [];
       let j = 0;
       tableRow.push([{ text: 'N*',
-      alignment: 'center',style: 'tableHeader'}, 
+      alignment: 'center',style: 'tableHeader'},
       {text: 'NOMBRE',
-      alignment: 'center',style: 'tableHeader'} 
-      
+      alignment: 'center',style: 'tableHeader'}
+
      ],);
        for (const persona of soliVehi.listaPasajeros) {
          console.log(persona.nombrePasajero);
@@ -271,7 +274,7 @@ export class SolicitanteComponent implements OnInit {
       },
       'Nota: Si el numero de persona es mayor a cuatro, Anexar Listado',
     );
-    
+
     pdfDefinicion.content.push(
       {text:'\n'},
     {
@@ -280,7 +283,7 @@ export class SolicitanteComponent implements OnInit {
 
 					text: 'Sello\n',
           alignment: ''
-         
+
 				},
 			]
 		},
@@ -301,10 +304,10 @@ export class SolicitanteComponent implements OnInit {
 			columns: [
 				{
 
-					text: 'Nombre de Motorista: '+soliVehi.motorista.nombre+', '+soliVehi.motorista.apellido,
-          
+					text: 'Nombre de Motorista: '+soliVehi.motorista?.nombre+', '+soliVehi.motorista?.apellido,
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -313,14 +316,14 @@ export class SolicitanteComponent implements OnInit {
 				{
 
 					text: 'Vehiculo: '+soliVehi.vehiculo.marca+', '+soliVehi.vehiculo.modelo+', '+soliVehi.vehiculo.clase+', '+soliVehi.vehiculo.tipo_gas+', '+soliVehi.vehiculo.color+', '+soliVehi.vehiculo.year,
-          
+
 				},
 				{
 					text: 'Placa: '+soliVehi.vehiculo.placa,
-          
+
 				},
-       
-				
+
+
 			]
 		},
     {text:'\n'},
@@ -329,17 +332,17 @@ export class SolicitanteComponent implements OnInit {
 				{
 
 					text: 'N* de Vales: '+this.valeDelAl.length,
-          
+
 				},
 				{
 					text: 'Del: '+this.valeDelAl[0].correlativo,
-          
+
 				},
         {
 					text: 'AL: '+this.valeDelAl[this.valeDelAl.length-1].correlativo,
-          
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -348,14 +351,14 @@ export class SolicitanteComponent implements OnInit {
 				{
 
 					text: 'F.',
-          
+
 				},
 				{
 					text: 'Sello',
-          
+
 				},
-        
-				
+
+
 			]
 		},
     {text:'\n'},
@@ -364,9 +367,9 @@ export class SolicitanteComponent implements OnInit {
 				{
 
 					text: 'Nombre y firma Decano',
-          
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -375,9 +378,9 @@ export class SolicitanteComponent implements OnInit {
 				{
 
 					text: 'Observaciones: '+soliVehi.observaciones,
-          
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -388,12 +391,12 @@ export class SolicitanteComponent implements OnInit {
 					text: 'Fecha y Hora de imprecion: '+this.formatoFecha(this.fechaActual),
           alignment: 'right'
 				},
-				
+
 			]
 		},
     );
     pdfMake.createPdf(pdfDefinicion).open();
-   
+
   }
 
   cargarConsultaValeDelAl(id:string){

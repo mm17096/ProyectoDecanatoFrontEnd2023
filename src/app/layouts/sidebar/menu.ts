@@ -63,6 +63,26 @@ export const MENU: MenuItem[] = [
     ],
   },
   {
+    id: 9,
+    label: "Solcitudes de Vales",
+    icon: "mdi mdi-gas-station",
+    subItems: [
+
+      {
+        id: 10,
+        label: "Por Aprobar",
+        link: "/solicitudes/solictud-aprobar",
+        parentId: 9,
+      },
+      {
+        id: 11,
+        label: "Mis Solicitudes",
+        link: "/solicitudes/solicitudvale",
+        parentId: 9,
+      },
+    ],
+  },
+  {
     id: 8,
     label: "Vales",
     icon: "mdi mdi-gas-station",
@@ -80,19 +100,7 @@ export const MENU: MenuItem[] = [
         parentId: 8,
       },
       {
-        id: 12,
-        label: "Listado Aprobación",
-        link: "/solicitudes/solictud-aprobar",
-        parentId: 8,
-      },
-      {
-        id: 13,
-        label: "Solicitudes de Vales",
-        link: "/solicitudes/solicitudvale",
-        parentId: 8,
-      },
-      {
-        id: 14,
+        id: 111,
         label: "Ajustes de Vales",
         link: "/devolucion-vale",
         parentId: 8,
@@ -100,6 +108,7 @@ export const MENU: MenuItem[] = [
 
     ],
   },
+
   {
     id: 10,
     label: "Entradas y Salidas",

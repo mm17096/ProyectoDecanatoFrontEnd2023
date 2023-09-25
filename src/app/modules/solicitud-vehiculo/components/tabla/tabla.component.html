@@ -22,7 +22,7 @@
         <td>{{calcularNumeroCorrelativo(i)}}</td>
         <td>{{data.solicitante.empleado.departamento.nombre}}</td>
         <td>{{data.lugarMision}}</td>
-        <td>{{data.fechaSalida}}</td>
+        <td>{{data.fechaSalida | date : "dd/MM/yyyy"}}</td>
         <td style="text-align: center">{{data.cantidadPersonas}}</td>
         <td style="text-align: center">
           <h5><span class="{{data.estado === 1 ? 'badge rounded-pill bg-warning'

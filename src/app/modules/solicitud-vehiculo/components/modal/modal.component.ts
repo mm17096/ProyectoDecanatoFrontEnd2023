@@ -647,6 +647,7 @@ export class ModalComponent implements OnInit {
         next: (resp: any) => {
           this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
           this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
+          this.modalService.dismissAll();
           resolve();
         },
         error: (error) => {

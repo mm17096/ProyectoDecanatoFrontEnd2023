@@ -126,6 +126,7 @@ export class TablaComponent implements OnInit {
           this.soliService.registrarSolicitudVale(this.solicitudVale).subscribe({
             next: (valeResp: any) => {
               this.soliService.getSolicitudesRol(this.userAcivo.role);
+              this.soliService.getSolicitudesVehiculo(0)
               this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
               resolve();
             },

@@ -11,9 +11,10 @@ export interface ILoginUsuario {
   clave: string;
 }
 
-export interface ILoginUsuario {
-  nombre: string;
-  clave: string;
+export interface IRespass {
+  correo: string;
+  dui: string;
+  codigo: string;
 }
 
 export interface IEmail {

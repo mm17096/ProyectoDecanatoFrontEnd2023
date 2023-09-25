@@ -164,8 +164,6 @@ Email(){
     codigo: '99023992',
     abajo: 'Gracias por tu atención a este importante asunto.',
   }
-  
-  console.log(email);
 
   this.usuarioService.SendEmail(email).subscribe(
     (resp) => {

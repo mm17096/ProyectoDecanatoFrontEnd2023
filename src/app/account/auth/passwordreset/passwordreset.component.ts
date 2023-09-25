@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthenticationService } from '../../../core/services/auth.service';
 import { environment } from '../../../../environments/environment';
+import { UsuarioService } from '../services/usuario.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-passwordreset',
@@ -26,12 +28,12 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
   year: number = new Date().getFullYear();
 
   // tslint:disable-next-line: max-line-length
-  constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router, private authenticationService: AuthenticationService) { }
+  constructor(private formBuilder: FormBuilder, private router: Router, private usuarioService: UsuarioService) { }
 
   ngOnInit() {
 
     this.resetForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
+      correo: ['', [Validators.required, Validators.pattern['']]],
     });
   }
 
@@ -45,18 +47,38 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
    * On submit form
    */
   onSubmit() {
-    this.success = '';
-    this.submitted = true;
+    if (this.resetForm.valid) {
+       const nombre = this.resetForm.get('correo').value;
+       const dui = this.resetForm.get('dui').value;
+      
+      this.usuarioService.resetpass(nombre, dui).subscribe(
+        (resp) => {
 
-    // stop here if form is invalid
-    if (this.resetForm.invalid) {
-      return;
-    }
-    if (environment.defaultauth === 'firebase') {
-      this.authenticationService.resetPassword(this.f.email.value)
-        .catch(error => {
-          this.error = error ? error : '';
-        });
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2500,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+          });
+          
+          Toast.fire({
+            icon: 'success',
+            text: '¡Ha iniciado sesión!'
+          })
+
+        },
+        (err) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: err,
+          });
+        }
+      );
     }
   }
 }

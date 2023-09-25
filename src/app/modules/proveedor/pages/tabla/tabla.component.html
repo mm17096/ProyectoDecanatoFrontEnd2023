@@ -74,6 +74,11 @@
           </button>
         </td>
       </tr>
+      <tr *ngIf="proveedores.length == 0">
+          <td colspan="8" style="text-align: center">
+            No hay datos para mostrar
+          </td>
+        </tr>
     </tbody>
   </table>
 

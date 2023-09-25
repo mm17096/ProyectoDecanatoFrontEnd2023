@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CompraDto, Consulta, ConsultaDto, IConsultaDelAl } from '../../Interfaces/CompraVale/Consulta';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { IConsultaExcelTabla, IConsultaExcelTablaC, IConsultaExcelTablaCompraDto, IConsultaExcelTablaDto, ITablaConsulta, ITablaConsultaC, ITablaConsultaCompraDto, ITablaConsultaDto } from '../../Interfaces/CompraVale/excel';
 import { ICompra } from 'src/app/modules/compra/interfaces/compra.interface';
 import { environment } from "src/environments/environment";
@@ -10,13 +10,17 @@ import { IVale } from 'src/app/modules/devolucion-vale/interfaces/vale.interface
 import { Vale } from '../../Interfaces/CompraVale/Vale';
 import { Compra } from '../../Interfaces/CompraVale/Compra';
 import { ISolicitudVehiculo } from 'src/app/modules/solicitud-vehiculo/interfaces/data.interface';
+import { Usuario, Empleado } from 'src/app/account/auth/models/usuario.models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConsultaService {
   listCompra: ICompra[] = [];
+  listVales: IConsultaDelAl[] =  [];
   private urlbase= environment.baseUrl;
+  storage: Storage = window.localStorage;
+  public empleado!: Empleado;
 
   constructor(private http:HttpClient) { }
   url = 'http://localhost:8080/api/consulta'
@@ -58,6 +62,7 @@ export class ConsultaService {
       iddetalleasignacionvale:item.iddetalleasignacionvale,
       idasignacionvale:item.idasignacionvale,
       valeid:item.valeid,
+      solicitudvehiculoid:item.solicitudvehiculoid,
     }));
   }
 
@@ -149,11 +154,40 @@ export class ConsultaService {
     }));
   }
   getSolicitudV(){
-    return this.http.get<ISolicitudVehiculo[]>(this.urlbase+'/solicitudvehiculo/lista');
+    return this.http.get<ISolicitudVehiculo[]>(this.urlbase+'/solicitudvehiculo/todas');
   }
 
   getConsultaSolicitudVDelAl(id:string){
+   /* this.http
+    .get(`${this.url}/listarvalesdelal/`+id)
+    .pipe(map((resp: any) => resp as IConsultaDelAl[]))
+    .subscribe(
+      (vales: IConsultaDelAl[])=> {
+        this.listVales = vales;
+      },
+      (error) => {
+        console.log("Error al obtener los vales", error);
+        }
+      );*/
+   //return this.listVales;
     return this.http.get<IConsultaDelAl[]>(this.url+'/listarvalesdelal/'+id);
   }
+  
+  get codEmpleado(): string {
+    return this.storage.getItem("codEmpleado" || "");
+  }
 
+  getEmpleado(): Observable<Empleado> {
+    return this.http
+      .get(`${this.baseUrl}/empleado/${this.codEmpleado}`)
+      .pipe(
+        tap((empleado: any) => {
+          const { codigoEmpleado, dui, nombre, apellido, telefono, licencia, tipolicencia, fechalicencia, estado, jefe, correo, nombrefoto, urlfoto, cargo, departamento } = empleado;
+          const usuarioObj = new Empleado(codigoEmpleado, dui, nombre, apellido, telefono, licencia, tipolicencia, fechalicencia, estado, jefe, correo, nombrefoto, urlfoto, cargo, departamento);
+          console.log(usuarioObj);
+          return usuarioObj;
+        })
+      );
+
+  }
 }

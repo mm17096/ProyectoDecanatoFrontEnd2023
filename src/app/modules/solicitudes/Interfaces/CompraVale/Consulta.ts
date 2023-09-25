@@ -22,18 +22,19 @@ export interface CompraDto{
 }
 
 export interface ConsultaDto{
-    valor:number;
     fecha:Date;
+    valor:number;
     correlativo:number;
-    estadosv:number;
-    estadoentrada:number;
-    estadoav:number;
-    cantidadvale:number;
-    estadovale:number;
+    valeid:String;
+    idasignacionvale:String;
     fechavencimiento:Date;
     iddetalleasignacionvale:String;
-    idasignacionvale:String;
-    valeid:String;
+    solicitudvehiculoid:string;
+    estadovale:number;
+    cantidadvale:number;
+    estadoentrada:number;
+    estadosv:number;
+    estadoav:number;
 }
 
 export interface ValidarVale{
@@ -53,12 +54,14 @@ export interface Cantidad{
 }
 
 export interface IConsultaDelAl{
-    valor:number;
     correlativo:number;
+    valor:number;
     valeid:string;
-    fechavencimiento:Date;
-    cantidadvale:number;
     estadovale:number;
+    cantidadvale:number;
+    fechavencimiento:Date;
+
+
 }
 
 export interface Tabla{

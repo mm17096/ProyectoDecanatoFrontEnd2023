@@ -8,6 +8,7 @@ import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { LOGO } from '../Interfaces/logo';
 import { IConsultaDelAl, Tabla } from '../Interfaces/CompraVale/Consulta';
+import { Usuario, Empleado } from 'src/app/account/auth/models/usuario.models';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -18,7 +19,7 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 export class SolicitanteComponent implements OnInit {
   solicitudesVehiculo!: ISolicitudVehiculo[];
   selectedData: any;
-  valeDelAl: IConsultaDelAl[];
+  valeDelAl!: IConsultaDelAl[];
   // migas de pan
   breadCrumbItems: Array<{}>;
   term: any; // para buscar
@@ -27,7 +28,9 @@ export class SolicitanteComponent implements OnInit {
   page:number = 0;
   size:number = 10;
   tabla:Tabla;
-
+  usuario: Usuario;
+  empleado!: Empleado;
+  veri:boolean=false;
   estadoSeleccionado: any;
   estadosSoliVe: IEstados [] = [];
   fechaActual: Date = new Date();
@@ -36,12 +39,33 @@ export class SolicitanteComponent implements OnInit {
                private userService: UsuarioService, private consultaService: ConsultaService,) { }
 
   ngOnInit(): void {
+    
+    this.obtenerUsuarioActivo();
+    console.log('usuario ',this.usuarioActivo)
     this.userService.getUsuario();
-    this.breadCrumbItems = [{ label: 'Solicitud de Vehículo' }, { label: 'Mis Solicitudes', active: true }]; // miga de pan
+    this.breadCrumbItems = [{ label: 'Solicitud de trasporte' }, { label: 'Mis Solicitudes', active: true }]; // miga de pan
    // this.soliVeService.getSolicitudesVehiculo(this.estadoSeleccionado);
     this.getEstados();
-    this.cargarConsulta();
+    this.obtenerUsuarioActivo();
+   // console.log('esta', this.solicitudesVehiculo.)
   }
+  obtenerUsuarioActivo(){
+  // this.empleado = this.userService.get();
+   //console.log(this.userService.get())
+    // Suscríbete al Observable para obtener el usuario
+this.consultaService.getEmpleado().subscribe((usuario) => {
+if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCargo == "JEFE FINANCIERO" || usuario.cargo.nombreCargo == "ADMINISTRADOR"){
+        this.veri=false;
+        this.cargarConsulta();
+      }else{
+        this.veri=true;
+}
+
+ console.log('usuario ',usuario)
+});
+    console.log('usuario ',this.usuario)
+  }
+  
   cargarConsulta(){
     this.consultaService.getSolicitudV().subscribe((response)=>{
       this.solicitudesVehiculo = response;
@@ -79,8 +103,8 @@ export class SolicitanteComponent implements OnInit {
       return index + 1; // Si no es numérico, solo regresamos el índice + 1
     }
   }
-  cerarPDF(soliVehi: ISolicitudVehiculo){
-    this.cargarConsultaValeDelAl(soliVehi.codigoSolicitudVehiculo);
+  cerarPDF(soliVehi: ISolicitudVehiculo,vales: IConsultaDelAl[]){
+   // this.cargarConsultaValeDelAl(soliVehi.codigoSolicitudVehiculo);
    
      const pdfDefinicion: any = {content:[],}
     pdfDefinicion.content.push(
@@ -120,11 +144,11 @@ export class SolicitanteComponent implements OnInit {
 			columns: [
 				{
 
-					text: 'Fecha de Solicitud: '+soliVehi.fechaSolicitud,
+					text: 'Fecha de Solicitud: '+this.formatDate(`${soliVehi.fechaSolicitud}`),
          
 				},
 				{
-					text: 'Fecha de Mision: '+soliVehi.fechaSalida,
+					text: 'Fecha de Misión: '+this.formatDate(`${soliVehi.fechaSalida}`),
           
 				},
 				
@@ -161,7 +185,7 @@ export class SolicitanteComponent implements OnInit {
 			columns: [
 				{
 
-					text: 'Objeto de la Mision: '+soliVehi.objetivoMision,
+					text: 'Objetivo de la Misión: '+soliVehi.objetivoMision,
          
 				},
 				
@@ -172,7 +196,7 @@ export class SolicitanteComponent implements OnInit {
 			columns: [
 				{
 
-					text: 'Lugar que visitara: '+soliVehi.direccion,
+					text: 'Lugar que visitará: '+soliVehi.direccion,
          
 				},
 				
@@ -269,7 +293,7 @@ export class SolicitanteComponent implements OnInit {
           body: tableRow
         },
       },
-      'Nota: Si el numero de persona es mayor a cuatro, Anexar Listado',
+      'Nota: Si el número de persona es mayor a cuatro, Anexar Listado',
     );
     
     pdfDefinicion.content.push(
@@ -301,7 +325,7 @@ export class SolicitanteComponent implements OnInit {
 			columns: [
 				{
 
-					text: 'Nombre de Motorista: '+soliVehi.motorista.nombre+', '+soliVehi.motorista.apellido,
+					text: 'Nombre de Motorista: '+soliVehi.motorista?.nombre+', '+soliVehi.motorista?.apellido,
           
 				},
 				
@@ -312,7 +336,7 @@ export class SolicitanteComponent implements OnInit {
 			columns: [
 				{
 
-					text: 'Vehiculo: '+soliVehi.vehiculo.marca+', '+soliVehi.vehiculo.modelo+', '+soliVehi.vehiculo.clase+', '+soliVehi.vehiculo.tipo_gas+', '+soliVehi.vehiculo.color+', '+soliVehi.vehiculo.year,
+					text: 'Vehículo: '+soliVehi.vehiculo.marca+', '+soliVehi.vehiculo.modelo+', '+soliVehi.vehiculo.clase+', '+soliVehi.vehiculo.tipo_gas+', '+soliVehi.vehiculo.color+', '+soliVehi.vehiculo.year,
           
 				},
 				{
@@ -328,15 +352,15 @@ export class SolicitanteComponent implements OnInit {
 			columns: [
 				{
 
-					text: 'N* de Vales: '+this.valeDelAl.length,
+					text: 'N* de Vales: '+vales.length,
           
 				},
 				{
-					text: 'Del: '+this.valeDelAl[0].correlativo,
+					text: 'Del: '+vales[0].correlativo,
           
 				},
         {
-					text: 'AL: '+this.valeDelAl[this.valeDelAl.length-1].correlativo,
+					text: 'AL: '+vales[this.valeDelAl.length-1].correlativo,
           
 				},
 				
@@ -396,10 +420,11 @@ export class SolicitanteComponent implements OnInit {
    
   }
 
-  cargarConsultaValeDelAl(id:string){
-    this.consultaService.getConsultaSolicitudVDelAl(id).subscribe((response)=>{
+  cargarConsultaValeDelAl(soli: ISolicitudVehiculo){
+    this.consultaService.getConsultaSolicitudVDelAl(soli.codigoSolicitudVehiculo).subscribe((response: IConsultaDelAl[])=>{
       this.valeDelAl = response;
-          console.log(response);
+      this.cerarPDF(soli,response);
+       //   console.log(response);
       });
   }
   formatoFecha(fecha: Date): string {
@@ -425,6 +450,17 @@ export class SolicitanteComponent implements OnInit {
         tableRow.push({i:`${j+1}`,codi:persona.nombrePasajero});
         j++;
       }
+  }
+  formatDate(fechaStr: string): string {
+    // Dividir la cadena en partes
+    const partes = fechaStr.split('-');
+    if (partes.length !== 3) {
+      return 'Fecha inválida';
+    }
+
+    // Crear una nueva cadena con el formato deseado (dd/MM/yyyy)
+    const fechaFormateada = `${partes[2]}/${partes[1]}/${partes[0]}`;
+    return fechaFormateada;
   }
 
 }

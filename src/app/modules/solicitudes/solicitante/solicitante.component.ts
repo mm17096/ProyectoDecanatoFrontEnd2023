@@ -103,7 +103,6 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
       return index + 1; // Si no es numérico, solo regresamos el índice + 1
     }
   }
-
   cerarPDF(soliVehi: ISolicitudVehiculo,vales: IConsultaDelAl[]){
    // this.cargarConsultaValeDelAl(soliVehi.codigoSolicitudVehiculo);
 
@@ -150,7 +149,6 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 				},
 				{
 					text: 'Fecha de Misión: '+this.formatDate(`${soliVehi.fechaSalida}`),
-          
 				},
 
 			]

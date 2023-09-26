@@ -14,6 +14,7 @@ import { Recoverpwd2Component } from './recoverpwd2/recoverpwd2.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthRoutingModule } from './auth-routing';
 import { PasswordresetComponent } from './passwordreset/passwordreset.component';
+import { NgxMaskModule } from 'ngx-mask';
 
 @NgModule({
   declarations: [LoginComponent, Login2Component, SignupComponent, PasswordresetComponent, Register2Component, Recoverpwd2Component],
@@ -25,7 +26,8 @@ import { PasswordresetComponent } from './passwordreset/passwordreset.component'
     UIModule,
     AuthRoutingModule,
     CarouselModule,
-    NgbModule
+    NgbModule,
+    NgxMaskModule.forRoot(), //para las mascaras
   ]
 })
 export class AuthModule { }

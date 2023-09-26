@@ -26,10 +26,10 @@
             </div>
 
             <div class="btn-alerta" style="position: absolute; top: 150px; right: 10px; z-index: 1;">
-              <i class="mdi mdi-18px mdi-lightbulb-on-outline custom-cursor"
-                 [ngbTooltip]="' Ayuda '"
-                 [placement]="'left'"></i>
-          </div>
+              <i class="mdi mdi-18px mdi-lightbulb-on-outline custom-cursor" *ngIf="!siMuestraAlertas()"
+                (click)="restaurarAlerts()" (click)="openModal(msjayuda)" [ngbTooltip]="' Ayuda '" [placement]="'left'"></i>
+            </div>
+
 
             <div class="p-2">
               <form class="form-horizontal" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
@@ -84,3 +84,17 @@
     </div>
   </div>
 </div>
+
+<ng-template #msjayuda let-modal>
+
+  <div *ngFor="let alert of alerts" style="padding: 15px;">
+    <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert" *ngIf="alert.show">
+      <strong>Importante!</strong>
+      <div class="text-justify">{{ alert.message }}</div>
+      <button type="button" class="btn-close" (click)="CambiarAlert(alert)" aria-hidden="true" aria-label="Close"></button>
+    </div>
+  </div>
+
+</ng-template>
+
+

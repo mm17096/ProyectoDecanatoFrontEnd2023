@@ -8,6 +8,7 @@ import { UsuarioService } from '../services/usuario.service';
 import Swal from 'sweetalert2';
 import { IEmail, IRespass } from '../interfaces/usuario';
 import { MensajesService } from 'src/app/shared/global/mensajes.service';
+import { EMAIL_VALIDATE_UES } from 'src/app/constants/constants';
 
 @Component({
   selector: 'app-passwordreset',
@@ -38,6 +39,7 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
   public password: string = "";
   public showPassword2: boolean = false;
   codigo!: string;
+  private isEmail: string = EMAIL_VALIDATE_UES;
 
   // set the currenr year
   year: number = new Date().getFullYear();
@@ -48,7 +50,7 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
   ngOnInit() {
 
     this.resetForm = this.formBuilder.group({
-      correo: ['', [Validators.required]],
+      correo: ['', [Validators.required, Validators.pattern(this.isEmail)]],
       dui: ['', [Validators.required]],
       clave: [''],
     });
@@ -311,6 +313,13 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
         });
       }
     );
+  }
+
+  //// metodo para validar el campo si es valido o no ////
+  esCampoValido(campo: string) {
+    const validarCampo = this.resetForm.get(campo);
+    return !validarCampo?.valid && validarCampo?.touched
+      ? 'is-invalid' : validarCampo?.touched ? 'is-valid' : '';
   }
 }
 

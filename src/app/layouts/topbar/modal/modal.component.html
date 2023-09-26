@@ -140,30 +140,6 @@
                     <div class="row">
                         <div class="col-md">
 
-                            <!-- inicio de foto Empleado -->
-                            <div class="form-group row">
-
-                                <div class="col-md-7">
-                                    <div class="form-group row m-2">
-                                        <label class="control-label" for="file">Foto: </label>
-                                        <input id="file" type="file" multiple class="form-control"
-                                            (change)="onFileSelected($event)" />
-                                    </div>
-                                </div>
-
-                                <div class="col-md">
-                                    <img class="rounded-circle custom-border" *ngIf="!imgTemp"
-                                        [src]="fotoEmpleado !== '' ? fotoEmpleado : './../../../../assets/images/Default-Avatar.png'"
-                                        alt="">
-
-                                    <img class="rounded-circle custom-border" *ngIf="imgTemp" [src]="imgTemp" alt="">
-                                </div>
-                            </div>
-                            <!-- fin de foto Usuario -->
-
-
-                            <!-- fin de licencia Empleado -->
-
                             <!-- inicio de nombre Empleado -->
                             <div class="form-group row m-4">
                                 <label class="control-label">Nombre:
@@ -216,6 +192,28 @@
                                 </div>
                             </div>
                             <!-- fin de telefono Empleado -->
+
+                            
+                            <!-- inicio de foto Empleado -->
+                            <div class="form-group row">
+
+                                <div class="col-md-7">
+                                    <div class="form-group row m-2">
+                                        <label class="control-label" for="file">Foto: </label>
+                                        <input id="file" type="file" multiple class="form-control"
+                                            (change)="onFileSelected($event)" />
+                                    </div>
+                                </div>
+
+                                <div class="col-md">
+                                    <img class="rounded-circle custom-border" *ngIf="!imgTemp"
+                                        [src]="fotoEmpleado !== '' ? fotoEmpleado : './../../../../assets/images/Default-Avatar.png'"
+                                        alt="">
+
+                                    <img class="rounded-circle custom-border" *ngIf="imgTemp" [src]="imgTemp" alt="">
+                                </div>
+                            </div>
+                            <!-- fin de foto Usuario -->
                         </div>
                     </div>
 

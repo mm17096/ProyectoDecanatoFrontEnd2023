@@ -116,11 +116,13 @@ export class ServiceService {
     console.log("en el servicio:", asignacionVale);
     console.log("suario en el servicio:", this.usuario);
     const data = {
-      asignacionVale: asignacionVale,
-      idUsuario: idUsuario,
+      asignacionValeInDto: asignacionVale,
+      idUsuarioLogueado: idUsuario,
     };
+    console.log("data en el servicio:", data);
 
-    return this.http.post<IAsignacionVale>(
+
+    return this.http.post(
       `${this.baseUrl}/asignacionvale/insertar`,
       data
     );

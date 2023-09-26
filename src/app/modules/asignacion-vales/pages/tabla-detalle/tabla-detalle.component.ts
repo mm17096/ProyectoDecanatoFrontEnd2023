@@ -95,7 +95,6 @@ export class TablaDetalleComponent implements OnInit {
         showCancelButton: false,
         showConfirmButton: false,
       });
-
       return new Promise<void>((resolve, reject) => {
         this.service.devolverVales(this.valesADevoler).subscribe({
           next: (data: any) => {

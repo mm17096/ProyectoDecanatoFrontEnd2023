@@ -64,7 +64,7 @@ export class ModalComponent implements OnInit {
     if (this.leyenda == "Editar") {
       this.formBuilder = this.Iniciarformulario();
     }
-    
+
     this.empleadoService.getCargos();
     this.empleadoService.getDepartamentos();
   }
@@ -75,7 +75,7 @@ export class ModalComponent implements OnInit {
       dui: ['', [Validators.required]],
       nombre: ['', [Validators.required, Validators.pattern(this.isText)]],
       apellido: ['', [Validators.required, Validators.pattern(this.isText)]],
-      telefono: ['', [Validators.required]],
+      telefono: ['', [Validators.required, Validators.pattern(/^[267]\d{7}$/)]],
       licencia: ['', this.motoristaOd ? [Validators.required] : []],
       tipolicencia: ['', this.motoristaOd ? [Validators.required] : []],
       fechalicencia: ['', this.motoristaOd ? [Validators.required] : []],
@@ -93,12 +93,46 @@ export class ModalComponent implements OnInit {
 
   //// metodo para obtener los cargos /////
   get Cargos() {
-    return this.empleadoService.listCargos;
+    const cargos: ICargo[] = [];
+
+    if (this.leyenda == "Editar") {
+      cargos.push(this.empleadOd.cargo)
+    }
+
+     this.empleadoService.listCargos.forEach((x) => {
+      if (this.leyenda == "Editar") {
+        if (x.estado == 8 && x.id != this.empleadOd.cargo.id) {
+          cargos.push(x);
+        }
+      } else {
+        if (x.estado == 8) {
+          cargos.push(x);
+        }
+      }
+    });
+    return cargos;
   }
 
   //// metodo para obtener los departamentos /////
   get Departamentos() {
-    return this.empleadoService.listDepartamentos;
+    const departamentos: IDepto[] = [];
+
+    if (this.leyenda == "Editar") {
+      departamentos.push(this.empleadOd.departamento)
+    }
+
+     this.empleadoService.listDepartamentos.forEach((x) => {
+      if (this.leyenda == "Editar") {
+        if (x.estado == 8 && x.codigoDepto != this.empleadOd.departamento.codigoDepto) {
+          departamentos.push(x);
+        }
+      } else {
+        if (x.estado == 8) {
+          departamentos.push(x);
+        }
+      }
+    });
+    return departamentos;
   }
 
   ////// metodo para tomar la desicion si es registro o actualizacion /////
@@ -183,7 +217,7 @@ export class ModalComponent implements OnInit {
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",
-            err
+          err
         )
       });
     }
@@ -328,7 +362,7 @@ export class ModalComponent implements OnInit {
       fechalicenciaControl.setValue('');
       fechalicenciaControl.reset();
 
-      if(this.empleadOd){
+      if (this.empleadOd) {
         this.empleadOd.licencia = "";
         this.empleadOd.tipolicencia = "";
         this.empleadOd.fechalicencia = new Date();

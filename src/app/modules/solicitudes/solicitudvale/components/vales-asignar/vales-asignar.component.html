@@ -1,12 +1,11 @@
-
-  <button
-    type="button"
-    class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1"
-    (click)="valesAsignar(valesAsignarModal)"
-    ngbTooltip="Ver Vales"
-  >
-    <i class="mdi mdi-18px mdi-eye-outline"></i>
-  </button>
+<button
+  type="button"
+  class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1"
+  (click)="valesAsignar(valesAsignarModal)"
+  ngbTooltip="Ver Vales"
+>
+  <i class="mdi mdi-18px mdi-eye-outline"></i>
+</button>
 <ng-template #valesAsignarModal let-modal>
   <div class="modal-header">
     <h5 class="modal-title mt-0">Vales a Asignar</h5>
@@ -23,21 +22,23 @@
         <thead class="table-light">
           <tr>
             <th class="align-middle text-center">Codigo Vale</th>
+            <th></th>
             <th class="align-middle text-center">Valor $</th>
+
           </tr>
         </thead>
         <tbody>
           <tr
             *ngFor="
-              let vale of valesAsingar
+              let vale of listaVales.content
                 | filter : buscarVale
-                | paginate : { itemsPerPage: 10, currentPage: pVales };
               let i = index
             "
           >
-            <td class="align-middle text-center h3">
+            <td  class="align-middle text-center h3">
               {{ vale.correlativoVale }}
             </td>
+            <td *ngIf="vale.fechaVencimiento < fechaActual" class="h4"><span class="badge rounded-pill bg-danger">Vencido</span></td>
             <td class="align-middle text-center h3">
               {{ "$ " + vale.valorVale + ".00" }}
             </td>
@@ -45,14 +46,13 @@
         </tbody>
       </table>
       <div class="pagination pagination-rounded justify-content-end mb-2">
-        <pagination-controls
-          previousLabel="Anterior"
-          nextLabel="Siguiente"
-          firstLabel="Primera"
-          lastLabel="Última"
-          itemsPerPageLabel="por página"
-          (pageChange)="pVales = $event"
-        ></pagination-controls>
+        <ngb-pagination
+          [pageSize]="valesAsignarPage.pageable.pageSize"
+          [collectionSize]="valesAsignarPage.totalElements"
+          (pageChange)="onPageChange($event)"
+          (page)="(currentPage)"
+        >
+        </ngb-pagination>
       </div>
     </div>
   </div>

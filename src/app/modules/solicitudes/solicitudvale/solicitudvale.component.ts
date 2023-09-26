@@ -28,6 +28,8 @@ import {
   ISolcitudAprobar,
   ISolicitudValeAprobar,
 } from "../Interfaces/solicitudValeAprobar.interface";
+import { log } from "console";
+import { UsuarioService } from "src/app/account/auth/services/usuario.service";
 
 @Component({
   selector: "app-solicitudvale",
@@ -59,7 +61,7 @@ export class SolicitudvaleComponent implements OnInit {
     },
   ]; // Aquí deberías tener tus datos
   //interfaz para las solicitudes de vale
-  solicitudesVales: ISolicitudValeAprobar;
+  solicitudesVales: ISolicitudValeAprobar[];
   searchTerm = "";
   itemsPerPage = 5;
   currentPage = 1;
@@ -117,6 +119,7 @@ export class SolicitudvaleComponent implements OnInit {
 
   observacionesSolicitudVale: string;
 
+  mensajeTabla: string;
 
 
   cantidadValesA: number;
@@ -128,7 +131,7 @@ export class SolicitudvaleComponent implements OnInit {
     public fb: FormBuilder,
     private existenciaService: ServiceService,
     private mensajesService: MensajesService,
-    private router: Router
+    private router: Router, private usuarios: UsuarioService
   ) {
     this.iniciarFormulario();
   }
@@ -167,6 +170,21 @@ export class SolicitudvaleComponent implements OnInit {
     });
     this.obtnerExistenciaVales();
     this.getSolicitudesVale(8);
+    this.usuarios.getUsuario();
+  }
+
+  getSolicitudesVale(estado: number) {
+    this.service.getSolicitdValePorEstado(estado).subscribe({
+      next: (data) => {
+        this.solicitudesVales = data;
+        this.obtenerFechaFormateada(data);
+        this.asignacionEstados(estado);
+      },error: (err) => {
+        this.solicitudesVales = undefined
+        console.log("solicitudes: ", this.solicitudesVales);
+        this.mensajeTabla = "No hay datos para mostrar"
+      }
+    });
   }
 
   //Obtniene los vales a asignar según la cantidad deseada
@@ -228,15 +246,7 @@ export class SolicitudvaleComponent implements OnInit {
     });
   }
 
-  getSolicitudesVale(estado: number) {
-    this.service.getSolicitdValePorEstado(estado).subscribe({
-      next: (data) => {
-        this.solicitudesVales = data;
-        this.obtenerFechaFormateada(data);
-        this.asignacionEstados(estado);
-      },
-    });
-  }
+
 
   obtenerFechaFormateada(data: any) {
     if (Array.isArray(data) && data.length > 0) {
@@ -356,7 +366,7 @@ export class SolicitudvaleComponent implements OnInit {
     console.log("form: ", this.formularioSolicitudVale);
 
     if (this.formularioSolicitudVale.valid) {
-      if ((this.estadoSoli == "Nueva")) {
+      if ((this.estadoSoli == "Nueva" || this.estadoSoli == "Revisión")) {
         if ((await this.mensajesService.mensajeSolicitarAprobacion()) == true) {
           // solicitar aprobación
           this.solicitarAprobacion();
@@ -380,6 +390,11 @@ export class SolicitudvaleComponent implements OnInit {
 
   //Regitra la asignación de los vales
   registrando() {
+    const usuariosObj = this.usuarios.usuario;
+    const codUsuario = usuariosObj.codigoUsuario;
+
+    console.log("usuario: ", codUsuario);
+
     //Asignaré los campos necesario para guardar la asignación
     const cantidadVales =
       this.formularioSolicitudVale.get("cantidadVales")?.value;
@@ -405,7 +420,7 @@ export class SolicitudvaleComponent implements OnInit {
       showConfirmButton: false,
     });
     return new Promise<void>((resolve, reject) => {
-      this.service.insertar(asignarVales).subscribe({
+      this.service.insertar(asignarVales, codUsuario).subscribe({
         next: (resp: any) => {
           // Cerrar SweetAlert de carga
           Swal.close();

@@ -36,9 +36,6 @@ export class TablaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log("tabla",this.vista);
-    // console.log("ver: ",this.solicitudesVehiculo)
-    console.log("userACtivo:", this.userAcivo);
   }
 
 
@@ -126,6 +123,7 @@ export class TablaComponent implements OnInit {
           this.soliService.registrarSolicitudVale(this.solicitudVale).subscribe({
             next: (valeResp: any) => {
               this.soliService.getSolicitudesRol(this.userAcivo.role);
+              this.soliService.getSolicitudesVehiculo(0)
               this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
               resolve();
             },

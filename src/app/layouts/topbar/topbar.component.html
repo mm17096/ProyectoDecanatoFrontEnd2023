@@ -57,12 +57,12 @@
             [src]="fotoEmpleado !== '' ? fotoEmpleado : './../../../assets/images/Default-Avatar.png'"
             alt="Header Avatar">
           <div class="vertical-line"></div>
-          <button type="button" class="btn header-item header-profile-name" ngbDropdownToggle
+          <button  type="button" class="btn header-item header-profile-name" ngbDropdownToggle
             id="page-header-user-dropdown">
             <span class="user-text-name">{{empleado?.nombre | slice:0:10}}{{ empleado?.nombre.length > 10? '...' : ''
               }}</span>
             <i class="mdi mdi-chevron-down ms-1"></i>
-            <p [class]="empleado?.cargo.nombreCargo.length > 8? 'user-text-long' : 'user-text'">{{ empleado?.cargo.nombreCargo | slice:0:20}}{{ empleado?.cargo.nombreCargo.length > 20? '...' : ''}}</p>
+            <p class="user-text">{{ empleado?.cargo.nombreCargo | slice:0:15}}{{ empleado?.cargo.nombreCargo.length > 15? '...' : ''}}</p>
             <span class="user-text-2" *ngIf="empleado?.jefe">Jefe Dpto</span>
           </button>
         </div>
@@ -72,10 +72,12 @@
           <!-- item-->
           <app-modal [leyenda]="'Datos'"></app-modal>
 
-          <app-modal [leyenda]="'Credenciales'" [usuario]="usuario"></app-modal>
-
-          <a class="dropdown-item" (click)="Email()"><i class="bx bx-mail font-size-16 align-middle me-1"></i>
+          <app-modal [leyenda]="'Credenciales'"></app-modal>
+<!-- 
+           <a class="dropdown-item" (click)="Email()"><i class="bx bx-mail font-size-16 align-middle me-1"></i>
             {{ 'Enviar Email' | translate}}</a>
+ -->
+ 
 <!--           <a class="dropdown-item d-block" href="javascript: void(0);"><i
               class="bx bx-wrench font-size-16 align-middle me-1"></i>{{
             'Configuración' | translate}} </a>

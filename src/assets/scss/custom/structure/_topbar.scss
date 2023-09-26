@@ -342,25 +342,20 @@ body[data-layout="horizontal"] {
   margin-top: 10px;
 }
 
-.user-text-long {
-  font-size: 8px;
-  display: grid;
-  margin-top: -5px;
-  margin-left: 8px;
-}
-
 .user-text {
   font-size: 10px;
   display: grid;
   margin-top: -5px;
-  margin-left: -40px;
+  margin-left: 0px;
+  justify-content: left;
 }
 
 .user-text-2 {
   font-size: 8px;
   margin-top: -20px;
   display: grid;
-  margin-left: -50px;
+  margin-left: 0px;
+  justify-content: left;
 }
 
 /* Estilos responsivos */

@@ -22,7 +22,7 @@
         <td>{{calcularNumeroCorrelativo(i)}}</td>
         <td>{{data.solicitante.empleado.departamento.nombre}}</td>
         <td>{{data.lugarMision}}</td>
-        <td>{{data.fechaSalida}}</td>
+        <td>{{data.fechaSalida | date : "dd/MM/yyyy"}}</td>
         <td style="text-align: center">{{data.cantidadPersonas}}</td>
         <td style="text-align: center">
           <h5><span class="{{data.estado === 1 ? 'badge rounded-pill bg-warning'
@@ -43,8 +43,10 @@
             <i class="mdi mdi-18px mdi-eye-outline"></i></button>
 
             <button type="button"
-                    *ngIf="userAcivo.role == 'DECANO' && solicitudesVehiculo.length > 0 && solicitudesVehiculo[0].estado  == 3 ||
-                    userAcivo.role == 'JEFE_DEPTO' && solicitudesVehiculo.length>0 && solicitudesVehiculo[0].estado == 1"
+                    *ngIf="(userAcivo.role == 'DECANO' && solicitudesVehiculo.length > 0 && solicitudesVehiculo[0].estado  == 3 ||
+                    userAcivo.role == 'DECANO' && solicitudesVehiculo.length > 0 && solicitudesVehiculo[0].estado  == 1 ||
+                    userAcivo.role == 'JEFE_FINANACIERO' && solicitudesVehiculo.length > 0 && solicitudesVehiculo[0].estado  == 1 ||
+                    userAcivo.role == 'JEFE_DEPTO' && solicitudesVehiculo.length>0 && solicitudesVehiculo[0].estado == 1)"
                     class="btn btn-success btn-sm btn-rounded boton-cuadrado mx-1"
                   (click)="aprobarSolicitud(data)"
                   ngbTooltip="Aprobar">

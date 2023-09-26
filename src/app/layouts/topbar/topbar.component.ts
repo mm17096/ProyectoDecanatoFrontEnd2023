@@ -155,12 +155,15 @@ export class TopbarComponent implements OnInit {
   /* Enviar email */
 Email(){
   const email: IEmail = {
-    asunto: 'mensaje de prueba',
-    receptor: 'kevineliasmejia@gmail.com',
-    mensaje: 'Este es un mensaje de prueba usando SendGrid'
+    asunto: 'Cambio de credenciales',
+    titulo: 'Cambio de credenciales',
+    email: 'kevineliasmejia@gmail.com',
+    receptor: "Estimad@ : " + 'Kevin Elias Mejia Martinez',
+    mensaje: 'Para mejorar la seguridad de nuestros sistemas, estamos implementando un cambio obligatorio de contraseñas. A continuación, te proporciono las instrucciones para completar este proceso de manera sencilla y segura',
+    centro: 'Utilice este codigo para continuar con el proceso :',
+    codigo: '99023992',
+    abajo: 'Gracias por tu atención a este importante asunto.',
   }
-  
-  console.log(email);
 
   this.usuarioService.SendEmail(email).subscribe(
     (resp) => {

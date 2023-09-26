@@ -16,7 +16,7 @@ export class ListaentradasalidaService {
   private requestOptions: any;
 
   listDeMisiones: IsolicitudVehiculo[] = [];
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient) {
 
         const token = localStorage.getItem('token');
         const headers = new HttpHeaders({
@@ -26,7 +26,7 @@ export class ListaentradasalidaService {
           headers: headers
         };
   }
-  
+
   getMisiones() {
 
     const token = localStorage.getItem('token');
@@ -38,7 +38,7 @@ export class ListaentradasalidaService {
     };
 
     this.http.get(`${this.baseUrl}/solicitudvehiculo/lista`, requestOptions)
-      
+
       .pipe(map((resp: any) => resp as IsolicitudVehiculo[]))
       .subscribe(
         (lista: IsolicitudVehiculo[]) => {
@@ -51,7 +51,7 @@ export class ListaentradasalidaService {
         }
       );
   }
-  
+
 
 
   get ObtenerLista(): Observable<IEntradaSalida[]> {
@@ -62,12 +62,12 @@ export class ListaentradasalidaService {
      const headers = new HttpHeaders({
        Authorization: `Bearer ${token}`
      });
- 
+
      // Configura las opciones de la solicitud HTTP con los encabezados personalizados
      const requestOptions = {
        headers: headers
      };
-     
+
     return this.http.get<IEntradaSalida[]>(`${this.baseUrl}/entradasalida`, requestOptions);
   }
 
@@ -130,5 +130,5 @@ export class ListaentradasalidaService {
   }*/
 
 
-  
+
 }

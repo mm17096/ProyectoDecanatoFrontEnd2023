@@ -54,6 +54,7 @@ export class ModalComponent implements OnInit {
   soliSave : ISolicitudVehiculo [] = [];
   file!: File;
   solicitudVale!: ISolicitudvalep;
+  isChecked: boolean = false;
 
   alerts = [
     {
@@ -114,7 +115,7 @@ export class ModalComponent implements OnInit {
         .setValue(this.soliVeOd != null ? this.soliVeOd.lugarMision: '');
       this.formularioSoliVe.get('depto')
         .setValue(this.soliVeOd != null ? this.soliVeOd.unidadSolicitante: '');
-      this.formularioSoliVe.get('direccion')
+      this.formularioSoliVe.get('direccionD')
         .setValue(this.soliVeOd != null ? this.soliVeOd.direccion: '');
       this.formularioSoliVe.get('fechaEntrada')
         .setValue(this.soliVeOd != null ? this.soliVeOd.fechaEntrada: '');
@@ -154,6 +155,7 @@ export class ModalComponent implements OnInit {
     this.formularioSoliVe.value.unidadSolicitante = this.usuarioActivo.empleado.departamento.nombre;
     const solicitudVehiculo = this.formularioSoliVe.value;
     console.log("formularo: ",this.formularioSoliVe);
+
     if (this.formularioSoliVe.valid){
       if (this.soliVeOd != null){
         this.editarSoliVe();
@@ -293,8 +295,10 @@ export class ModalComponent implements OnInit {
       nombreCanton = cantonSeleccionado.nam;
     }
 
-    solicitudVehiculo.direccion = nombreDepartamento+', '+nombreMunicipio+', '+
-      nombreDistrito+', '+nombreCanton;
+    if (this.isChecked != true){
+      solicitudVehiculo.direccion = nombreDepartamento+', '+nombreMunicipio+', '+
+        nombreDistrito+', '+nombreCanton;
+    }
     /* fin de la direccion */
 
     // Mostrar SweetAlert de carga
@@ -416,7 +420,8 @@ export class ModalComponent implements OnInit {
       vehiculo: ['', [Validators.required]],
       objetivoMision: ['', [Validators.required]],
       lugarMision: ['', [Validators.required]],
-      direccion: [''],
+      direccion: [null,[]],
+      direccionD: [''],
       depto: ['', [Validators.required]],
       municipio: ['', [Validators.required]],
       distrito: ['', [Validators.required]],
@@ -430,6 +435,37 @@ export class ModalComponent implements OnInit {
       solicitante: [this.usuarioActivo?.codigoUsuario || '', [Validators.required]],
       listaPasajeros: this.fb.array([]),
       file: ['',],
+      isChecked: [false],
+    });
+
+    this.formularioSoliVe.get('isChecked').valueChanges.subscribe((isChecked) => {
+
+      const depto = this.formularioSoliVe.get('depto');
+      const municipio = this.formularioSoliVe.get('municipio');
+      const distrito = this.formularioSoliVe.get('distrito');
+      const canton = this.formularioSoliVe.get('canton');
+      const direccion = this.formularioSoliVe.get('direccion');
+
+
+      if (isChecked == true) {
+        direccion.setValidators([Validators.required]);
+        depto.clearValidators();
+        municipio.clearValidators();
+        distrito.clearValidators();
+        canton.clearValidators();
+      } else {
+        depto.setValidators([Validators.required]);
+        municipio.setValidators([Validators.required]);
+        distrito.setValidators([Validators.required]);
+        canton.setValidators([Validators.required]);
+        direccion.clearValidators();
+      }
+
+      depto.updateValueAndValidity();
+      municipio.updateValueAndValidity();
+      distrito.updateValueAndValidity();
+      canton.updateValueAndValidity();
+      direccion.updateValueAndValidity();
     });
   }
 
@@ -611,6 +647,7 @@ export class ModalComponent implements OnInit {
         next: (resp: any) => {
           this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
           this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
+          this.modalService.dismissAll();
           resolve();
         },
         error: (error) => {
@@ -668,5 +705,13 @@ export class ModalComponent implements OnInit {
         },
       });
     });
+  }
+
+  actualizarEstadoCheckbox() {
+    if (this.isChecked == false){
+      this.isChecked = true;
+    } else{
+      this.isChecked = false;
+    }
   }
 }

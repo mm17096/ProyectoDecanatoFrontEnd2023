@@ -19,6 +19,7 @@ export class SolicitudVehiculoService {
   listSoliVehiculoRol : ISolicitudVehiculo [] = [];
   listVehiculos:string[] = [];
   listMotorista: IMotorista [] = [];
+  public usuario!: Usuario;
 
   constructor(private http: HttpClient) { }
 
@@ -30,13 +31,13 @@ export class SolicitudVehiculoService {
     return this.http
       .get(`${this.url}/usuario/${this.codUsuario}`)
       .pipe(
-        tap((usuario: any) => {
+        map((usuario: any) => {
           const { codigoUsuario, nombre, clave, nuevo, role, token, empleado } = usuario;
-          const usuarioObj = new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
-          return usuarioObj;
+          return new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
         })
       );
   }
+
 
   // Servicio para obtener todas las solicitudes de vehiculo
 

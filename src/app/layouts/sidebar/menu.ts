@@ -73,7 +73,7 @@ export const MENU: MenuItem[] = [
   {
     id: 9,
     label: "Solcitudes de Vales",
-    icon: "mdi mdi-gas-station",
+    icon: "mdi mdi-clipboard-text-multiple-outline",
     role: ["ADMIN","ASIS_FINANCIERO","JEFE_FINANACIERO"],
     subItems: [
 

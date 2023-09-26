@@ -28,7 +28,7 @@ import {
   ISolcitudAprobar,
   ISolicitudValeAprobar,
 } from "../Interfaces/solicitudValeAprobar.interface";
-import { log } from "console";
+
 import { UsuarioService } from "src/app/account/auth/services/usuario.service";
 
 @Component({
@@ -76,6 +76,8 @@ export class SolicitudvaleComponent implements OnInit {
 
   private isNumber: string = NUMBER_VALIDATE;
 
+  storage: Storage = window.localStorage;
+
   filtroEstado: number;
 
   solicitud: any[] = [];
@@ -121,7 +123,6 @@ export class SolicitudvaleComponent implements OnInit {
 
   mensajeTabla: string;
 
-
   cantidadValesA: number;
   //fecha con formato
   fechaformateada = [];
@@ -131,7 +132,8 @@ export class SolicitudvaleComponent implements OnInit {
     public fb: FormBuilder,
     private existenciaService: ServiceService,
     private mensajesService: MensajesService,
-    private router: Router, private usuarios: UsuarioService
+    private router: Router,
+    private usuarios: UsuarioService,
   ) {
     this.iniciarFormulario();
   }
@@ -170,7 +172,6 @@ export class SolicitudvaleComponent implements OnInit {
     });
     this.obtnerExistenciaVales();
     this.getSolicitudesVale(8);
-    this.usuarios.getUsuario();
   }
 
   getSolicitudesVale(estado: number) {
@@ -179,11 +180,12 @@ export class SolicitudvaleComponent implements OnInit {
         this.solicitudesVales = data;
         this.obtenerFechaFormateada(data);
         this.asignacionEstados(estado);
-      },error: (err) => {
-        this.solicitudesVales = undefined
+      },
+      error: (err) => {
+        this.solicitudesVales = undefined;
         console.log("solicitudes: ", this.solicitudesVales);
-        this.mensajeTabla = "No hay datos para mostrar"
-      }
+        this.mensajeTabla = "No hay datos para mostrar";
+      },
     });
   }
 
@@ -245,8 +247,6 @@ export class SolicitudvaleComponent implements OnInit {
       },
     });
   }
-
-
 
   obtenerFechaFormateada(data: any) {
     if (Array.isArray(data) && data.length > 0) {
@@ -326,7 +326,6 @@ export class SolicitudvaleComponent implements OnInit {
     let observacionRevision = solici.observacionesSolicitudVale;
     if (observacionRevision) {
       observacionRevision = solici.observacionesSolicitudVale;
-
     } else {
       observacionRevision = "";
     }
@@ -366,7 +365,7 @@ export class SolicitudvaleComponent implements OnInit {
     console.log("form: ", this.formularioSolicitudVale);
 
     if (this.formularioSolicitudVale.valid) {
-      if ((this.estadoSoli == "Nueva" || this.estadoSoli == "Revisión")) {
+      if (this.estadoSoli == "Nueva" || this.estadoSoli == "Revisión") {
         if ((await this.mensajesService.mensajeSolicitarAprobacion()) == true) {
           // solicitar aprobación
           this.solicitarAprobacion();
@@ -390,9 +389,8 @@ export class SolicitudvaleComponent implements OnInit {
 
   //Regitra la asignación de los vales
   registrando() {
-    const usuariosObj = this.usuarios.usuario;
-    const codUsuario = usuariosObj.codigoUsuario;
-
+    //const usuariosObj = this.usuarios.getUsuario();
+    const codUsuario = this.storage.getItem("codUsuario");
     console.log("usuario: ", codUsuario);
 
     //Asignaré los campos necesario para guardar la asignación
@@ -447,8 +445,10 @@ export class SolicitudvaleComponent implements OnInit {
   async solicitarAprobacion() {
     //Asignaré los campos necesario para modificar la asignación
     const cantidadVales =
-    this.formularioSolicitudVale.get("cantidadVales")?.value;
-    this.observacionesSolicitudVale = this.formularioSolicitudVale.get("observacionRevision")?.value;
+      this.formularioSolicitudVale.get("cantidadVales")?.value;
+    this.observacionesSolicitudVale = this.formularioSolicitudVale.get(
+      "observacionRevision"
+    )?.value;
     const codigoSolicitud = this.paramSolicitudV;
     const estadoSolicitud = 1;
     new Date().toLocaleDateString();

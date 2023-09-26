@@ -54,6 +54,7 @@ export interface ITablaConsultaDto{
     iddetalleasignacionvale:String;
     idasignacionvale:String;
     valeid:String;
+    solicitudvehiculoid:string;
 }
 
 export interface IConsultaExcelTablaCompraDto{

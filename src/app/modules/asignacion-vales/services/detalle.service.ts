@@ -8,6 +8,7 @@ import { Observable, throwError } from 'rxjs';
 import Swal, { SweetAlertIcon } from "sweetalert2";
 import { catchError, map } from "rxjs/operators";
 import { SolicitudVale } from "../interface/IsolicitudvaleDocument";
+import { UsuarioService } from "src/app/account/auth/services/usuario.service";
 
 @Injectable({
   providedIn: "root",
@@ -17,7 +18,7 @@ export class DetalleService {
   private burl: string = environment.baseUrl;
   private baseUrl: string = environment.baseUrl;
   private requestOptions: any;
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient, usuarios: UsuarioService) {
 
     // Recupera el token de acceso desde el local storage
     const token = localStorage.getItem('token');
@@ -33,9 +34,6 @@ export class DetalleService {
     };
   }
 
-  /*get ObtenerLista() {
-    return this.http.get<IDocumentosvale[]>(`${this.baseUrl}/document`);
-  }*/
 
   getMisiones() {
 
@@ -48,7 +46,7 @@ export class DetalleService {
     };
 
     this.http.get(`${this.baseUrl}/solicitudvale/listasinpagina`, requestOptions)
-      
+
       .pipe(map((resp: any) => resp as SolicitudVale[]))
       .subscribe(
         (lista: SolicitudVale[]) => {
@@ -61,13 +59,13 @@ export class DetalleService {
         }
       );
   }
-  
+
   ObtenerLista(id: string){
     return this.http.get<IDocumentosvale[]>(`${this.baseUrl}/document/${id}`);
   }
 
 
-  
+
   public NuevosDatos(document: IDocumentosvale, file: File): Observable<Object> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
@@ -90,7 +88,7 @@ export class DetalleService {
     return this.http.get<IAsignacionValeSolicitud>(`${this.baseUrl}/asignacionvale/ver/${codigoAsignacion}`);
   }
 
-  
+
   devolverVales(valesParaDevolucion:IValesADevolver) {
     console.log("interfaz: ", valesParaDevolucion);
 

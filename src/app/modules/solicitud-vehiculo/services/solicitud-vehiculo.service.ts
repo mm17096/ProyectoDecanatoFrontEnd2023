@@ -17,7 +17,7 @@ export class SolicitudVehiculoService {
 
   listSoliVehiculo : ISolicitudVehiculo [] = [];
   listSoliVehiculoRol : ISolicitudVehiculo [] = [];
-  listVehiculos: IVehiculos [] = [];
+  listVehiculos:string[] = [];
   listMotorista: IMotorista [] = [];
 
   constructor(private http: HttpClient) { }
@@ -75,11 +75,12 @@ export class SolicitudVehiculoService {
 
   obtenerVehiculos() {
     this.http
-      .get(`${this.url}/vehiculo/listasinpagina`)
-      .pipe(map((resp: any) => resp as IVehiculos[]))
+      .get(`${this.url}/vehiculo/clase`)
+      .pipe(map((resp: any) => resp ))
       .subscribe(
-        (vehiculo: IVehiculos[])=> {
+        (vehiculo)=> {
           this.listVehiculos = vehiculo;
+          console.log(this.listVehiculos);
         },
         (error) => {
           console.log("Error al obtener los vehiculos", error);

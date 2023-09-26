@@ -5,7 +5,7 @@ import { Router, NavigationEnd } from '@angular/router';
 
 import { HttpClient } from '@angular/common/http';
 
-import { MENU } from './menu';
+import { MENU, MENU_ASIS_FINAN, MENU_JEFE_DEPTO, MENU_JEFE_FINAN, MENU_USER, MENU_VIGILANTE } from './menu';
 import { MenuItem } from './menu.model';
 import { TranslateService } from '@ngx-translate/core';
 import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
@@ -36,8 +36,9 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
 
   constructor(private eventService: EventService, private router: Router, public translate: TranslateService, private http: HttpClient,
     private solicituVService : SolicitudVehiculoService, private userService: UsuarioService) {
-//this.usuariojson = this.userService.usuarioJSP;
+this.usuariojson = this.userService.usuarioJSON;
     //this.lstusuario = this.userService.usuario;
+
     router.events.forEach((event) => {
       if (event instanceof NavigationEnd) {
         this._activateMenuDropdown();
@@ -155,9 +156,47 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
    //this.obtenerUsuarioActivo();
   // console.log("rol en el metodo 2:",this.userService.usuario.role);
    //console.log("poasd:",this.userService.rol)
-    this.menuItems = this.filterMenuByRole(MENU, "USER");
+   console.log("rol del metodo json",this.usuariojson.role)
+
+   switch (this.usuariojson.role){
+    case "JEFE_DEPTO" : {
+      this.menuItems = MENU_JEFE_DEPTO
+        break;
+    }
+    case "SECR_DECANATO" : {
+      this.menuItems = MENU_JEFE_DEPTO
+        break;
+    }
+    case "DECANO" : {
+        this.menuItems = MENU_JEFE_DEPTO
+        break;
+    }
+    case "ASIS_FINANCIERO" : {
+        this.menuItems = MENU_ASIS_FINAN
+        break;
+    }
+    case "JEFE_FINANACIERO" : {
+        this.menuItems = MENU_JEFE_FINAN
+        break;
+    }
+    case "VIGILANTE" : {
+      this.menuItems = MENU_VIGILANTE
+        break;
+    }
+    case "ADMIN" : {
+      this.menuItems = MENU
+        break;
+    }
+    default:{
+      this.menuItems = MENU_USER
+        break;
+    }
+
   }
 
+   // this.menuItems = this.filterMenuByRole(MENU, this.usuariojson.role);
+  }
+/*
   filterMenuByRole(menu: MenuItem[], userRole: string): MenuItem[] {
     // Filtrar el menú según el rol del usuario
     return menu.filter((item) => {
@@ -168,12 +207,8 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
       return true;
     });
   }
-
-  get usarioAc(){
-
-    return this.userService.usuario;
-
-  }
+*/
+ 
 //this.usuariojson.codigoUsario
 
   obtenerUsuarioActivo(){

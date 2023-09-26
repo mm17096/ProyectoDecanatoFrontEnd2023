@@ -105,7 +105,6 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
   }
   cerarPDF(soliVehi: ISolicitudVehiculo,vales: IConsultaDelAl[]){
    // this.cargarConsultaValeDelAl(soliVehi.codigoSolicitudVehiculo);
-
      const pdfDefinicion: any = {content:[],}
     pdfDefinicion.content.push(
      {
@@ -360,7 +359,6 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 				},
         {
 					text: 'AL: '+vales[this.valeDelAl.length-1].correlativo,
-          
 
 				},
 

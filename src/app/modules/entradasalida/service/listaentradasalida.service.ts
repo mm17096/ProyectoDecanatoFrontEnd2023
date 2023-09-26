@@ -52,8 +52,6 @@ export class ListaentradasalidaService {
       );
   }
 
-
-
   get ObtenerLista(): Observable<IEntradaSalida[]> {
      // Recupera el token de acceso desde el local storage
      const token = localStorage.getItem('token');
@@ -93,15 +91,10 @@ export class ListaentradasalidaService {
 
 
   buscarVehiculo(termino: string): Observable<IsolicitudVehiculo[]> {
-    // Recupera el token de acceso desde el local storage
     const token = localStorage.getItem('token');
-
-    // Crea un objeto HttpHeaders para agregar el token de acceso en el encabezado 'Authorization'
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
-
-    // Configura las opciones de la solicitud HTTP con los encabezados personalizados
     const requestOptions = {
       headers: headers
     };
@@ -112,18 +105,31 @@ export class ListaentradasalidaService {
       );
     } else {
       return this.http.get<IsolicitudVehiculo[]>(`${this.baseUrl}/solicitudvehiculo/todas`, requestOptions).pipe(
-        map(vehiculos=>vehiculos.filter(vehiculos=>vehiculos.estado===4  ))
+        //muestra los autos con estadoSolicitud4 y que tengan la fecha igual a la actual
+        map(vehiculos=>vehiculos.filter(vehiculo=>vehiculo.estado==4 && this.compararFechasSalida(vehiculo.fechaSalida) || this.compararFechasEntrada(vehiculo.fechaEntrada)))
       )
     }
   }
 
   // Función para comparar fechas
-private compararFechas(fechaSalida: string): boolean {
-  const fechaActual = new Date();
-  const fechaSalidaVehiculo = new Date(fechaSalida);
-  // Aquí puedes ajustar la lógica de comparación según tus necesidades
-  return fechaSalidaVehiculo.getTime() === fechaActual.getTime();
-}
+  compararFechasSalida(fechaSalida: string): boolean {
+    const fechaActual = new Date();
+    // Convierte ambas fechas a cadenas en formato de fecha (sin hora)
+    const fechaSalidaStr = fechaSalida.toString().split('T')[0];
+    const fechaActualStr = fechaActual.toISOString().split('T')[0];
+    // Compara si las fechas son iguales
+    return fechaSalidaStr === fechaActualStr;
+  }
+
+  // Función para comparar fechas
+  compararFechasEntrada(fechaEntrada: string): boolean {
+    const fechaActual = new Date();
+    // Convierte ambas fechas a cadenas en formato de fecha (sin hora)
+    const fechaEntradaStr = fechaEntrada.toString().split('T')[0];
+    const fechaActualStr = fechaActual.toISOString().split('T')[0];
+    // Compara si las fechas son iguales
+    return fechaEntradaStr === fechaActualStr;
+  }
 
  /*obtenerImagenes(): Observable<IVehiculoentradaSalida[]> {
 
@@ -147,7 +153,6 @@ listarEstado(estado: string, id: number ): Observable<IEntradaSalida>{
     };
   return this.http.get<IEntradaSalida>(`${this.baseUrl}/entradasalida/buscarentradasalida?filtro=${estado}&tipo=${id}`,requestOptions);
 }
-
 
 obtenercodigosolicitudvale(id: number ): Observable<ISolicitudvalep>{
   const token = localStorage.getItem('token');

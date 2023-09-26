@@ -43,10 +43,12 @@ export class TopbarComponent implements OnInit {
 
   empleadO!: IEmpleado;
   usuariO!: Usuario;
+  //usuarioJSON: any;
 
   fotoEmpleado!: string;
   formUsuario !: FormGroup;
   leyenda !: string;
+  
   alerts = [
     {
       id: 1,
@@ -66,6 +68,7 @@ export class TopbarComponent implements OnInit {
     private modalService: NgbModal,
     private fb: FormBuilder,
     private mensajesService: MensajesService) {
+      //this.usuarioJSON =  this.usuarioService.usuarioJSON;
   }
 
   listLang = [
@@ -85,6 +88,9 @@ export class TopbarComponent implements OnInit {
     this.fotoEmpleado = this.usuarioService.empleadofoto;
     this.usuarioService.getEmpleado();
     this.usuarioService.getUsuario();
+    //this.usuarioJSON =  this.usuarioService.usuarioJSON;
+
+    //console.log(this.usuarioJSON);
 
     this.openMobileMenu = false;
     this.element = document.documentElement;

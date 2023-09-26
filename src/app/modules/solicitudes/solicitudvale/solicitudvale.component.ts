@@ -390,8 +390,8 @@ export class SolicitudvaleComponent implements OnInit {
 
   //Regitra la asignación de los vales
   registrando() {
-    const usuarios = this.usuarios.usuario;
-    const codUsuario = usuarios.codigoUsuario;
+    const usuariosObj = this.usuarios.usuario;
+    const codUsuario = usuariosObj.codigoUsuario;
 
     console.log("usuario: ", codUsuario);
 

@@ -105,7 +105,6 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
   }
   cerarPDF(soliVehi: ISolicitudVehiculo,vales: IConsultaDelAl[]){
    // this.cargarConsultaValeDelAl(soliVehi.codigoSolicitudVehiculo);
-   
      const pdfDefinicion: any = {content:[],}
     pdfDefinicion.content.push(
      {
@@ -149,7 +148,6 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 				},
 				{
 					text: 'Fecha de Misión: '+this.formatDate(`${soliVehi.fechaSalida}`),
-          
 				},
 
 			]
@@ -185,9 +183,8 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 			columns: [
 				{
 
-
 					text: 'Objetivo de la Misión: '+soliVehi.objetivoMision,
-
+         
 				},
 
 			]
@@ -197,10 +194,8 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 			columns: [
 				{
 
-
 					text: 'Lugar que visitará: '+soliVehi.direccion,
          
-
 				},
 
 			]
@@ -339,9 +334,8 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 			columns: [
 				{
 
-
 					text: 'Vehículo: '+soliVehi.vehiculo.marca+', '+soliVehi.vehiculo.modelo+', '+soliVehi.vehiculo.clase+', '+soliVehi.vehiculo.tipo_gas+', '+soliVehi.vehiculo.color+', '+soliVehi.vehiculo.year,
-
+          
 				},
 				{
 					text: 'Placa: '+soliVehi.vehiculo.placa,

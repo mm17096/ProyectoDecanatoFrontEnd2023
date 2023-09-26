@@ -8,6 +8,9 @@ import { HttpClient } from '@angular/common/http';
 import { MENU } from './menu';
 import { MenuItem } from './menu.model';
 import { TranslateService } from '@ngx-translate/core';
+import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
+import { Usuario } from 'src/app/account/auth/models/usuario.models';
+import { SolicitudVehiculoService } from 'src/app/modules/solicitud-vehiculo/services/solicitud-vehiculo.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -23,12 +26,18 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() isCondensed = false;
   menu: any;
   data: any;
-
+  lstusuario : Usuario ;
   menuItems = [];
+  usuariojson : any;
+  rol : string = "ADMIN";
 
   @ViewChild('sideMenu') sideMenu: ElementRef;
 
-  constructor(private eventService: EventService, private router: Router, public translate: TranslateService, private http: HttpClient) {
+
+  constructor(private eventService: EventService, private router: Router, public translate: TranslateService, private http: HttpClient,
+    private solicituVService : SolicitudVehiculoService, private userService: UsuarioService) {
+//this.usuariojson = this.userService.usuarioJSP;
+    //this.lstusuario = this.userService.usuario;
     router.events.forEach((event) => {
       if (event instanceof NavigationEnd) {
         this._activateMenuDropdown();
@@ -38,6 +47,8 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnInit() {
+    this.userService.getUsuario();
+  console.log(this.usuariojson);
     this.initialize();
     this._scrollElement();
   }
@@ -139,8 +150,43 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
    * Initialize
    */
   initialize(): void {
-    this.menuItems = MENU;
+   // const userObj = this.userService.usuario
+   // const rol = userObj.role;
+   //this.obtenerUsuarioActivo();
+  // console.log("rol en el metodo 2:",this.userService.usuario.role);
+   //console.log("poasd:",this.userService.rol)
+    this.menuItems = this.filterMenuByRole(MENU, "USER");
   }
+
+  filterMenuByRole(menu: MenuItem[], userRole: string): MenuItem[] {
+    // Filtrar el menú según el rol del usuario
+    return menu.filter((item) => {
+      if (item.role) {
+        return item.role.includes(userRole);
+      }
+      // Si el elemento no tiene roles definidos, se muestra para todos los roles.
+      return true;
+    });
+  }
+
+  get usarioAc(){
+
+    return this.userService.usuario;
+
+  }
+//this.usuariojson.codigoUsario
+
+  obtenerUsuarioActivo(){
+    // Suscríbete al Observable para obtener el usuario
+    let resp ;
+    this.solicituVService.getUsuarioSV().subscribe((user: Usuario) => {
+      resp = user.role;
+
+
+    });
+    console.log("rol en el metodo:",resp);
+  }
+
 
   /**
    * Returns true or false if given menu item has child or not

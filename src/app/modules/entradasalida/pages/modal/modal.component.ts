@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { ListaentradasalidaService } from '../../service/listaentradasalida.service';
 import { MensajesService } from 'src/app/shared/global/mensajes.service';
 import { IsolicitudVehiculo } from '../../interface/VehiculoEntradasalida';
+import { ISolicitudvalep } from 'src/app/modules/solicitud-vale-paginacion/interface/solicitudvalep.interface';
 
 @Component({
   selector: 'app-modal',
@@ -16,12 +17,14 @@ import { IsolicitudVehiculo } from '../../interface/VehiculoEntradasalida';
   styleUrls: ['./modal.component.scss']
 })
 export class ModalComponent implements OnInit {
+  
   @Input() leyenda!: string;
   @Input() leyendas!: string;
   @Input() titulo!: string;
   @Input() entradasalidaOd!: IEntradaSalida;
   @Input() salidaentradaOd!: boolean;
   @Input() objetivoMision:IsolicitudVehiculo;
+  @Input() controllerdata:boolean;
   //objetivoMision="";
   fechaSalida="";
 
@@ -30,6 +33,7 @@ export class ModalComponent implements OnInit {
   private isName: string= NAME_VALIDATE;
   entradasalidas: IEntradaSalida[]=[];//para almacenar los resultados
   entrasal:IEntradaSalida;
+  solicitudvale: ISolicitudvalep
   horaActual: string;
   fechaActual: string;
   modoEdicion = false;
@@ -53,7 +57,6 @@ export class ModalComponent implements OnInit {
         this.horaActual = this.getCurrentTime();
       }
       this.listaentradasalidaservice.getMisiones();
-
   }
 
   
@@ -133,6 +136,9 @@ export class ModalComponent implements OnInit {
   openModal(content: any) {
     this.modalService.open(content, { size: 'lx', centered: true });
   }
+  openModal1(conten: any) {
+    this.modalService.open(conten, { size: 'lx', centered: true });
+  }
   editando(){
     const ent = this.formBuilder.value;
     console.log(ent);
@@ -191,41 +197,72 @@ export class ModalComponent implements OnInit {
 
   registrando() {
     const listando = this.formBuilder.value;
-  
-
-      const entsali: EntradaSalidaI = new EntradaSalidaI(listando.tipo, listando.fecha, listando.hora, listando.combustible, listando.kilometraje,listando.estado, listando.solicitudvehiculo);
-      console.log(entsali);
-
-      this.listaentradasalidaservice.NuevosDatos(entsali).subscribe((resp: any) => {
-        if (resp) {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            //timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener('mouseenter', Swal.stopTimer)
-              toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
-          });
-          Toast.fire({
-            icon: 'success',
-            text: 'Almacenamiento exitoso'
-          });
-          this.formBuilder.reset();
-          this.recargar();
-          this.modalService.dismissAll();
-        }
-      }, (err: any) => {
-        this.mensajesService.mensajesSweet(
-          "error",
-          "Ups... Algo salió mal",
-          err
-        )
-        this.obtenerLista();
-          this.recargar();
-      });
+    console.log(this.controllerdata);
+      if(!this.controllerdata){
+        const entsali: EntradaSalidaI = new EntradaSalidaI(listando.tipo, listando.fecha, listando.hora, listando.combustible, listando.kilometraje,1, listando.solicitudvehiculo);
+        this.listaentradasalidaservice.NuevosDatos(entsali).subscribe((resp: any) => {
+          if (resp) {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              //timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+            });
+            Toast.fire({
+              icon: 'success',
+              text: 'Almacenamiento exitoso'
+            });
+            this.formBuilder.reset();
+            this.recargar();
+            this.modalService.dismissAll();
+          }
+        }, (err: any) => {
+          this.mensajesService.mensajesSweet(
+            "error",
+            "Ups... Algo salió mal",
+            err
+          )
+          this.obtenerLista();
+            this.recargar();
+        });      
+      }else{
+        const entsali: EntradaSalidaI = new EntradaSalidaI(listando.tipo, listando.fecha, listando.hora, listando.combustible, listando.kilometraje,2, listando.solicitudvehiculo);
+        this.listaentradasalidaservice.NuevosDatos(entsali).subscribe((resp: any) => {
+          if (resp) {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              //timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+            });
+            Toast.fire({
+              icon: 'success',
+              text: 'Almacenamiento exitoso'
+            });
+            this.formBuilder.reset();
+            this.recargar();
+            this.modalService.dismissAll();
+          }
+        }, (err: any) => {
+          this.mensajesService.mensajesSweet(
+            "error",
+            "Ups... Algo salió mal",
+            err
+          )
+          this.obtenerLista();
+            this.recargar();
+        });
+      }
   }
 
   recargar() {
@@ -238,9 +275,9 @@ export class ModalComponent implements OnInit {
   private obtenerLista() {//para poder mostrar e la tabla
     this.listaentradasalidaservice.ObtenerLista.subscribe((resp: IEntradaSalida[]) => {
       this.entradasalidas = resp;
-      console.log(resp);
     });
   }
+
   
   esCampoValido(campo: string){
     
@@ -257,5 +294,7 @@ export class ModalComponent implements OnInit {
   get Listamisiones() {
     return this.listaentradasalidaservice.listDeMisiones;
   }
+
+  
 
 }

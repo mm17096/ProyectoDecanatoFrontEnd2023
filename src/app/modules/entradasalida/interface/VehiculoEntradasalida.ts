@@ -2,7 +2,7 @@
 export interface IsolicitudVehiculo{
     codigoSolicitudVehiculo: number;
     fechaSolicitud:string,
-    fechaSalida: string,
+    fechaSalida?: string,
     unidadSolicitante: string,
     vehiculo: IVehiculoentradaSalida,
     objetivoMision: string,

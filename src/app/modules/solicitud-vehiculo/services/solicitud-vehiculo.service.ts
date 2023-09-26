@@ -91,8 +91,8 @@ export class SolicitudVehiculoService {
 
   obtenerMotoristas() {
     this.http
-      .get(`${this.url}/empleado/lista`)
-      .pipe(map((resp: any) => resp.content as IMotorista[]))
+      .get(`${this.url}/empleado/motoristas`)
+      .pipe(map((resp: any) => resp as IMotorista[]))
       .subscribe(
         (empleados: IMotorista[]) => {
           console.log(empleados);

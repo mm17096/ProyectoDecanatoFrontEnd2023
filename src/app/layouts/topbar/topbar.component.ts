@@ -7,8 +7,15 @@ import { CookieService } from 'ngx-cookie-service';
 import { LanguageService } from '../../core/services/language.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
+import {NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Usuario } from 'src/app/account/auth/models/usuario.models';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import Swal from 'sweetalert2';
+import { MensajesService } from 'src/app/shared/global/mensajes.service';
+import { IEmpleado } from 'src/app/modules/empleado/interface/empleado.interface';
+import { IEmail } from 'src/app/account/auth/interfaces/usuario';
 
-@Pipe({name: 'slice'})
+@Pipe({ name: 'slice' })
 export class SlicePipe implements PipeTransform {
   transform(value: string, start: number, end: number): string {
     return value.slice(start, end) + '...';
@@ -34,14 +41,31 @@ export class TopbarComponent implements OnInit {
   valueset;
   icono: string = 'fa fa-fw fa-bars';
 
+  empleadO!: IEmpleado;
+  usuariO!: Usuario;
+
   fotoEmpleado!: string;
+  formUsuario !: FormGroup;
+  leyenda !: string;
+  alerts = [
+    {
+      id: 1,
+      type: "info",
+      message:
+        "Complete los campos obligatorios (*)",
+      show: false,
+    },
+  ];
 
   constructor(@Inject(DOCUMENT) private document: any, private router: Router, private authService: AuthenticationService,
-              private authFackservice: AuthfakeauthenticationService,
-              public languageService: LanguageService,
-              public translate: TranslateService,
-              public _cookiesService: CookieService,
-              private usuarioService: UsuarioService) {
+    private authFackservice: AuthfakeauthenticationService,
+    public languageService: LanguageService,
+    public translate: TranslateService,
+    public _cookiesService: CookieService,
+    private usuarioService: UsuarioService,
+    private modalService: NgbModal,
+    private fb: FormBuilder,
+    private mensajesService: MensajesService) {
   }
 
   listLang = [
@@ -58,9 +82,10 @@ export class TopbarComponent implements OnInit {
   @Output() mobileMenuButtonClicked = new EventEmitter();
 
   ngOnInit() {
-    this.fotoEmpleado =  this.usuarioService.empleadofoto;
+    this.fotoEmpleado = this.usuarioService.empleadofoto;
     this.usuarioService.getEmpleado();
-    
+    this.usuarioService.getUsuario();
+
     this.openMobileMenu = false;
     this.element = document.documentElement;
 
@@ -74,8 +99,13 @@ export class TopbarComponent implements OnInit {
     }
   }
 
+
   get empleado() {
     return this.usuarioService.empleado;
+  }
+
+  get usuario() {
+    return this.usuarioService.usuario;
   }
 
   setLanguage(text: string, lang: string, flag: string) {
@@ -98,9 +128,9 @@ export class TopbarComponent implements OnInit {
   toggleMobileMenu(event: any) {
     event.preventDefault();
     this.mobileMenuButtonClicked.emit();
-    if(this.icono == 'fa fa-fw fa-bars'){
+    if (this.icono == 'fa fa-fw fa-bars') {
       this.icono = 'fas fa-arrow-right';
-    }else if(this.icono == 'fas fa-arrow-right'){
+    } else if (this.icono == 'fas fa-arrow-right') {
       this.icono = 'fa fa-fw fa-bars';
     }
   }
@@ -109,8 +139,174 @@ export class TopbarComponent implements OnInit {
    * Logout the user
    */
   logout() {
-    this.usuarioService.logout();
+    Swal.fire({
+      icon: 'question',
+      title: "¿Deseas cerrar la sesión?",
+      showDenyButton: true,
+      confirmButtonText: "Cerrar la sesión",
+      denyButtonText: `Cancelar`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.usuarioService.logout();
+      }
+    });
   }
+
+  /* Enviar email */
+Email(){
+  const email: IEmail = {
+    asunto: 'mensaje de prueba',
+    receptor: 'kevineliasmejia@gmail.com',
+    mensaje: 'Este es un mensaje de prueba usando SendGrid'
+  }
+  
+  console.log(email);
+
+  this.usuarioService.SendEmail(email).subscribe(
+    (resp) => {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 2500,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      });
+      
+      Toast.fire({
+        icon: 'success',
+        text: '¡Email enviado!'
+      });
+    },
+    (err) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: err,
+      });
+    }
+  );
+}
+
+  //// metodo par abrir la modal ////
+  openModal(content: any) {
+    //hacer que la modal no se cierre al precionar fuera de ella -> backdrop: 'static', keyboard: false
+    this.modalService.open(content, { size: 'xl', centered: true, backdrop: 'static', keyboard: false });
+  }
+
+
+  guardar() {
+
+    if (this.formUsuario.valid) {
+
+
+    } else {
+      Swal.fire({
+        position: 'center',
+        title: 'Faltan datos en el formuario',
+        text: 'Complete todos los campos requeridos',
+        icon: 'warning',
+      });
+    }
+  }
+
+  registrando() {
+
+    /* 
+        this.cargoService.saveCargos(data).subscribe({
+          next: (resp) => {
+            this.modalService.dismissAll();
+            this.formUsuario.reset();
+            this.mostrar();
+          },
+          error: (error) => {
+    
+            this.mensajesService.mensajesSweet(
+              'error',
+              "Ups... Algo salió mal",
+              error
+            )
+          },
+          complete: () => {
+    
+            const Toast = Swal.mixin({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+            });
+            Toast.fire({
+              icon: 'success',
+              text: 'Datos Guardados con exito'
+            });
+    
+          }
+        }); */
+
+  }
+
+  editando() {
+    /* 
+        this.cargoService.editCargo(data.id, data).subscribe({
+          next: (resp) => {
+            this.formUsuario.reset();
+            this.modalService.dismissAll();
+            this.mostrar();
+          },
+          error: (error) => {
+            this.mensajesService.mensajesSweet(
+              'error',
+              "Ups... Algo salió mal",
+              error
+            )
+    
+          },
+          complete: () => {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+            });
+            Toast.fire({
+              icon: 'success',
+              text: 'Datos Guardados con exito'
+            });
+          }
+        }); */
+
+  }
+
+  esCampoValido(campo: string) {
+    const validarCampo = this.formUsuario.get(campo);
+    return !validarCampo?.valid && validarCampo?.touched
+      ? 'is-invalid' : validarCampo?.touched ? 'is-valid' : '';
+  }
+
+  CambiarAlert(alert) {
+    alert.show = !alert.show;
+  }
+
+  restaurarAlerts() {
+    this.alerts.forEach((alert) => {
+      alert.show = true;
+    });
+  }
+
+  siMuestraAlertas() {
+    return this.alerts.every((alert) => alert.show);
+  }
+
 
   /**
    * Fullscreen method

@@ -1,12 +1,67 @@
+import { SolicitudVale } from "./SolicitudVale";
 import { Vale } from "./Vale";
 
 export interface Consulta{
     idDetalleAsignacionVale:string;
-    valeId:string;
-    fechaAsignacion:Date;
-    estadoAsignacion:number;
+    asignacionVale:string;
+    valeid:String;
+    vale:Vale;
+    estado:number;
+    fecha:Date;
+    solicitudVale:SolicitudVale;
+}
+
+export interface CompraDto{
     cantidad:number;
-    estadoSolicitud:number;
-    vale:Vale[];
-    idAsignacionVale:string;
+    codigofin:number;
+    fechacompra:Date;
+    codigocompra:String;
+    preciounitario:number;
+    codigoinicio:number;
+    fechavencimientovale:Date;
+}
+
+export interface ConsultaDto{
+    valor:number;
+    fecha:Date;
+    correlativo:number;
+    estadosv:number;
+    estadoentrada:number;
+    estadoav:number;
+    cantidadvale:number;
+    estadovale:number;
+    fechavencimiento:Date;
+    iddetalleasignacionvale:String;
+    idasignacionvale:String;
+    valeid:String;
+}
+
+export interface ValidarVale{
+    inde:number;
+    cantidad:number;
+    valor:number;
+    valorAntes:number;
+    idA:String;
+    con:number;
+    conv:number;
+}
+
+export interface Cantidad{
+    cant:number;
+    veri:number;
+    conta:number;
+}
+
+export interface IConsultaDelAl{
+    valor:number;
+    correlativo:number;
+    valeid:string;
+    fechavencimiento:Date;
+    cantidadvale:number;
+    estadovale:number;
+}
+
+export interface Tabla{
+    i:number;
+    codi:number;
 }

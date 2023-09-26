@@ -3,9 +3,19 @@ import { RouterModule, Routes } from '@angular/router';
 import { SolicitudvaleComponent } from './solicitudvale/solicitudvale.component';
 import { SolicitudvComponent } from './solicitudv/solicitudv.component';
 
+import { SolicitanteComponent } from './solicitante/solicitante.component';
+
+import { SolicitudValeAprobarComponent } from './solicitud-vale-aprobar/solicitud-vale-aprobar.component';
+
+
 const routes: Routes = [
   {path:'solicitudvale',component:SolicitudvaleComponent},
   {path:'solicitudv',component:SolicitudvComponent},
+
+  {path:'solicitante',component:SolicitanteComponent},
+
+  {path: 'solictud-aprobar', component:SolicitudValeAprobarComponent}
+
 ];
 
 @NgModule({

@@ -50,12 +50,12 @@ export class ModalComponent implements OnInit {
 
      private iniciarFormulario(){
       return this.fb.group({
-        nombreCargo : ['',Validators.compose([Validators.required, Validators.pattern('[A-Z ]*')])],
+        nombreCargo : ['',Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*')])],
         descripcion : ['',Validators.compose([Validators.required, Validators.pattern('[a-zA-Z ]*')])],
 
       })
     }
-
+//prueba de push
 
     guardar(){
 
@@ -87,6 +87,8 @@ export class ModalComponent implements OnInit {
         estado : 8
       }
     ;
+
+    data.nombreCargo = data.nombreCargo.toUpperCase();
 
     console.log(data);
     console.log(this.formCargo.value);
@@ -138,6 +140,7 @@ export class ModalComponent implements OnInit {
       }
     ;
 
+    data.nombreCargo = data.nombreCargo.toUpperCase();
 
     this.cargoService.editCargo(data.id,data).subscribe({
       next : (resp) => {
@@ -196,6 +199,7 @@ export class ModalComponent implements OnInit {
   openModal(content: any) {
     this.modalService.open(content, {size: 'lg', backdrop: 'static'});
   }
+
   CambiarAlert(alert) {
     alert.show = !alert.show;
   }

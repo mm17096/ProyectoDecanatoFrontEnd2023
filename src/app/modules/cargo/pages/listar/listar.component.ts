@@ -25,7 +25,7 @@ export class ListarComponent implements OnInit {
     private router : Router,) { }
 
   ngOnInit(): void {
-    this.breadCrumbItems = [{ label: 'Formulario' }, { label: 'Listar', active: true }];
+    this.breadCrumbItems = [{ label: 'Cargo' }, { label: 'Listar', active: true }];
     this.getCargoAll();
   }
 
@@ -54,13 +54,7 @@ export class ListarComponent implements OnInit {
 
   cambiarEstado(data: ICargo, estado: number) {
 
-      if(estado == 8){
-        data.estado = 9;
-        this.cambio = 'Inactivo';
-      }else{
-        data.estado = 8;
-        this.cambio = 'Activo';
-      }
+
 
       Swal.fire({
         icon: 'question',
@@ -71,6 +65,15 @@ export class ListarComponent implements OnInit {
       denyButtonText: `No cambiar`,
       }).then((result) => {
         if (result.isConfirmed) {
+
+          if(estado == 8){
+            data.estado = 9;
+            this.cambio = 'Inactivo';
+          }else{
+            data.estado = 8;
+            this.cambio = 'Activo';
+          }
+
           this.cargoService.editCargo(data.id, data).subscribe({
             next: (resp) => {
               this.mostrar();

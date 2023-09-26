@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {IEstados, IPais, ISolicitudVehiculo} from "../interfaces/data.interface";
+import {IActualizarSoliVe, IEstados, IPais, ISolicitudVehiculo, IMotorista} from "../interfaces/data.interface";
 import {environment} from "../../../../environments/environment";
-import {map} from "rxjs/operators";
+import {map, tap} from "rxjs/operators";
 import {IVehiculos} from "../../vehiculo/interfaces/vehiculo-interface";
+import {Usuario} from "../../../account/auth/models/usuario.models";
+import {ISolicitudvalep} from "../../solicitud-vale-paginacion/interface/solicitudvalep.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -14,16 +16,34 @@ export class SolicitudVehiculoService {
   private url= environment.baseUrl;
 
   listSoliVehiculo : ISolicitudVehiculo [] = [];
+  listSoliVehiculoRol : ISolicitudVehiculo [] = [];
   listVehiculos: IVehiculos [] = [];
+  listMotorista: IMotorista [] = [];
 
   constructor(private http: HttpClient) { }
+
+  get codUsuario(): string {
+    return localStorage.getItem("codUsuario" || "");
+  }
+
+  getUsuarioSV(): Observable<Usuario> {
+    return this.http
+      .get(`${this.url}/usuario/${this.codUsuario}`)
+      .pipe(
+        tap((usuario: any) => {
+          const { codigoUsuario, nombre, clave, nuevo, role, token, empleado } = usuario;
+          const usuarioObj = new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
+          return usuarioObj;
+        })
+      );
+  }
 
   // Servicio para obtener todas las solicitudes de vehiculo
 
   getSolicitudesVehiculo(estado: number) {
     if (estado != null){
       this.http
-        .get(`${this.url}/api/solicitudvehiculo/lista/${estado}`)
+        .get(`${this.url}/solicitudvehiculo/lista/${estado}`)
         .pipe(map((resp: any) => resp as ISolicitudVehiculo[]))
         .subscribe(
           (soliVe: ISolicitudVehiculo[]) => {
@@ -35,7 +55,7 @@ export class SolicitudVehiculoService {
         );
     }else {
       this.http
-        .get(`${this.url}/api/solicitudvehiculo/lista`)
+        .get(`${this.url}/solicitudvehiculo/lista`)
         .pipe(map((resp: any) => resp as ISolicitudVehiculo[]))
         .subscribe(
           (soliVe: ISolicitudVehiculo[]) => {
@@ -50,12 +70,12 @@ export class SolicitudVehiculoService {
 
   // Servicio para obtener los estados
   public obtenerEstados(): Observable<any> {
-    return this.http.get<IEstados>((this.url)+ '/api/solicitudvehiculo/estados');
+    return this.http.get<IEstados>((this.url)+ '/solicitudvehiculo/estados');
   }
 
   obtenerVehiculos() {
     this.http
-      .get(`${this.url}/api/vehiculo/listasinpagina`)
+      .get(`${this.url}/vehiculo/listasinpagina`)
       .pipe(map((resp: any) => resp as IVehiculos[]))
       .subscribe(
         (vehiculo: IVehiculos[])=> {
@@ -67,9 +87,24 @@ export class SolicitudVehiculoService {
         );
   }
 
-  filtroPlacasVehiculo(clase: string): Observable<IVehiculos[]> {
+  obtenerMotoristas() {
+    this.http
+      .get(`${this.url}/empleado/lista`)
+      .pipe(map((resp: any) => resp.content as IMotorista[]))
+      .subscribe(
+        (empleados: IMotorista[]) => {
+          console.log(empleados);
+          this.listMotorista = empleados; // Actualiza la propiedad listEmpleados
+        },
+        (error) => {
+          console.error("Error al obtener los empleados:", error);
+        }
+      );
+    }
+
+  filtroPlacasVehiculo(clase: string,fechaSalida:string,fechaEntrada:string): Observable<IVehiculos[]> {
     return this.http
-      .get(`${this.url}/api/vehiculo/clase/${clase}`)
+      .get(`${this.url}/vehiculo/disponibilidad?claseName=${clase}&fechaSalida=${fechaSalida}&fechaEntrada=${fechaEntrada}`)
       .pipe(map((resp: any) => resp as IVehiculos[]));
   }
 
@@ -80,6 +115,39 @@ export class SolicitudVehiculoService {
 
 
   registrarSoliVe(solicitudVehiculo: ISolicitudVehiculo){
-    return this.http.post<ISolicitudVehiculo>( `${this.url}/api/solicitudvehiculo/insert`, solicitudVehiculo);
+    return this.http.post<ISolicitudVehiculo>( `${this.url}/solicitudvehiculo/insert`, solicitudVehiculo);
+  }
+
+  enviarPdfPasajeros(multiPart: FormData){
+    console.log("docus:", multiPart);
+    return this.http.post<any>(`${this.url}/documentosoli/upload`, multiPart);
+  }
+
+  updateSolicitudVehiculo(data: ISolicitudVehiculo){
+    return this.http.put<ISolicitudVehiculo>( `${this.url}/solicitudvehiculo/edit/${data.codigoSolicitudVehiculo}`, data);
+  }
+
+  getSolicitudesRol(rol: string){
+    this.http
+        .get(`${this.url}/solicitudvehiculo/listado/${rol}`)
+        .pipe(map((resp: any) => resp as ISolicitudVehiculo[]))
+        .subscribe(
+          (soliVe: ISolicitudVehiculo[]) => {
+            this.listSoliVehiculoRol = soliVe;
+          },
+          (error) => {
+            console.log("Error al obtener las solicitudes de vehiculo", error);
+          }
+        );
+  }
+
+  updateSolciitudVehiculo(data: IActualizarSoliVe){
+    console.log("dataAc: ", data);
+    return this.http.put<ISolicitudVehiculo>( `${this.url}/solicitudvehiculo/estadoupdate`, data);
+  }
+
+  registrarSolicitudVale(solicitudVale: ISolicitudvalep){
+    console.log("vale",solicitudVale);
+    return this.http.post<ISolicitudvalep>( `${this.url}/solicitudvale/insertar`, solicitudVale);
   }
 }

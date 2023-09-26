@@ -284,7 +284,9 @@
                 [selectOnTab]="true"
                 labelForId="tipoVehiculo"
                  [class]="esCampoValido('tipoVehiculo')"
-                (change)="cargarPlacas(formularioSoliVe.get('tipoVehiculo').value)"
+                (change)="cargarPlacas(formularioSoliVe.get('tipoVehiculo').value,
+                formularioSoliVe.get('fechaSalida').value,
+                formularioSoliVe.get('fechaEntrada').value)"
               >
                 <ng-option
                   *ngFor="let x of listVehiculos"
@@ -476,7 +478,8 @@
         <!-- fin solicitante -->
 
        <!-- tabla de personas -->
-       <div class="row" *ngIf="cantidadPersonas >= 2 || leyenda=='Detalle' && soliVeOd != null && soliVeOd.cantidadPersonas >= 2">
+       <div class="row" *ngIf="cantidadPersonas >= 2 || leyenda=='Detalle' &&
+       soliVeOd != null && soliVeOd.cantidadPersonas >= 2">
         <div class="mt-2">
           <div *ngIf="mostrarTabla; else archivoAdjunto">
             <label for="tablaPasajeros">Ingrese los nombres de los pasajeros: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
@@ -518,15 +521,28 @@
               </tr>
               </tbody>
             </table>
+
           </div>
 
           <ng-template #archivoAdjunto>
-            <div *ngIf="mostrarArchivoAdjunto" class="alert alert-warning">
+            <div *ngIf="mostrarArchivoAdjunto && leyenda === 'Nueva'" class="alert alert-warning">
               Por favor, adjunta la lista de pasajeros: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
                                                               class="text-danger">*</span>
-              <input type="file" (change)="cambioDeArchivo($event)" />
+              <input type="file"
+              id="file" accept=".pdf"
+              (change)="cambioDeArchivo($event)"
+              formControlName="file" />
             </div>
           </ng-template>
+
+            <div *ngIf="btnVerPdf" class="alert alert-warning">
+              Lista de pasajeros
+              <div>
+                <button class="btn btn-primary" type="button">
+                  Descargar pdf
+                </button>
+              </div>
+            </div>
 
         </div>
       </div>
@@ -538,6 +554,23 @@
       <button type="submit" class="btn btn-primary w-sm me-2" id="btn-save" name="btn-save"
               *ngIf="leyenda == 'Nueva'">
         Enviar
+      </button>
+      <button type="button" class="btn btn-primary w-sm me-2" id="btn-detalle_save" name="btn-save"
+              (click)="aprobarSolicitud()"
+              *ngIf="(usuarioActivo.role == 'JEFE_DEPTO' ||
+              usuarioActivo.role == 'JEFE_FINANACIERO' ||
+              usuarioActivo.role == 'DECANO') && vista === 'listado'">
+        Aprobar
+      </button>
+      <button type="button" class="btn btn-info w-sm me-2" id="btn-detalle_save" name="btn-save"
+              (click)="revisionSolicitud()"
+              *ngIf="(usuarioActivo.role == 'DECANO') && vista === 'listado'">
+        Revisión
+      </button>
+      <button type="button" class="btn btn-warning w-sm me-2" id="btn-detalle_save" name="btn-save"
+              (click)="anularSolicitud()"
+              *ngIf="(usuarioActivo.role == 'DECANO') && vista === 'listado'">
+        Denegar
       </button>
       <button type="button" class="btn btn-dark w-sm" id="btn-cancel" name="btn-cancel"
               aria-hidden="true" (click)="activeModal.close('Close click')">Cancelar</button>

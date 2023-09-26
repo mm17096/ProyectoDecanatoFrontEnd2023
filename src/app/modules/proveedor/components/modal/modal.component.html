@@ -74,9 +74,7 @@
             [value]="13"
             checked
           />
-          <label
-            class="btn btn-outline-dark myconfig2"
-            for="tipo1"
+          <label class="btn btn-outline-dark myconfig2" for="tipo1"
             >Gasolinera</label
           >
           <input
@@ -89,9 +87,7 @@
             [class]="esCampoValido('tipo')"
             [value]="14"
           />
-          <label
-            class="btn btn-outline-primary myconfig1"
-            for="tipo2"
+          <label class="btn btn-outline-primary myconfig1" for="tipo2"
             >UES</label
           >
           <div class="invalid-feedback">
@@ -125,6 +121,9 @@
             <span *ngIf="formularioGeneral.get('nombre').hasError('maxlength')">
               Limite 200 caracteres
             </span>
+            <span *ngIf="formularioGeneral.get('nombre').hasError('pattern')"
+              >Solamente letras, numeros y respecte los espacios
+            </span>
           </div>
         </div>
         <div class="mb-4 col-md-6">
@@ -138,12 +137,16 @@
             class="form-control"
             placeholder="Encargado"
             formControlName="encargado"
+            [class]="esCampoValido('encargado')"
           />
           <div class="invalid-feedback">
             <span
               *ngIf="formularioGeneral.get('encargado').hasError('maxlength')"
             >
               Limite 200 caracteres
+            </span>
+            <span *ngIf="formularioGeneral.get('encargado').hasError('pattern')"
+              >Solamente nombres o apellidos correctos y respecte los espacios
             </span>
           </div>
         </div>
@@ -154,12 +157,12 @@
           <input
             id="telefono"
             name="telefono"
-            maxlength="15"
+            maxlength="9"
+            mask="0000-0000"
             type="text"
             class="form-control"
             placeholder="Telefono"
             formControlName="telefono"
-            mask="0000-0000"
             [class]="esCampoValido('telefono')"
           />
           <div class="invalid-feedback">
@@ -168,8 +171,17 @@
             >
               Requiere un teléfono
             </span>
-            <span *ngIf="formularioGeneral.get('telefono').hasError('mask')"
-              >Teléfono no válido
+            <span
+              *ngIf="formularioGeneral.get('telefono')?.errors?.['pattern']"
+            >
+              Solamente se permiten numeros enteros
+            </span>
+            <span
+              *ngIf="
+                formularioGeneral.get('telefono').hasError('invalidPhoneNumber')
+              "
+            >
+              El teléfono debe comenzar con 7, 6 o 2 y tener 8 digitos
             </span>
           </div>
         </div>

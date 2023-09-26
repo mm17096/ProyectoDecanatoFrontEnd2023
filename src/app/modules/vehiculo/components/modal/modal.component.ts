@@ -69,10 +69,10 @@ export class ModalComponent implements OnInit {
       marca: ['', [Validators.required,Validators.pattern(this.isPalabra)]],
       clase: ['', [Validators.required, Validators.pattern(this.isPalabra)]],
       color: ['',[Validators.required, Validators.pattern(this.isTexto)]],
-      fecha_tarjeta: ['',[Validators.required, this.fechaVencimientoValidator]],
+      fecha_tarjeta: ['',[Validators.required, this.fechaVencimientoFormat, this.fechaVencimientoValidator]],
       year: ['',[Validators.required, Validators.pattern(this.isInteger), this.yearValidator]],
       capacidad: ['',[Validators.required, Validators.min(1)]],
-      capacidadTanque: ['',[Validators.required]],
+      capacidadTanque: ['',[Validators.required, Validators.min(1)]],
       n_chasis: ['',[Validators.required]],
       n_motor: ['', [Validators.required,Validators.minLength(5), Validators.maxLength(10)]],
       tipo_gas: ['Diesel',[Validators.required]],
@@ -99,6 +99,15 @@ export class ModalComponent implements OnInit {
       return { fechaVencimientoInvalida: true };
     }
 
+    return null;
+  }
+
+  fechaVencimientoFormat(control: FormControl) {
+    const fechaVencimiento = new Date(control.value);
+
+    if (fechaVencimiento.getFullYear() > 9999) {
+      return { fechaVencimientoformat: true };
+    }
     return null;
   }
 

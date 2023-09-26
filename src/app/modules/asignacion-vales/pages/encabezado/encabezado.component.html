@@ -9,47 +9,35 @@
       <div class="row mb-1">
         <h2 class="card-title"></h2>
         <h4 class="card-title-desc">Misión:</h4>
-        <h3 class="ms-5">{{ detalleAsignacion.mision }}</h3>
+        <h3 class="ms-5">{{ mision }}</h3>
       </div>
       <div class="row">
         <div class="col-2"></div>
         <div class="col-lg-6">
-          <app-tabla-detalle [codigoAsignacion]="codigoAsignacion"></app-tabla-detalle>
+          <app-tabla-detalle [codigoAsignacion]="codigoAsignacion" [mision]="mision"></app-tabla-detalle>
         </div>
         <div class="col-2"></div>
       </div>
       <div class="row">
         <div class="col-2 mt-4">
-          <button type="button" class="btn btn-dark float-sm-end">
+          <button type="button" class="btn btn-dark float-sm-end" (click)="anular()">
             Anular
           </button>
         </div>
         <div class="d-flex justify-content-end mt-4 col-8">
-          <button type="submit" class="btn btn-primary me-2">Guardar</button>
+          <button type="button" class="btn btn-dark me-2" (click)="volver()">Volver</button>
+          <button type="submit" class="btn btn-primary" (click)="liquidar()">Liquidar</button>
+          <div style="margin-left: 10px;">
+            <app-detalle-documentos
+            [leyenda]="'Detalle'"
+            [titulo]="'Detalle documentos'"  [codigoAsignacion]="codigoAsignacion"
+            >
+            </app-detalle-documentos>
+          </div>
 
-          <button type="button" class="btn btn-dark">Volver</button>
         </div>
+
       </div>
-
-      <!-- <div class="col-10 justify-content-end d-flex mt-2">
-        <button type="button" class="btn btn-dark">Volver</button>
-        <button type="button" class="btn btn-primary">Guardar</button>
-      </div> -->
-      <!-- <div class="row mt-2">
-        <div class="col-1">
-          <button
-            type="button"
-            class="btn btn-dark float-sm-start"
-            id="btn-cancel"
-            name="btn-cancel"
-            aria-hidden="true"
-          >
-            Anular
-          </button>
-        </div>
-
-        <div class="col-2"></div>
-      </div> -->
     </div>
   </div>
 </div>

@@ -1,59 +1,222 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { IAsignacionVale, ICodigoAsignacion, IValesAsignar } from '../Interfaces/asignacionvale.interface';
-import { IExistenciaVales, ISolicitudValeID } from '../Interfaces/existenciavales.interface';
-import { SolicitudVv } from '../Interfaces/SolicitudVv';
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { environment } from "src/environments/environment";
+import {
+  IAsignacionVale,
+  ICodigoAsignacion,
+  IValesAsignar,
+} from "../Interfaces/asignacionvale.interface";
+import {
+  IExistenciaVales,
+  ISolicitudValeID,
+} from "../Interfaces/existenciavales.interface";
+import {
+  ISolcitudAprobar,
+  ISolicitudValeAprobar,
+  IValesAsignarPage,
+} from "../Interfaces/solicitudValeAprobar.interface";
+import { SolicitudVv } from "../Interfaces/SolicitudVv";
+import { map, tap } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { Usuario } from "src/app/account/auth/models/usuario.models";
+import { IPaginacion } from "src/app/shared/models/IPaginacion.interface";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ServiceService {
-
+  listValesAsignar: IPaginacion<IValesAsignarPage> = {
+    content: [],
+    pageable: {
+      offset: 0,
+      paged: true,
+      pageNumber: 0,
+      pageSize: 0,
+      sort: {
+        empty: true,
+        sorted: true,
+        unsorted: true,
+      },
+      unpaged: true,
+    },
+    empty: true,
+    first: true,
+    last: true,
+    number: 0,
+    numberOfElements: 0,
+    size: 0,
+    sort: {
+      empty: true,
+      sorted: true,
+      unsorted: true,
+    },
+    totalElements: 0,
+    totalPages: 0,
+  };
   private baseUrl: string = environment.baseUrl;
+  listSolicitudes: ISolicitudValeAprobar;
+  listSolicitudesValeRol: ISolicitudValeAprobar[];
+  constructor(private http: HttpClient) {}
 
-  constructor(private http:HttpClient) { }
-
-
-  getCliente(){
-    return this.http.get<SolicitudVv>(this.baseUrl+'/api/consulta/listapage');
+  /*  get codUsuario(): string {
+    return localStorage.getItem("codUsuario" || "");
   }
 
-  getCantidadVales(){
-    return this.http.get<IExistenciaVales>(this.baseUrl+'/api/asignacionvale/cantidadvales');
+  getUsuarioSV(): Observable<Usuario> {
+    return this.http
+      .get(`${this.baseUrl}/usuario/${this.codUsuario}`)
+      .pipe(
+        tap((usuario: any) => {
+          const { codigoUsuario, nombre, clave, nuevo, role, token, empleado } = usuario;
+          const usuarioObj = new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
+          return usuarioObj;
+        })
+      );
+  } */
+
+  getCliente() {
+    return this.http.get<SolicitudVv>(this.baseUrl + "/consulta/listapage");
   }
 
-  getIdSolicitudVale(codigoSolicitudVale: string){
-    return this.http.get<ISolicitudValeID>(`${this.baseUrl}/api/asignacionvale/solitudvale/${codigoSolicitudVale}`);
+  getCantidadVales() {
+    return this.http.get<IExistenciaVales>(
+      this.baseUrl + "/asignacionvale/cantidadvales"
+    );
   }
 
-  insertar(asignacionVale: IAsignacionVale){
+  getIdSolicitudVale(codigoSolicitudVale: string) {
+    return this.http.get<ISolicitudValeID>(
+      `${this.baseUrl}/asignacionvale/solitudvale/${codigoSolicitudVale}`
+    );
+  }
+
+  insertar(asignacionVale: IAsignacionVale) {
     console.log("en el servicio:" + asignacionVale);
 
-    return this.http.post<IAsignacionVale>(`${this.baseUrl}/api/asignacionvale/insertar`, asignacionVale);
+    return this.http.post<IAsignacionVale>(
+      `${this.baseUrl}/asignacionvale/insertar`,
+      asignacionVale
+    );
   }
 
-  getValesAignar(cantidadVales: number){
-    return this.http.get<IValesAsignar>(`${this.baseUrl}/api/asignacionvale/listarvalesasignar/${cantidadVales}`);
+  getValesAignar(cantidadVales: number) {
+    return this.http.get<IValesAsignar>(
+      `${this.baseUrl}/asignacionvale/listarvalesasignar/${cantidadVales}`
+    );
   }
 
-  getCodigoAsignacion(codigoSolitudVale: string){
-    return this.http.get<ICodigoAsignacion>(`${this.baseUrl}/api/asignacionvale/codigoasignacionvale/${codigoSolitudVale}`);
+  getValesAsignarPage(
+    page: number = 1,
+    size: number,
+    cantVales:number
+  ) {
+   console.log("en el servicio cantVales: " + size);
+    this.http
+      .get<IPaginacion<IValesAsignarPage>>(
+        `${this.baseUrl}/asignacionvale/listarvalesasignarPage/${cantVales}`,
+        {
+          params: {
+            page: page.toString(),
+            size: size.toString(),
+          },
+        }
+      )
+      .subscribe(
+        (data) => {
+          this.listValesAsignar = data;
+        },
+        (error) => {
+          console.error("Error al obtener los Vales:", error);
+        }
+      );
   }
 
- /* createCliente(cliente:Cliente){
-    return this.http.post<Cliente>(this.url+'/add',cliente);
- }
+  getCodigoAsignacion(codigoSolitudVale: string) {
+    return this.http.get<ICodigoAsignacion>(
+      `${this.baseUrl}/asignacionvale/codigoasignacionvale/${codigoSolitudVale}`
+    );
+  }
 
- getClienteId(id:number){
-    return this.http.get<Cliente>(this.url+'/'+id)
- }
+  //Consulta las solitudes de vale por estado
+  getSolicitdValePorEstado(estado: number) {
+    return this.http.get<ISolicitudValeAprobar[]>(
+      `${this.baseUrl}/asignacionvale/listarsolicitudvaleestado/${estado}`
+    );
+  }
 
- updateCliente(cliente:Cliente){
-   return this.http.put<Cliente>(this.url+'/update/'+cliente.idCliente,cliente);
- }
+  //Cambia el estado, minserta la cantidad y añade observaciones a la solicitud de vale
+  solicitarAprobacion(solicitud: ISolcitudAprobar) {
+    return this.http.post<ISolcitudAprobar>(
+      `${this.baseUrl}/asignacionvale/solitudaprobar`,
+      solicitud
+    );
+  }
 
- deleteCliente(cliente:Cliente){
-   return this.http.delete<Cliente>(this.url+'/delete/'+cliente.idCliente);
- }*/
+  obtenerNombreDiaYMes(
+    fechaStr: string
+  ): { nombreDia: string; nombreMes: string } | null {
+    const fecha = new Date(fechaStr);
+
+    // Verificar si la fecha es válida
+    if (isNaN(fecha.getTime())) {
+      return null; // La fecha no es válida
+    }
+
+    const opcionesDia: Intl.DateTimeFormatOptions = { weekday: "long" }; // 'long' para obtener el nombre completo del día
+    const opcionesMes: Intl.DateTimeFormatOptions = { month: "long" }; // 'long' para obtener el nombre completo del mes
+
+    const nombreDia = fecha.toLocaleDateString(undefined, opcionesDia);
+    const nombreMes = fecha.toLocaleDateString(undefined, opcionesMes);
+
+    return { nombreDia, nombreMes };
+  }
+
+  dividirFecha(
+    fechaStr: string
+  ): { anio: string; mes: string; día: string } | null {
+    // Dividir la cadena de fecha en sus componentes utilizando '/'
+    const partes = fechaStr.split("-");
+
+    // Verificar si hay tres componentes (año, mes y día)
+    if (partes.length === 3) {
+      const anio = partes[0];
+      const mes = partes[1];
+      const día = partes[2];
+
+      return { anio, mes, día };
+    } else {
+      return null; // La cadena de fecha no tiene el formato esperado
+    }
+  }
+
+  fechaFormatoGenerico(fecha: string) {
+    const fechaf = this.obtenerNombreDiaYMes(fecha);
+    const anio = this.dividirFecha(fecha);
+    const dia = this.dividirFecha(fecha);
+    const fechaLista =
+      fechaf.nombreDia +
+      ", " +
+      dia.día +
+      " de " +
+      fechaf.nombreMes +
+      " de " +
+      anio.anio;
+    return fechaLista;
+  }
+
+  getSolicitudesValeRol(rol: string, estado: number) {
+    this.http
+      .get(
+        `${this.baseUrl}/asignacionvale/listarsolicitudvaleestado/${rol}/${estado}`
+      )
+      .pipe(map((resp: any) => resp as ISolicitudValeAprobar[]))
+      .subscribe(
+        (soliVe: ISolicitudValeAprobar[]) => {
+          this.listSolicitudesValeRol = soliVe;
+        },
+        (error) => {
+          console.log("Error al obtener las solicitudes de vehiculo", error);
+        }
+      );
+  }
 }

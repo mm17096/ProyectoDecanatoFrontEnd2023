@@ -1,9 +1,9 @@
 import { map } from "rxjs/operators";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { IProveedor } from "../../proveedor/interfaces/proveedor.interface";
 import { environment } from "src/environments/environment";
-import { IVale } from "../interfaces/vale.interface";
+import { IUsuarioMandarDto, IVale } from "../interfaces/vale.interface";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
 import { Observable } from "rxjs";
 import Swal from "sweetalert2";
@@ -126,8 +126,29 @@ export class DevolucionValeService {
     return this.http.put(`${this.baseUrl}/vale/actualizarValesCantidad`, vales);
   }
 
-  modificarPorCantidad(vales: IVale[], idProveedor: string): Observable<any> {
-    const url = `${this.baseUrl}/vale/actualizarValesCantidad/${idProveedor}`;
-    return this.http.put(url, vales);
+  modificarPorCantidad(
+    vales: IVale[],
+    concepto: string,
+    idusuariologueado: string
+  ): Observable<any> {
+    const url = `${this.baseUrl}/vale/actualizarValesCantidad`;
+
+    // Crea un objeto que coincide con la estructura de ActualizacionValesRequest
+    const requestBody = {
+      vales: vales,
+      concepto: concepto,
+      idusuariologueado: idusuariologueado
+    };
+
+    // Realiza la solicitud HTTP con el objeto requestBody y configura el encabezado para JSON
+    const headers = new HttpHeaders({ "Content-Type": "application/json" });
+    const options = { headers: headers };
+
+    // Realiza la solicitud HTTP con el objeto modificado y devuelve un Observable
+    return this.http.put(url, requestBody, options);
+  }
+
+  validarUsuario(usuarioMardarDto: IUsuarioMandarDto) {
+    return this.http.post(`${this.baseUrl}/vale/validarusuario`, usuarioMardarDto);
   }
 }

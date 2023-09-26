@@ -1,4 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { IUsuarioMandarDto } from "./../../interfaces/vale.interface";
+import { UsuarioService } from "src/app/account/auth/services/usuario.service";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { IProveedor } from "src/app/modules/proveedor/interfaces/proveedor.interface";
 import { DevolucionValeService } from "../../services/devolucion-vale.service";
@@ -8,6 +10,8 @@ import {
   INTEGER_VALIDATE,
 } from "src/app/constants/constants";
 import Swal from "sweetalert2";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { IUsuarioRespuestaDto } from "../../interfaces/vale.interface";
 
 @Component({
   selector: "app-mostrar",
@@ -17,6 +21,14 @@ import Swal from "sweetalert2";
 export class MostrarComponent implements OnInit {
   breadCrumbItems: Array<{}>;
   formularioGeneral: FormGroup;
+  proveedor?: IProveedor;
+
+  correoCompleto?: string;
+
+  formularioUsuario: FormGroup;
+  @ViewChild("content") contentTemplate: ElementRef;
+  public showPassword: boolean = false;
+  usuarioRespuestaDto?: IUsuarioRespuestaDto;
 
   term: string = "";
 
@@ -47,23 +59,44 @@ export class MostrarComponent implements OnInit {
     },
   ];
 
+  alertsUsuario = [
+    {
+      id: 1,
+      type: "info",
+      message:
+        " Al ingresar las credenciales pertenecientes a Jefe Financiera, clic en botón 'Registrar', se realizará el ajuste y los datos no se podrán revertir.",
+      show: true,
+    },
+  ];
+
   constructor(
     private fb: FormBuilder,
     private devolucionValeService: DevolucionValeService,
-    private mensajesService: MensajesService
+    private mensajesService: MensajesService,
+    private modalService: NgbModal,
+    private usuarioService: UsuarioService
   ) {
     this.formularioGeneral = this.iniciarFormulario();
     this.formularioGeneral.get("total_monetario").disable();
+    this.formularioUsuario = this.iniciarFormularioUsuario();
   }
 
   ngOnInit(): void {
     this.breadCrumbItems = [
-      { label: "Devolución de Vales" },
+      { label: "Ajuste de Vale" },
       { label: "Mostrar", active: true },
     ];
     this.devolucionValeService.getProveedor();
     this.devolucionValeService.getValesPorCantidad();
     this.devolucionValeService.getValesPorMonto();
+    this.usuarioService.getUsuario();
+  }
+
+  private iniciarFormularioUsuario() {
+    return this.fb.group({
+      nombre: ["", [Validators.required]],
+      clave: ["", [Validators.required, Validators.maxLength(50)]],
+    });
   }
 
   private iniciarFormulario() {
@@ -86,7 +119,25 @@ export class MostrarComponent implements OnInit {
           Validators.pattern(this.isNumber),
         ],
       ],
+      concepto: [
+        "",
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(750),
+        ],
+      ],
     });
+  }
+
+  getCorreo(): void {
+    const nombre = this.formularioUsuario.get("nombre").value;
+
+    if (nombre == null || nombre == "") {
+      this.correoCompleto = null;
+    } else {
+      this.correoCompleto = nombre + "@ues.edu.sv";
+    }
   }
 
   cambiartipo1() {
@@ -141,18 +192,9 @@ export class MostrarComponent implements OnInit {
     }
   }
 
-  async registrarDevolucion() {
+  registrarDevolucion() {
     if (this.formularioGeneral.valid) {
-      if (
-        (await this.mensajesService.mensajesConfirmar(
-          "warning",
-          "¿Continuar con la acción?",
-          "No se podrá revertir acción, digite: ",
-          "devolver"
-        )) == true
-      ) {
-        this.editando();
-      }
+      this.openModal(this.contentTemplate);
     } else {
       this.mensajesService.mensajesToast(
         "warning",
@@ -164,9 +206,51 @@ export class MostrarComponent implements OnInit {
     }
   }
 
+  validarUsuario() {
+    const usuarioMardarDto: IUsuarioMandarDto = {
+      nombre: this.correoCompleto,
+      clave: this.formularioUsuario.get("clave").value,
+    };
+    if (this.formularioUsuario.valid) {
+      this.devolucionValeService.validarUsuario(usuarioMardarDto).subscribe({
+        next: (resp: IUsuarioRespuestaDto) => {
+          this.usuarioRespuestaDto = resp;
+          this.editando();
+        },
+        error: (err) => {
+          this.mensajesService.mensajesSweet(
+            "error",
+            "Ups... Algo salió mal",
+            err.error.message
+          );
+        },
+      });
+    } else {
+      this.mensajesService.mensajesToast(
+        "warning",
+        "Complete los que se indican"
+      );
+      return Object.values(this.formularioUsuario.controls).forEach((control) =>
+        control.markAsTouched()
+      );
+    }
+  }
+
   editando() {
-    const idproveedor = this.formularioGeneral.get("proveedor").value;
-    console.log("Este es el proveedor: ", idproveedor);
+    this.proveedor = this.formularioGeneral.get("proveedor").value;
+    const concepto = this.formularioGeneral.get("concepto").value;
+    const idusuariologueado = this.usuarioService.usuario.codigoUsuario;
+    const nuevoconcepto =
+      "Ajuste a " +
+      this.proveedor.nombre +
+      ", autorizado por " +
+      this.usuarioRespuestaDto.empleado.nombre +
+      " " +
+      this.usuarioRespuestaDto.empleado.apellido +
+      " con cargo de " +
+      this.usuarioRespuestaDto.empleado.cargo.nombreCargo +
+      " en concepto de: " +
+      concepto;
 
     // Mostrar SweetAlert de carga
     Swal.fire({
@@ -180,16 +264,21 @@ export class MostrarComponent implements OnInit {
     });
 
     this.devolucionValeService
-      .modificarPorCantidad(this.listDatos, idproveedor)
+      .modificarPorCantidad(this.listDatos, nuevoconcepto, idusuariologueado)
       .subscribe({
         next: (resp: any) => {
           // Ocultar SweetAlert de carga
           Swal.close();
-          this.mensajesService.mensajesToast(
+          this.mensajesService.mensajesSweet(
             "success",
-            "Acción completada con éxito"
+            "Ajuste de vales completado",
+            "Acción realizada por " +
+              this.usuarioRespuestaDto.empleado.nombre +
+              " " +
+              this.usuarioRespuestaDto.empleado.apellido
           );
           this.limpiarCampos();
+          this.modalService.dismissAll();
         },
         error: (err) => {
           // Ocultar SweetAlert de carga
@@ -224,8 +313,21 @@ export class MostrarComponent implements OnInit {
       : "";
   }
 
+  esCampoValidoUsuario(campo: string) {
+    const validarCampo = this.formularioUsuario.get(campo);
+    return !validarCampo?.valid && validarCampo?.touched
+      ? "is-invalid"
+      : validarCampo?.touched
+      ? "is-valid"
+      : "";
+  }
+
   CambiarAlert(alert) {
     alert.show = !alert.show;
+  }
+
+  CambiarAlertUsuario(alertsUsuario) {
+    alertsUsuario.show = !alertsUsuario.show;
   }
 
   restaurarAlerts() {
@@ -234,7 +336,33 @@ export class MostrarComponent implements OnInit {
     });
   }
 
+  restaurarAlertsUsuario() {
+    this.alertsUsuario.forEach((alertsUsuario) => {
+      alertsUsuario.show = true;
+    });
+  }
+
   siMuestraAlertas() {
     return this.alerts.every((alert) => alert.show);
+  }
+
+  siMuestraAlertasUsuario() {
+    return this.alertsUsuario.every((alertsUsuario) => alertsUsuario.show);
+  }
+
+  public togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  openModal(content: any) {
+    this.correoCompleto = null;
+    this.formularioUsuario.reset();
+    const modalOptions = {
+      centered: false,
+      backdrop: "static" as "static",
+      keyboard: false, // Configura backdrop como 'static'
+      windowClass: "modal-holder",
+    };
+    this.modalService.open(content, modalOptions);
   }
 }

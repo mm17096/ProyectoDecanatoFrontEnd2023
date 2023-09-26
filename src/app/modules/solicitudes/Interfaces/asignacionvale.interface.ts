@@ -8,6 +8,7 @@ export interface IAsignacionVale {
 export interface IValesAsignar {
   idVale: string;
   correlativoVale: number;
+  valorVale: number;
 }
 
 export interface ICodigoAsignacion{

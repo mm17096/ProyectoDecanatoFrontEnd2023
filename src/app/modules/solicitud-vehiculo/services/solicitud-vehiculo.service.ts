@@ -152,4 +152,9 @@ export class SolicitudVehiculoService {
     console.log("vale",solicitudVale);
     return this.http.post<ISolicitudvalep>( `${this.url}/solicitudvale/insertar`, solicitudVale);
   }
+
+  public obtenerDocumentPdf(nameDocu): Observable<Blob> {
+    return this.http.get(`${this.url}/documentosoli/document/${nameDocu}`,
+    {responseType: 'blob'});
+  }
 }

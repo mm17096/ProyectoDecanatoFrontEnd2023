@@ -17,7 +17,8 @@ export class ListarComponent implements OnInit {
   lstCargos: ICargo[] = [];
   cambio: string;
   term: string = '';
-  
+  p: any;
+
   selectedData: any;
   constructor(private cargoService : CargoService,
     private modalService: NgbModal,
@@ -25,18 +26,28 @@ export class ListarComponent implements OnInit {
 
   ngOnInit(): void {
     this.breadCrumbItems = [{ label: 'Formulario' }, { label: 'Listar', active: true }];
-    this.getCargos(8);
+    this.getCargoAll();
   }
 
   cargaCargos(event : any){
   const estado = event.target.value;
+  //this.getCargos(Number(estado));
+  this.getCargoAll();
+
   console.log(estado);
   this.getCargos(Number(estado));
+
   }
 
   getCargos(estado : number){
     console.log(estado);
     this.cargoService.getCargos(estado).subscribe((data: ICargo[]) => {
+      this.lstCargos = data;
+    });
+  }
+
+  getCargoAll(){
+    this.cargoService.getCargosAll().subscribe((data: ICargo[]) => {
       this.lstCargos = data;
     });
   }

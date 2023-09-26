@@ -78,4 +78,31 @@ export class MensajesService {
 
     return estado;
   }
+
+  async mensajeAsignar(
+    icono: SweetAlertIcon = "warning",
+    title: string = "Se asignarán los vales correspondientes",
+    label: string = "¿Esta seguro de asignar los vales?"
+  ) {
+    let estado = false;
+
+    await Swal.fire({
+      icon: icono,
+      title: title,
+      text: label,
+      showCancelButton: true,
+      confirmButtonColor: '#972727',
+      confirmButtonText: "Aceptar",
+      cancelButtonColor: '#2c3136',
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        estado = true;
+      }else{
+        estado = false;
+      }
+    });
+
+    return estado;
+  }
 }

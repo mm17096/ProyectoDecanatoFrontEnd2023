@@ -6,12 +6,14 @@ import { SolicitudvComponent } from './solicitudv/solicitudv.component';
 import { SolicitudvaleComponent } from './solicitudvale/solicitudvale.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 @NgModule({
   declarations: [
     SolicitudvComponent,
-    SolicitudvaleComponent
+    SolicitudvaleComponent,
   ],
   imports: [
     CommonModule,
@@ -19,6 +21,8 @@ import { HttpClientModule } from '@angular/common/http';
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
+    NgxPaginationModule,
+    Ng2SearchPipeModule,
   ]
 })
 export class SolicitudesModule { }

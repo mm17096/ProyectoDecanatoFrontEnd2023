@@ -33,6 +33,10 @@ export class ListarComponent implements OnInit {
   const estado = event.target.value;
   //this.getCargos(Number(estado));
   this.getCargoAll();
+
+  console.log(estado);
+  this.getCargos(Number(estado));
+
   }
 
   getCargos(estado : number){

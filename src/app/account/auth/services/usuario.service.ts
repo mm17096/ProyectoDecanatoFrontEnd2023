@@ -25,15 +25,15 @@ export class UsuarioService {
   ) { }
 
   /* Creacion de usuario */
-/*   crearUsuario(forData: IRegistroUsuario) {
-    console.log();
-    return this.http.post(`${this.baseUrl}/usuarios`, forData).pipe(
-      tap((resp: any) => {
-        this.guardarLocalSotrage('token', resp.token);
-        this.usuario = resp.usuario;
-      })
-    );
-  } */
+  /*   crearUsuario(forData: IRegistroUsuario) {
+      console.log();
+      return this.http.post(`${this.baseUrl}/usuarios`, forData).pipe(
+        tap((resp: any) => {
+          this.guardarLocalSotrage('token', resp.token);
+          this.usuario = resp.usuario;
+        })
+      );
+    } */
 
   /* Para autentificar la entrada */
   login(forData: ILoginUsuario) {
@@ -44,12 +44,17 @@ export class UsuarioService {
 
     return this.http.post(`${this.baseUrl}/usuario/auth/login`, body).pipe(
       tap((resp: any) => {
-/*         const { codigoUsuario, nombre, clave, nuevo, rol, token, empleado } = resp.usuario;
-        this.usuario = new Usuario(codigoUsuario, nombre, "", nuevo, "", token, empleado); */
+        const { codigoUsuario, nombre, clave, nuevo, role, token, empleado } = resp.usuario;
+        this.usuario = new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
+        console.log("punto 1 login: ", resp);
+        console.log("punto 2 login: ", resp.usuario.role);
         this.guardarLocalSotrage('token', resp.token);
-        this.guardarLocalSotrage('codEmpleado', resp.empleado.codigoEmpleado);
-        this.guardarLocalSotrage('empleadoFoto', resp.empleado.nombrefoto);
-        this.guardarLocalSotrage('codUsuario', resp.codigoUsuario);
+        this.guardarLocalSotrage('codEmpleado', resp.usuario.empleado.codigoEmpleado);
+        this.guardarLocalSotrage('empleadoFoto', resp.usuario.empleado.nombrefoto);
+        this.guardarLocalSotrage('codUsuario', resp.usuario.codigoUsuario);
+        let usuarioJSON = { "role": resp.usuario.role, "codigoUsuario": resp.usuario.codigoUsuario, "empleado": resp.usuario.empleado }
+        this.guardarLocalSotrage('usuario', JSON.stringify(usuarioJSON));
+
       }),
       catchError(err => {
         return throwError(err.error.message);
@@ -75,7 +80,7 @@ export class UsuarioService {
   confirmarcode(code: string) {
     return this.http.get(`${this.baseUrl}/usuario/resetpass/confirmarcode/${code}`).pipe(
       tap((resp: any) => {
-        const { codigoUsuario} = resp;
+        const { codigoUsuario } = resp;
         this.guardarLocalSotrage('codUsuario', codigoUsuario);
       }),
       catchError(err => {
@@ -102,6 +107,10 @@ export class UsuarioService {
 
   get codEmpleado(): string {
     return this.storage.getItem("codEmpleado" || "");
+  }
+
+  get usuarioJSON(): string {
+    return JSON.parse(this.storage.getItem("usuario" || ""));
   }
 
   get restcodigo(): string {
@@ -159,36 +168,13 @@ export class UsuarioService {
 
 
   logout() {
-    //este servicio cierra sesion si sirve el token
-    /*    this.http.put(`${this.baseUrl}/usuario/auth/sesion`, this.codUsuario)
-          .subscribe(
-            () => {
-              this.storage.removeItem("token");
-              this.storage.removeItem("codEmpleado");
-              this.storage.removeItem("codUsuario");
-              this.storage.removeItem("empleadoFoto");
-              this.ngZone.run(() => {
-                this.router.navigateByUrl('/account/login');
-              });
-            },
-            (error) => {
-              //si el tokend es dañado Forsa cerrar la sesion y borra el token
-              this.storage.removeItem("token");
-              this.ForsarSesion();
-              console.error('Ocurrió un error al cerrar sesión', error);
-            }
-          ); */
-
-    this.storage.removeItem("token");
-    this.storage.removeItem("codEmpleado");
-    this.storage.removeItem("codUsuario");
-    this.storage.removeItem("empleadoFoto");
+    this.storage.clear();
     this.ngZone.run(() => {
       this.router.navigateByUrl('/account/login');
     });
   }
 
-  SendEmail(body: IEmail){
+  SendEmail(body: IEmail) {
     return this.http.post(`${this.baseUrl}/correo/enviarmail`, body).pipe(
       tap((resp: any) => {
         console.log(resp);
@@ -198,28 +184,6 @@ export class UsuarioService {
       })
     );
   }
-
-  //servicio que forsa cerrar la sesion activa
-  /*   ForsarSesion(){
-      this.http.put(`${this.baseUrl}/usuario/auth/sesion`, this.codUsuario)
-      .subscribe(
-        () => {
-          this.storage.removeItem("codEmpleado");
-          this.storage.removeItem("codUsuario");
-          this.storage.removeItem("empleadoFoto");
-          this.ngZone.run(() => {
-            this.router.navigateByUrl('/account/login');
-          });
-        },
-        (error) => {
-          this.storage.removeItem("codEmpleado");
-          this.storage.removeItem("codUsuario");
-          this.storage.removeItem("empleadoFoto");
-          console.error('Ocurrió un error al cerrar sesión', error);
-        }
-      );
-    } */
-
 
   validarToken(): Observable<boolean> {
     return this.http.get(`${this.baseUrl}/usuario/auth/renew`, {

@@ -25,7 +25,7 @@ export class ModalDocumentosComponent implements OnInit {
   asignacionSolicitud: IAsignacionValeSolicitud;
   idSolicitud: string;
   entradasalidas: IDocumentosvale[]=[];
-  
+
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router, private detalleservice: DetalleService , private mensajesService: MensajesService) {}
 
@@ -33,11 +33,10 @@ export class ModalDocumentosComponent implements OnInit {
     this.formBuilder=this.Iniciarformulario();
     this.ObtenerSolicitudValeById(this.codigoAsignacion);
   }
-  private obtenerLista(id:string) {//para poder mostrar e la tabla
+  obtenerLista(id:string) {//para poder mostrar e la tabla
     this.detalleservice.ObtenerLista(id).subscribe(
       (resp: IDocumentosvale[]) => {
         this.entradasalidas = resp;
-        console.log(resp);
       },
       error => {
         // Manejar errores aquí
@@ -61,9 +60,9 @@ export class ModalDocumentosComponent implements OnInit {
         icon: 'warning',
       });
     }
-    
+
   }
-  
+
   ObtenerSolicitudValeById(codigoA: string) {
     this.detalleservice.getAsignacionValeSolicitudVale(codigoA).subscribe({
       next: (data) => {
@@ -152,7 +151,7 @@ export class ModalDocumentosComponent implements OnInit {
           });
         }
       }
-      
+
     }else{
       Swal.fire({
         position: 'center',
@@ -160,7 +159,7 @@ export class ModalDocumentosComponent implements OnInit {
         text: 'Registros completos',
         icon: 'warning',
       });
-    }    
+    }
   }
 
   onFileSelected(event: Event) {
@@ -183,7 +182,7 @@ export class ModalDocumentosComponent implements OnInit {
   esCampoValido(campo: string){
     const validarCampo= this.formBuilder.get(campo);
     return !validarCampo?.valid && validarCampo?.touched ? 'is-invalid' : validarCampo?.touched? 'is-valid': '';
-  
+
   }
   private Iniciarformulario(): FormGroup {
     return this.fb.group({
@@ -194,7 +193,7 @@ export class ModalDocumentosComponent implements OnInit {
       foto: [''],
       url: [''],
       solicitudvale:['']
-  
+
     });
   }
 

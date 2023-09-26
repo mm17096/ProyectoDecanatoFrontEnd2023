@@ -10,19 +10,92 @@ import {
   IExistenciaVales,
   ISolicitudValeID,
 } from "../Interfaces/existenciavales.interface";
-import { ISolcitudAprobar, ISolicitudValeAprobar } from '../Interfaces/solicitudValeAprobar.interface';
+import {
+  ISolcitudAprobar,
+  ISolicitudValeAprobar,
+  IValesAsignarPage,
+} from "../Interfaces/solicitudValeAprobar.interface";
 import { SolicitudVv } from "../Interfaces/SolicitudVv";
-import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { map, tap } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { Usuario } from "src/app/account/auth/models/usuario.models";
+import { IPaginacion } from "src/app/shared/models/IPaginacion.interface";
+import { UsuarioService } from "src/app/account/auth/services/usuario.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class ServiceService {
+  listValesAsignar: IPaginacion<IValesAsignarPage> = {
+    content: [],
+    pageable: {
+      offset: 0,
+      paged: true,
+      pageNumber: 0,
+      pageSize: 0,
+      sort: {
+        empty: true,
+        sorted: true,
+        unsorted: true,
+      },
+      unpaged: true,
+    },
+    empty: true,
+    first: true,
+    last: true,
+    number: 0,
+    numberOfElements: 0,
+    size: 0,
+    sort: {
+      empty: true,
+      sorted: true,
+      unsorted: true,
+    },
+    totalElements: 0,
+    totalPages: 0,
+  };
   private baseUrl: string = environment.baseUrl;
   listSolicitudes: ISolicitudValeAprobar;
-  constructor(private http: HttpClient) {}
+  listSolicitudesValeRol: ISolicitudValeAprobar[];
+  storage: Storage = window.localStorage;
 
+  public usuario!: Usuario;
+  constructor(private http: HttpClient, usuarios: UsuarioService) {}
+
+  /*  get codUsuario(): string {
+    return localStorage.getItem("codUsuario" || "");
+  }
+
+  getUsuarioSV(): Observable<Usuario> {
+    return this.http
+      .get(`${this.baseUrl}/usuario/${this.codUsuario}`)
+      .pipe(
+        tap((usuario: any) => {
+          const { codigoUsuario, nombre, clave, nuevo, role, token, empleado } = usuario;
+          const usuarioObj = new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
+          return usuarioObj;
+        })
+      );
+  } */
+
+  getUsuario() {
+    this.http
+      .get(`${this.baseUrl}/usuario/${this.codUsuario}`)
+      .pipe(tap((resp: any) => resp as any))
+      .subscribe(
+        (usuario: any) => {
+          const { codigoUsuario, nombre, clave, nuevo, role, token, empleado } = usuario;
+          this.usuario = new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
+        },
+        (error) => {
+          console.error("Error al obtener los usuario:", error);
+        }
+      );
+  }
+
+  get codUsuario(): string {
+    return this.storage.getItem("codUsuario" || "");
+  }
   getCliente() {
     return this.http.get<SolicitudVv>(this.baseUrl + "/consulta/listapage");
   }
@@ -39,12 +112,17 @@ export class ServiceService {
     );
   }
 
-  insertar(asignacionVale: IAsignacionVale) {
-    console.log("en el servicio:" + asignacionVale);
+  insertar(asignacionVale: IAsignacionVale, idUsuario: string) {
+    console.log("en el servicio:", asignacionVale);
+    console.log("suario en el servicio:", this.usuario);
+    const data = {
+      asignacionVale: asignacionVale,
+      idUsuario: idUsuario,
+    };
 
     return this.http.post<IAsignacionVale>(
       `${this.baseUrl}/asignacionvale/insertar`,
-      asignacionVale
+      data
     );
   }
 
@@ -52,6 +130,32 @@ export class ServiceService {
     return this.http.get<IValesAsignar>(
       `${this.baseUrl}/asignacionvale/listarvalesasignar/${cantidadVales}`
     );
+  }
+
+  getValesAsignarPage(
+    page: number = 1,
+    size: number,
+    cantVales:number
+  ) {
+   console.log("en el servicio cantVales: " + size);
+    this.http
+      .get<IPaginacion<IValesAsignarPage>>(
+        `${this.baseUrl}/asignacionvale/listarvalesasignarPage/${cantVales}`,
+        {
+          params: {
+            page: page.toString(),
+            size: size.toString(),
+          },
+        }
+      )
+      .subscribe(
+        (data) => {
+          this.listValesAsignar = data;
+        },
+        (error) => {
+          console.error("Error al obtener los Vales:", error);
+        }
+      );
   }
 
   getCodigoAsignacion(codigoSolitudVale: string) {
@@ -62,15 +166,16 @@ export class ServiceService {
 
   //Consulta las solitudes de vale por estado
   getSolicitdValePorEstado(estado: number) {
-    return this.http.get<ISolicitudValeAprobar>(
+    return this.http.get<ISolicitudValeAprobar[]>(
       `${this.baseUrl}/asignacionvale/listarsolicitudvaleestado/${estado}`
     );
   }
 
   //Cambia el estado, minserta la cantidad y añade observaciones a la solicitud de vale
-  solicitarAprobacion(solicitud: ISolcitudAprobar){
+  solicitarAprobacion(solicitud: ISolcitudAprobar) {
     return this.http.post<ISolcitudAprobar>(
-      `${this.baseUrl}/asignacionvale/solitudaprobar`, solicitud
+      `${this.baseUrl}/asignacionvale/solitudaprobar`,
+      solicitud
     );
   }
 
@@ -124,5 +229,21 @@ export class ServiceService {
       " de " +
       anio.anio;
     return fechaLista;
+  }
+
+  getSolicitudesValeRol(rol: string, estado: number) {
+    this.http
+      .get(
+        `${this.baseUrl}/asignacionvale/listarsolicitudvaleestado/${rol}/${estado}`
+      )
+      .pipe(map((resp: any) => resp as ISolicitudValeAprobar[]))
+      .subscribe(
+        (soliVe: ISolicitudValeAprobar[]) => {
+          this.listSolicitudesValeRol = soliVe;
+        },
+        (error) => {
+          console.log("Error al obtener las solicitudes de vehiculo", error);
+        }
+      );
   }
 }

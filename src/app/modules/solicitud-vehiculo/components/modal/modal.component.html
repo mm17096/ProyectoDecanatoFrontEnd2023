@@ -35,8 +35,18 @@
   </div>
   <form [formGroup]="formularioSoliVe"
         (ngSubmit)="guardar()">
+    <div class="row" *ngIf="leyenda === 'Nueva' && soliVeOd == null">
+        <label for="misionInt" class="alert-info form-control text-center">Marque la casilla si la misión es internacional:
+          <input type="checkbox"
+                 id="misionInt"
+                 class="form-check-input"
+                 formControlName="isChecked" (change)="actualizarEstadoCheckbox()"
+          />
+        </label>
+    </div>
     <div class="row mb-4">
       <div class="col-md-5">
+
         <div class="row">
 
           <!--fecha de realizacion de solicitud-->
@@ -67,6 +77,9 @@
             <input type="date" class="form-control" id="fecha-mision"
                    formControlName="fechaSalida"
                    [class]="esCampoValido('fechaSalida')"
+                   (change)="cargarPlacas(formularioSoliVe.get('tipoVehiculo').value,
+                   formularioSoliVe.get('fechaSalida').value,
+                   formularioSoliVe.get('fechaEntrada').value)"
                    [readonly]="soliVeOd != null && leyenda === 'Detalle'"/>
             <div class="invalid-feedback">
               <span
@@ -128,7 +141,30 @@
           </div>
           <!--fin lugar o institucion a visitar-->
         </div>
-        <div class="row">
+        <div class="row" *ngIf="isChecked">
+          <div class="mt-2">
+            <label for="direccion">Dirección: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
+                                                    class="text-danger">*</span></label>
+            <textarea cols="30" rows="2"
+                      id="direccion"
+                      class="form-control"
+                      formControlName="direccion"
+                      [readonly]="leyenda == 'Detalle' && soliVeOd != null"
+                      [class]="esCampoValido('direccion')"
+            ></textarea>
+            <div class="invalid-feedback">
+                  <span
+                    *ngIf="formularioSoliVe.get('direccion')?.errors?.['required']">
+                    Requiere el obejetivo de la misión
+                  </span>
+              <span
+                *ngIf="formularioSoliVe.get('direccion')?.errors?.['minlength']">
+                    Digite más de 6 caracteres
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="!isChecked">
           <ng-container [ngSwitch]="leyenda">
             <div *ngSwitchCase="'Detalle'" class="col-md-12">
               <!--direccon (solamente para mostrar en detalle de la solcitud)-->
@@ -136,7 +172,7 @@
                 <label for="direccion">Dirección:</label>
                 <textarea cols="30" rows="2"
                           class="form-control"
-                          formControlName="direccion"
+                          formControlName="direccionD"
                           readonly></textarea>
               </div>
               <!--fin direccion-->
@@ -147,6 +183,7 @@
                 <label for="detpto">Departamento: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
                                                         class="text-danger">*</span></label>
                 <ng-select
+                  id="detpto"
                   formControlName="depto"
                   placeholder="Escriba o seleccione"
                   [selectOnTab]="true"
@@ -174,6 +211,7 @@
                 <label for="municipio">Municipio: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
                                                         class="text-danger">*</span></label>
                 <ng-select
+                  id="municipio"
                   formControlName="municipio"
                   placeholder="Escriba o seleccione"
                   [selectOnTab]="true"
@@ -202,12 +240,14 @@
 
         <div class="row">
             <!--canton-->
-            <div class="col-md-6" *ngIf="leyenda == 'Nueva' && soliVeOd == null">
+            <div class="col-md-6" *ngIf="leyenda == 'Nueva' &&
+                  soliVeOd == null && !isChecked">
               <div class="mt-2">
                 <label for="canton">Cantón: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
                                                   class="text-danger">*</span></label>
 
                 <ng-select
+                  id="canton"
                   formControlName="canton"
                   placeholder="Escriba o seleccione"
                   [selectOnTab]="true"
@@ -257,6 +297,9 @@
             <input type="date" class="form-control" id="fecha-regreso"
                    formControlName="fechaEntrada"
                    [class]="esCampoValido('fechaEntrada')"
+                   (change)="cargarPlacas(formularioSoliVe.get('tipoVehiculo').value,
+                   formularioSoliVe.get('fechaSalida').value,
+                   formularioSoliVe.get('fechaEntrada').value)"
                    [readOnly]="leyenda == 'Detalle' && soliVeOd != null"/>
             <div class="invalid-feedback">
               <span
@@ -289,9 +332,9 @@
                 formularioSoliVe.get('fechaEntrada').value)"
               >
                 <ng-option
-                  *ngFor="let x of listVehiculos"
-                  [value]="x.clase"
-                >{{ x.clase }}</ng-option
+                  *ngFor="let car of listVehiculos"
+                  [value]="car"
+                >{{ car }}</ng-option
                 >
               </ng-select>
               <div class="invalid-feedback">
@@ -354,13 +397,14 @@
             </div>
           </div>
         </div>
-        <div class="row" *ngIf="leyenda == 'Nueva' && soliVeOd == null">
+        <div class="row" *ngIf="leyenda == 'Nueva' && soliVeOd == null && !isChecked">
           <!-- distrito -->
           <div class="col-md-12">
             <div class="mt-2">
               <label for="distrito">Distrito: <span *ngIf="soliVeOd == null && leyenda === 'Nueva'"
                                                     class="text-danger">*</span></label>
               <ng-select
+                id="distrito"
                 formControlName="distrito"
                 placeholder="Escriba o seleccione"
                 [selectOnTab]="true"
@@ -468,7 +512,7 @@
             <div class="col-md-12">
               <div class="mt-2">
                 <label for="solicitante">Responsable:</label>
-                <input type="text"
+                <input type="text" id="solicitante"
                           class="form-control"
                           formControlName="solicitante"
                           readonly>
@@ -503,7 +547,7 @@
               </tr>
               </tbody>
             </table>
-            <table class="table excel-table table-responsive" id="tablaPasajeros"
+            <table class="table excel-table table-responsive" id="tablaPasajerosDetalle"
             *ngIf="leyenda !== 'Detalle' || soliVeOd === null">
               <thead>
               <tr>
@@ -555,9 +599,11 @@
               *ngIf="leyenda == 'Nueva'">
         Enviar
       </button>
-      <button type="button" class="btn btn-primary w-sm me-2" id="btn-detalle_save" name="btn-save"
+      <button type="button" class="btn btn-primary w-sm me-2" id="btn-detalle-save" name="btn-save"
               (click)="aprobarSolicitud()"
-              *ngIf="(usuarioActivo.role == 'JEFE_DEPTO' || usuarioActivo.role == 'DECANO') && vista === 'listado'">
+              *ngIf="(usuarioActivo.role == 'JEFE_DEPTO' ||
+              usuarioActivo.role == 'JEFE_FINANACIERO' ||
+              usuarioActivo.role == 'DECANO') && vista === 'listado'">
         Aprobar
       </button>
       <button type="button" class="btn btn-info w-sm me-2" id="btn-detalle_save" name="btn-save"
@@ -565,7 +611,7 @@
               *ngIf="(usuarioActivo.role == 'DECANO') && vista === 'listado'">
         Revisión
       </button>
-      <button type="button" class="btn btn-warning w-sm me-2" id="btn-detalle_save" name="btn-save"
+      <button type="button" class="btn btn-warning w-sm me-2" id="btn-detalle-ave" name="btn-save"
               (click)="anularSolicitud()"
               *ngIf="(usuarioActivo.role == 'DECANO') && vista === 'listado'">
         Denegar

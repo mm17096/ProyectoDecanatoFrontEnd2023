@@ -36,9 +36,6 @@ export class TablaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log("tabla",this.vista);
-    // console.log("ver: ",this.solicitudesVehiculo)
-    console.log("userACtivo:", this.userAcivo);
   }
 
 
@@ -92,7 +89,8 @@ export class TablaComponent implements OnInit {
   actualizarSolicitud(data: any):Promise <void>{
     return new Promise<void>((resolve, reject) => {
       this.soliService.updateSolciitudVehiculo(data).subscribe({
-        next: (resp: any) => {
+        next: () => {
+          //resp: any
           this.soliService.getSolicitudesRol(this.userAcivo.role);
           this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
           resolve();
@@ -114,8 +112,8 @@ export class TablaComponent implements OnInit {
     console.log("emtro ");
     return new Promise<void>((resolve, reject) => {
       this.soliService.updateSolciitudVehiculo(data).subscribe({
-        next: (resp: any) => {
-
+        next: () => {
+          // resp: any
           this.solicitudVale.cantidadVale =0 ;
           this.solicitudVale.estadoEntrada = 1;
           this.solicitudVale.estado = 8;
@@ -124,8 +122,10 @@ export class TablaComponent implements OnInit {
           console.log("soliva," + this.solicitudVale);
 
           this.soliService.registrarSolicitudVale(this.solicitudVale).subscribe({
-            next: (valeResp: any) => {
+            next: () => {
+              // valeResp: any
               this.soliService.getSolicitudesRol(this.userAcivo.role);
+              this.soliService.getSolicitudesVehiculo(0)
               this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
               resolve();
             },

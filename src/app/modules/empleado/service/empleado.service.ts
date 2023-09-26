@@ -25,7 +25,6 @@ export class EmpleadoService {
         .pipe(map((resp: any) => resp.content as IEmpleado[]))
         .subscribe(
           (empleados: IEmpleado[]) => {
-            console.log(empleados);
             this.listEmpleados = empleados; // Actualiza la propiedad listEmpleados
           },
           (error) => {

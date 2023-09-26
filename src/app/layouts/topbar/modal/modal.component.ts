@@ -1,8 +1,7 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { Usuario } from "src/app/account/auth/models/usuario.models";
 import { UsuarioService } from "src/app/account/auth/services/usuario.service";
 import { NAME_VALIDATE } from "src/app/constants/constants";
 import { EmpleadoService } from "src/app/modules/empleado/service/empleado.service";
@@ -17,7 +16,7 @@ import Swal from "sweetalert2";
 export class ModalComponent implements OnInit {
   formEmpleado!: FormGroup;
   formUsuario!: FormGroup;
-  @Input() usuario!: Usuario;
+  @Input() nuevo!: boolean;
   @Input() leyenda!: string;
   public imgTemp: string | ArrayBuffer = null;
   private file!: File;
@@ -32,6 +31,8 @@ export class ModalComponent implements OnInit {
   public showPassword: boolean = false;
   public password: string = "";
   public showPassword2: boolean = false;
+
+  @ViewChild('content') content;
 
   alerts = [
     {
@@ -69,10 +70,21 @@ export class ModalComponent implements OnInit {
     this.fotoEmpleado = this.usuarioService.empleadofoto;
     this.usuarioService.getEmpleado();
     this.usuarioService.getUsuario();
-    
+
     if (this.leyenda == "Credenciales") {
       this.restaurarAlerts2();
     }
+
+  
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      if (this.nuevo) {
+        this.leyenda = "Credenciales";
+        this.openModalN();
+      }
+    }, 2000);
   }
 
   private iniciarFormularioE() {
@@ -161,8 +173,6 @@ export class ModalComponent implements OnInit {
   registrandoE() {
     this.EstructurandoFormE();
     const empleado = this.formEmpleado.value;
-
-    console.log(empleado);
 
     if (this.imagen === "no hay") {
       this.empleadoService.putEmpleado(empleado).subscribe(
@@ -315,8 +325,8 @@ export class ModalComponent implements OnInit {
     return !validarCampo?.valid && validarCampo?.touched
       ? "is-invalid"
       : validarCampo?.touched
-      ? "is-valid"
-      : "";
+        ? "is-valid"
+        : "";
   }
 
   esCampoValidoU(campo: string) {
@@ -324,8 +334,8 @@ export class ModalComponent implements OnInit {
     return !validarCampo?.valid && validarCampo?.touched
       ? "is-invalid"
       : validarCampo?.touched
-      ? "is-valid"
-      : "";
+        ? "is-valid"
+        : "";
   }
 
   ///// Metodo para recargar la pagina /////
@@ -336,7 +346,12 @@ export class ModalComponent implements OnInit {
     this.router.navigate([currentUrl]);
   }
 
+  openModalN() {
+    this.modalService.open(this.content, { size: "", backdrop: "static" });
+  }
+
   openModal(content: any) {
+    console.log(content);
     this.modalService.open(content, { size: "", backdrop: "static" });
   }
 

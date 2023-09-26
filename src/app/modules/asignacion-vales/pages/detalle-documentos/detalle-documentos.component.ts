@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IDocumentosvale } from '../../interface/IDocumentosvale';
 import { DetalleService } from '../../services/detalle.service';
@@ -28,7 +28,10 @@ export class DetalleDocumentosComponent  {
   myFiles: File[]=[];
   allFiles: IDocumentosvale[]=[];
 
-  
+  @Output() listaDocSize: number;
+
+  mensajeTabla: string;
+
 
   //configuracion de dropzone
   config: DropzoneConfigInterface={
@@ -89,15 +92,15 @@ export class DetalleDocumentosComponent  {
     this.detalleservice.ObtenerLista(id).subscribe(
       (resp: IDocumentosvale[]) => {
         this.entradasalidas = resp;
-        console.log(resp);
+        this.listaDocSize = resp.length;
       },
       error => {
-        // Manejar errores aquí
+        this.mensajeTabla = "No hay datos para mostrar"
       }
     );
   }
 
-  
+
   ObtenerSolicitudValeById(codigoA: string) {
     this.detalleservice.getAsignacionValeSolicitudVale(codigoA).subscribe({
       next: (data) => {

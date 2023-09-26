@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {IActualizarSoliVe, IEstados, IPais, ISolicitudVehiculo, IMotorista} from "../interfaces/data.interface";
 import {environment} from "../../../../environments/environment";
-import {map, tap} from "rxjs/operators";
+import {map} from "rxjs/operators";
 import {IVehiculos} from "../../vehiculo/interfaces/vehiculo-interface";
 import {Usuario} from "../../../account/auth/models/usuario.models";
 import {ISolicitudvalep} from "../../solicitud-vale-paginacion/interface/solicitudvalep.interface";
@@ -17,8 +17,9 @@ export class SolicitudVehiculoService {
 
   listSoliVehiculo : ISolicitudVehiculo [] = [];
   listSoliVehiculoRol : ISolicitudVehiculo [] = [];
-  listVehiculos: IVehiculos [] = [];
+  listVehiculos:string[] = [];
   listMotorista: IMotorista [] = [];
+  public usuario!: Usuario;
 
   constructor(private http: HttpClient) { }
 
@@ -30,13 +31,13 @@ export class SolicitudVehiculoService {
     return this.http
       .get(`${this.url}/usuario/${this.codUsuario}`)
       .pipe(
-        tap((usuario: any) => {
-          const { codigoUsuario, nombre, clave, nuevo, role, token, empleado } = usuario;
-          const usuarioObj = new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
-          return usuarioObj;
+        map((usuario: any) => {
+          const { codigoUsuario, nombre, nuevo, role, token, empleado } = usuario;
+          return new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
         })
       );
   }
+
 
   // Servicio para obtener todas las solicitudes de vehiculo
 
@@ -75,11 +76,12 @@ export class SolicitudVehiculoService {
 
   obtenerVehiculos() {
     this.http
-      .get(`${this.url}/vehiculo/listasinpagina`)
-      .pipe(map((resp: any) => resp as IVehiculos[]))
+      .get(`${this.url}/vehiculo/clase`)
+      .pipe(map((resp: any) => resp ))
       .subscribe(
-        (vehiculo: IVehiculos[])=> {
+        (vehiculo)=> {
           this.listVehiculos = vehiculo;
+          console.log(this.listVehiculos);
         },
         (error) => {
           console.log("Error al obtener los vehiculos", error);

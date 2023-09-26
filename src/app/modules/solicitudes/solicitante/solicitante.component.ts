@@ -116,12 +116,12 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 				body: [
 					[{ image: LOGO, // Datos base64 de tu imagen .png
           width: 60, // Ancho de la imagen
-          height: 80,}, 
+          height: 80,},
           {text: 'UNIVERSIDAD DE EL SALVADOR\nFACULTAD MULTIDISCIPLINARIA PARACENTRAL\nSOLICITUD DE TRASPORTE',
-          alignment: 'center',style: 'subheader'} 
-          
+          alignment: 'center',style: 'subheader'}
+
          ],
-			
+
 				]
 			},
 			layout: 'noBorders'
@@ -151,7 +151,7 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 					text: 'Fecha de Misión: '+this.formatDate(`${soliVehi.fechaSalida}`),
           
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -160,9 +160,9 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 				{
 
 					text: 'Unidad Solicitud: '+soliVehi.unidadSolicitante,
-         
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -171,13 +171,13 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 				{
 
 					text: 'Vehiculo: '+soliVehi.vehiculo.marca+', '+soliVehi.vehiculo.modelo+', '+soliVehi.vehiculo.clase+', '+soliVehi.vehiculo.tipo_gas+', '+soliVehi.vehiculo.color+', '+soliVehi.vehiculo.year,
-         
+
 				},
 				{
 					text: 'Placa: '+soliVehi.vehiculo.placa,
-          
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -185,21 +185,24 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 			columns: [
 				{
 
+
 					text: 'Objetivo de la Misión: '+soliVehi.objetivoMision,
-         
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
     {
 			columns: [
 				{
+
 
 					text: 'Lugar que visitará: '+soliVehi.direccion,
          
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -208,17 +211,17 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 				{
 
 					text: 'N* de Personas que viajan: '+soliVehi.cantidadPersonas,
-          
+
 				},
 				{
 					text: 'Hora de Salida: '+soliVehi.horaSalida,
-          
+
 				},
         {
 					text: 'Hora de Regreso: '+soliVehi.horaEntrada,
-          
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -234,7 +237,7 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 				},
 			]
 		},
-    
+
     {text:'\n'},
     {
 			columns: [
@@ -243,7 +246,7 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
           style: 'tableHeader',
           alignment: 'center'
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -272,10 +275,10 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
       const tableRow = [];
       let j = 0;
       tableRow.push([{ text: 'N*',
-      alignment: 'center',style: 'tableHeader'}, 
+      alignment: 'center',style: 'tableHeader'},
       {text: 'NOMBRE',
-      alignment: 'center',style: 'tableHeader'} 
-      
+      alignment: 'center',style: 'tableHeader'}
+
      ],);
        for (const persona of soliVehi.listaPasajeros) {
          console.log(persona.nombrePasajero);
@@ -295,7 +298,7 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
       },
       'Nota: Si el número de persona es mayor a cuatro, Anexar Listado',
     );
-    
+
     pdfDefinicion.content.push(
       {text:'\n'},
     {
@@ -304,7 +307,7 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 
 					text: 'Sello\n',
           alignment: ''
-         
+
 				},
 			]
 		},
@@ -326,9 +329,9 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 				{
 
 					text: 'Nombre de Motorista: '+soliVehi.motorista?.nombre+', '+soliVehi.motorista?.apellido,
-          
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -336,15 +339,16 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 			columns: [
 				{
 
+
 					text: 'Vehículo: '+soliVehi.vehiculo.marca+', '+soliVehi.vehiculo.modelo+', '+soliVehi.vehiculo.clase+', '+soliVehi.vehiculo.tipo_gas+', '+soliVehi.vehiculo.color+', '+soliVehi.vehiculo.year,
-          
+
 				},
 				{
 					text: 'Placa: '+soliVehi.vehiculo.placa,
-          
+
 				},
-       
-				
+
+
 			]
 		},
     {text:'\n'},
@@ -361,9 +365,9 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 				},
         {
 					text: 'AL: '+vales[this.valeDelAl.length-1].correlativo,
-          
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -372,14 +376,14 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 				{
 
 					text: 'F.',
-          
+
 				},
 				{
 					text: 'Sello',
-          
+
 				},
-        
-				
+
+
 			]
 		},
     {text:'\n'},
@@ -388,9 +392,9 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 				{
 
 					text: 'Nombre y firma Decano',
-          
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -399,9 +403,9 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 				{
 
 					text: 'Observaciones: '+soliVehi.observaciones,
-          
+
 				},
-				
+
 			]
 		},
     {text:'\n'},
@@ -412,12 +416,12 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 					text: 'Fecha y Hora de imprecion: '+this.formatoFecha(this.fechaActual),
           alignment: 'right'
 				},
-				
+
 			]
 		},
     );
     pdfMake.createPdf(pdfDefinicion).open();
-   
+
   }
 
   cargarConsultaValeDelAl(soli: ISolicitudVehiculo){

@@ -29,6 +29,7 @@ import {
   ISolicitudValeAprobar,
 } from "../Interfaces/solicitudValeAprobar.interface";
 import { log } from "console";
+import { UsuarioService } from "src/app/account/auth/services/usuario.service";
 
 @Component({
   selector: "app-solicitudvale",
@@ -130,7 +131,7 @@ export class SolicitudvaleComponent implements OnInit {
     public fb: FormBuilder,
     private existenciaService: ServiceService,
     private mensajesService: MensajesService,
-    private router: Router
+    private router: Router, private usuarios: UsuarioService
   ) {
     this.iniciarFormulario();
   }
@@ -169,6 +170,7 @@ export class SolicitudvaleComponent implements OnInit {
     });
     this.obtnerExistenciaVales();
     this.getSolicitudesVale(8);
+    this.usuarios.getUsuario();
   }
 
   getSolicitudesVale(estado: number) {
@@ -388,6 +390,11 @@ export class SolicitudvaleComponent implements OnInit {
 
   //Regitra la asignación de los vales
   registrando() {
+    const usuarios = this.usuarios.usuario;
+    const codUsuario = usuarios.codigoUsuario;
+
+    console.log("usuario: ", codUsuario);
+
     //Asignaré los campos necesario para guardar la asignación
     const cantidadVales =
       this.formularioSolicitudVale.get("cantidadVales")?.value;
@@ -413,7 +420,7 @@ export class SolicitudvaleComponent implements OnInit {
       showConfirmButton: false,
     });
     return new Promise<void>((resolve, reject) => {
-      this.service.insertar(asignarVales).subscribe({
+      this.service.insertar(asignarVales, codUsuario).subscribe({
         next: (resp: any) => {
           // Cerrar SweetAlert de carga
           Swal.close();

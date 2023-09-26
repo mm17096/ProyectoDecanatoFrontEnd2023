@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EntradaSalidaI, IEntradaSalida } from '../interface/EntSalinterface';
 import {  IsolicitudVehiculo } from '../interface/VehiculoEntradasalida';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { IVehiculoentradaSalida } from '../interface/VehiculoEntradasalida';
+import {Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { ISolicitudvalep } from '../../solicitud-vale-paginacion/interface/solicitudvalep.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -111,11 +111,19 @@ export class ListaentradasalidaService {
           map(vehiculos=>vehiculos.filter(vehiculos=>vehiculos.estado===4))
       );
     } else {
-      return this.http.get<IsolicitudVehiculo[]>(`${this.baseUrl}/solicitudvehiculo/lista`, requestOptions).pipe(
-        map(vehiculos=>vehiculos.filter(vehiculos=>vehiculos.estado===4))
+      return this.http.get<IsolicitudVehiculo[]>(`${this.baseUrl}/solicitudvehiculo/todas`, requestOptions).pipe(
+        map(vehiculos=>vehiculos.filter(vehiculos=>vehiculos.estado===4  ))
       )
     }
   }
+
+  // Función para comparar fechas
+private compararFechas(fechaSalida: string): boolean {
+  const fechaActual = new Date();
+  const fechaSalidaVehiculo = new Date(fechaSalida);
+  // Aquí puedes ajustar la lógica de comparación según tus necesidades
+  return fechaSalidaVehiculo.getTime() === fechaActual.getTime();
+}
 
  /*obtenerImagenes(): Observable<IVehiculoentradaSalida[]> {
 
@@ -129,6 +137,27 @@ export class ListaentradasalidaService {
     return this.http.get<IVehiculoentradaSalida[]>(`${this.baseUrl}/vehiculo/listasinpagina`, requestOptions);
   }*/
 
+listarEstado(estado: string, id: number ): Observable<IEntradaSalida>{
+  const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    const requestOptions = {
+      headers: headers
+    };
+  return this.http.get<IEntradaSalida>(`${this.baseUrl}/entradasalida/buscarentradasalida?filtro=${estado}&tipo=${id}`,requestOptions);
+}
 
+
+obtenercodigosolicitudvale(id: number ): Observable<ISolicitudvalep>{
+  const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    const requestOptions = {
+      headers: headers
+    };
+  return this.http.get<ISolicitudvalep>(`${this.baseUrl}/solicitudvale/buscarcodigosolicitudvale?codigo=${id}`,requestOptions);
+}
 
 }

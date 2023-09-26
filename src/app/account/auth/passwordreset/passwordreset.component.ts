@@ -37,6 +37,7 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
   public showPassword: boolean = false;
   public password: string = "";
   public showPassword2: boolean = false;
+  codigo!: string;
 
   // set the currenr year
   year: number = new Date().getFullYear();
@@ -70,6 +71,8 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
         dui: this.resetForm.get('dui').value,
         codigo: this.generarCodigoAleatorio(),
       }
+
+      this.codigo = rest.codigo; //salvamos el codigo
 
       this.usuarioService.resetpass(rest).subscribe(
         (resp) => {
@@ -276,7 +279,7 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
       receptor: "Estimad@ : " + this.usuarioService.nombre,
       mensaje: 'Su cuenta está en proceso de actualización de credenciales. Por motivos de seguridad, hemos enviado un código de verificación que le permitirá completar el proceso de actualización de sus credenciales.',
       centro: 'Utilice este codigo para continuar con el proceso :',
-      codigo: this.usuarioService.restcodigo,
+      codigo: this.codigo,
       abajo: 'Gracias por tu atención a este importante mensaje.',
     }
 

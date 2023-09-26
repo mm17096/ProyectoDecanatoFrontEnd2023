@@ -12,7 +12,7 @@
 
 
 <!-- Modal-->
-<div class="modal modal-fullscreen-xl-down fade" id="modalEmpleado" tabindex="-1" aria-labelledby="exampleModalLabel"
+<div class="modal modal-fullscreen-xl-down fade" id="modalEmpleado" name="modalEmpleado" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <ng-template #content role="document" let-modal>
         <div class="modal-header">
@@ -53,6 +53,8 @@
                     <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert"
                         *ngIf="alert.show">
                         <strong>Importante!</strong>
+                        <br/>
+                        <strong>{{nuevo ? '!Debe cambiar clave "por defecto", por la original¡' : ''}}</strong>
                         <div class="text-justify">{{ alert.message }}</div>
                         <button type="button" class="btn-close" (click)="CambiarAlert2(alert)"
                             aria-label="Close"></button>

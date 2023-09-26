@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {IActualizarSoliVe, IEstados, IPais, ISolicitudVehiculo, IMotorista} from "../interfaces/data.interface";
 import {environment} from "../../../../environments/environment";
-import {map, tap} from "rxjs/operators";
+import {map} from "rxjs/operators";
 import {IVehiculos} from "../../vehiculo/interfaces/vehiculo-interface";
 import {Usuario} from "../../../account/auth/models/usuario.models";
 import {ISolicitudvalep} from "../../solicitud-vale-paginacion/interface/solicitudvalep.interface";
@@ -32,7 +32,7 @@ export class SolicitudVehiculoService {
       .get(`${this.url}/usuario/${this.codUsuario}`)
       .pipe(
         map((usuario: any) => {
-          const { codigoUsuario, nombre, clave, nuevo, role, token, empleado } = usuario;
+          const { codigoUsuario, nombre, nuevo, role, token, empleado } = usuario;
           return new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
         })
       );

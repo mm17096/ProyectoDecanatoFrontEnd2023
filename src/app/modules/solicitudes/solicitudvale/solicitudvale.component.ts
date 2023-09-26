@@ -136,6 +136,7 @@ export class SolicitudvaleComponent implements OnInit {
     private usuarios: UsuarioService,
   ) {
     this.iniciarFormulario();
+    this.usuarios.getUsuario();
   }
 
   private iniciarFormulario() {
@@ -183,7 +184,6 @@ export class SolicitudvaleComponent implements OnInit {
       },
       error: (err) => {
         this.solicitudesVales = undefined;
-        console.log("solicitudes: ", this.solicitudesVales);
         this.mensajeTabla = "No hay datos para mostrar";
       },
     });
@@ -362,7 +362,7 @@ export class SolicitudvaleComponent implements OnInit {
 
   //Guardar la asignación de vales
   async guardar() {
-    console.log("form: ", this.formularioSolicitudVale);
+
 
     if (this.formularioSolicitudVale.valid) {
       if (this.estadoSoli == "Nueva" || this.estadoSoli == "Revisión") {
@@ -389,9 +389,9 @@ export class SolicitudvaleComponent implements OnInit {
 
   //Regitra la asignación de los vales
   registrando() {
+
     //const usuariosObj = this.usuarios.getUsuario();
-    const codUsuario = this.storage.getItem("codUsuario");
-    console.log("usuario: ", codUsuario);
+    const usuarioJson = JSON.parse(this.storage.getItem("usuario" || ""));
 
     //Asignaré los campos necesario para guardar la asignación
     const cantidadVales =
@@ -408,6 +408,7 @@ export class SolicitudvaleComponent implements OnInit {
       cantidadVales: cantidadVales,
     };
 
+
     Swal.fire({
       title: "Espere",
       text: "Realizando la acción...",
@@ -418,7 +419,7 @@ export class SolicitudvaleComponent implements OnInit {
       showConfirmButton: false,
     });
     return new Promise<void>((resolve, reject) => {
-      this.service.insertar(asignarVales, codUsuario).subscribe({
+      this.service.insertar(asignarVales, usuarioJson.codigoUsuario).subscribe({
         next: (resp: any) => {
           // Cerrar SweetAlert de carga
           Swal.close();
@@ -460,7 +461,6 @@ export class SolicitudvaleComponent implements OnInit {
       estadoSolicitudVale: estadoSolicitud,
       observaciones: this.observacionesSolicitudVale,
     };
-    console.log("solictud: ", solicitud);
 
     Swal.fire({
       title: "Espere",

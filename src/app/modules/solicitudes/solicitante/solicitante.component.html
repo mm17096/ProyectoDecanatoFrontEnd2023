@@ -37,6 +37,7 @@
                     <th class="align-middle">No.</th>
                     <th class="align-middle">Departamento</th>
                     <th class="align-middle">Lugar</th>
+                    <th class="align-middle">Objetivo</th>
                     <th class="align-middle">Fecha uso</th>
                     <th class="align-middle" style="text-align: center">Solicitante</th>
                     <th class="align-middle" style="text-align: center">Estado</th>
@@ -47,6 +48,11 @@
                   </tr>
                   </thead>
                   <tbody>
+                    <tr *ngIf="veri">
+                      <td *ngIf="veri" colspan="8" style="text-align: center;">
+                        No hay datos disponibles.
+                       </td>
+                    </tr>
                 <!--  <ng-container *ngIf="solicitudesVehiculo.length > 0; else noDataTemplate">-->
                     <!-- *ngFor="let data of cards | filter:queryString | paginate: { itemsPerPage: 10, currentPage: p }" -->
                     <tr *ngFor="let data of solicitudesVehiculo | filter:term | paginate: { itemsPerPage: 10, currentPage: p };
@@ -54,22 +60,20 @@
                       <td>{{calcularNumeroCorrelativo(i)}}</td>
                       <td>{{data.solicitante.empleado.departamento.nombre}}</td>
                       <td>{{data.lugarMision}}</td>
-                      <td>{{data.fechaSalida}}</td>
+                      <td>{{data.objetivoMision}}</td>
+                      <td>{{data.fechaSalida | date : "dd/MM/yyyy"}}</td>
                       <td style="text-align: center">{{data.solicitante.empleado.nombre+' '+data.solicitante.empleado.apellido}}</td>
                       <td style="text-align: center">
-                        <h5><span class="{{data.estado === 1 ? 'badge rounded-pill bg-warning'
-                        : data.estado === 2 ? 'badge rounded-pill bg-info'
-                        : data.estado === 3 ? 'badge rounded-pill bg-esdec'
-                        : data.estado === 4 ? 'badge rounded-pill bg-success'
-                        : data.estado === 5 ? 'badge rounded-pill bg-purple'
-                        : data.estado === 6 ? 'badge rounded-pill bg-revision'
-                        : data.estado === 7 ? 'badge rounded-pill bg-prima'
-                        : data.estado === 15 ? 'badge rounded-pill bg-danger': ''}}">
-                          {{data.estadoString}}
+                        <h5><span  [class]="                       
+                             data.estado == 7
+                            ? 'badge rounded-pill bg-info'
+                            : ''
+                        ">
+                          {{'Finalizada'}}
                         </span></h5>
                       </td>
                       <td style="text-align: center">
-                        <button type="button" (click)="cerarPDF(data)" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1">
+                        <button type="button" (click)="cargarConsultaValeDelAl(data)" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1">
                                     <i class="mdi mdi-file-document-outline"></i></button>
                         <!-- <i class="mdi mdi-account-lock-outline"></i>
                          mdi-account-check-outline -->
@@ -77,9 +81,9 @@
               
                     </tr>
                   <!--</ng-container>-->
-                  <ng-template #noDataTemplate>
+                  <ng-template>
                     <tr>
-                      <td colspan="6" style="text-align: center;">
+                      <td colspan="8" style="text-align: center;">
                         No hay datos disponibles.
                       </td>
                     </tr>

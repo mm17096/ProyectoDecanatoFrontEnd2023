@@ -20,6 +20,7 @@ import { map, tap } from "rxjs/operators";
 import { Observable } from "rxjs";
 import { Usuario } from "src/app/account/auth/models/usuario.models";
 import { IPaginacion } from "src/app/shared/models/IPaginacion.interface";
+import { UsuarioService } from "src/app/account/auth/services/usuario.service";
 
 @Injectable({
   providedIn: "root",
@@ -56,7 +57,10 @@ export class ServiceService {
   private baseUrl: string = environment.baseUrl;
   listSolicitudes: ISolicitudValeAprobar;
   listSolicitudesValeRol: ISolicitudValeAprobar[];
-  constructor(private http: HttpClient) {}
+  storage: Storage = window.localStorage;
+
+  public usuario!: Usuario;
+  constructor(private http: HttpClient, usuarios: UsuarioService) {}
 
   /*  get codUsuario(): string {
     return localStorage.getItem("codUsuario" || "");
@@ -74,6 +78,24 @@ export class ServiceService {
       );
   } */
 
+  getUsuario() {
+    this.http
+      .get(`${this.baseUrl}/usuario/${this.codUsuario}`)
+      .pipe(tap((resp: any) => resp as any))
+      .subscribe(
+        (usuario: any) => {
+          const { codigoUsuario, nombre, clave, nuevo, role, token, empleado } = usuario;
+          this.usuario = new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
+        },
+        (error) => {
+          console.error("Error al obtener los usuario:", error);
+        }
+      );
+  }
+
+  get codUsuario(): string {
+    return this.storage.getItem("codUsuario" || "");
+  }
   getCliente() {
     return this.http.get<SolicitudVv>(this.baseUrl + "/consulta/listapage");
   }
@@ -90,12 +112,17 @@ export class ServiceService {
     );
   }
 
-  insertar(asignacionVale: IAsignacionVale) {
-    console.log("en el servicio:" + asignacionVale);
+  insertar(asignacionVale: IAsignacionVale, idUsuario: string) {
+    console.log("en el servicio:", asignacionVale);
+    console.log("suario en el servicio:", this.usuario);
+    const data = {
+      asignacionVale: asignacionVale,
+      idUsuario: idUsuario,
+    };
 
     return this.http.post<IAsignacionVale>(
       `${this.baseUrl}/asignacionvale/insertar`,
-      asignacionVale
+      data
     );
   }
 

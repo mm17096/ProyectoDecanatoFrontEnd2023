@@ -130,13 +130,6 @@ export const MENU: MenuItem[] = [
         role: ["ADMIN","VIGILANTE"],
         parent: 10,
       },
-      {
-        id: 12,
-        label: "Documento",
-        link: "/document/vale",
-        role: ["ADMIN","VIGILANTE"],
-        parent: 10,
-      },
     ],
   },
   {
@@ -294,7 +287,7 @@ export const MENU_ASIS_FINAN: MenuItem[] = [
   {
     id: 9,
     label: "Solcitudes de Vales",
-    icon: "mdi mdi-gas-station",
+    icon: "mdi mdi-clipboard-text-multiple-outline",
     role: ["ADMIN","ASIS_FINANCIERO","JEFE_FINANACIERO"],
     subItems: [
 
@@ -404,7 +397,7 @@ export const MENU_JEFE_FINAN: MenuItem[] = [
   {
     id: 9,
     label: "Solcitudes de Vales",
-    icon: "mdi mdi-gas-station",
+    icon: "mdi mdi-clipboard-text-multiple-outline",
     role: ["ADMIN","ASIS_FINANCIERO","JEFE_FINANACIERO"],
     subItems: [
 
@@ -491,13 +484,6 @@ export const MENU_VIGILANTE: MenuItem[] = [
         id: 11,
         label: "Listado",
         link: "/entrasalida/listar",
-        role: ["ADMIN","VIGILANTE"],
-        parent: 10,
-      },
-      {
-        id: 12,
-        label: "Documento",
-        link: "/document/vale",
         role: ["ADMIN","VIGILANTE"],
         parent: 10,
       },

@@ -42,19 +42,10 @@ export class ModalDocumentosComponent implements OnInit {
   ngOnInit(): void {
     this.formBuilder = this.Iniciarformulario();
     this.ObtenerSolicitudValeById(this.codigoAsignacion);
+    this.obtenerLista(this.idSolicitud);
+    this.obtenerSolicitud(this.idSolicitud);
   }
-  obtenerLista(id: string) {
-    //para poder mostrar e la tabla
-    this.detalleservice.ObtenerLista(id).subscribe(
-      (resp: IDocumentosvale[]) => {
-        this.entradasalidas = resp;
-        this.sizeDocs = resp.length;
-      },
-      (error) => {
-        // Manejar errores aquí
-      }
-    );
-  }
+
 
   guardar() {
     if (this.formBuilder.valid) {
@@ -80,8 +71,9 @@ export class ModalDocumentosComponent implements OnInit {
         this.asignacionSolicitud = data;
         this.idSolicitud =
           this.asignacionSolicitud.solicitudVale.idSolicitudVale;
-        this.obtenerLista(this.idSolicitud);
-        this.obtenerSolicitud(this.idSolicitud);
+          console.log("solicitud: ",this.idSolicitud);
+          this.obtenerLista(this.idSolicitud);
+          this.obtenerSolicitud(this.idSolicitud);
       },
     });
   }
@@ -194,7 +186,11 @@ export class ModalDocumentosComponent implements OnInit {
     this.router.navigate([currentUrl]);
   }
   openModal(content: any) {
+
+    console.log("tamaño: ",this.obtenerLista(this.idSolicitud));
     if (this.estadoEntrada == 2) {
+
+
       if (this.sizeDocs == 2) {
         this.mensajesService.mensajesToast(
           "info",
@@ -258,5 +254,20 @@ export class ModalDocumentosComponent implements OnInit {
         this.estadoEntrada = data[0].estadoEntradaSolicitudVale;
       },
     });
+  }
+  obtenerLista(id: string) {
+    //para poder mostrar e la tabla
+    this.detalleservice.ObtenerLista(id).subscribe(
+      (resp: IDocumentosvale[]) => {
+        this.entradasalidas = resp;
+        console.log("lista: ", resp);
+        console.log("tamaño de la lista: ", this.sizeDocs);
+        this.sizeDocs = resp.length;
+
+      },
+      (error) => {
+        // Manejar errores aquí
+      }
+    );
   }
 }

@@ -160,8 +160,7 @@ export class ModalSecretariaComponent implements OnInit {
        if(this.validarfecha(solicitudVehiculo.fechaSolicitud)){
          if (this.validarfecha(solicitudVehiculo.fechaSalida)){
            if(this.validarfecha(solicitudVehiculo.fechaEntrada)){
-             if(this.file  != null
-              || solicitudVehiculo.cantidadPersonas < 6){
+             if(this.file  != null || solicitudVehiculo.cantidadPersonas < 6 && this.soliVeOd.cantidadPersonas > 6){
                   //  vacío para almacenar los datos de los pasajeros
                const pasajerosData = [];
 
@@ -533,7 +532,7 @@ export class ModalSecretariaComponent implements OnInit {
 
   actualizarFilas() {
 
-    this.cantidadPersonas = this.formularioSoliVe.get('cantidadPersonas').value - 1;
+    this.cantidadPersonas = this.formularioSoliVe.get('cantidadPersonas').value;
     const pasajerosArray = this.formularioSoliVe.get('listaPasajeros') as FormArray;
 
     // Calcula cuántas filas deberías tener
@@ -548,6 +547,7 @@ export class ModalSecretariaComponent implements OnInit {
 
       // Agrega filas adicionales según la cantidad deseada
       while (pasajerosArray.length < filasAAgregar) {
+        console.log(pasajerosArray.length);
         pasajerosArray.push(this.fb.group({
           id: [''], // Puedes inicializar estos valores como desees
           nombrePasajero: ['']

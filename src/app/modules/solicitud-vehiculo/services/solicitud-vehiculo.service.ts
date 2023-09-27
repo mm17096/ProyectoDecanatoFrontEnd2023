@@ -17,7 +17,7 @@ export class SolicitudVehiculoService {
 
   listSoliVehiculo : ISolicitudVehiculo [] = [];
   listSoliVehiculoRol : ISolicitudVehiculo [] = [];
-  listVehiculos: IVehiculos [] = [];
+  listVehiculos:string[] = [];
   listMotorista: IMotorista [] = [];
   public usuario!: Usuario;
 
@@ -76,11 +76,12 @@ export class SolicitudVehiculoService {
 
   obtenerVehiculos() {
     this.http
-      .get(`${this.url}/vehiculo/listasinpagina`)
-      .pipe(map((resp: any) => resp as IVehiculos[]))
+      .get(`${this.url}/vehiculo/clase`)
+      .pipe(map((resp: any) => resp ))
       .subscribe(
-        (vehiculo: IVehiculos[])=> {
+        (vehiculo)=> {
           this.listVehiculos = vehiculo;
+          console.log(this.listVehiculos);
         },
         (error) => {
           console.log("Error al obtener los vehiculos", error);
@@ -90,8 +91,8 @@ export class SolicitudVehiculoService {
 
   obtenerMotoristas() {
     this.http
-      .get(`${this.url}/empleado/lista`)
-      .pipe(map((resp: any) => resp.content as IMotorista[]))
+      .get(`${this.url}/empleado/motoristas`)
+      .pipe(map((resp: any) => resp as IMotorista[]))
       .subscribe(
         (empleados: IMotorista[]) => {
           console.log(empleados);
@@ -150,5 +151,10 @@ export class SolicitudVehiculoService {
   registrarSolicitudVale(solicitudVale: ISolicitudvalep){
     console.log("vale",solicitudVale);
     return this.http.post<ISolicitudvalep>( `${this.url}/solicitudvale/insertar`, solicitudVale);
+  }
+
+  public obtenerDocumentPdf(nameDocu): Observable<Blob> {
+    return this.http.get(`${this.url}/documentosoli/document/${nameDocu}`,
+    {responseType: 'blob'});
   }
 }

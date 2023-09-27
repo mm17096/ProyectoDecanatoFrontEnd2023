@@ -12,7 +12,7 @@
 
 
 <!-- Modal-->
-<div class="modal modal-fullscreen-xl-down fade" id="modalEmpleado" tabindex="-1" aria-labelledby="exampleModalLabel"
+<div class="modal modal-fullscreen-xl-down fade" id="modalEmpleado" name="modalEmpleado" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <ng-template #content role="document" let-modal>
         <div class="modal-header">
@@ -53,6 +53,8 @@
                     <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert"
                         *ngIf="alert.show">
                         <strong>Importante!</strong>
+                        <br/>
+                        <strong>{{nuevo ? '!Debe cambiar clave "por defecto", por la original¡' : ''}}</strong>
                         <div class="text-justify">{{ alert.message }}</div>
                         <button type="button" class="btn-close" (click)="CambiarAlert2(alert)"
                             aria-label="Close"></button>
@@ -68,13 +70,6 @@
                     <div class="row">
                         <div class="col-md">
 
-                            <!-- Inicio de datos del usuario no editables -->
-                            <input type="hidden" formControlName="codigoUsuario" [ngModel]="usuario.codigoUsuario" />
-                            <input type="hidden" formControlName="empleado" [ngModel]="usuario.empleado" />
-                            <input type="hidden" formControlName="nuevo" [ngModel]="usuario.nuevo" />
-                            <input type="hidden" formControlName="nombre" [ngModel]="usuario.nombre" />
-                            <input type="hidden" formControlName="token" [ngModel]="usuario.token" />
-                            <!-- Inicio de datos del usuario no editables -->
 
                             <!-- inicio de clave Empleado -->
                             <div class="form-group row m-4">
@@ -145,30 +140,6 @@
                     <div class="row">
                         <div class="col-md">
 
-                            <!-- inicio de foto Empleado -->
-                            <div class="form-group row">
-
-                                <div class="col-md-7">
-                                    <div class="form-group row m-2">
-                                        <label class="control-label" for="file">Foto: </label>
-                                        <input id="file" type="file" multiple class="form-control"
-                                            (change)="onFileSelected($event)" />
-                                    </div>
-                                </div>
-
-                                <div class="col-md">
-                                    <img class="rounded-circle custom-border" *ngIf="!imgTemp"
-                                        [src]="fotoEmpleado !== '' ? fotoEmpleado : './../../../../assets/images/Default-Avatar.png'"
-                                        alt="">
-
-                                    <img class="rounded-circle custom-border" *ngIf="imgTemp" [src]="imgTemp" alt="">
-                                </div>
-                            </div>
-                            <!-- fin de foto Usuario -->
-
-
-                            <!-- fin de licencia Empleado -->
-
                             <!-- inicio de nombre Empleado -->
                             <div class="form-group row m-4">
                                 <label class="control-label">Nombre:
@@ -221,6 +192,28 @@
                                 </div>
                             </div>
                             <!-- fin de telefono Empleado -->
+
+                            
+                            <!-- inicio de foto Empleado -->
+                            <div class="form-group row">
+
+                                <div class="col-md-7">
+                                    <div class="form-group row m-2">
+                                        <label class="control-label" for="file">Foto: </label>
+                                        <input id="file" type="file" multiple class="form-control"
+                                            (change)="onFileSelected($event)" />
+                                    </div>
+                                </div>
+
+                                <div class="col-md">
+                                    <img class="rounded-circle custom-border" *ngIf="!imgTemp"
+                                        [src]="fotoEmpleado !== '' ? fotoEmpleado : './../../../../assets/images/Default-Avatar.png'"
+                                        alt="">
+
+                                    <img class="rounded-circle custom-border" *ngIf="imgTemp" [src]="imgTemp" alt="">
+                                </div>
+                            </div>
+                            <!-- fin de foto Usuario -->
                         </div>
                     </div>
 

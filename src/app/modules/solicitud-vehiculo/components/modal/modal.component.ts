@@ -705,4 +705,13 @@ export class ModalComponent implements OnInit {
   actualizarEstadoCheckbox() {
     this.isChecked = this.isChecked == false;
   }
+
+  descargaPdf() {
+    this.soliVeService.obtenerDocumentPdf(this.soliVeOd.listDocumentos[0].nombreDocumento)
+    .subscribe((resp:any) => {
+      let file = new Blob([resp], { type: 'application/pdf' });
+      let fileUrl = URL.createObjectURL(file);
+      window.open(fileUrl);
+    });
+  }
 }

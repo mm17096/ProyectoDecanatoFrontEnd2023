@@ -4,7 +4,7 @@ import { ConsultaService } from './consulta.service';
 import { IConsultaExcelTabla, IConsultaExcelTablaC, IConsultaExcelTablaCompraDto, IConsultaExcelTablaDto, ITablaConsulta, ITablaConsultaC, ITablaConsultaCompraDto, ITablaConsultaDto } from '../../Interfaces/CompraVale/excel';
 import * as fs from 'file-saver';
 import { LOGO } from '../../Interfaces/logo';
-import { Cantidad, Consulta, ValidarVale } from '../../Interfaces/CompraVale/Consulta';
+import { Cantidad, Consulta, IConsultaDelAl, ValidarVale } from '../../Interfaces/CompraVale/Consulta';
 import { Veri } from '../../Interfaces/CompraVale/Veri';
 import { IExistenciaVales } from '../../Interfaces/existenciavales.interface';
 @Injectable({
@@ -20,7 +20,9 @@ export class ExcelService {
   items:Veri[]=[];
   valor:ValidarVale[]=[];
   cantidad1:Cantidad[]=[];
+  valeDelAl!: IConsultaDelAl[];
   fechaActual: Date = new Date();
+  varivv:number=0;
   private workbook!:Workbook
   constructor(private consultaService: ConsultaService) { }
 
@@ -93,10 +95,10 @@ const position: ImagePosition ={
  const titulo5 = sheet.getCell('C6');
  titulo5.value = 'ENSEÑANZA MULTIDICIPLINARIA PARACENTRAL';
  const titulo6 = sheet.getCell('C7');
- titulo6.value = `${'Del ' + fechaDesde + ' Al ' + fechaAsta}`;
+ titulo6.value = `${'Del ' + this.formatDate(`${fechaDesde}`)  + ' Al ' + this.formatDate(`${fechaAsta}`)}`;
  const titulo7 = sheet.getCell('A11');
  sheet.mergeCells('A11', 'D11');
- titulo7.value = `${'Asignacion de Vales de combustible "'+fechaDesde+'"'}`;
+ titulo7.value = `${'Asignacion de Vales de combustible "'+this.formatDate(`${fechaDesde}`)+'"'}`;
  const titulo8 = sheet.getCell('A12');
  titulo8.value = `${'INICIO'}`;
  
@@ -179,7 +181,7 @@ titulo1.style.font = { bold: true, size: 12,
         'Fecha',
       ];
       const titulo00 = sheet.getCell('H'+`${11}`);
-      titulo00.value = `${fechaDesde}`;
+      titulo00.value = `${this.formatDate(`${fechaDesde}`)}`;
       titulo00.style.font = { bold: true, size: 12,
         name: 'Antique Olive', 
         color: {
@@ -229,6 +231,7 @@ titulo1.style.font = { bold: true, size: 12,
       let cant = 0;
       let salidadcant =0;
       let salidadpu =0;
+      let valorpre=0
       
      /* const titulo9 = sheet.getCell('I12');
       titulo9.value = `${j}`;*/
@@ -242,12 +245,15 @@ titulo1.style.font = { bold: true, size: 12,
           //--------------------------------------
           
           //-------------------------------------
-          row.values = [item.fecha,'','','','','','','','','',''];
+          row.values = [this.formatDate(`${item.fecha}`),'','','','','','','','','',''];
           index++
         }else{
+
         if(item.fecha != this.fecha){
+          this.cargarConsultaValeDelAl(item.solicitudvehiculoid);
+          //console.log('ID: ',this.valeDelAl.length);
           row = fileInsertar[index];
-          row.values = [item.fecha,'','','','','','','','','',''];
+          row.values = [this.formatDate(`${item.fecha}`),'','','','','','','','','',''];
           index++
           cell1 = index;
           row = fileInsertar[index];
@@ -266,12 +272,13 @@ titulo1.style.font = { bold: true, size: 12,
                       /*  `${''}`,
                           `${'$'+item.valor}`,
                             `${'$'+item.valor}`,*/
-                               `${item.fecha}`
+                               `${this.formatDate(`${item.fecha}`)}`
          ];
          con1=0;
          con =0;
          j=cant;
          index++ 
+         valorpre = valorpre+(item.cantidadvale*item.valor);
          this.cantvale = item.idasignacionvale;
          this.precio = item.valor;
         }else{
@@ -294,6 +301,8 @@ titulo1.style.font = { bold: true, size: 12,
          ];
          index++
         if(item.idasignacionvale != this.cantvale){
+         // this.cargarConsultaValeDelAl(item.solicitudvehiculoid);
+         // console.log('ID1: ',this.valeDelAl.length);
           row.values = [
             `${item.correlativo}`,
              `${''}`,
@@ -302,14 +311,17 @@ titulo1.style.font = { bold: true, size: 12,
                   `${item.cantidadvale}`,
                     `${'$'+ item.valor}`,
                       `${'$'+(item.cantidadvale*item.valor)}`,
-                               `${item.fecha}`
+                               `${this.formatDate(`${item.fecha}`)}`
          ];
          this.cantvale = item.idasignacionvale;
          this.precio = item.valor;
          salidadcant=salidadcant+item.cantidadvale;
          salidadpu=salidadpu+item.valor;
+         valorpre = valorpre+(item.cantidadvale*item.valor);
         //index++
         }else if(item.valor != this.precio){
+         // this.cargarConsultaValeDelAl(item.solicitudvehiculoid);
+          //console.log('ID2: ',this.valeDelAl.length);
           con++;
           cell=index;
           conn1++;
@@ -327,10 +339,11 @@ titulo1.style.font = { bold: true, size: 12,
                     `${'$'+ item.valor}`,
                       `${'$'+(item.cantidadvale*item.valor)}`,
                       
-                               `${item.fecha}`
+                               `${this.formatDate(`${item.fecha}`)}`
          ];
          this.precio = item.valor;
          salidadpu=salidadpu+item.valor;
+         valorpre = valorpre+(item.cantidadvale*item.valor);
         }
         }
         this.fecha = item.fecha;
@@ -353,7 +366,7 @@ titulo1.style.font = { bold: true, size: 12,
         });
         sheet.mergeCells('A'+`${index+13}`, 'E'+`${index+13}`);
         const titul1 = sheet.getCell('A'+`${index+13}`);
-        titul1.value = `${'Compra de vales de combustible "'+fechaDesde+'"'}`;
+        titul1.value = `${'Compra de vales de combustible "'+`${this.formatDate(`${fechaDesde}`)}`+'"'}`;
         titul1.style.font = { bold: true, size: 12,
         name: 'Antique Olive', 
         color: {
@@ -369,12 +382,12 @@ titulo1.style.font = { bold: true, size: 12,
         row = fileInsertar[index];
         //--------------------------------------
         //-------------------------------------
-        row.values = [item.fechacompra,'','','','','','','','','',''];
+        row.values = [this.formatDate(`${item.fechacompra}`),'','','','','','','','','',''];
         index++
       }else{
         if(item.fechacompra != this.fechac){
           row = fileInsertar[index];
-          row.values = [item.fechacompra,'','','','','','','','','',''];
+          row.values = [this.formatDate(`${item.fechacompra}`),'','','','','','','','','',''];
           index++
           row = fileInsertar[index];
           row.values = [
@@ -388,7 +401,7 @@ titulo1.style.font = { bold: true, size: 12,
                        /* `${''}`,
                           `${'$'+item.valor}`,
                             `${'$'+item.valor}`,*/
-                               `${item.fechacompra}`
+                               `${this.formatDate(`${item.fechacompra}`)}`
          ];
          index++
          cantcompra = cantcompra + item.cantidad;
@@ -405,7 +418,7 @@ titulo1.style.font = { bold: true, size: 12,
                    /* `${''}`,
                       `${'$'+item.valor}`,
                         `${'$'+item.valor}`,*/
-                           `${item.fechacompra}`
+                           `${this.formatDate(`${item.fechacompra}`)}`
      ];
      index++
      cantcompra = cantcompra + item.cantidad;
@@ -462,7 +475,7 @@ titulo1.style.font = { bold: true, size: 12,
         }
         };
         const titulo03 = sheet.getCell('G'+`${index+13}`);
-        titulo03.value = `${salidadcant*salidadpu}`;
+        titulo03.value = `${valorpre}`;
         titulo03.style.font = { bold: true, size: 12,
           name: 'Antique Olive', 
           color: {
@@ -470,7 +483,7 @@ titulo1.style.font = { bold: true, size: 12,
           }
           };
           const titulo04 = sheet.getCell('H'+`${index+13}`);
-        titulo04.value = `${fechaAsta}`;
+        titulo04.value = `${this.formatDate(`${fechaAsta}`)}`;
         titulo04.style.font = { bold: true, size: 12,
           name: 'Antique Olive', 
           color: {
@@ -479,8 +492,8 @@ titulo1.style.font = { bold: true, size: 12,
           };      
            // this.fechaActual = new Date();
           // sheet.getCell('A11').le = 15;
-           sheet.mergeCells('A'+`${index+15}`, 'E'+`${index+15}`);
-           ['A','B', 'C', 'D'].forEach((columnKey) => {
+           sheet.mergeCells('A'+`${index+15}`, 'F'+`${index+15}`);
+           ['A','B', 'C', 'D','E','F'].forEach((columnKey) => {
              sheet.getCell(`${columnKey}${index+15}`).font = {
              bold: true,
              color: {argb: '000000' },
@@ -502,6 +515,25 @@ titulo1.style.font = { bold: true, size: 12,
           argb: 'FF000000'
           }
           };
+           sheet.mergeCells('A'+`${index+17}`, 'E'+`${index+17}`);
+           sheet.mergeCells('A'+`${index+18}`, 'E'+`${index+18}`);
+           sheet.mergeCells('A'+`${index+19}`, 'E'+`${index+19}`);
+           const titulo099 = sheet.getCell('A'+`${index+17}`);
+           titulo099.value = ' F.'
+           titulo099.style.font = { bold: true, size: 10,
+            name: 'Antique Olive',
+            color: {
+            argb: 'FF000000'
+            }
+            };
+           const titulo0991 = sheet.getCell('A'+`${index+19}`);
+           titulo0991.value = ' Nombre y firma Decano'
+           titulo0991.style.font = { bold: true, size: 10,
+            name: 'Antique Olive',
+            color: {
+            argb: 'FF000000'
+            }
+            };
 
       for(let i=0; i<this.valor.length; i++){
         if(this.valor[i].valor != this.valor[i].valorAntes){
@@ -601,5 +633,28 @@ titulo1.style.font = { bold: true, size: 12,
     };
 
     return fecha.toLocaleDateString(undefined, options);
+  }
+
+  formatDate(fechaStr: string): string {
+    // Dividir la cadena en partes
+    const partes = fechaStr.split('-');
+    if (partes.length !== 3) {
+      return 'Fecha inválida';
+    }
+
+    // Crear una nueva cadena con el formato deseado (dd/MM/yyyy)
+    const fechaFormateada = `${partes[2]}/${partes[1]}/${partes[0]}`;
+    return fechaFormateada;
+  }
+  cargarConsultaValeDelAl(id:string){
+    // vv = 0;
+    this.consultaService.getConsultaSolicitudVDelAl(id).subscribe((response)=>{
+      this.valeDelAl = response;
+   //   this.varivv = 0;
+//this.varivv = this.valeDelAl.length;
+//console.log('vv',this.valeDelAl.length);
+      });
+   //   console.log('es',this.varivv);
+//return this.valeDelAl.length;
   }
 }

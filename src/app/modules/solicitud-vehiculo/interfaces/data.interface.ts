@@ -90,10 +90,10 @@ export interface IMotorista {
 
 interface IDocumento {
   codigoDocumento: string;
-  nombre: string;
-  descripcion: string;
-  archivo: string;
-  estado: number;
+  nombreDocumento: string;
+  urlDocumento:string;
+  fecha:string
+  SolicitudVehiculo:string;
 }
 
 export interface IEstados {

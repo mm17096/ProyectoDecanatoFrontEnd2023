@@ -28,7 +28,8 @@ import {
   ISolcitudAprobar,
   ISolicitudValeAprobar,
 } from "../Interfaces/solicitudValeAprobar.interface";
-import { log } from "console";
+
+import { UsuarioService } from "src/app/account/auth/services/usuario.service";
 
 @Component({
   selector: "app-solicitudvale",
@@ -75,6 +76,8 @@ export class SolicitudvaleComponent implements OnInit {
 
   private isNumber: string = NUMBER_VALIDATE;
 
+  storage: Storage = window.localStorage;
+
   filtroEstado: number;
 
   solicitud: any[] = [];
@@ -120,7 +123,6 @@ export class SolicitudvaleComponent implements OnInit {
 
   mensajeTabla: string;
 
-
   cantidadValesA: number;
   //fecha con formato
   fechaformateada = [];
@@ -130,9 +132,11 @@ export class SolicitudvaleComponent implements OnInit {
     public fb: FormBuilder,
     private existenciaService: ServiceService,
     private mensajesService: MensajesService,
-    private router: Router
+    private router: Router,
+    private usuarios: UsuarioService,
   ) {
     this.iniciarFormulario();
+    this.usuarios.getUsuario();
   }
 
   private iniciarFormulario() {
@@ -177,11 +181,11 @@ export class SolicitudvaleComponent implements OnInit {
         this.solicitudesVales = data;
         this.obtenerFechaFormateada(data);
         this.asignacionEstados(estado);
-      },error: (err) => {
-        this.solicitudesVales = undefined
-        console.log("solicitudes: ", this.solicitudesVales);
-        this.mensajeTabla = "No hay datos para mostrar"
-      }
+      },
+      error: (err) => {
+        this.solicitudesVales = undefined;
+        this.mensajeTabla = "No hay datos para mostrar";
+      },
     });
   }
 
@@ -243,8 +247,6 @@ export class SolicitudvaleComponent implements OnInit {
       },
     });
   }
-
-
 
   obtenerFechaFormateada(data: any) {
     if (Array.isArray(data) && data.length > 0) {
@@ -324,7 +326,6 @@ export class SolicitudvaleComponent implements OnInit {
     let observacionRevision = solici.observacionesSolicitudVale;
     if (observacionRevision) {
       observacionRevision = solici.observacionesSolicitudVale;
-
     } else {
       observacionRevision = "";
     }
@@ -361,10 +362,10 @@ export class SolicitudvaleComponent implements OnInit {
 
   //Guardar la asignación de vales
   async guardar() {
-    console.log("form: ", this.formularioSolicitudVale);
+
 
     if (this.formularioSolicitudVale.valid) {
-      if ((this.estadoSoli == "Nueva" || this.estadoSoli == "Revisión")) {
+      if (this.estadoSoli == "Nueva" || this.estadoSoli == "Revisión") {
         if ((await this.mensajesService.mensajeSolicitarAprobacion()) == true) {
           // solicitar aprobación
           this.solicitarAprobacion();
@@ -388,6 +389,10 @@ export class SolicitudvaleComponent implements OnInit {
 
   //Regitra la asignación de los vales
   registrando() {
+
+    //const usuariosObj = this.usuarios.getUsuario();
+    const usuarioJson = JSON.parse(this.storage.getItem("usuario" || ""));
+
     //Asignaré los campos necesario para guardar la asignación
     const cantidadVales =
       this.formularioSolicitudVale.get("cantidadVales")?.value;
@@ -403,6 +408,7 @@ export class SolicitudvaleComponent implements OnInit {
       cantidadVales: cantidadVales,
     };
 
+
     Swal.fire({
       title: "Espere",
       text: "Realizando la acción...",
@@ -413,7 +419,7 @@ export class SolicitudvaleComponent implements OnInit {
       showConfirmButton: false,
     });
     return new Promise<void>((resolve, reject) => {
-      this.service.insertar(asignarVales).subscribe({
+      this.service.insertar(asignarVales, usuarioJson.codigoUsuario).subscribe({
         next: (resp: any) => {
           // Cerrar SweetAlert de carga
           Swal.close();
@@ -440,8 +446,10 @@ export class SolicitudvaleComponent implements OnInit {
   async solicitarAprobacion() {
     //Asignaré los campos necesario para modificar la asignación
     const cantidadVales =
-    this.formularioSolicitudVale.get("cantidadVales")?.value;
-    this.observacionesSolicitudVale = this.formularioSolicitudVale.get("observacionRevision")?.value;
+      this.formularioSolicitudVale.get("cantidadVales")?.value;
+    this.observacionesSolicitudVale = this.formularioSolicitudVale.get(
+      "observacionRevision"
+    )?.value;
     const codigoSolicitud = this.paramSolicitudV;
     const estadoSolicitud = 1;
     new Date().toLocaleDateString();
@@ -453,7 +461,6 @@ export class SolicitudvaleComponent implements OnInit {
       estadoSolicitudVale: estadoSolicitud,
       observaciones: this.observacionesSolicitudVale,
     };
-    console.log("solictud: ", solicitud);
 
     Swal.fire({
       title: "Espere",

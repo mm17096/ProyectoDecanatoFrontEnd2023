@@ -121,7 +121,7 @@ export class ModalSecretariaComponent implements OnInit {
       this.formularioSoliVe.get('tipoVehiculo')
         .setValue(this.soliVeOd != null ? this.soliVeOd.vehiculo.clase: '');
       this.formularioSoliVe.get('vehiculo')
-        .setValue(this.soliVeOd != null ? this.soliVeOd.vehiculo.codigoVehiculo: '');
+        .setValue(this.soliVeOd != null ? this.soliVeOd.vehiculo.placa: '');
       this.formularioSoliVe.get('cantidadPersonas')
         .setValue(this.soliVeOd != null ? this.soliVeOd.cantidadPersonas: '');
       this.formularioSoliVe.get('horaSalida')
@@ -129,7 +129,8 @@ export class ModalSecretariaComponent implements OnInit {
       this.formularioSoliVe.get('horaEntrada')
         .setValue(this.soliVeOd != null ? this.soliVeOd.horaEntrada: '');
       this.formularioSoliVe.get('solicitante')
-        .setValue(this.soliVeOd != null ? this.soliVeOd.solicitante.codigoUsuario: '');
+        .setValue(this.soliVeOd != null ? this.soliVeOd.solicitante.empleado.nombre+' '
+        + this.soliVeOd.solicitante.empleado.apellido: '');
 
       if (solicitudVehiculo.cantidadPersonas > 5){
         this.mostrarTabla = false;
@@ -152,7 +153,7 @@ export class ModalSecretariaComponent implements OnInit {
 
   async guardar(){
     //this.formularioSoliVe.value.unidadSolicitante = this.usuarioActivo.empleado.departamento.nombre;
-    this.formularioSoliVe.value.codigoSolicitudVehiculo = this.soliVeOd.codigoSolicitudVehiculo;
+
     const solicitudVehiculo = this.formularioSoliVe.value;
     console.log("formularo: ",this.formularioSoliVe);
     if (this.formularioSoliVe.valid){
@@ -250,6 +251,12 @@ export class ModalSecretariaComponent implements OnInit {
 
   registrarSoliVe() : Promise<void> {
     const solicitudVehiculo = this.formularioSoliVe.value;
+    solicitudVehiculo.codigoSolicitudVehiculo = this.soliVeOd.codigoSolicitudVehiculo;
+    solicitudVehiculo.solicitante = this.soliVeOd.solicitante.codigoUsuario;
+    solicitudVehiculo.nombreJefeDepto = this.soliVeOd.nombreJefeDepto;
+    if(this.soliVeOd.vehiculo.placa == this.formularioSoliVe.get('vehiculo').value){
+      solicitudVehiculo.vehiculo = this.soliVeOd.vehiculo.codigoVehiculo;
+    }
 
     /* para la direccion */
     let nombreDepartamento;
@@ -289,8 +296,9 @@ export class ModalSecretariaComponent implements OnInit {
       nombreCanton = cantonSeleccionado.nam;
     }
 
-    solicitudVehiculo.direccion = nombreDepartamento+', '+nombreMunicipio+', '+
-      nombreDistrito+', '+nombreCanton;
+    solicitudVehiculo.direccion = this.soliVeOd.direccion;
+    // solicitudVehiculo.direccion = nombreDepartamento+', '+nombreMunicipio+', '+
+    //   nombreDistrito+', '+nombreCanton;
     /* fin de la direccion */
 
     // Mostrar SweetAlert de carga
@@ -425,7 +433,7 @@ export class ModalSecretariaComponent implements OnInit {
       solicitante: [],
       listaPasajeros: this.fb.array([]),
       motorista:['',[Validators.required]],
-      observacion:['',[]],
+      observaciones:['',[]],
       file: ['',],
     });
   }

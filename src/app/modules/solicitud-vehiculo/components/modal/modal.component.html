@@ -77,6 +77,9 @@
             <input type="date" class="form-control" id="fecha-mision"
                    formControlName="fechaSalida"
                    [class]="esCampoValido('fechaSalida')"
+                   (change)="cargarPlacas(formularioSoliVe.get('tipoVehiculo').value,
+                   formularioSoliVe.get('fechaSalida').value,
+                   formularioSoliVe.get('fechaEntrada').value)"
                    [readonly]="soliVeOd != null && leyenda === 'Detalle'"/>
             <div class="invalid-feedback">
               <span
@@ -294,6 +297,9 @@
             <input type="date" class="form-control" id="fecha-regreso"
                    formControlName="fechaEntrada"
                    [class]="esCampoValido('fechaEntrada')"
+                   (change)="cargarPlacas(formularioSoliVe.get('tipoVehiculo').value,
+                   formularioSoliVe.get('fechaSalida').value,
+                   formularioSoliVe.get('fechaEntrada').value)"
                    [readOnly]="leyenda == 'Detalle' && soliVeOd != null"/>
             <div class="invalid-feedback">
               <span
@@ -326,9 +332,9 @@
                 formularioSoliVe.get('fechaEntrada').value)"
               >
                 <ng-option
-                  *ngFor="let x of listVehiculos"
-                  [value]="x.clase"
-                >{{ x.clase }}</ng-option
+                  *ngFor="let car of listVehiculos"
+                  [value]="car"
+                >{{ car }}</ng-option
                 >
               </ng-select>
               <div class="invalid-feedback">
@@ -576,12 +582,12 @@
             <div *ngIf="btnVerPdf" class="alert alert-warning">
               Lista de pasajeros
               <div>
-                <button class="btn btn-primary" type="button">
+                <button class="btn btn-primary" type="button"
+                (click)="descargaPdf()">
                   Descargar pdf
                 </button>
               </div>
             </div>
-
         </div>
       </div>
       <!-- fin de personas -->

@@ -1,15 +1,20 @@
-<div *ngIf="leyenda == 'Datos'">
+<div *ngIf="leyenda == 'Datos' && home == false">
     <a class="dropdown-item" style="cursor: pointer;" (click)="openModal(content)">
         <i class="bx bx-user font-size-16 align-middle me-1"></i>Perfil
     </a>
 </div>
 
-<div *ngIf="leyenda == 'Credenciales'">
+<div *ngIf="leyenda == 'Credenciales'  && home == false">
     <a class="dropdown-item" style="cursor: pointer;" (click)="openModal(content)">
         <i class="bx bx bx-lock font-size-16 align-middle me-1"></i>Credenciales
     </a>
 </div>
 
+<div *ngIf="leyenda == 'Datos' && home == true">
+  <a style="cursor: pointer;" class="btn btn-primary btn-sm" (click)="openModal(content)" >Ver Perfil
+    <i
+            class="mdi mdi-arrow-right ms-1"></i></a>
+</div>
 
 <!-- Modal-->
 <div class="modal modal-fullscreen-xl-down fade" id="modalEmpleado" name="modalEmpleado" tabindex="-1" aria-labelledby="exampleModalLabel"

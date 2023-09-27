@@ -106,7 +106,7 @@ export class ListaentradasalidaService {
     } else {
       return this.http.get<IsolicitudVehiculo[]>(`${this.baseUrl}/solicitudvehiculo/todas`, requestOptions).pipe(
         //muestra los autos con estadoSolicitud4 y que tengan la fecha igual a la actual
-        map(vehiculos=>vehiculos.filter(vehiculo=>vehiculo.estado==4 && this.compararFechasSalida(vehiculo.fechaSalida) || this.compararFechasEntrada(vehiculo.fechaEntrada)))
+        map(vehiculos=>vehiculos.filter(vehiculo=>vehiculo.estado==5 && this.compararFechasSalida(vehiculo.fechaSalida)))
       )
     }
   }

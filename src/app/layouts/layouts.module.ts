@@ -38,6 +38,7 @@ import { NgxMaskModule } from 'ngx-mask';
     SimplebarAngularModule,
     NgxMaskModule.forRoot(), //para las mascaras
   ],
-  providers: [LanguageService]
+  providers: [LanguageService],
+  exports:[ModalComponent]
 })
 export class LayoutsModule { }

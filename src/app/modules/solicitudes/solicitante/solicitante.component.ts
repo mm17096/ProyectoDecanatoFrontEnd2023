@@ -7,7 +7,7 @@ import { ConsultaService } from '../Service/Excel/consulta.service';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { LOGO } from '../Interfaces/logo';
-import { IConsultaDelAl, Tabla } from '../Interfaces/CompraVale/Consulta';
+import { DocumetSoliC, DocumetVale, DocumetValeId, IConsultaDelAl, Tabla } from '../Interfaces/CompraVale/Consulta';
 import { Usuario, Empleado } from 'src/app/account/auth/models/usuario.models';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -20,6 +20,10 @@ export class SolicitanteComponent implements OnInit {
   solicitudesVehiculo!: ISolicitudVehiculo[];
   selectedData: any;
   valeDelAl!: IConsultaDelAl[];
+  documentSoliCard!:DocumetSoliC[];
+  documentVale!:DocumetVale[];
+  documentValeId:DocumetValeId[]=[];
+
   // migas de pan
   breadCrumbItems: Array<{}>;
   term: any; // para buscar
@@ -103,6 +107,44 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
       return index + 1; // Si no es numérico, solo regresamos el índice + 1
     }
   }
+/**
+   * Open Large modal
+   * @param largeDataModal large modal data
+   */
+DocumentosSoliCard(soliVehi: ISolicitudVehiculo,largeDataModal: any){
+  this.cargarDocSoliCar(soliVehi.codigoSolicitudVehiculo);
+  this.modalService.open(largeDataModal, { size: "lg", centered: true });
+}
+
+DocumentosVale(soliVehi: ISolicitudVehiculo,largeDataModal: any){
+  this.cargarDocValeID(soliVehi.codigoSolicitudVehiculo);
+  this.modalService.open(largeDataModal, { size: "lg", centered: true });
+}
+cargarDocSoliCar(id: string){
+  this.consultaService.getConsultaDocumnetoSoliCa(id).subscribe((response: DocumetSoliC[])=>{
+    this.documentSoliCard = response;
+     //   console.log(response);
+    });
+}
+cargarDocValeID(id:string){
+  this.consultaService.getConsultaDocumnetoValeId(id).subscribe((response: DocumetValeId[])=>{
+    //this.documentValeId.push(response);
+   // console.log(response)
+    this.cargarDocVale(response[0].idsolicitudvale);
+  });
+}
+cargarDocVale(id:string){
+  this.consultaService.getConsultaDocumnetoVale(id).subscribe((response: DocumetVale[])=>{
+    this.documentVale = response;
+        console.log(response);
+    });
+}
+descargarver(doc:DocumetSoliC){
+
+}
+descarver(doc:DocumetVale){
+
+}
   cerarPDF(soliVehi: ISolicitudVehiculo,vales: IConsultaDelAl[]){
    // this.cargarConsultaValeDelAl(soliVehi.codigoSolicitudVehiculo);
      const pdfDefinicion: any = {content:[],}

@@ -4,7 +4,7 @@ import { ConsultaService } from './consulta.service';
 import { IConsultaExcelTabla, IConsultaExcelTablaC, IConsultaExcelTablaCompraDto, IConsultaExcelTablaDto, ITablaConsulta, ITablaConsultaC, ITablaConsultaCompraDto, ITablaConsultaDto } from '../../Interfaces/CompraVale/excel';
 import * as fs from 'file-saver';
 import { LOGO } from '../../Interfaces/logo';
-import { Cantidad, Consulta, IConsultaDelAl, ValidarVale } from '../../Interfaces/CompraVale/Consulta';
+import { Cantidad, Consulta, IConsultaDelAl, Tabla, ValidarVale } from '../../Interfaces/CompraVale/Consulta';
 import { Veri } from '../../Interfaces/CompraVale/Veri';
 import { IExistenciaVales } from '../../Interfaces/existenciavales.interface';
 @Injectable({
@@ -22,7 +22,9 @@ export class ExcelService {
   cantidad1:Cantidad[]=[];
   valeDelAl!: IConsultaDelAl[];
   fechaActual: Date = new Date();
+  cccc:Tabla[]=[];
   varivv:number=0;
+  valorvv:number;
   private workbook!:Workbook
   constructor(private consultaService: ConsultaService) { }
 
@@ -42,7 +44,7 @@ const blob = new Blob([data]);
 fs.saveAs(blob, 'consulta.xlsx');
 });
 }
-private crearTablaConsulta(
+async crearTablaConsulta(
   eexistenciaI: IExistenciaVales,
   dataConsultaTaTableConsulta: ITablaConsultaDto[],
   dataConsultaTaTableCompra: ITablaConsultaCompraDto[],
@@ -250,8 +252,8 @@ titulo1.style.font = { bold: true, size: 12,
         }else{
 
         if(item.fecha != this.fecha){
-          this.cargarConsultaValeDelAl(item.solicitudvehiculoid);
-          //console.log('ID: ',this.valeDelAl.length);
+          this.cargarConsultaValeDelAl(item.solicitudvehiculoid,index,item.valor);
+          //console.log('ID: ',this.valorvv);
           row = fileInsertar[index];
           row.values = [this.formatDate(`${item.fecha}`),'','','','','','','','','',''];
           index++
@@ -301,6 +303,8 @@ titulo1.style.font = { bold: true, size: 12,
          ];
          index++
         if(item.idasignacionvale != this.cantvale){
+          this.cargarConsultaValeDelAl(item.solicitudvehiculoid,index,item.valor);
+          console.log('ID1: ',this.valeDelAl.length);
          // this.cargarConsultaValeDelAl(item.solicitudvehiculoid);
          // console.log('ID1: ',this.valeDelAl.length);
           row.values = [
@@ -320,6 +324,7 @@ titulo1.style.font = { bold: true, size: 12,
          valorpre = valorpre+(item.cantidadvale*item.valor);
         //index++
         }else if(item.valor != this.precio){
+          this.cargarConsultaValeDelAl(item.solicitudvehiculoid,index,item.valor);
          // this.cargarConsultaValeDelAl(item.solicitudvehiculoid);
           //console.log('ID2: ',this.valeDelAl.length);
           con++;
@@ -534,7 +539,7 @@ titulo1.style.font = { bold: true, size: 12,
             argb: 'FF000000'
             }
             };
-
+            console.log('verri',this.valor);
       for(let i=0; i<this.valor.length; i++){
         if(this.valor[i].valor != this.valor[i].valorAntes){
             const tituloff0= sheet.getCell('E'+`${this.valor[i].inde+12-(this.valor[i].cantidad-this.valor[i].conv)}`);
@@ -549,6 +554,12 @@ titulo1.style.font = { bold: true, size: 12,
             tituloff2.value = `${(this.valor[i].cantidad-this.valor[i].conv)*this.valor[i].valorAntes}`;
             console.log(this.valor[i]);
         }
+      }
+      console.log('verri',this.cccc);
+      for(let j=0; j<2; j++){
+        console.log('verri',this.cccc[j]);
+        const titulosffcc = sheet.getCell('I'+`${this.cccc[j].i+12}`);
+        titulosffcc.value = `${'veri'}`;
       }
       //---------------------------------------------------------
      /* let j = 0;
@@ -646,15 +657,14 @@ titulo1.style.font = { bold: true, size: 12,
     const fechaFormateada = `${partes[2]}/${partes[1]}/${partes[0]}`;
     return fechaFormateada;
   }
-  cargarConsultaValeDelAl(id:string){
-    // vv = 0;
-    this.consultaService.getConsultaSolicitudVDelAl(id).subscribe((response)=>{
-      this.valeDelAl = response;
-   //   this.varivv = 0;
-//this.varivv = this.valeDelAl.length;
-//console.log('vv',this.valeDelAl.length);
-      });
-   //   console.log('es',this.varivv);
-//return this.valeDelAl.length;
+  async  cargarConsultaValeDelAl(id: string, i:number, val:number) {
+   //this.valeDelAl = [];
+  //  this.consultaService.getConsultaSolicitudVDelAl1(id).subscribe((resp) => {
+    //  console.log('Longitud de la respuesta:', resp);
+      const valor = await this.consultaService.getConsultaSolicitudVDelAl1(id);
+      this.cccc.push({i:i,codi:valor,val:val});
+      console.log('Longitud:', valor);
+   // });
   }
+ 
 }

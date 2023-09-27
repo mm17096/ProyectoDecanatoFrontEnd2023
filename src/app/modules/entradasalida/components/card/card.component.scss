@@ -2,7 +2,7 @@
 .d-flex.justify-content-between {
     gap: 12px; /* Ajusta el espacio horizontal entre los botones */
   }
-  
+
   /* Estilo opcional para los botones */
   .btn {
     white-space: nowrap; /* Evita que los botones se envuelvan al siguiente renglón */
@@ -26,7 +26,7 @@
   .card {
     position: center;
     width: 205px;//180
-    height: 340px;//350
+    height: 360px;//350
     border-radius: 14px;
     z-index: 11;
     overflow: hidden;
@@ -37,7 +37,7 @@
     box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
     ;
   }
-  
+
   .bg {
     position: center;
     top: 5px;
@@ -51,7 +51,7 @@
     overflow: hidden;
     outline: 2px solid white;
   }
-  
+
   .blob {
     position: absolute;
     z-index: 1;
@@ -65,24 +65,24 @@
     filter: blur(12px);
     animation: blob-bounce 5s infinite ease;
   }
-  
+
   @keyframes blob-bounce {
     0% {
       transform: translate(-100%, -100%) translate3d(0, 0, 0);
     }
-  
+
     25% {
       transform: translate(-100%, -100%) translate3d(100%, 0, 0);
     }
-  
+
     50% {
       transform: translate(-100%, -100%) translate3d(100%, 100%, 0);
     }
-  
+
     75% {
       transform: translate(-100%, -100%) translate3d(0, 100%, 0);
     }
-  
+
     100% {
       transform: translate(-100%, -100%) translate3d(0, 0, 0);
     }
@@ -94,4 +94,3 @@
     /* Otras propiedades de estilo para la modal */
   }
 
-  

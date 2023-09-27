@@ -31,13 +31,6 @@ export const MENU: MenuItem[] = [
         parentId: 6,
       },
       {
-        id: 8,
-        label: "Cargos",
-        link: "/cargo/listar",
-        role: ["ADMIN"],
-        parentId: 6,
-      },
-      {
         id: 9,
         label: "Departamentos",
         link: "/depto/listar",
@@ -50,7 +43,7 @@ export const MENU: MenuItem[] = [
   {
     id: 7,
     label: "Solicitud Vehículo",
-    icon: "mdi mdi-car-outline",
+    icon: "mdi mdi-file-document-multiple-outline",
     role: ["ADMIN", "USER","JEFE_DEPTO","SECR_DECANATO","DECANO","ASIS_FINANCIERO","JEFE_FINANACIERO"],
     subItems: [
 
@@ -335,7 +328,7 @@ export const MENU_ASIS_FINAN: MenuItem[] = [
         role: ["ADMIN","ASIS_FINANCIERO","JEFE_FINANACIERO"],
         parentId: 8,
       },
-    
+
 
     ],
   },

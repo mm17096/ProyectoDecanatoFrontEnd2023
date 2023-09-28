@@ -1,3 +1,4 @@
+import { SortDirection } from "src/app/pages/crypto/orders/orders-sortable.directive";
 import { SolicitudVale } from "../interface/IsolicitudvaleDocument";
 
 export interface IAsignacionDetalle {
@@ -29,4 +30,15 @@ export interface ILiquidacion{
 export interface IAnularMision{
   cosdigoAsignacion: string;
   valesAsignacion: string [];
+}
+
+export interface State {
+  page: number;
+  pageSize: number;
+  searchTerm: string;
+  sortColumn: string;
+  sortDirection: SortDirection;
+  startIndex: number;
+  endIndex: number;
+  totalRecords: number;
 }

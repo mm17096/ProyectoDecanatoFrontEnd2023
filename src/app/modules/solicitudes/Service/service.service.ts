@@ -26,34 +26,7 @@ import { UsuarioService } from "src/app/account/auth/services/usuario.service";
   providedIn: "root",
 })
 export class ServiceService {
-  listValesAsignar: IPaginacion<IValesAsignarPage> = {
-    content: [],
-    pageable: {
-      offset: 0,
-      paged: true,
-      pageNumber: 0,
-      pageSize: 0,
-      sort: {
-        empty: true,
-        sorted: true,
-        unsorted: true,
-      },
-      unpaged: true,
-    },
-    empty: true,
-    first: true,
-    last: true,
-    number: 0,
-    numberOfElements: 0,
-    size: 0,
-    sort: {
-      empty: true,
-      sorted: true,
-      unsorted: true,
-    },
-    totalElements: 0,
-    totalPages: 0,
-  };
+  listValesAsignar: IValesAsignarPage[];
   private baseUrl: string = environment.baseUrl;
   listSolicitudes: ISolicitudValeAprobar;
   listSolicitudesValeRol: ISolicitudValeAprobar[];
@@ -84,8 +57,17 @@ export class ServiceService {
       .pipe(tap((resp: any) => resp as any))
       .subscribe(
         (usuario: any) => {
-          const { codigoUsuario, nombre, clave, nuevo, role, token, empleado } = usuario;
-          this.usuario = new Usuario(codigoUsuario, nombre, "", nuevo, role, token, empleado);
+          const { codigoUsuario, nombre, clave, nuevo, role, token, empleado } =
+            usuario;
+          this.usuario = new Usuario(
+            codigoUsuario,
+            nombre,
+            "",
+            nuevo,
+            role,
+            token,
+            empleado
+          );
         },
         (error) => {
           console.error("Error al obtener los usuario:", error);
@@ -121,11 +103,7 @@ export class ServiceService {
     };
     console.log("data en el servicio:", data);
 
-
-    return this.http.post(
-      `${this.baseUrl}/asignacionvale/insertar`,
-      data
-    );
+    return this.http.post(`${this.baseUrl}/asignacionvale/insertar`, data);
   }
 
   getValesAignar(cantidadVales: number) {
@@ -134,22 +112,9 @@ export class ServiceService {
     );
   }
 
-  getValesAsignarPage(
-    page: number = 1,
-    size: number,
-    cantVales:number
-  ) {
-   console.log("en el servicio cantVales: " + size);
-    this.http
-      .get<IPaginacion<IValesAsignarPage>>(
-        `${this.baseUrl}/asignacionvale/listarvalesasignarPage/${cantVales}`,
-        {
-          params: {
-            page: page.toString(),
-            size: size.toString(),
-          },
-        }
-      )
+  getValesAsignarPage(page: number = 1, size: number, cantVales: number):Observable<IValesAsignarPage[]> {
+    console.log("en el servicio cantVales: " + size);
+    return this.http.get<IValesAsignarPage[]>(`${this.baseUrl}/asignacionvale/listarvalesasignar/${cantVales}`) /*
       .subscribe(
         (data) => {
           this.listValesAsignar = data;
@@ -157,7 +122,7 @@ export class ServiceService {
         (error) => {
           console.error("Error al obtener los Vales:", error);
         }
-      );
+      ) */;
   }
 
   getCodigoAsignacion(codigoSolitudVale: string) {

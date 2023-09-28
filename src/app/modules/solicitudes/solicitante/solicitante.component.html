@@ -76,9 +76,9 @@
                         <button type="button" (click)="cargarConsultaValeDelAl(data)" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1">
                                     <i class="mdi mdi-file-document-outline"></i></button>
                        <button type="button" (click)="DocumentosSoliCard(data,mdDocumnetoSoliCar)" class="btn btn-warning btn-sm btn-rounded boton-cuadrado mx-1">
-                                      <i class="mdi mdi-file-document-outline"></i></button>
+                                      <i class="mdi mdi-format-list-bulleted"></i></button>
                        <button type="button" (click)="DocumentosVale(data,mdDocumentVale)" class="btn btn-success btn-sm btn-rounded boton-cuadrado mx-1">
-                                        <i class="mdi mdi-file-document-outline"></i></button>
+                        <i class="mdi  mdi-download-outline"></i></button>
                         <!-- <i class="mdi mdi-account-lock-outline"></i>
                          mdi-account-check-outline -->
                       </td>
@@ -111,7 +111,7 @@
   <!-- Large Modal -->
 <ng-template #mdDocumnetoSoliCar let-modal>
   <div class="modal-header">
-    <h5 class="modal-title mt-0">Documentos de Solictud vehiculo</h5>
+    <h5 class="modal-title mt-0">Documentos lista de pasajeros solictud vehiculo</h5>
     <button
       type="button"
       class="btn-close"
@@ -147,7 +147,7 @@
           </td>
           <td style="text-align: center">
             <button type="button" (click)="descargarver(data)" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1">
-              <i class="mdi mdi-18px mdi-eye-outline"></i></button>
+              <i class="mdi mdi-18px mdi-download-outline"></i></button>
           </td>
         </tr>
       </ng-container>
@@ -215,7 +215,7 @@
             </td>
             <td style="text-align: center"> 
               <button type="button" (click)="descarver(data)" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1">
-                <i class="mdi mdi-file-document-outline"></i></button>
+                <i class="mdi mdi-18px mdi-download-outline"></i></button>
             </td>
           </tr>
         </ng-container>

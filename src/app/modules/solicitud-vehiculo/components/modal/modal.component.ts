@@ -8,7 +8,7 @@ import {
   Validators
 } from "@angular/forms";
 import {Router} from "@angular/router";
-import {IPais, IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
+import {IDocumento, IPais, IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 
 import {map} from "rxjs/operators";
@@ -323,6 +323,7 @@ export class ModalComponent implements OnInit {
             let obj = {
               nombreDocumento: '',
               urlDocumento: '',
+              tipoDocumento:'Lista de pasajeros',
               fecha: this.obtenerFechaActual(new Date()),
               codigoSolicitudVehiculo: {
                 codigoSolicitudVehiculo: resp.codigoSolicitudVehiculo,
@@ -379,12 +380,12 @@ export class ModalComponent implements OnInit {
       (vehiculosData: IVehiculos[]) => {
         if (vehiculosData && vehiculosData.length > 0) {
           this.placas = vehiculosData;
-        } else {
-          console.error('No se recibieron datos válidos de vehículos desde el backend.');
+        } else if(tipoVehiculo != '') {
+          this.mensajesService.mensajesToast("warning", "En estas fechas, no hay vehiculos disponibles del tipo seleccionado.");
         }
       },
       (error: any) => {
-        console.error('Error al obtener opciones de vehículos desde el backend:', error);
+       // console.error('Error al obtener opciones de vehículos desde el backend:', error);
       }
     );
   }
@@ -707,7 +708,11 @@ export class ModalComponent implements OnInit {
   }
 
   descargaPdf() {
-    this.soliVeService.obtenerDocumentPdf(this.soliVeOd.listDocumentos[0].nombreDocumento)
+    const tipoBuscado = "Lista de pasajeros";
+
+    const nombreDocument = this.soliVeOd.listDocumentos.filter((documento:IDocumento) => documento.tipoDocumento === tipoBuscado)
+    .map((documento) => documento.nombreDocumento);
+    this.soliVeService.obtenerDocumentPdf(nombreDocument)
     .subscribe((resp:any) => {
       let file = new Blob([resp], { type: 'application/pdf' });
       let fileUrl = URL.createObjectURL(file);

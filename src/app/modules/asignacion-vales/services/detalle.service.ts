@@ -9,6 +9,7 @@ import Swal, { SweetAlertIcon } from "sweetalert2";
 import { catchError, map } from "rxjs/operators";
 import { SolicitudVale } from "../interface/IsolicitudvaleDocument";
 import { UsuarioService } from "src/app/account/auth/services/usuario.service";
+import { ISolcitudAprobar, ISolicitudValeAprobar } from "../../solicitudes/Interfaces/solicitudValeAprobar.interface";
 
 @Injectable({
   providedIn: "root",
@@ -103,6 +104,10 @@ export class DetalleService {
   anularMision(misionAnulada: IAnularMision){
     console.log("interfaz: ", misionAnulada);
     return this.http.post<IAnularMision>(`${this.baseUrl}/asignacionvale/anular`, misionAnulada);
+  }
+
+  getSolicitudVale(codigo: string){
+    return this.http.get<ISolicitudValeAprobar>(`${this.baseUrl}/asignacionvale/listarsolicitudvalecodigo/${codigo}`);
   }
 
   async mensajesConfirmarDevolucion(
@@ -214,4 +219,6 @@ export class DetalleService {
 
     return estado;
   }
+
+
 }

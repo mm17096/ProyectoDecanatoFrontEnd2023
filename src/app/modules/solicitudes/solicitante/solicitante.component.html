@@ -120,6 +120,8 @@
     ></button>
   </div>
   <div class="modal-body">
+    <div class="container-fluid">
+      <div class="row">
     <table class="table table-centered table-nowrap">
       <thead class="table-light">
       <tr>
@@ -136,16 +138,16 @@
       <ng-container>
         <!-- *ngFor="let data of cards | filter:queryString | paginate: { itemsPerPage: 10, currentPage: p }" -->
         <tr *ngFor="let data of documentSoliCard let i = index">
-          <td >
+          <td *ngIf="data.tipodocument ==='Lista de pasajeros'">
             {{calcularNumeroCorrelativo(i)}}
           </td>
-          <td >
+          <td *ngIf="data.tipodocument ==='Lista de pasajeros'">
             {{data.fecha | date : "dd/MM/yyyy"}}  
           </td>
-          <td >
+          <td *ngIf="data.tipodocument ==='Lista de pasajeros'">
             {{data.nombredocment}}   
           </td>
-          <td style="text-align: center">
+          <td *ngIf="data.tipodocument ==='Lista de pasajeros'" style="text-align: center">
             <button type="button" (click)="descargarver(data)" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1">
               <i class="mdi mdi-18px mdi-download-outline"></i></button>
           </td>
@@ -153,6 +155,8 @@
       </ng-container>
       </tbody>
     </table>
+    </div>
+    </div>
   </div>
   <div class="modal-footer">
     <button
@@ -180,13 +184,15 @@
       ></button>
     </div>
     <div class="modal-body">
+      <div class="container-fluid">
+        <div class="row">
       <table class="table table-centered table-nowrap">
         <thead class="table-light">
         <tr>
           <th class="align-middle">No.</th>
           <th class="align-middle">Fecha</th>
           <th class="align-middle">Comrobante</th>
-          <th class="align-middle">Imagen</th>
+          <th class="align-middle">Document</th>
           <th class="align-middle" style="text-align: center">Tipo</th>
           <th class="align-middle"
               style="text-align: center;">
@@ -221,6 +227,8 @@
         </ng-container>
         </tbody>
       </table>
+      </div>
+      </div>
     </div>
     <div class="modal-footer">
       <button

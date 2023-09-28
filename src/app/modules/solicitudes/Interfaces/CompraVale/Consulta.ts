@@ -95,4 +95,5 @@ export interface DocumetSoliC{
     nombredocment:string;
     urldocument:string;
     codigosolicitudvehiculo:string;
+    tipodocument:string;
 }

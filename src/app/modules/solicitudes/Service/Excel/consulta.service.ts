@@ -203,4 +203,9 @@ export class ConsultaService {
       );
 
   }
+
+  public descargarDocumento(nombreDocumento): Observable<Blob> {
+    return this.http.get(`${this.urlbase}/document/descarga/${nombreDocumento}`, 
+    { responseType: 'blob' });
+  }
 }

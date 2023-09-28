@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 import { HomeFinancieroRoutingModule } from './home-financiero-routing.module';
 import { MostrarComponent } from './pages/mostrar/mostrar.component';
@@ -23,6 +23,9 @@ import { LayoutsModule } from 'src/app/layouts/layouts.module';
     WidgetModule,
     NgApexchartsModule,
     LayoutsModule
+  ], providers: [
+    DatePipe, // Agrega DatePipe a la lista de proveedores
+    // ...
   ]
 })
 export class HomeFinancieroModule { }

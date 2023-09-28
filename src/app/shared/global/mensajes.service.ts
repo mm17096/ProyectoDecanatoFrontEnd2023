@@ -18,6 +18,7 @@ export class MensajesService {
       position: "top-end",
       showConfirmButton: false,
       timer: 3000,
+      width: 400,
       timerProgressBar: true,
       didOpen: (toast) => {
         toast.addEventListener("mouseenter", Swal.stopTimer);

@@ -6,6 +6,6 @@ export interface Vale{
     estado:number;
     valor:number;
     compra:Compra;
-    fecha_vencimiento:Date;
+    fechaVencimiento:Date;
     correlativo:number;
 }

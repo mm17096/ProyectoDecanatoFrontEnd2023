@@ -19,7 +19,7 @@ import { ModalDocumentosComponent } from "../../components/modal-documentos/moda
 })
 export class TablaDetalleComponent implements OnInit {
   buttonDisabled = true; // Estado del botón
-
+  storage: Storage = window.localStorage;
   valesAsignados: IAsignacionDetalle;
 
   @ViewChild(ModalDocumentosComponent)
@@ -85,6 +85,7 @@ export class TablaDetalleComponent implements OnInit {
   }
 
   async devolverVales() {
+    const usuario = JSON.parse(this.storage.getItem("usuario" || ""));
     if ((await this.service.mensajesConfirmarDevolucion()) == true) {
       Swal.fire({
         title: "Espere",
@@ -96,7 +97,7 @@ export class TablaDetalleComponent implements OnInit {
         showConfirmButton: false,
       });
       return new Promise<void>((resolve, reject) => {
-        this.service.devolverVales(this.valesADevoler).subscribe({
+        this.service.devolverVales(this.valesADevoler, usuario.codigoUsuario).subscribe({
           next: (data: any) => {
             // Cerrar SweetAlert de carga
             Swal.close();

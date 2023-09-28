@@ -18,6 +18,7 @@ export class ModalComponent implements OnInit {
   formUsuario!: FormGroup;
   @Input() nuevo!: boolean;
   @Input() leyenda!: string;
+  @Input() home: boolean = false;
   public imgTemp: string | ArrayBuffer = null;
   private file!: File;
   imagen: string = "no hay";
@@ -75,7 +76,7 @@ export class ModalComponent implements OnInit {
       this.restaurarAlerts2();
     }
 
-  
+
   }
 
   ngAfterViewInit() {

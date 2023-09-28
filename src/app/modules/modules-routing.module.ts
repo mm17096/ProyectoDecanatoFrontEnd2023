@@ -12,6 +12,7 @@ const routes: Routes = [
   { path: 'compra',  loadChildren: () => import('./compra/compra.module').then(m => m.CompraModule) },
   { path: 'proveedor', loadChildren: () => import('./proveedor/proveedor.module').then(m => m.ProveedorModule) },
   { path: 'devolucion-vale',  loadChildren: () => import('./devolucion-vale/devolucion-vale.module').then(m => m.DevolucionValeModule) },
+  { path: 'home-financiero',  loadChildren: () => import('./home-financiero/home-financiero.module').then(m => m.HomeFinancieroModule) },
 
   //Ruta de empleado //
   { path: 'empleados', loadChildren: () => import('./empleado/empleado.module').then(m => m.EmpleadoModule), canActivate: [AuthGuard] },

@@ -68,6 +68,8 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
   onSubmit() {
     if (this.resetForm.valid && !this.code && !this.resetpass) {
 
+      this.cargando();
+
       const rest: IRespass = {
         correo: this.resetForm.get('correo').value,
         dui: this.resetForm.get('dui').value,
@@ -81,6 +83,7 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
           this.Email();
         },
         (err) => {
+          Swal.close();
           Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -282,11 +285,12 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
       mensaje: 'Su cuenta está en proceso de actualización de credenciales. Por motivos de seguridad, hemos enviado un código de verificación que le permitirá completar el proceso de actualización de sus credenciales.',
       centro: 'Utilice este codigo para continuar con el proceso :',
       codigo: this.codigo,
-      abajo: 'Gracias por tu atención a este importante mensaje.',
+      abajo: 'Gracias por su atención a este importante mensaje.',
     }
 
     this.usuarioService.SendEmail(email).subscribe(
       (resp) => {
+        Swal.close();
         const Toast = Swal.mixin({
           toast: true,
           position: 'top-end',
@@ -320,6 +324,38 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
     const validarCampo = this.resetForm.get(campo);
     return !validarCampo?.valid && validarCampo?.touched
       ? 'is-invalid' : validarCampo?.touched ? 'is-valid' : '';
+  }
+
+
+  cargando() {
+    let timerInterval;
+    Swal.fire({
+      title: 'Espere un momento!',
+      html: 'Se esta procesando la solicitud.',
+      timer: 5000,
+
+      didOpen: () => {
+        Swal.showLoading();
+        timerInterval = setInterval(() => {
+          const content = Swal.getHtmlContainer()
+          if (content) {
+            const b = content.querySelector('b')
+            if (b) {
+              b.textContent = Swal.getTimerLeft() + ''
+            }
+          }
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      }
+    }).then((result) => {
+      if (
+        result.dismiss === Swal.DismissReason.timer
+      ) {
+        console.log('I was closed by the timer');
+      }
+    });
   }
 }
 

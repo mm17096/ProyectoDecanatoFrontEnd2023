@@ -253,6 +253,7 @@ export class ModalSecretariaComponent implements OnInit {
     const solicitudVehiculo = this.formularioSoliVe.value;
     solicitudVehiculo.codigoSolicitudVehiculo = this.soliVeOd.codigoSolicitudVehiculo;
     solicitudVehiculo.solicitante = this.soliVeOd.solicitante.codigoUsuario;
+    solicitudVehiculo.nombreJefeDepto = this.soliVeOd.nombreJefeDepto;
     if(this.soliVeOd.vehiculo.placa == this.formularioSoliVe.get('vehiculo').value){
       solicitudVehiculo.vehiculo = this.soliVeOd.vehiculo.codigoVehiculo;
     }
@@ -432,7 +433,7 @@ export class ModalSecretariaComponent implements OnInit {
       solicitante: [],
       listaPasajeros: this.fb.array([]),
       motorista:['',[Validators.required]],
-      observacion:['',[]],
+      observaciones:['',[]],
       file: ['',],
     });
   }

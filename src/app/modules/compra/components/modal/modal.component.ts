@@ -29,12 +29,12 @@ export class ModalComponent implements OnInit {
   private isInteger: string = INTEGER_VALIDATE;
   private isDate: string = "";
 
-  cod_inicio?: number;
-  cod_fin?: number;
+  codInicio?: number;
+  codFin?: number;
   cantidad: number = 0;
 
-  precio_unitario?: number;
-  total_compra: number = 0;
+  precioUnitario?: number;
+  totalCompra: number = 0;
 
   aplicarReadOnly: boolean = false;
 
@@ -66,11 +66,11 @@ export class ModalComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.leyenda == "Editar") {
-      this.cod_inicio = this.compra.cod_inicio;
-      this.cod_fin = this.compra.cod_fin;
-      this.precio_unitario = this.compra.precio_unitario;
+      this.codInicio = this.compra.codInicio;
+      this.codFin = this.compra.codFin;
+      this.precioUnitario = this.compra.precioUnitario;
       this.cantidad = this.compra.cantidad;
-      this.total_compra = this.compra.total_compra;
+      this.totalCompra = this.compra.totalCompra;
       this.aplicarReadOnly = true;
       this.formularioGeneral.patchValue(this.compra);
       this.formularioGeneral.patchValue({
@@ -96,7 +96,7 @@ export class ModalComponent implements OnInit {
         ],
       ],
 
-      cod_inicio: [
+      codInicio: [
         "",
         [
           Validators.required,
@@ -104,7 +104,7 @@ export class ModalComponent implements OnInit {
           Validators.pattern(this.isInteger),
         ],
       ],
-      cod_fin: [
+      codFin: [
         "",
         [
           Validators.required,
@@ -112,15 +112,15 @@ export class ModalComponent implements OnInit {
           Validators.pattern(this.isInteger),
         ],
       ],
-      fecha_compra: [
+      fechaCompra: [
         "",
         [Validators.required, Validators.pattern(this.isDate)],
       ],
-      fecha_vencimiento: [
+      fechaVencimiento: [
         "",
         [Validators.required, Validators.pattern(this.isDate)],
       ],
-      precio_unitario: [
+      precioUnitario: [
         "",
         [
           Validators.required,
@@ -128,7 +128,7 @@ export class ModalComponent implements OnInit {
           Validators.pattern(this.isNumber),
         ],
       ],
-      total_compra: [
+      totalCompra: [
         "",
         [
           Validators.required,
@@ -162,30 +162,30 @@ export class ModalComponent implements OnInit {
   }
 
   getcantidad(): void {
-    this.cod_inicio = this.formularioGeneral.get("cod_inicio").value;
-    this.cod_fin = this.formularioGeneral.get("cod_fin").value;
+    this.codInicio = this.formularioGeneral.get("codInicio").value;
+    this.codFin = this.formularioGeneral.get("codFin").value;
 
-    if (isNaN(this.cod_inicio) || isNaN(this.cod_fin)) {
+    if (isNaN(this.codInicio) || isNaN(this.codFin)) {
       this.cantidad = null;
-    } else if (this.cod_inicio == null || this.cod_fin == null) {
+    } else if (this.codInicio == null || this.codFin == null) {
       this.cantidad = null;
     } else {
-      this.cantidad = this.cod_fin + 1 - this.cod_inicio;
+      this.cantidad = this.codFin + 1 - this.codInicio;
     }
     this.formularioGeneral.controls["cantidad"].setValue(this.cantidad);
     this.getTotalCompra();
   }
 
   getTotalCompra(): void {
-    this.precio_unitario = this.formularioGeneral.get("precio_unitario").value;
-    if (isNaN(this.precio_unitario)) {
-      this.total_compra = null;
-    } else if (this.precio_unitario == null) {
-      this.total_compra = null;
+    this.precioUnitario = this.formularioGeneral.get("precioUnitario").value;
+    if (isNaN(this.precioUnitario)) {
+      this.totalCompra = null;
+    } else if (this.precioUnitario == null) {
+      this.totalCompra = null;
     } else {
-      this.total_compra = this.precio_unitario * this.cantidad;
+      this.totalCompra = this.precioUnitario * this.cantidad;
     }
-    this.formularioGeneral.controls["total_compra"].setValue(this.total_compra);
+    this.formularioGeneral.controls["totalCompra"].setValue(this.totalCompra);
   }
 
   validarfecha(fecha: string) {
@@ -200,10 +200,10 @@ export class ModalComponent implements OnInit {
   }
 
   validarCodigos() {
-    const cod_inicio = this.formularioGeneral.get("cod_inicio").value;
-    const cod_fin = this.formularioGeneral.get("cod_fin").value;
+    const codInicio = this.formularioGeneral.get("codInicio").value;
+    const codFin = this.formularioGeneral.get("codFin").value;
 
-    if (cod_inicio > cod_fin) {
+    if (codInicio > codFin) {
       // Error
       return false;
     } else {
@@ -215,11 +215,11 @@ export class ModalComponent implements OnInit {
     if (this.formularioGeneral.valid) {
       if (this.validarCodigos()) {
         if (
-          this.validarfecha(this.formularioGeneral.get("fecha_compra").value)
+          this.validarfecha(this.formularioGeneral.get("fechaCompra").value)
         ) {
           if (
             this.validarfecha(
-              this.formularioGeneral.get("fecha_vencimiento").value
+              this.formularioGeneral.get("fechaVencimiento").value
             )
           ) {
             if (this.compra?.id) {
@@ -329,11 +329,11 @@ export class ModalComponent implements OnInit {
   }
 
   limpiarCampos() {
-    this.cod_inicio = null;
-    this.cod_fin = null;
+    this.codInicio = null;
+    this.codFin = null;
     this.cantidad = null;
-    this.precio_unitario = null;
-    this.total_compra = null;
+    this.precioUnitario = null;
+    this.totalCompra = null;
     this.formularioGeneral.reset();
   }
 

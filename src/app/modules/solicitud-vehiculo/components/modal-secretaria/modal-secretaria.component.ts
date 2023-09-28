@@ -160,7 +160,7 @@ export class ModalSecretariaComponent implements OnInit {
        if(this.validarfecha(solicitudVehiculo.fechaSolicitud)){
          if (this.validarfecha(solicitudVehiculo.fechaSalida)){
            if(this.validarfecha(solicitudVehiculo.fechaEntrada)){
-             if(this.file  != null || solicitudVehiculo.cantidadPersonas < 6 && this.soliVeOd.cantidadPersonas > 6){
+             if(solicitudVehiculo.cantidadPersonas == this.soliVeOd.cantidadPersonas){
                   //  vacío para almacenar los datos de los pasajeros
                const pasajerosData = [];
 
@@ -318,46 +318,46 @@ export class ModalSecretariaComponent implements OnInit {
           this.soliSave = resp;
           Swal.close();
 
-          // if (solicitudVehiculo.file != null && solicitudVehiculo.cantidadPersonas > 5) {
-          //     // enviar pdf
-          //   const formData = new FormData();
-          //   let obj = {
-          //     nombreDocumento: '',
-          //     urlDocumento: '',
-          //     fecha: this.obtenerFechaActual(new Date()),
-          //     codigoSolicitudVehiculo: {
-          //       codigoSolicitudVehiculo: resp.codigoSolicitudVehiculo,
-          //     }
-          //   }
-          //   formData.append('archivo', this.file!);
-          //   formData.append('entidad', new Blob([JSON.stringify(obj)], {type: 'application/json'}));
+          if (solicitudVehiculo.cantidadPersonas != this.soliVeOd.cantidadPersonas) {
+              // enviar pdf
+            const formData = new FormData();
+            let obj = {
+              nombreDocumento: '',
+              urlDocumento: '',
+              fecha: this.obtenerFechaActual(new Date()),
+              codigoSolicitudVehiculo: {
+                codigoSolicitudVehiculo: resp.codigoSolicitudVehiculo,
+              }
+            }
+            formData.append('archivo', this.file!);
+            formData.append('entidad', new Blob([JSON.stringify(obj)], {type: 'application/json'}));
 
-          //   this.soliVeService.enviarPdfPasajeros(formData).subscribe({
-          //     next: (pdfResp: any) => {
-          //       //console.log(pdfResp);
-          //       this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
-          //       this.mensajesService.mensajesToast("success", "Registro agregado");
-          //       this.modalService.dismissAll();
-          //       this.formularioSoliVe.reset();
-          //       resolve();
-          //     },
-          //     error: (pdfError) => {
-          //       Swal.close();
-          //       this.mensajesService.mensajesSweet(
-          //         'error',
-          //         'Ups... Algo salió mal al enviar el PDF',
-          //         pdfError.error.message
-          //       );
-          //       reject(pdfError);
-          //     },
-          //   });
-          // } else {
+            this.soliVeService.enviarPdfPasajeros(formData).subscribe({
+              next: (pdfResp: any) => {
+                //console.log(pdfResp);
+                this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
+                this.mensajesService.mensajesToast("success", "Registro agregado");
+                this.modalService.dismissAll();
+                this.formularioSoliVe.reset();
+                resolve();
+              },
+              error: (pdfError) => {
+                Swal.close();
+                this.mensajesService.mensajesSweet(
+                  'error',
+                  'Ups... Algo salió mal al enviar el PDF',
+                  pdfError.error.message
+                );
+                reject(pdfError);
+              },
+            });
+          } else {
             this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
             this.mensajesService.mensajesToast("success", "Asignacion exitosa");
             this.modalService.dismissAll();
             this.formularioSoliVe.reset();
             resolve();
-          //}
+          }
         },
         error : (err) => {
           // Cerrar SweetAlert de carga

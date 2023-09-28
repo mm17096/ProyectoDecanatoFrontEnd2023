@@ -8,7 +8,7 @@ import {
   Validators
 } from "@angular/forms";
 import {Router} from "@angular/router";
-import {IDocumentoSoliVe, IMotorista, IPais, IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
+import {IDocumento, IDocumentoSoliVe, IMotorista, IPais, IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 
 import {map} from "rxjs/operators";
@@ -131,6 +131,11 @@ export class ModalSecretariaComponent implements OnInit {
       this.formularioSoliVe.get('solicitante')
         .setValue(this.soliVeOd != null ? this.soliVeOd.solicitante.empleado.nombre+' '
         + this.soliVeOd.solicitante.empleado.apellido: '');
+      // por estado revision
+      this.formularioSoliVe.get('observaciones')
+        .setValue(this.soliVeOd != null ? this.soliVeOd.observaciones: '');
+      // this.formularioSoliVe.get('motorista')
+      //   .setValue(this.soliVeOd != null ? this.soliVeOd.motorista : '');
 
       if (solicitudVehiculo.cantidadPersonas > 5){
         this.mostrarTabla = false;
@@ -160,7 +165,7 @@ export class ModalSecretariaComponent implements OnInit {
        if(this.validarfecha(solicitudVehiculo.fechaSolicitud)){
          if (this.validarfecha(solicitudVehiculo.fechaSalida)){
            if(this.validarfecha(solicitudVehiculo.fechaEntrada)){
-             if(solicitudVehiculo.cantidadPersonas == this.soliVeOd.cantidadPersonas){
+             if(solicitudVehiculo.cantidadPersonas == this.soliVeOd.cantidadPersonas || this.file != null){
                   //  vacío para almacenar los datos de los pasajeros
                const pasajerosData = [];
 
@@ -256,6 +261,12 @@ export class ModalSecretariaComponent implements OnInit {
     if(this.soliVeOd.vehiculo.placa == this.formularioSoliVe.get('vehiculo').value){
       solicitudVehiculo.vehiculo = this.soliVeOd.vehiculo.codigoVehiculo;
     }
+    const tipoBuscado = "Lista de pasajeros";
+    const documentosFiltrados = this.soliVeOd.listDocumentos.filter((documento) => {
+      return documento.tipoDocumento === tipoBuscado;
+    });
+    console.log(documentosFiltrados);
+
 
     /* para la direccion */
     let nombreDepartamento;
@@ -322,8 +333,10 @@ export class ModalSecretariaComponent implements OnInit {
               // enviar pdf
             const formData = new FormData();
             let obj = {
-              nombreDocumento: '',
-              urlDocumento: '',
+              codigoDocumento:documentosFiltrados[0].codigoDocumento,
+              nombreDocumento:documentosFiltrados[0].nombreDocumento,
+              urlDocumento:documentosFiltrados[0].urlDocumento,
+              tipoDocumento:'Lista de pasajeros',
               fecha: this.obtenerFechaActual(new Date()),
               codigoSolicitudVehiculo: {
                 codigoSolicitudVehiculo: resp.codigoSolicitudVehiculo,
@@ -335,7 +348,7 @@ export class ModalSecretariaComponent implements OnInit {
             this.soliVeService.enviarPdfPasajeros(formData).subscribe({
               next: (pdfResp: any) => {
                 //console.log(pdfResp);
-                this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
+                this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
                 this.mensajesService.mensajesToast("success", "Registro agregado");
                 this.modalService.dismissAll();
                 this.formularioSoliVe.reset();
@@ -381,8 +394,8 @@ export class ModalSecretariaComponent implements OnInit {
       (vehiculosData: IVehiculos[]) => {
         if (vehiculosData && vehiculosData.length > 0) {
           this.placas = vehiculosData;
-        } else {
-          console.error('No se recibieron datos válidos de vehículos desde el backend.');
+        }else if(tipoVehiculo != '') {
+          this.mensajesService.mensajesToast("warning", "En estas fechas, no hay vehiculos disponibles del tipo seleccionado.");
         }
       },
       (error: any) => {
@@ -581,6 +594,19 @@ export class ModalSecretariaComponent implements OnInit {
   }
   CambiarAlert(alert) {
     alert.show = !alert.show;
+  }
+
+  descargaPdf() {
+    const tipoBuscado = "Lista de pasajeros";
+
+    const nombreDocument = this.soliVeOd.listDocumentos.filter((documento:IDocumento) => documento.tipoDocumento === tipoBuscado)
+    .map((documento) => documento.nombreDocumento);
+    this.soliVeService.obtenerDocumentPdf(nombreDocument)
+    .subscribe((resp:any) => {
+      let file = new Blob([resp], { type: 'application/pdf' });
+      let fileUrl = URL.createObjectURL(file);
+      window.open(fileUrl);
+    });
   }
 
 }

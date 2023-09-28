@@ -5,7 +5,7 @@ export interface IVale {
   id:                 string;
   valor:              number;
   compra:             ICompra;
-  fecha_vencimiento:  string;
+  fechaVencimiento:  string;
   correlativo:        number;
 }
 

@@ -10,7 +10,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { Ng2SearchPipeModule } from "ng2-search-filter";
 import { NgxPaginationModule } from "ngx-pagination";
 import { UIModule } from "../../shared/ui/ui.module";
-import { NgbModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModule, NgbPaginationModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { SolicitudValeAprobarComponent } from './solicitud-vale-aprobar/solicitud-vale-aprobar.component';
 import { ValesAsignarComponent } from './solicitudvale/components/vales-asignar/vales-asignar.component';
 import { SolicitanteComponent } from './solicitante/solicitante.component';
@@ -27,6 +27,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     HttpClientModule,
     ReactiveFormsModule,
     NgxPaginationModule,
+    NgbPaginationModule,
     Ng2SearchPipeModule,
     UIModule,
     NgSelectModule,

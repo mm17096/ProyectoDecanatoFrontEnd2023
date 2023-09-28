@@ -34,3 +34,8 @@ export interface IValesAsignarPage {
   correlativoVale: number;
   valorVale: number;
 }
+
+export interface SearchResult{
+  vales: IValesAsignarPage[];
+  total: number;
+}

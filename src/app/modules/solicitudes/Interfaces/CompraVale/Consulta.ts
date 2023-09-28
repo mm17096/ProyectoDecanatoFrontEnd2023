@@ -60,11 +60,39 @@ export interface IConsultaDelAl{
     estadovale:number;
     cantidadvale:number;
     fechavencimiento:Date;
-
-
 }
 
 export interface Tabla{
+    id:string;
     i:number;
     codi:number;
+    val:number;
+}
+
+export interface In{
+    idn:Date;
+    in:number;
+    vall:number;
+}
+
+export interface DocumetVale{
+    url:string;
+    codigodocumentos:string;
+    fecha:Date;
+    foto:string;
+    tipo:string;
+    comprobante:string;
+    idsolicitudvale:string;
+}
+
+export interface DocumetValeId{
+    idsolicitudvale:string;
+    estado:number;
+}
+export interface DocumetSoliC{
+    fecha:Date;
+    codigodocumento:string;
+    nombredocment:string;
+    urldocument:string;
+    codigosolicitudvehiculo:string;
 }

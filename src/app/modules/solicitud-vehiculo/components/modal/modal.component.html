@@ -582,12 +582,12 @@
             <div *ngIf="btnVerPdf" class="alert alert-warning">
               Lista de pasajeros
               <div>
-                <button class="btn btn-primary" type="button">
+                <button class="btn btn-primary" type="button"
+                (click)="descargaPdf()">
                   Descargar pdf
                 </button>
               </div>
             </div>
-
         </div>
       </div>
       <!-- fin de personas -->

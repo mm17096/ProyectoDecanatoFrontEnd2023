@@ -8,6 +8,8 @@ import { ICargo, IDepto, IEmpleado } from '../../interface/empleado.interface';
 
 import { EMAIL_VALIDATE_UES, NAME_VALIDATE } from 'src/app/constants/constants';
 import { MensajesService } from 'src/app/shared/global/mensajes.service';
+import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
+import { IEmail } from 'src/app/account/auth/interfaces/usuario';
 
 @Component({
   selector: 'app-modal',
@@ -55,7 +57,8 @@ export class ModalComponent implements OnInit {
     private modalService: NgbModal,
     private fb: FormBuilder,
     private router: Router,
-    private mensajesService: MensajesService
+    private mensajesService: MensajesService,
+    private usuarioService: UsuarioService
   ) {
     this.formBuilder = this.Iniciarformulario();
   }
@@ -64,7 +67,7 @@ export class ModalComponent implements OnInit {
     if (this.leyenda == "Editar") {
       this.formBuilder = this.Iniciarformulario();
     }
-    
+
     this.empleadoService.getCargos();
     this.empleadoService.getDepartamentos();
   }
@@ -75,11 +78,11 @@ export class ModalComponent implements OnInit {
       dui: ['', [Validators.required]],
       nombre: ['', [Validators.required, Validators.pattern(this.isText)]],
       apellido: ['', [Validators.required, Validators.pattern(this.isText)]],
-      telefono: ['', [Validators.required]],
+      telefono: ['', [Validators.required, Validators.pattern(/^[267]\d{7}$/)]],
       licencia: ['', this.motoristaOd ? [Validators.required] : []],
       tipolicencia: ['', this.motoristaOd ? [Validators.required] : []],
       fechalicencia: ['', this.motoristaOd ? [Validators.required] : []],
-      jefe: [false, [Validators.required]],
+      /*   jefe: [false, [Validators.required]], */
       estado: [8],
       nombrefoto: [''],
       urlfoto: [''],
@@ -93,16 +96,51 @@ export class ModalComponent implements OnInit {
 
   //// metodo para obtener los cargos /////
   get Cargos() {
-    return this.empleadoService.listCargos;
+    const cargos: ICargo[] = [];
+
+    if (this.leyenda == "Editar") {
+      cargos.push(this.empleadOd.cargo)
+    }
+
+    this.empleadoService.listCargos.forEach((x) => {
+      if (this.leyenda == "Editar") {
+        if (x.estado == 8 && x.id != this.empleadOd.cargo.id) {
+          cargos.push(x);
+        }
+      } else {
+        if (x.estado == 8) {
+          cargos.push(x);
+        }
+      }
+    });
+    return cargos;
   }
 
   //// metodo para obtener los departamentos /////
   get Departamentos() {
-    return this.empleadoService.listDepartamentos;
+    const departamentos: IDepto[] = [];
+
+    if (this.leyenda == "Editar") {
+      departamentos.push(this.empleadOd.departamento)
+    }
+
+    this.empleadoService.listDepartamentos.forEach((x) => {
+      if (this.leyenda == "Editar") {
+        if (x.estado == 8 && x.codigoDepto != this.empleadOd.departamento.codigoDepto) {
+          departamentos.push(x);
+        }
+      } else {
+        if (x.estado == 8) {
+          departamentos.push(x);
+        }
+      }
+    });
+    return departamentos;
   }
 
   ////// metodo para tomar la desicion si es registro o actualizacion /////
   guardar() {
+    this.cargando();
     if (this.formBuilder.valid) {
       if (this.empleadOd != null) {
         this.editando();
@@ -120,29 +158,69 @@ export class ModalComponent implements OnInit {
     }
   }
 
-  /////////// metodo para registrar empleado ///////////
+  /////////// metodo para enviar EMAIL///////////
+
+  Email(correo: string, nombre: string) {
+    const email: IEmail = {
+      asunto: '!Bienvenid@¡',
+      titulo: 'Registro de empleado',
+      email: correo,
+      receptor: "Estimad@ : " + nombre,
+      mensaje: 'Se han registrado sus datos en el sistema de Misiones de la Universidad de El Salvador - Facultad Multidisciplinaria Paracentral. Para iniciar sesión por primera vez, utilice como nombre de usuario los parámetros de su correo electrónico antes de "@", y su clave por defecto será su número de DUI, la cual deberá cambiar una vez haya iniciado sesión.',
+      centro: 'Gracias por su atención a este importante mensaje.',
+      codigo: '',
+      abajo: 'Pagina principal : ' + 'http://localhost:4200/',
+    }
+
+    this.usuarioService.SendEmail(email).subscribe(
+      (resp) => {
+        Swal.close();
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          //timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        });
+
+        Toast.fire({
+          icon: 'success',
+          text: 'Almacenamiento exitoso'
+        });
+      },
+      (err) => {
+        Swal.close();
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          //timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        });
+
+        Toast.fire({
+          icon: 'success',
+          text: 'Almacenamiento exitoso'
+        });
+      }
+    );
+  }
+
   registrando() {
+
     const empleado = this.formBuilder.value;
     if (this.imagen === 'no hay') {
       this.empleadoService.postEmpleado(empleado).subscribe((resp: any) => {
         if (resp) {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            //timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener('mouseenter', Swal.stopTimer)
-              toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
-          });
-
-          Toast.fire({
-            icon: 'success',
-            text: 'Almacenamiento exitoso'
-          });
-
+          this.Email(this.formBuilder.get('correo').value, this.formBuilder.get('nombre').value + ' ' + this.formBuilder.get('apellido').value);
           this.formBuilder.reset();
           this.recargar();
           this.modalService.dismissAll();
@@ -183,7 +261,7 @@ export class ModalComponent implements OnInit {
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",
-            err
+          err
         )
       });
     }
@@ -199,6 +277,7 @@ export class ModalComponent implements OnInit {
     if (this.imagen === 'no hay') {
       this.empleadoService.putEmpleado(empleado).subscribe((resp: any) => {
         if (resp) {
+          Swal.close();
           const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -328,7 +407,7 @@ export class ModalComponent implements OnInit {
       fechalicenciaControl.setValue('');
       fechalicenciaControl.reset();
 
-      if(this.empleadOd){
+      if (this.empleadOd) {
         this.empleadOd.licencia = "";
         this.empleadOd.tipolicencia = "";
         this.empleadOd.fechalicencia = new Date();
@@ -398,6 +477,37 @@ export class ModalComponent implements OnInit {
 
   siMuestraAlertas() {
     return this.alerts.every((alert) => alert.show);
+  }
+
+  cargando() {
+    let timerInterval;
+    Swal.fire({
+      title: 'Espere un momento!',
+      html: 'Se esta procesando la solicitud.',
+      timer: 5000,
+
+      didOpen: () => {
+        Swal.showLoading();
+        timerInterval = setInterval(() => {
+          const content = Swal.getHtmlContainer()
+          if (content) {
+            const b = content.querySelector('b')
+            if (b) {
+              b.textContent = Swal.getTimerLeft() + ''
+            }
+          }
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      }
+    }).then((result) => {
+      if (
+        result.dismiss === Swal.DismissReason.timer
+      ) {
+        console.log('I was closed by the timer');
+      }
+    });
   }
 
 }

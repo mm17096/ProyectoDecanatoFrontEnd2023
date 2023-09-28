@@ -10,8 +10,8 @@
       <div class="card-body">
         <div class="col-md-12">
           <div class="mb-3">
-            <p><strong>Fecha misión:</strong></p>
-        <p>{{obje.fechaSalida}}</p>
+            <p><strong>Fecha de uso:</strong></p>
+        <p>{{obje.fechaSalida| date : "dd/MM/yyyy" }}</p>
         <p><strong>Motorista: </strong></p>
         <p>{{obje.motorista.nombre}} {{obje.motorista.apellido}}</p>
         <p><strong>Placa: </strong>{{obje.vehiculo.placa}}</p>
@@ -19,14 +19,16 @@
         </div>
 
             
-              <div class="d-flex justify-content-between">
+              <div class="d-flex justify-content-center">
                 <!--<a class="btn btn-salida btn-separado">+ Salida</a>-->
-                <app-modal [leyenda]="'Salida'" [titulo]="'Salida'" [leyendas]="'Salida'"  [objetivoMision]="obje"></app-modal>
+                <app-modal  *ngIf="controlador1" [leyenda]="'Salida'" [titulo]="'Salida'" [leyendas]="'Salida'"  [objetivoMision]="obje" ></app-modal>
                 <!--<a class="btn btn-entrada">- Entrada</a>-->
-                <app-modal [leyenda]="'Entrada'" [titulo]="'Entrada'" [leyendas]="'Entrada'" [objetivoMision]="obje"></app-modal>
+                <app-modal  *ngIf="controlador2" [leyenda]="'Entrada'" [titulo]="'Entrada'"  [leyendas]="'Entrada'" [objetivoMision]="obje"   [controllerdata]="controllerdata"></app-modal>
                 <!--<a [routerLink]="['/modal/', obje.codigoSolicitudVehiculo]" class="btn btn-primary">ver</a>---->
               </div>
+              
       </div>
+      
     </div>
     <div class="blob"></div>
     <!-- Fin del bucle que muestra las imágenes -->

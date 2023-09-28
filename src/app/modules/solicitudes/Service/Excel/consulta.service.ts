@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CompraDto, Consulta, ConsultaDto, IConsultaDelAl } from '../../Interfaces/CompraVale/Consulta';
+import { CompraDto, Consulta, ConsultaDto, DocumetSoliC, DocumetVale, DocumetValeId, IConsultaDelAl } from '../../Interfaces/CompraVale/Consulta';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { IConsultaExcelTabla, IConsultaExcelTablaC, IConsultaExcelTablaCompraDto, IConsultaExcelTablaDto, ITablaConsulta, ITablaConsultaC, ITablaConsultaCompraDto, ITablaConsultaDto } from '../../Interfaces/CompraVale/excel';
@@ -21,24 +21,25 @@ export class ConsultaService {
   private urlbase= environment.baseUrl;
   storage: Storage = window.localStorage;
   public empleado!: Empleado;
+  vale: IConsultaDelAl[] = [];
 
   constructor(private http:HttpClient) { }
-  url = 'http://localhost:8080/api/consulta'
-  private baseUrl: string = environment.baseUrl;
+  //url = 'http://localhost:8080/api/consulta'
+  //private baseUrl: string = environment.baseUrl;
   getCliente(){
-    return this.http.get<Consulta>(this.url+'/listaconsulta');
+    return this.http.get<Consulta>(this.urlbase+'/consulta/listaconsulta');
   }
 
   getConsultaValeDto(fechaI:Date, fechaF:Date){
-    return this.http.get<Consulta>(this.url+'/listarconsultadto?fechaI='+fechaI+'&fechaF='+fechaF);
+    return this.http.get<Consulta>(this.urlbase+'/consulta/listarconsultadto?fechaI='+fechaI+'&fechaF='+fechaF);
   }
 
   getConsultaCompraValeDto(fechaI:Date, fechaF:Date){
-    return this.http.get<Consulta>(this.url+'/listarcompradto?fechaI='+fechaI+'&fechaF='+fechaF);
+    return this.http.get<Consulta>(this.urlbase+'/consulta/listarcompradto?fechaI='+fechaI+'&fechaF='+fechaF);
   }
 
   getConsultaValeGDto(fechaI:Date, fechaF:Date): Observable<IConsultaExcelTablaDto>{
-    return this.http.get<ConsultaDto[]>(this.url+'/listarconsultadto?fechaI='+fechaI+'&fechaF='+fechaF)
+    return this.http.get<ConsultaDto[]>(this.urlbase+'/consulta/listarconsultadto?fechaI='+fechaI+'&fechaF='+fechaF)
      .pipe(map((resp)=> {
       resp.length = 2000;
       const dataExcel: IConsultaExcelTablaDto ={
@@ -67,7 +68,7 @@ export class ConsultaService {
   }
 
   getConsultaCompraValeGDto(fechaI:Date, fechaF:Date): Observable<IConsultaExcelTablaCompraDto>{
-    return this.http.get<CompraDto[]>(this.url+'/listarcompradto?fechaI='+fechaI+'&fechaF='+fechaF)
+    return this.http.get<CompraDto[]>(this.urlbase+'/consulta/listarcompradto?fechaI='+fechaI+'&fechaF='+fechaF)
     .pipe(map((resp)=> {
      resp.length = 2000;
      const dataExcel: IConsultaExcelTablaCompraDto ={
@@ -91,14 +92,14 @@ export class ConsultaService {
   }
   getCompras() {
     this.http
-      .get(`${this.baseUrl}/compra/listasinpagina`)
+      .get(`${this.urlbase}/compra/listasinpagina`)
       .pipe(map((resp: any) => resp as ICompra[]))
       .subscribe((compras: ICompra[]) => {
         this.listCompra = compras;
       });
   }
   getCompraC(): Observable<IConsultaExcelTablaC>{
-     return this.http.get<Compra[]>(this.baseUrl+'/compra/listasinpagina?orderBy=fechaCompra:asc')
+     return this.http.get<Compra[]>(this.urlbase+'/compra/listasinpagina?orderBy=fecha_compra:asc')
      .pipe(map((resp)=> {
       resp.length = 2000;
       const dataExcel: IConsultaExcelTablaC ={
@@ -121,7 +122,7 @@ export class ConsultaService {
   }
 
   getConsultaExporExcel(): Observable<IConsultaExcelTabla>{
-    return this.http.get<Consulta[]>(this.url+'/listaconsulta')
+    return this.http.get<Consulta[]>(this.urlbase+'/consulta/listaconsulta')
     .pipe(map((resp) => {
     resp.length = 2000;
     //console.log(resp);
@@ -158,19 +159,31 @@ export class ConsultaService {
   }
 
   getConsultaSolicitudVDelAl(id:string){
-   /* this.http
-    .get(`${this.url}/listarvalesdelal/`+id)
-    .pipe(map((resp: any) => resp as IConsultaDelAl[]))
-    .subscribe(
-      (vales: IConsultaDelAl[])=> {
-        this.listVales = vales;
-      },
-      (error) => {
-        console.log("Error al obtener los vales", error);
-        }
-      );*/
-   //return this.listVales;
-    return this.http.get<IConsultaDelAl[]>(this.url+'/listarvalesdelal/'+id);
+    return this.http.get<IConsultaDelAl[]>(this.urlbase+'/consulta/listarvalesdelal/'+id);
+  }
+
+  async getConsultaSolicitudVDelAl1(id: string): Promise<number> {
+    try {
+      const compras = await this.http
+        .get(`${this.urlbase}/consulta/listarvalesdelal/${id}`)
+        .toPromise();
+  
+      const valor = (compras as Array<{}>).length;
+      return valor;
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;
+    }
+  }
+
+  getConsultaDocumnetoSoliCa(id:string){
+    return this.http.get<DocumetSoliC[]>(this.urlbase+'/consulta/listardocs/'+id);
+  }
+  getConsultaDocumnetoValeId(id:string){
+    return this.http.get<DocumetValeId[]>(this.urlbase+'/consulta/listardocv/'+id);
+  }
+  getConsultaDocumnetoVale(id:string){
+    return this.http.get<DocumetVale[]>(this.urlbase+'/consulta/listardocvid/'+id);
   }
 
   get codEmpleado(): string {
@@ -179,12 +192,12 @@ export class ConsultaService {
 
   getEmpleado(): Observable<Empleado> {
     return this.http
-      .get(`${this.baseUrl}/empleado/${this.codEmpleado}`)
+      .get(`${this.urlbase}/empleado/${this.codEmpleado}`)
       .pipe(
         tap((empleado: any) => {
           const { codigoEmpleado, dui, nombre, apellido, telefono, licencia, tipolicencia, fechalicencia, estado, jefe, correo, nombrefoto, urlfoto, cargo, departamento } = empleado;
           const usuarioObj = new Empleado(codigoEmpleado, dui, nombre, apellido, telefono, licencia, tipolicencia, fechalicencia, estado, jefe, correo, nombrefoto, urlfoto, cargo, departamento);
-          console.log(usuarioObj);
+         // console.log(usuarioObj);
           return usuarioObj;
         })
       );

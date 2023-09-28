@@ -29,23 +29,28 @@ export class LoginComponent implements OnInit {
   // set the currenr year
   year: number = new Date().getFullYear();
 
+  alerts = [
+    {
+      id: 1,
+      type: "info",
+      message:
+        "Ingrese su nombre de usuario y contraseña. Si es la primera vez que inicia sesión, su contraseña será el número de su DUI.",
+      show: false,
+    },
+  ];
+
   // tslint:disable-next-line: max-line-length
   constructor(
-    private formBuilder: FormBuilder, 
-    private usuarioService: UsuarioService, 
-    private router: Router) { }
+    private formBuilder: FormBuilder,
+    private usuarioService: UsuarioService,
+    private router: Router,
+    private modalService: NgbModal) { }
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
       email: ['decanato@ues.edu.sv', [Validators.required]],
       password: ['12345678', [Validators.required]],
     });
-
-    // reset login status
-    // this.authenticationService.logout();
-    // get return url from route parameters or default to '/'
-    // tslint:disable-next-line: no-string-literal
-    //this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   // convenience getter for easy access to form fields
@@ -62,7 +67,9 @@ export class LoginComponent implements OnInit {
         nombre: this.loginForm.get('email').value,
         clave: this.loginForm.get('password').value
       }
-      
+
+      this.cargando();
+
       this.usuarioService.login(login).subscribe(
         (resp) => {
           if (this.loginForm.get('remember')?.value) {
@@ -70,7 +77,7 @@ export class LoginComponent implements OnInit {
           } else {
             this.storage.removeItem('email');
           }
-
+          Swal.close();
           const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -81,7 +88,7 @@ export class LoginComponent implements OnInit {
               toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
           });
-          
+
           Toast.fire({
             icon: 'success',
             text: '¡Ha iniciado sesión!'
@@ -90,7 +97,7 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['/dashboard']);
             this.loginForm.reset();
           });
-          
+
         },
         (err) => {
           Swal.fire({
@@ -105,6 +112,59 @@ export class LoginComponent implements OnInit {
 
   public togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
+  }
+
+  //// metodo par abrir la modal ////
+  openModal(content: any) {
+    //hacer que la modal no se cierre al precionar fuera de ella -> backdrop: 'static', keyboard: false
+    this.modalService.open(content, { size: '', centered: true, backdrop: 'static', keyboard: false });
+  }
+
+  //////   metodos para la ayuda ///////
+  CambiarAlert(alert) {
+    alert.show = !alert.show;
+    this.modalService.dismissAll();
+  }
+
+  restaurarAlerts() {
+    this.alerts.forEach((alert) => {
+      alert.show = true;
+    });
+  }
+
+  siMuestraAlertas() {
+    return this.alerts.every((alert) => alert.show);
+  }
+
+  cargando() {
+    let timerInterval;
+    Swal.fire({
+      title: 'Espere un momento!',
+      html: 'Se esta procesando la solicitud.',
+      timer: 5000,
+
+      didOpen: () => {
+        Swal.showLoading();
+        timerInterval = setInterval(() => {
+          const content = Swal.getHtmlContainer()
+          if (content) {
+            const b = content.querySelector('b')
+            if (b) {
+              b.textContent = Swal.getTimerLeft() + ''
+            }
+          }
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      }
+    }).then((result) => {
+      if (
+        result.dismiss === Swal.DismissReason.timer
+      ) {
+        console.log('I was closed by the timer');
+      }
+    });
   }
 
 }

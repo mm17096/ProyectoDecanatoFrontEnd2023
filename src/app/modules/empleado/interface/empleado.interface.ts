@@ -1,3 +1,5 @@
+import { IEmail } from "src/app/account/auth/interfaces/usuario";
+
 export interface IEmpleado {
      codigoEmpleado: string,
      dui: string,

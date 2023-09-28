@@ -25,7 +25,7 @@ export class CardComponent implements OnInit {
  
   constructor(private listaentradasalidaservice: ListaentradasalidaService) { }
   ngOnInit(): void { 
-    if(this.obje.estado==4){
+    if(this.obje.estado==5){
       this.controlador1=true;
       this.controlador2=false;
     }

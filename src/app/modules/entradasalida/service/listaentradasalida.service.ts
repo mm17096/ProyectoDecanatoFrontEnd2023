@@ -101,12 +101,12 @@ export class ListaentradasalidaService {
 
     if (termino.length > 1) {
      return this.http.get<IsolicitudVehiculo[]>(`${this.baseUrl}/solicitudvehiculo/listasinpagina/${termino}`, requestOptions).pipe(
-          map(vehiculos=>vehiculos.filter(vehiculos=>vehiculos.estado===4))
+          map(vehiculos=>vehiculos.filter(vehiculos=>vehiculos.estado===5))
       );
     } else {
       return this.http.get<IsolicitudVehiculo[]>(`${this.baseUrl}/solicitudvehiculo/todas`, requestOptions).pipe(
         //muestra los autos con estadoSolicitud4 y que tengan la fecha igual a la actual
-        map(vehiculos=>vehiculos.filter(vehiculo=>vehiculo.estado==4 && this.compararFechasSalida(vehiculo.fechaSalida) || this.compararFechasEntrada(vehiculo.fechaEntrada)))
+        map(vehiculos=>vehiculos.filter(vehiculo=>vehiculo.estado==5 && this.compararFechasSalida(vehiculo.fechaSalida)))
       )
     }
   }

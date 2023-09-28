@@ -5,6 +5,7 @@ import { FullCalendarModule } from '@fullcalendar/angular';
 
 import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin
 import interactionPlugin from '@fullcalendar/interaction'; // a plugin
+import timeGridPlugin from '@fullcalendar/timegrid';
 import bootstrapPlugin from "@fullcalendar/bootstrap";
 
 import { CalendarioRoutingModule } from './calendario-routing.module';
@@ -16,6 +17,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 FullCalendarModule.registerPlugins([ // register FullCalendar plugins
   dayGridPlugin,
+  timeGridPlugin,
   interactionPlugin,
   bootstrapPlugin
 ]);

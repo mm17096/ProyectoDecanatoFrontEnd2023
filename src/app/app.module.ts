@@ -46,9 +46,7 @@ export function createTranslateLoader(http: HttpClient): any {
         CyptolandingComponent,
     ],
     bootstrap: [AppComponent],
-    providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    ],
+    providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },],
     imports: [
         BrowserModule,
         BrowserAnimationsModule,

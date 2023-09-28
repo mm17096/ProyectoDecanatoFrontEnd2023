@@ -65,6 +65,18 @@ export class UsuarioService {
   resetpass(rest: IRespass) {
     return this.http.post(`${this.baseUrl}/usuario/resetpass`, rest).pipe(
       tap((resp: any) => {
+        const { codigoUsuario } = resp;
+        this.guardarLocalSotrage('codUsuario', codigoUsuario);
+      }),
+      catchError(err => {
+        return throwError(err.error.message);
+      })
+    );
+  }
+
+  resetpassEmail(rest: IRespass) {
+    return this.http.post(`${this.baseUrl}/usuario/resetpassEmail`, rest).pipe(
+      tap((resp: any) => {
         const { codigoUsuario, codigo, empleado } = resp;
         this.guardarLocalSotrage('codUsuario', codigoUsuario);
         this.guardarLocalSotrage('restcodigo', codigo);

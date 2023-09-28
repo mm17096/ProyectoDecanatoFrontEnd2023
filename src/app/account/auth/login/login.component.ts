@@ -68,6 +68,8 @@ export class LoginComponent implements OnInit {
         clave: this.loginForm.get('password').value
       }
 
+      this.cargando();
+
       this.usuarioService.login(login).subscribe(
         (resp) => {
           if (this.loginForm.get('remember')?.value) {
@@ -75,7 +77,7 @@ export class LoginComponent implements OnInit {
           } else {
             this.storage.removeItem('email');
           }
-
+          Swal.close();
           const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -112,8 +114,8 @@ export class LoginComponent implements OnInit {
     this.showPassword = !this.showPassword;
   }
 
-   //// metodo par abrir la modal ////
-   openModal(content: any) {
+  //// metodo par abrir la modal ////
+  openModal(content: any) {
     //hacer que la modal no se cierre al precionar fuera de ella -> backdrop: 'static', keyboard: false
     this.modalService.open(content, { size: '', centered: true, backdrop: 'static', keyboard: false });
   }
@@ -132,6 +134,37 @@ export class LoginComponent implements OnInit {
 
   siMuestraAlertas() {
     return this.alerts.every((alert) => alert.show);
+  }
+
+  cargando() {
+    let timerInterval;
+    Swal.fire({
+      title: 'Espere un momento!',
+      html: 'Se esta procesando la solicitud.',
+      timer: 5000,
+
+      didOpen: () => {
+        Swal.showLoading();
+        timerInterval = setInterval(() => {
+          const content = Swal.getHtmlContainer()
+          if (content) {
+            const b = content.querySelector('b')
+            if (b) {
+              b.textContent = Swal.getTimerLeft() + ''
+            }
+          }
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      }
+    }).then((result) => {
+      if (
+        result.dismiss === Swal.DismissReason.timer
+      ) {
+        console.log('I was closed by the timer');
+      }
+    });
   }
 
 }

@@ -27,7 +27,7 @@ import {
 })
 export class EncabezadoComponent implements OnInit {
   detalleAsignacion: IAsignacionDetalle;
-
+  storage: Storage = window.localStorage;
   breadCrumbItems: Array<{}>;
 
   @ViewChild(TablaDetalleComponent) valesLiquidar;
@@ -55,6 +55,8 @@ export class EncabezadoComponent implements OnInit {
   entradasalidas: IDocumentosvale[] = [];
 
   listaDocumentosSize: number;
+
+  usuario: string;
   constructor(
     private service: DetalleService,
     private http: HttpClient,
@@ -67,6 +69,7 @@ export class EncabezadoComponent implements OnInit {
       { label: "Vales" },
       { label: "Asignación de Vales" },
       { label: "Registro de Asignaciones", active: true },
+
     ];
 
     this.route.paramMap.subscribe((params: ParamMap) => {
@@ -75,6 +78,8 @@ export class EncabezadoComponent implements OnInit {
 
     this.obtnerEncabezado(this.codigoAsignacion);
     this.ObtenerSolicitudValeById(this.codigoAsignacion);
+    const user = JSON.parse(this.storage.getItem("usuario" || ""));
+    this.usuario = user.codigoUsuario;
   }
   ngAfterViewInit() {
     this.liquidacion.idAsignacionVale = this.codigoAsignacion;
@@ -97,6 +102,7 @@ export class EncabezadoComponent implements OnInit {
   }
 
   async liquidar() {
+
     if (this.estadoEntrada == 2) {
       if (this.listaDocumentosSize == 2) {
         if ((await this.service.mensajesConfirmarLiquidacion()) == true) {
@@ -110,7 +116,7 @@ export class EncabezadoComponent implements OnInit {
             showConfirmButton: false,
           });
           return new Promise<void>((resolve, reject) => {
-            this.service.liquidarVales(this.liquidacion).subscribe({
+            this.service.liquidarVales(this.liquidacion, this.usuario).subscribe({
               next: (data: any) => {
                 // Cerrar SweetAlert de carga
                 Swal.close();
@@ -165,7 +171,7 @@ export class EncabezadoComponent implements OnInit {
         showConfirmButton: false,
       });
       return new Promise<void>((resolve, reject) => {
-        this.service.anularMision(this.misionAnulada).subscribe({
+        this.service.anularMision(this.misionAnulada, this.usuario).subscribe({
           next: (data: any) => {
             // Cerrar SweetAlert de carga
             Swal.close();

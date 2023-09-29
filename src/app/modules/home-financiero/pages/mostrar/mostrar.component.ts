@@ -31,7 +31,7 @@ export class MostrarComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarComprasPorRangoDeFechas();
-    this.texto = "Este mes";
+    this.texto = "Este Mes";
   }
 
   formatDate(date: string): string {
@@ -58,7 +58,7 @@ export class MostrarComponent implements OnInit {
 
   mostrarEsteMes() {
     this.cargarComprasPorRangoDeFechas();
-    this.texto = "Este mes";
+    this.texto = "Este Mes";
   }
 
   cargarComprasPorRangoDeFechas(
@@ -118,7 +118,7 @@ export class MostrarComponent implements OnInit {
       this.texto =
         "Intervalo del " +
         this.formatDate(this.fechaInicio) +
-        " al " +
+        " Al " +
         this.formatDate(this.fechaFin);
     } else if (formValues[0] > formValues[1]) {
       this.mensajesService.mensajesToast(

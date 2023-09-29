@@ -5,6 +5,7 @@ import { environment } from "src/environments/environment";
 import { ICompra } from "../interfaces/compra.interface";
 import { Observable } from "rxjs";
 import { IProveedor } from "../../proveedor/interfaces/proveedor.interface";
+import { IVale } from "../../devolucion-vale/interfaces/vale.interface";
 
 @Injectable({
   providedIn: "root",
@@ -23,6 +24,12 @@ export class CompraService {
       .subscribe((compras: ICompra[]) => {
         this.listCompra = compras; // Actualiza la propiedad listCompra
       });
+  }
+
+  getValesPorCompra(idCompra: string): Observable<IVale[]> {
+    return this.http
+      .get(`${this.baseUrl}/vale/valesporcompra/${idCompra}`)
+      .pipe(map((resp: any) => resp as IVale[]));
   }
 
   getCompras() {

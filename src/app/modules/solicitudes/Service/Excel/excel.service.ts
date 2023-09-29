@@ -4,7 +4,7 @@ import { ConsultaService } from './consulta.service';
 import { IConsultaExcelTabla, IConsultaExcelTablaC, IConsultaExcelTablaCompraDto, IConsultaExcelTablaDto, ITablaConsulta, ITablaConsultaC, ITablaConsultaCompraDto, ITablaConsultaDto } from '../../Interfaces/CompraVale/excel';
 import * as fs from 'file-saver';
 import { LOGO } from '../../Interfaces/logo';
-import { Cantidad, Consulta, IConsultaDelAl, ValidarVale } from '../../Interfaces/CompraVale/Consulta';
+import { Cantidad, Consulta, IConsultaDelAl, In, Tabla, ValidarVale } from '../../Interfaces/CompraVale/Consulta';
 import { Veri } from '../../Interfaces/CompraVale/Veri';
 import { IExistenciaVales } from '../../Interfaces/existenciavales.interface';
 @Injectable({
@@ -22,7 +22,13 @@ export class ExcelService {
   cantidad1:Cantidad[]=[];
   valeDelAl!: IConsultaDelAl[];
   fechaActual: Date = new Date();
+  cccc:Tabla[]=[];
+  vvvv:Tabla[];
   varivv:number=0;
+  valorvv:number;
+  id:string;
+  in:In[]=[];
+  hhh:Date;
   private workbook!:Workbook
   constructor(private consultaService: ConsultaService) { }
 
@@ -42,7 +48,7 @@ const blob = new Blob([data]);
 fs.saveAs(blob, 'consulta.xlsx');
 });
 }
-private crearTablaConsulta(
+async crearTablaConsulta(
   eexistenciaI: IExistenciaVales,
   dataConsultaTaTableConsulta: ITablaConsultaDto[],
   dataConsultaTaTableCompra: ITablaConsultaCompraDto[],
@@ -235,11 +241,15 @@ titulo1.style.font = { bold: true, size: 12,
       
      /* const titulo9 = sheet.getCell('I12');
       titulo9.value = `${j}`;*/
+      let mm =0;
+      let nn =0;
+      let kk=0;
 
       const fileInsertar = sheet.getRows(13,dataConsultaTaTableConsulta.length+31)!;
       let index = 0;
       let row = fileInsertar[index];
       dataConsultaTaTableConsulta.forEach((item)=>{
+        kk++;
         if(this.fecha === null){
           row = fileInsertar[index];
           //--------------------------------------
@@ -250,11 +260,12 @@ titulo1.style.font = { bold: true, size: 12,
         }else{
 
         if(item.fecha != this.fecha){
-          this.cargarConsultaValeDelAl(item.solicitudvehiculoid);
-          //console.log('ID: ',this.valeDelAl.length);
+        //  this.cargarConsultaValeDelAl(item.solicitudvehiculoid,index,item.valor);
+          //console.log('ID: ',this.valorvv);
           row = fileInsertar[index];
           row.values = [this.formatDate(`${item.fecha}`),'','','','','','','','','',''];
           index++
+         // kk++;
           cell1 = index;
           row = fileInsertar[index];
           cant = j-item.cantidadvale;
@@ -274,14 +285,29 @@ titulo1.style.font = { bold: true, size: 12,
                             `${'$'+item.valor}`,*/
                                `${this.formatDate(`${item.fecha}`)}`
          ];
+        // nn=0;
+        this.in.push({idn:item.fecha,in:index,vall:item.valor});
+         if(nn > 0 && item.fecha != this.fecha){
+          mm++;
+          this.cccc.push({id:item.solicitudvehiculoid,i:index,codi:mm,val:item.valor})
+          nn=0;
+          mm=0;
+          }
          con1=0;
          con =0;
+        // kk=0;
          j=cant;
          index++ 
          valorpre = valorpre+(item.cantidadvale*item.valor);
          this.cantvale = item.idasignacionvale;
          this.precio = item.valor;
         }else{
+          mm++;
+          nn++;
+         /* if(nn === 2 && item.fecha === this.fecha && item.idasignacionvale === this.cantvale){
+            this.cccc.push({id:item.solicitudvehiculoid,i:index,codi:mm,val:item.valor})
+            nn=1
+            }*/
           if(con === 1 && item.valor === this.precio && item.idasignacionvale === this.cantvale){
              conn++;
              con1++;
@@ -300,7 +326,22 @@ titulo1.style.font = { bold: true, size: 12,
             
          ];
          index++
+        // kk++;
         if(item.idasignacionvale != this.cantvale){
+         // kk++;
+          //if(kk===0){
+          this.in.push({idn:item.fecha,in:index,vall:item.valor});
+        /*  }else{
+            this.in.push({idn:item.solicitudvehiculoid,in:index-1});
+          }*/
+        //  kk++;
+        //  index++
+          //mm++;
+          this.cccc.push({id:item.solicitudvehiculoid,i:index,codi:mm,val:item.valor})
+          nn++;
+          mm=0;
+         // this.cargarConsultaValeDelAl(item.solicitudvehiculoid,index,item.valor);
+        //  console.log('ID1: ',this.valeDelAl.length);
          // this.cargarConsultaValeDelAl(item.solicitudvehiculoid);
          // console.log('ID1: ',this.valeDelAl.length);
           row.values = [
@@ -320,6 +361,9 @@ titulo1.style.font = { bold: true, size: 12,
          valorpre = valorpre+(item.cantidadvale*item.valor);
         //index++
         }else if(item.valor != this.precio){
+         // kk++;
+        //  index++
+         // this.cargarConsultaValeDelAl(item.solicitudvehiculoid,index,item.valor);
          // this.cargarConsultaValeDelAl(item.solicitudvehiculoid);
           //console.log('ID2: ',this.valeDelAl.length);
           con++;
@@ -345,6 +389,7 @@ titulo1.style.font = { bold: true, size: 12,
          salidadpu=salidadpu+item.valor;
          valorpre = valorpre+(item.cantidadvale*item.valor);
         }
+        //index++
         }
         this.fecha = item.fecha;
       }
@@ -467,7 +512,7 @@ titulo1.style.font = { bold: true, size: 12,
         }
         };
       const titulo02 = sheet.getCell('E'+`${index+13}`);
-      titulo02.value = `${salidadcant}`;
+      titulo02.value = `${kk}`;
       titulo02.style.font = { bold: true, size: 12,
         name: 'Antique Olive', 
         color: {
@@ -475,7 +520,7 @@ titulo1.style.font = { bold: true, size: 12,
         }
         };
         const titulo03 = sheet.getCell('G'+`${index+13}`);
-        titulo03.value = `${valorpre}`;
+        titulo03.value = `${kk*this.in[0].vall}`;
         titulo03.style.font = { bold: true, size: 12,
           name: 'Antique Olive', 
           color: {
@@ -534,7 +579,44 @@ titulo1.style.font = { bold: true, size: 12,
             argb: 'FF000000'
             }
             };
+            console.log('obj veri',this.valor);
+    //--------------------------------------------
+    console.log('obj', this.cccc);
+    console.log('in', this.in);
+    console.log('obj', this.cccc.length);
+    let connnnnn =0
+    let ooo = 0;
+      for(let j=0; j<this.cccc.length; j++){
+        if(this.in[j].idn != this.hhh){
+          const titulosffcc = sheet.getCell('E'+`${this.in[j].in+(13)}`);
+          titulosffcc.value = `${this.cccc[j].codi}`;
+          const titulosffcc1 = sheet.getCell('G'+`${this.in[j].in+(13)}`);
+          titulosffcc1.value = `$${this.cccc[j].codi*this.cccc[j].val}`;
+        }else{
+          const titulosffcc = sheet.getCell('E'+`${this.in[j].in+(13-1)}`);
+          titulosffcc.value = `${this.cccc[j].codi}`;
+          const titulosffcc1 = sheet.getCell('G'+`${this.in[j].in+(13-1)}`);
+          titulosffcc1.value = `$${this.cccc[j].codi*this.cccc[j].val}`;
+        }
+        connnnnn = connnnnn + this.cccc[j].codi
+        this.hhh = this.in[j].idn;
+      }
 
+      let ll = this.in.length;
+      console.log('connnnn', connnnnn);
+      console.log('kk', kk);
+      if(this.hhh === this.in[ll-1].idn){
+      const titulosffcc = sheet.getCell('E'+`${this.in[ll-1].in+(13-1)}`);
+      titulosffcc.value = `${kk-connnnnn}`;
+      const titulosffcc1 = sheet.getCell('G'+`${this.in[ll-1].in+(13-1)}`);
+      titulosffcc1.value = `$${(kk-connnnnn)*this.in[ll-1].vall}`;
+      }else{
+        const titulosffcc = sheet.getCell('E'+`${this.in[ll-1].in+(13)}`);
+        titulosffcc.value = `${kk-connnnnn}`;
+        const titulosffcc1 = sheet.getCell('G'+`${this.in[ll-1].in+(13)}`);
+        titulosffcc1.value = `$${(kk-connnnnn)*this.in[ll-1].vall}`;
+      }
+    //------------------------------------------
       for(let i=0; i<this.valor.length; i++){
         if(this.valor[i].valor != this.valor[i].valorAntes){
             const tituloff0= sheet.getCell('E'+`${this.valor[i].inde+12-(this.valor[i].cantidad-this.valor[i].conv)}`);
@@ -550,6 +632,9 @@ titulo1.style.font = { bold: true, size: 12,
             console.log(this.valor[i]);
         }
       }
+   // this.cargarConsultaValeDelAl(this.id,0,0);
+
+   
       //---------------------------------------------------------
      /* let j = 0;
       let cant = 0;
@@ -646,15 +731,13 @@ titulo1.style.font = { bold: true, size: 12,
     const fechaFormateada = `${partes[2]}/${partes[1]}/${partes[0]}`;
     return fechaFormateada;
   }
-  cargarConsultaValeDelAl(id:string){
-    // vv = 0;
-    this.consultaService.getConsultaSolicitudVDelAl(id).subscribe((response)=>{
-      this.valeDelAl = response;
-   //   this.varivv = 0;
-//this.varivv = this.valeDelAl.length;
-//console.log('vv',this.valeDelAl.length);
-      });
-   //   console.log('es',this.varivv);
-//return this.valeDelAl.length;
+cargarConsultaValeDelAl(id: string, i:number, val:number) {
+ // this.id = id;
+  this.cccc.push({id:id,i:i,codi:0,val:val});
+   this.consultaService.getConsultaSolicitudVDelAl(id).subscribe((resp)=>{
+    this.valeDelAl = resp;
+  //  this.cccc.push({id:id,i:i,codi:resp.length,val:val});
+   });
   }
+ 
 }

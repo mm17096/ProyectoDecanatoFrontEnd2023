@@ -5,10 +5,6 @@
         <th class="align-middle">Factura</th>
         <th class="align-middle">Proveedor</th>
         <th class="align-middle">Fecha de compra</th>
-        <th class="align-middle">Fecha ven. vale</th>
-        <th class="align-middle">Descripción</th>
-        <th class="align-middle">Cód. inicio</th>
-        <th class="align-middle">Cód. fin</th>
         <th class="align-middle">Cantidad</th>
         <th class="align-middle">Prec. Unit.</th>
         <th class="align-middle">Total</th>
@@ -16,7 +12,14 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of compras  | filter : queryString | paginate : { itemsPerPage: 10, currentPage: p }; let i = index">
+      <tr
+        *ngFor="
+          let data of compras
+            | filter : queryString
+            | paginate : { itemsPerPage: 10, currentPage: p };
+          let i = index
+        "
+      >
         <ng-container
           *ngIf="data.factura == null || data.factura == ''; else factura"
         >
@@ -32,17 +35,14 @@
           </td>
         </ng-template>
         <td>{{ data.proveedor.nombre }}</td>
-        <td>{{ data.fecha_compra | date : "dd/MM/yyyy h:mm a" }}</td>
-        <td>{{ data.fecha_vencimiento | date : "dd/MM/yyyy" }}</td>
-        <td>{{ data.descripcion }}</td>
-        <td>{{ data.cod_inicio }}</td>
-        <td>{{ data.cod_fin }}</td>
+        <td>{{ data.fechaCompra | date : "dd/MM/yyyy h:mm a" }}</td>
         <td>{{ data.cantidad }}</td>
         <td>
-          {{ data.precio_unitario | currency : "USD" : "symbol" : "1.2-2" }}
+          {{ data.precioUnitario | currency : "USD" : "symbol" : "1.2-2" }}
         </td>
-        <td>{{ data.total_compra | currency : "USD" : "symbol" : "1.2-2" }}</td>
-        <td class="justify-content-center">
+        <td>{{ data.totalCompra | currency : "USD" : "symbol" : "1.2-2" }}</td>
+        <td class="align-middle text-center text-center">
+          <app-modal-vale [compra]="data"></app-modal-vale>
           <app-modal [compra]="data" [leyenda]="'Editar'"></app-modal>
         </td>
       </tr>
@@ -57,7 +57,11 @@
 
   <!-- ! PAGINACION -->
   <div class="pagination pagination-rounded justify-content-end mb-2">
-    <pagination-controls (pageChange)="p = $event" [nextLabel]="''" [previousLabel]="''"></pagination-controls>
+    <pagination-controls
+      (pageChange)="p = $event"
+      [nextLabel]="''"
+      [previousLabel]="''"
+    ></pagination-controls>
   </div>
 </div>
 <!-- end table -->

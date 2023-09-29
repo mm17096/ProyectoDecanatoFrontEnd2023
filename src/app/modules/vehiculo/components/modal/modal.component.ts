@@ -155,7 +155,7 @@ export class ModalComponent implements OnInit {
       //cerrar el modal
       this.modalService.dismissAll();
     }, (err: any) => {
-      this.mensajeService.mensajesSweet("error", "Algo salió mal", err);
+      this.mensajeService.mensajesSweet("error", "Algo salió mal", err.error.message);
     });
 
   }
@@ -177,7 +177,7 @@ export class ModalComponent implements OnInit {
       //cerrar el modal
       this.modalService.dismissAll();
     }, (err: any) => {
-      this.mensajeService.mensajesSweet("error", "Algo salió mal", err);
+      this.mensajeService.mensajesSweet("error", "Algo salió mal", err.error.message);
     });
 
   }

@@ -29,6 +29,7 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
 
   code: boolean = false;
   resetpass: boolean = false;
+  anothermethod: boolean = false;
 
   msjclave!: string;
   seguridad!: string;
@@ -66,34 +67,20 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
    * On submit form
    */
   onSubmit() {
-    if (this.resetForm.valid && !this.code && !this.resetpass) {
+    if (this.resetForm.valid && !this.code && !this.resetpass && this.anothermethod) {
+      this.resetpassCD();
 
-      const rest: IRespass = {
-        correo: this.resetForm.get('correo').value,
-        dui: this.resetForm.get('dui').value,
-        codigo: this.generarCodigoAleatorio(),
-      }
-
-      this.codigo = rest.codigo; //salvamos el codigo
-
-      this.usuarioService.resetpass(rest).subscribe(
-        (resp) => {
-          this.Email();
-        },
-        (err) => {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: err,
-          });
-          this.code = false;
-        }
-      );
     } else if (this.code) {
       this.submitCode();
+
+    } else if (!this.anothermethod) {
+      this.resetpassEmail();
+
     } else {
+
       if (this.confirma == "confirmada" && this.media) {
         this.resetpassword();
+
       } else {
         Swal.fire({
           position: "center",
@@ -102,7 +89,77 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
           icon: "warning",
         });
       }
+
     }
+  }
+
+  resetpassCD() {
+    const rest: IRespass = {
+      correo: this.resetForm.get('correo').value,
+      dui: this.resetForm.get('dui').value,
+      codigo: '',
+    }
+
+    this.usuarioService.resetpass(rest).subscribe(
+      (resp) => {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 2500,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        });
+
+        Toast.fire({
+          icon: 'success',
+          text: '¡Se ha confirmado!'
+        }).then(() => {
+          this.resetpass = true;
+          this.code = false;
+          this.anothermethod = true;
+          this.usuarioService.getUsuario();
+        })
+      },
+      (err) => {
+        Swal.close();
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: err,
+        });
+        this.code = false;
+      }
+    );
+  }
+
+  resetpassEmail() {
+    this.cargando();
+
+    const rest: IRespass = {
+      correo: this.resetForm.get('correo').value,
+      dui: '',
+      codigo: this.generarCodigoAleatorio(),
+    }
+
+    this.codigo = rest.codigo; //salvamos el codigo
+
+    this.usuarioService.resetpassEmail(rest).subscribe(
+      (resp) => {
+        this.Email();
+      },
+      (err) => {
+        Swal.close();
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: err,
+        });
+        this.code = false;
+      }
+    );
   }
 
   generarCodigoAleatorio() {
@@ -114,8 +171,6 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
     const codigoCompleto = codigoTexto.padStart(5, '0');
     return codigoCompleto;
   }
-
-
 
   focusNext(event: any, nextInputId: string) {
     const input = document.getElementById(nextInputId) as HTMLInputElement;
@@ -149,6 +204,7 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
           }).then(() => {
             this.resetpass = true;
             this.code = false;
+            this.anothermethod = true;
             this.usuarioService.getUsuario();
           })
         },
@@ -282,11 +338,12 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
       mensaje: 'Su cuenta está en proceso de actualización de credenciales. Por motivos de seguridad, hemos enviado un código de verificación que le permitirá completar el proceso de actualización de sus credenciales.',
       centro: 'Utilice este codigo para continuar con el proceso :',
       codigo: this.codigo,
-      abajo: 'Gracias por tu atención a este importante mensaje.',
+      abajo: 'Gracias por su atención a este importante mensaje.',
     }
 
     this.usuarioService.SendEmail(email).subscribe(
       (resp) => {
+        Swal.close();
         const Toast = Swal.mixin({
           toast: true,
           position: 'top-end',
@@ -320,6 +377,41 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
     const validarCampo = this.resetForm.get(campo);
     return !validarCampo?.valid && validarCampo?.touched
       ? 'is-invalid' : validarCampo?.touched ? 'is-valid' : '';
+  }
+
+  Anothermethod() {
+    this.anothermethod = !this.anothermethod;
+  }
+
+  cargando() {
+    let timerInterval;
+    Swal.fire({
+      title: 'Espere un momento!',
+      html: 'Se esta procesando la solicitud.',
+      timer: 5000,
+
+      didOpen: () => {
+        Swal.showLoading();
+        timerInterval = setInterval(() => {
+          const content = Swal.getHtmlContainer()
+          if (content) {
+            const b = content.querySelector('b')
+            if (b) {
+              b.textContent = Swal.getTimerLeft() + ''
+            }
+          }
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      }
+    }).then((result) => {
+      if (
+        result.dismiss === Swal.DismissReason.timer
+      ) {
+        console.log('I was closed by the timer');
+      }
+    });
   }
 }
 

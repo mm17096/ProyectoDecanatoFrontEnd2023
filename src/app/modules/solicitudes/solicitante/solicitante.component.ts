@@ -7,8 +7,9 @@ import { ConsultaService } from '../Service/Excel/consulta.service';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { LOGO } from '../Interfaces/logo';
-import { IConsultaDelAl, Tabla } from '../Interfaces/CompraVale/Consulta';
+import { DocumetSoliC, DocumetVale, DocumetValeId, IConsultaDelAl, Tabla } from '../Interfaces/CompraVale/Consulta';
 import { Usuario, Empleado } from 'src/app/account/auth/models/usuario.models';
+import { MensajesService } from 'src/app/shared/global/mensajes.service';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -20,6 +21,10 @@ export class SolicitanteComponent implements OnInit {
   solicitudesVehiculo!: ISolicitudVehiculo[];
   selectedData: any;
   valeDelAl!: IConsultaDelAl[];
+  documentSoliCard!:DocumetSoliC[];
+  documentVale!:DocumetVale[];
+  documentValeId:DocumetValeId[]=[];
+
   // migas de pan
   breadCrumbItems: Array<{}>;
   term: any; // para buscar
@@ -36,7 +41,8 @@ export class SolicitanteComponent implements OnInit {
   fechaActual: Date = new Date();
 
   constructor( private soliVeService: SolicitudVehiculoService, private modalService: NgbModal,
-               private userService: UsuarioService, private consultaService: ConsultaService,) { }
+               private userService: UsuarioService, private consultaService: ConsultaService,
+               private mensajesService: MensajesService) { }
 
   ngOnInit(): void {
     
@@ -103,6 +109,94 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
       return index + 1; // Si no es numérico, solo regresamos el índice + 1
     }
   }
+/**
+   * Open Large modal
+   * @param largeDataModal large modal data
+   */
+DocumentosSoliCard(soliVehi: ISolicitudVehiculo,largeDataModal: any){
+  this.cargarDocSoliCar(soliVehi.codigoSolicitudVehiculo);
+  if(soliVehi.cantidadPersonas > 5){
+  this.modalService.open(largeDataModal, { size: "xl", centered: true });
+  }else{
+    this.mensajesService.mensajesSweet(
+      "warning",
+      "Ups... ",
+      "No hay documentos para mostrar'"
+    );
+  }
+}
+
+DocumentosVale(soliVehi: ISolicitudVehiculo,largeDataModal: any){
+  this.cargarDocValeID(soliVehi.codigoSolicitudVehiculo,largeDataModal);
+ // if(this.documentVale.length != 0){
+/*}else{
+  this.mensajesService.mensajesSweet(
+    "warning",
+    "Ups... ",
+    "No hay documentos para mostrar'"
+  );
+}*/
+}
+cargarDocSoliCar(id: string){
+  this.consultaService.getConsultaDocumnetoSoliCa(id).subscribe((response: DocumetSoliC[])=>{
+    this.documentSoliCard = response;
+     //   console.log(response);
+    });
+}
+cargarDocValeID(id:string,largeDataModal: any){
+  this.consultaService.getConsultaDocumnetoValeId(id).subscribe((response: DocumetValeId[])=>{
+    //this.documentValeId.push(response);
+   // console.log(response)
+    this.cargarDocVale(response[0].idsolicitudvale,largeDataModal);
+  });
+}
+cargarDocVale(id:string,largeDataModal: any){
+  this.consultaService.getConsultaDocumnetoVale(id).subscribe((response: DocumetVale[])=>{
+    this.documentVale = response;
+    if(response === null){
+      this.mensajesService.mensajesSweet(
+        "warning",
+        "Ups... ",
+        "No hay documentos para mostrar'"
+      );
+    }else{
+      this.modalService.open(largeDataModal, { size: "xl", centered: true });
+    }
+        console.log(response);
+    });
+}
+descargarver(doc:DocumetSoliC){
+  const tipoBuscado = "Lista de pasajeros";
+    this.soliVeService.obtenerDocumentPdf(doc.nombredocment)
+    .subscribe((resp:any) => {
+      let file = new Blob([resp], { type: 'application/pdf' });
+      let fileUrl = URL.createObjectURL(file);
+      window.open(fileUrl);
+    });
+}
+descarver(doc:DocumetVale){
+  const nombreDocumento = doc.foto; // Reemplaza con el nombre del documento que desees descargar
+
+  this.consultaService.descargarDocumento(nombreDocumento).subscribe(
+    (data: Blob) => {
+      // Crear un objeto URL a partir del Blob
+      const url = window.URL.createObjectURL(data);
+
+      // Crear un enlace invisible en el DOM y hacer clic en él para iniciar la descarga
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = nombreDocumento; // Nombre de archivo para la descarga
+      document.body.appendChild(a);
+      a.click();
+
+      // Liberar el objeto URL
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    },
+    (error) => {
+      console.error('Error al descargar el documento', error);
+    });
+}
   cerarPDF(soliVehi: ISolicitudVehiculo,vales: IConsultaDelAl[]){
    // this.cargarConsultaValeDelAl(soliVehi.codigoSolicitudVehiculo);
      const pdfDefinicion: any = {content:[],}

@@ -11,6 +11,7 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { ModalValeComponent } from './components/modal-vale/modal-vale.component';
 
 
 
@@ -18,7 +19,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
   declarations: [
     ModalComponent,
     MostrarComponent,
-    TablaComponent
+    TablaComponent,
+    ModalValeComponent
   ],
   imports: [
     CommonModule,

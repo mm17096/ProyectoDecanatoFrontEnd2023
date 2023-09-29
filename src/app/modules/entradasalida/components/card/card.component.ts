@@ -22,36 +22,36 @@ export class CardComponent implements OnInit {
   controlador2:boolean;
   entradaSalida:IEntradaSalida;
   controllerdata:boolean;
- 
+
   constructor(private listaentradasalidaservice: ListaentradasalidaService) { }
-  ngOnInit(): void { 
+  ngOnInit(): void {
     if(this.obje.estado==5){
       this.controlador1=true;
       this.controlador2=false;
     }
-    
-    
+
+
     this.listaentradasalidaservice.listarEstado('1', this.obje.codigoSolicitudVehiculo).subscribe({
       next: (value)=>{
         this.entradaSalida=value;
         this.controllerdata=true;
-       
+
         if(this.entradaSalida!=null){
           if(this.entradaSalida.estado==1){
           this.controlador1=false;
           this.controlador2=true;
           }
         }else{
-          
+
           this.controllerdata=false;
         }
 
       }
     });
-    
-    
+
+
   }
-    
-  
+
+
 
 }

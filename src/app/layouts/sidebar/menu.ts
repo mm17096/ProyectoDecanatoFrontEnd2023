@@ -31,13 +31,6 @@ export const MENU: MenuItem[] = [
         parentId: 6,
       },
       {
-        id: 8,
-        label: "Cargos",
-        link: "/cargo/listar",
-        role: ["ADMIN"],
-        parentId: 6,
-      },
-      {
         id: 9,
         label: "Departamentos",
         link: "/depto/listar",
@@ -50,7 +43,7 @@ export const MENU: MenuItem[] = [
   {
     id: 7,
     label: "Solicitud Vehículo",
-    icon: "mdi mdi-car-outline",
+    icon: "mdi mdi-file-document-multiple-outline",
     role: ["ADMIN", "USER","JEFE_DEPTO","SECR_DECANATO","DECANO","ASIS_FINANCIERO","JEFE_FINANACIERO"],
     subItems: [
 
@@ -134,13 +127,6 @@ export const MENU: MenuItem[] = [
         id: 11,
         label: "Listado",
         link: "/entrasalida/listar",
-        role: ["ADMIN","VIGILANTE"],
-        parent: 10,
-      },
-      {
-        id: 12,
-        label: "Documento",
-        link: "/document/vale",
         role: ["ADMIN","VIGILANTE"],
         parent: 10,
       },
@@ -301,7 +287,7 @@ export const MENU_ASIS_FINAN: MenuItem[] = [
   {
     id: 9,
     label: "Solcitudes de Vales",
-    icon: "mdi mdi-gas-station",
+    icon: "mdi mdi-clipboard-text-multiple-outline",
     role: ["ADMIN","ASIS_FINANCIERO","JEFE_FINANACIERO"],
     subItems: [
 
@@ -335,7 +321,7 @@ export const MENU_ASIS_FINAN: MenuItem[] = [
         role: ["ADMIN","ASIS_FINANCIERO","JEFE_FINANACIERO"],
         parentId: 8,
       },
-    
+
 
     ],
   },
@@ -411,7 +397,7 @@ export const MENU_JEFE_FINAN: MenuItem[] = [
   {
     id: 9,
     label: "Solcitudes de Vales",
-    icon: "mdi mdi-gas-station",
+    icon: "mdi mdi-clipboard-text-multiple-outline",
     role: ["ADMIN","ASIS_FINANCIERO","JEFE_FINANACIERO"],
     subItems: [
 
@@ -498,13 +484,6 @@ export const MENU_VIGILANTE: MenuItem[] = [
         id: 11,
         label: "Listado",
         link: "/entrasalida/listar",
-        role: ["ADMIN","VIGILANTE"],
-        parent: 10,
-      },
-      {
-        id: 12,
-        label: "Documento",
-        link: "/document/vale",
         role: ["ADMIN","VIGILANTE"],
         parent: 10,
       },

@@ -30,10 +30,8 @@ export class ListarComponent implements OnInit {
   }
 
   obtenerUsuarioActivo(){
-    // Suscríbete al Observable para obtener el usuario
     this.soliVeService.getUsuarioSV().subscribe((usuario: Usuario) => {
       this.usuario = usuario;
-      // Ahora que tienes el usuario, puedes usarlo en otras partes de tu componente.
       this.soliVeService.getSolicitudesRol(this.usuario.role);
     });
   }

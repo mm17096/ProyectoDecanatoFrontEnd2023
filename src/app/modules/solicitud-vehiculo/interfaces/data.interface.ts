@@ -88,11 +88,12 @@ export interface IMotorista {
     departamento: IDepartamento;
 }
 
-interface IDocumento {
+export interface IDocumento {
   codigoDocumento: string;
   nombreDocumento: string;
   urlDocumento:string;
-  fecha:string
+  fecha:string;
+  tipoDocumento:string;
   SolicitudVehiculo:string;
 }
 

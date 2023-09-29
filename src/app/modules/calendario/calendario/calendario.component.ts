@@ -14,18 +14,26 @@ export class CalendarioComponent implements OnInit {
 
   calendarOptions: CalendarOptions = {
     plugins: [dayGrirdPlugin],
+
     initialView: 'dayGridMonth',
+    
     editable: true,
     selectable: true,
-
+    locale: 'es',
     eventsSet: this.handleEvents.bind(this),
 
     events: this.LoadEvents.bind(this)
   };
+  get user() {
+    return this.usuariojson = this.userService.usuarioJSON;
+   }
   currentEvents: EventApi[] = [];
   async LoadEvents(args: EventSourceFunc): Promise<EventInput[]> {
+
         return new Promise<EventInput[]>((resolve) => {
          // console.log(args.startStr);
+
+
         this.soliService.getSolicitudV().subscribe(result => {
           const events: EventInput[] = [];
             result.forEach(function (val) {
@@ -40,7 +48,7 @@ export class CalendarioComponent implements OnInit {
             }
 */
 
-             // console.log(result.length);
+           //  console.log("usuario:",this.userService.usuarioJSON);
 
               events.push({
                 id: val.codigoSolicitudVehiculo,
@@ -48,6 +56,9 @@ export class CalendarioComponent implements OnInit {
                 start: val.fechaSalida,
                 end: val.fechaEntrada,
               });
+
+
+
               console.log(events);
               resolve(events);
             });
@@ -63,8 +74,12 @@ export class CalendarioComponent implements OnInit {
     alert('date click! ' + arg.dateStr)
   }
   breadCrumbItems: Array<{}>;
+  usuariojson : any;
 
-  constructor( private soliService: ServicioService, private userService: UsuarioService) { }
+  constructor( private soliService: ServicioService, private userService: UsuarioService) {
+
+   }
+
 
 
   ngOnInit(): void {

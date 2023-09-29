@@ -53,7 +53,7 @@ export class ModalValeComponent implements OnInit {
     if (estado == 5) {
       return "badge rounded-pill bg-info";
     } else if (estado == 7) {
-      return "badge rounded-pill bg-dark";
+      return "badge rounded-pill bg-primary";
     }else if (estado == 8) {
       return "badge rounded-pill bg-success";
     }else if (estado == 9) {
@@ -61,11 +61,11 @@ export class ModalValeComponent implements OnInit {
     }else if (estado == 10) {
       return "badge rounded-pill bg-light";
     }else if (estado == 11) {
-      return "badge rounded-pill bg-secondary";
+      return "badge rounded-pill bg-dark";
     }else if (estado == 12) {
       return "badge rounded-pill bg-warning";
     }else if (estado == 15) {
-      return "badge rounded-pill bg-primary";
+      return "badge rounded-pill bg-secondary";
     }
   }
 

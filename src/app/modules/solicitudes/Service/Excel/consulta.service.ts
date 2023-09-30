@@ -113,11 +113,11 @@ export class ConsultaService {
     return response.map((item:Compra) =>({
       id:item.id,
       cantidad:item.cantidad,
-      cod_inicio:item.cod_inicio,
-      cod_fin:item.cod_fin,
-      fecha_compra:item.fecha_compra,
-      fecha_vencimiento:item.fecha_vencimiento,
-      precio_unitario:item.precio_unitario
+      codInicio:item.codInicio,
+      codFin:item.codFin,
+      fechaCompra:item.fechaCompra,
+      fechaVencimiento:item.fechaVencimiento,
+      precioUnitario:item.precioUnitario
     }));
   }
 
@@ -133,23 +133,23 @@ export class ConsultaService {
       })
     );
   }
-   
+
   private getConsultaTabla(response: Consulta[]): ITablaConsulta[]{
     return response.map((item:Consulta) =>({
       codigoVale: item.vale.correlativo,
       entradasCant:item.vale.compra.cantidad,
-      entradasPU:item.vale.compra.precio_unitario,
+      entradasPU:item.vale.compra.precioUnitario,
       entradasTotal:item.estado,
       solidasCant:item.solicitudVale.cantidadVale,
-      salidasPU:item.vale.compra.precio_unitario,
+      salidasPU:item.vale.compra.precioUnitario,
       salidadTotal:item.estado,
       ExistCant:item.solicitudVale.cantidadVale,
-      ExistPU:item.vale.compra.precio_unitario,
+      ExistPU:item.vale.compra.precioUnitario,
       ExistTotal:item.estado,
       fecha:item.fecha,
       estado:item.vale.estado,
-      fechacompra:item.vale.compra.fecha_compra,
-      precio:item.vale.compra.precio_unitario,
+      fechacompra:item.vale.compra.fechaCompra,
+      precio:item.vale.compra.precioUnitario,
       cantidad:item.vale.compra.cantidad,
       idcompra:item.vale.compra.id,
     }));
@@ -161,6 +161,7 @@ export class ConsultaService {
   getConsultaSolicitudVDelAl(id:string){
     return this.http.get<IConsultaDelAl[]>(this.urlbase+'/consulta/listarvalesdelal/'+id);
   }
+
   async getConsultaSolicitudVDelAl1(id: string): Promise<number> {
     try {
       const compras = await this.http
@@ -184,6 +185,7 @@ export class ConsultaService {
   getConsultaDocumnetoVale(id:string){
     return this.http.get<DocumetVale[]>(this.urlbase+'/consulta/listardocvid/'+id);
   }
+
   get codEmpleado(): string {
     return this.storage.getItem("codEmpleado" || "");
   }
@@ -200,5 +202,10 @@ export class ConsultaService {
         })
       );
 
+  }
+
+  public descargarDocumento(nombreDocumento): Observable<Blob> {
+    return this.http.get(`${this.urlbase}/document/descarga/${nombreDocumento}`, 
+    { responseType: 'blob' });
   }
 }

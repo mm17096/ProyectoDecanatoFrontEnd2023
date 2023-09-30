@@ -101,65 +101,65 @@
           />
         </div>
         <div class="mb-4 col-md-6">
-          <label for="cod_inicio"
+          <label for="codInicio"
             >Código de inicio: <span class="text-danger">*</span></label
           >
           <input
-            id="cod_inicio"
-            name="cod_inicio"
+            id="codInicio"
+            name="codInicio"
             type="number"
             min="0"
             class="form-control"
-            formControlName="cod_inicio"
+            formControlName="codInicio"
             placeholder="Código inicio"
-            [class]="esCampoValido('cod_inicio')"
+            [class]="esCampoValido('codInicio')"
             (keyup)="getcantidad()"
             [readonly]="aplicarReadOnly"
           />
           <div class="invalid-feedback">
             <span
-              *ngIf="formularioGeneral.get('cod_inicio')?.errors?.['required']"
+              *ngIf="formularioGeneral.get('codInicio')?.errors?.['required']"
             >
               Requiere un código de inicio</span
             >
-            <span *ngIf="formularioGeneral.get('cod_inicio')?.errors?.['min']">
+            <span *ngIf="formularioGeneral.get('codInicio')?.errors?.['min']">
               Código de inicio no puede ser negativo</span
             >
 
             <span
-              *ngIf="formularioGeneral.get('cod_inicio')?.errors?.['pattern']"
+              *ngIf="formularioGeneral.get('codInicio')?.errors?.['pattern']"
             >
               Solamente se permiten numeros enteros
             </span>
           </div>
         </div>
         <div class="mb-4 col-md-6">
-          <label for="cod_fin"
+          <label for="codFin"
             >Código de fin: <span class="text-danger">*</span></label
           >
           <input
-            id="cod_fin"
-            name="cod_inicio"
+            id="codFin"
+            name="codInicio"
             type="number"
             class="form-control"
-            formControlName="cod_fin"
+            formControlName="codFin"
             min="0"
             placeholder="Código de fin"
-            [class]="esCampoValido('cod_fin')"
+            [class]="esCampoValido('codFin')"
             (keyup)="getcantidad()"
             [readonly]="aplicarReadOnly"
           />
           <div class="invalid-feedback">
             <span
-              *ngIf="formularioGeneral.get('cod_fin')?.errors?.['required']"
+              *ngIf="formularioGeneral.get('codFin')?.errors?.['required']"
             >
               Requiere un código de fin</span
             >
-            <span *ngIf="formularioGeneral.get('cod_fin')?.errors?.['min']">
+            <span *ngIf="formularioGeneral.get('codFin')?.errors?.['min']">
               Código de fin no puede ser negativo</span
             >
 
-            <span *ngIf="formularioGeneral.get('cod_fin')?.errors?.['pattern']">
+            <span *ngIf="formularioGeneral.get('codFin')?.errors?.['pattern']">
               Solamente se permiten numeros enteros</span
             >
           </div>
@@ -196,125 +196,125 @@
           </div>
         </div>
         <div class="mb-4 col-md-6">
-          <label for="fecha_compra"
+          <label for="fechaCompra"
             >Fecha de compra: <span class="text-danger">*</span></label
           >
           <input
-            id="fecha_compra"
-            name="fecha_compra"
+            id="fechaCompra"
+            name="fechaCompra"
             type="datetime-local"
             placeholder="dd/MM/yyyy HH:mm"
             class="form-control"
-            formControlName="fecha_compra"
-            [class]="esCampoValido('fecha_compra')"
+            formControlName="fechaCompra"
+            [class]="esCampoValido('fechaCompra')"
             [readonly]="aplicarReadOnly"
           />
           <div class="invalid-feedback">
             <!-- aqui la validación-->
             <span
-              *ngIf="formularioGeneral.get('fecha_compra')?.errors?.['required']"
+              *ngIf="formularioGeneral.get('fechaCompra')?.errors?.['required']"
             >
               Requiere una fecha de compra</span
             >
             <span
-              *ngIf="formularioGeneral.get('fecha_compra')?.errors?.['pattern']"
+              *ngIf="formularioGeneral.get('fechaCompra')?.errors?.['pattern']"
             >
               Fecha no valida</span
             >
           </div>
         </div>
         <div class="mb-4 col-md-6">
-          <label for="fecha_vencimiento"
+          <label for="fechaVencimiento"
             >Fecha de vencimiento de vales:
             <span class="text-danger">*</span></label
           >
           <input
-            id="fecha_vencimiento"
-            name="fecha_vencimiento"
+            id="fechaVencimiento"
+            name="fechaVencimiento"
             type="date"
             placeholder="dd/MM/yyyy"
             class="form-control"
-            formControlName="fecha_vencimiento"
-            [class]="esCampoValido('fecha_vencimiento')"
+            formControlName="fechaVencimiento"
+            [class]="esCampoValido('fechaVencimiento')"
             [readonly]="aplicarReadOnly"
           />
           <div class="invalid-feedback">
             <!-- aqui la validación-->
             <span
-              *ngIf="formularioGeneral.get('fecha_vencimiento')?.errors?.['required']"
+              *ngIf="formularioGeneral.get('fechaVencimiento')?.errors?.['required']"
             >
               Requiere una fecha de vencimiento</span
             >
             <span
-              *ngIf="formularioGeneral.get('fecha_vencimiento')?.errors?.['pattern']"
+              *ngIf="formularioGeneral.get('fechaVencimiento')?.errors?.['pattern']"
             >
               Fecha no valida</span
             >
           </div>
         </div>
         <div class="mb-4 col-md-6">
-          <label for="precio_unitario"
+          <label for="precioUnitario"
             >Precio unitario ($): <span class="text-danger">*</span></label
           >
           <input
-            id="precio_unitario"
-            name="precio_unitario"
+            id="precioUnitario"
+            name="precioUnitario"
             type="number"
             min="0"
             class="form-control"
             placeholder="Precio unitario"
-            formControlName="precio_unitario"
-            [class]="esCampoValido('precio_unitario')"
+            formControlName="precioUnitario"
+            [class]="esCampoValido('precioUnitario')"
             (keyup)="getTotalCompra()"
             [readonly]="aplicarReadOnly"
           />
           <div class="invalid-feedback">
             <!-- aqui la validación-->
             <span
-              *ngIf="formularioGeneral.get('precio_unitario')?.errors?.['required']"
+              *ngIf="formularioGeneral.get('precioUnitario')?.errors?.['required']"
             >
               Precio unitario requerido.</span
             >
             <span
-              *ngIf="formularioGeneral.get('precio_unitario')?.errors?.['min']"
+              *ngIf="formularioGeneral.get('precioUnitario')?.errors?.['min']"
             >
               Precio unitario no puede ser negativo</span
             >
             <span
-              *ngIf="formularioGeneral.get('precio_unitario')?.errors?.['pattern']"
+              *ngIf="formularioGeneral.get('precioUnitario')?.errors?.['pattern']"
             >
               Solamente se permiten numeros con dos decimales</span
             >
           </div>
         </div>
         <div class="mb-4 col-md-6">
-          <label for="total_compra"
+          <label for="totalCompra"
             >Total compra ($): <span class="text-danger">*</span></label
           >
           <input
-            id="total_compra"
-            name="total_compra"
+            id="totalCompra"
+            name="totalCompra"
             type="text"
             readonly="true"
             class="form-control"
-            formControlName="total_compra"
+            formControlName="totalCompra"
             placeholder="Total compra"
-            [class]="esCampoValido('total_compra')"
+            [class]="esCampoValido('totalCompra')"
           />
           <div class="invalid-feedback">
             <!-- aqui la validación-->
             <span
-              *ngIf="formularioGeneral.get('total_compra')?.errors?.['required']"
+              *ngIf="formularioGeneral.get('totalCompra')?.errors?.['required']"
             >
               Requiere un total de compra</span
             >
             <span
-              *ngIf="formularioGeneral.get('total_compra')?.errors?.['min']"
+              *ngIf="formularioGeneral.get('totalCompra')?.errors?.['min']"
             >
               Total compra no puede ser negativo</span
             >
             <span
-              *ngIf="formularioGeneral.get('total_compra')?.errors?.['pattern']"
+              *ngIf="formularioGeneral.get('totalCompra')?.errors?.['pattern']"
             >
               Solamente se permiten numeros con dos decimales</span
             >

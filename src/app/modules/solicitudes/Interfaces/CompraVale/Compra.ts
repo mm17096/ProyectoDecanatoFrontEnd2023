@@ -6,9 +6,9 @@ export interface Compra{
     proveedor:Proveedor;
     descripcion:string;
     cantidad:number;
-    cod_inicio:number;
-    cod_fin:number;
-    fecha_compra:Date;
-    fecha_vencimiento:Date;
-    precio_unitario:number;
+    codInicio:number;
+    codFin:number;
+    fechaCompra:Date;
+    fechaVencimiento:Date;
+    precioUnitario:number;
 }

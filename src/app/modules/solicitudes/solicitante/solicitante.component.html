@@ -76,9 +76,9 @@
                         <button type="button" (click)="cargarConsultaValeDelAl(data)" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1">
                                     <i class="mdi mdi-file-document-outline"></i></button>
                        <button type="button" (click)="DocumentosSoliCard(data,mdDocumnetoSoliCar)" class="btn btn-warning btn-sm btn-rounded boton-cuadrado mx-1">
-                                      <i class="mdi mdi-file-document-outline"></i></button>
+                                      <i class="mdi mdi-format-list-bulleted"></i></button>
                        <button type="button" (click)="DocumentosVale(data,mdDocumentVale)" class="btn btn-success btn-sm btn-rounded boton-cuadrado mx-1">
-                                        <i class="mdi mdi-file-document-outline"></i></button>
+                        <i class="mdi  mdi-download-outline"></i></button>
                         <!-- <i class="mdi mdi-account-lock-outline"></i>
                          mdi-account-check-outline -->
                       </td>
@@ -111,7 +111,7 @@
   <!-- Large Modal -->
 <ng-template #mdDocumnetoSoliCar let-modal>
   <div class="modal-header">
-    <h5 class="modal-title mt-0">Documentos de Solictud vehiculo</h5>
+    <h5 class="modal-title mt-0">Documentos lista de pasajeros solictud vehiculo</h5>
     <button
       type="button"
       class="btn-close"
@@ -120,6 +120,8 @@
     ></button>
   </div>
   <div class="modal-body">
+    <div class="container-fluid">
+      <div class="row">
     <table class="table table-centered table-nowrap">
       <thead class="table-light">
       <tr>
@@ -136,23 +138,25 @@
       <ng-container>
         <!-- *ngFor="let data of cards | filter:queryString | paginate: { itemsPerPage: 10, currentPage: p }" -->
         <tr *ngFor="let data of documentSoliCard let i = index">
-          <td >
+          <td *ngIf="data.tipodocument ==='Lista de pasajeros'">
             {{calcularNumeroCorrelativo(i)}}
           </td>
-          <td >
+          <td *ngIf="data.tipodocument ==='Lista de pasajeros'">
             {{data.fecha | date : "dd/MM/yyyy"}}  
           </td>
-          <td >
+          <td *ngIf="data.tipodocument ==='Lista de pasajeros'">
             {{data.nombredocment}}   
           </td>
-          <td style="text-align: center">
+          <td *ngIf="data.tipodocument ==='Lista de pasajeros'" style="text-align: center">
             <button type="button" (click)="descargarver(data)" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1">
-              <i class="mdi mdi-18px mdi-eye-outline"></i></button>
+              <i class="mdi mdi-18px mdi-download-outline"></i></button>
           </td>
         </tr>
       </ng-container>
       </tbody>
     </table>
+    </div>
+    </div>
   </div>
   <div class="modal-footer">
     <button
@@ -180,13 +184,15 @@
       ></button>
     </div>
     <div class="modal-body">
+      <div class="container-fluid">
+        <div class="row">
       <table class="table table-centered table-nowrap">
         <thead class="table-light">
         <tr>
           <th class="align-middle">No.</th>
           <th class="align-middle">Fecha</th>
           <th class="align-middle">Comrobante</th>
-          <th class="align-middle">Imagen</th>
+          <th class="align-middle">Document</th>
           <th class="align-middle" style="text-align: center">Tipo</th>
           <th class="align-middle"
               style="text-align: center;">
@@ -215,12 +221,14 @@
             </td>
             <td style="text-align: center"> 
               <button type="button" (click)="descarver(data)" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1">
-                <i class="mdi mdi-file-document-outline"></i></button>
+                <i class="mdi mdi-18px mdi-download-outline"></i></button>
             </td>
           </tr>
         </ng-container>
         </tbody>
       </table>
+      </div>
+      </div>
     </div>
     <div class="modal-footer">
       <button

@@ -32,6 +32,8 @@ export class OrdersComponent implements OnInit {
     this.total$ = service.total$;
   }
 
+
+
   ngOnInit(): void {
     this.breadCrumbItems = [{ label: 'Crypto' }, { label: 'Orders', active: true }];
 
@@ -44,7 +46,7 @@ export class OrdersComponent implements OnInit {
   *
   */
   onSort({ column, direction }: SortEvent) {
-  
+
     // resetting other headers
     this.headers.forEach(header => {
       if (header.sortable !== column) {

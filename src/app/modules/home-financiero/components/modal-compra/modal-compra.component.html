@@ -1,0 +1,89 @@
+<button
+  type="button"
+  class="btn btn-primary btn-sm"
+  (click)="openModal(content, compras)"
+>
+  Ver Detalle <i class="mdi mdi-arrow-right ms-1"></i>
+</button>
+
+<ng-template #content role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Compra de Vales en {{ texto }}</h5>
+    <button
+      type="button"
+      class="btn-close"
+      aria-hidden="true"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <div class="table-responsive mb-0">
+      <table class="table table-centered table-nowrap">
+        <thead class="table-light">
+          <tr>
+            <th class="align-middle">Factura</th>
+            <th class="align-middle">Proveedor</th>
+            <th class="align-middle">Fecha de compra</th>
+            <th class="align-middle">Cant. de vales</th>
+            <th class="align-middle">Prec. Unit.</th>
+            <th class="align-middle">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="
+              let data of compras
+                | filter : queryString
+                | paginate : { itemsPerPage: 10, currentPage: p };
+              let i = index
+            "
+          >
+            <ng-container
+              *ngIf="data.factura == null || data.factura == ''; else factura"
+            >
+              <td>
+                <a class="text-body fw-bold"> N/A </a>
+              </td>
+            </ng-container>
+            <ng-template #factura>
+              <td>
+                <a class="text-body fw-bold">
+                  {{ data.factura }}
+                </a>
+              </td>
+            </ng-template>
+            <td>{{ data.proveedor.nombre }}</td>
+            <td>{{ data.fechaCompra | date : "dd/MM/yyyy h:mm a" }}</td>
+            <td>{{ data.cantidad }}</td>
+            <td>
+              {{ data.precioUnitario | currency : "USD" : "symbol" : "1.2-2" }}
+            </td>
+            <td>
+              {{ data.totalCompra | currency : "USD" : "symbol" : "1.2-2" }}
+            </td>
+          </tr>
+
+          <tr *ngIf="compras.length == 0">
+            <td colspan="11" style="text-align: center">
+              No hay datos para mostrar
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- ! PAGINACION -->
+      <div class="pagination pagination-rounded justify-content-end mb-2">
+        <pagination-controls
+          (pageChange)="p = $event"
+          [nextLabel]="''"
+          [previousLabel]="''"
+        ></pagination-controls>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer custom-modal">
+    <button class="btn btn-dark w-sm" (click)="modal.close('Close click')">
+      Cerrar
+    </button>
+  </div>
+</ng-template>

@@ -63,9 +63,16 @@ export interface IConsultaDelAl{
 }
 
 export interface Tabla{
+    id:string;
     i:number;
     codi:number;
     val:number;
+}
+
+export interface In{
+    idn:Date;
+    in:number;
+    vall:number;
 }
 
 export interface DocumetVale{
@@ -88,4 +95,5 @@ export interface DocumetSoliC{
     nombredocment:string;
     urldocument:string;
     codigosolicitudvehiculo:string;
+    tipodocument:string;
 }

@@ -157,4 +157,10 @@ export class SolicitudVehiculoService {
     return this.http.get(`${this.url}/documentosoli/document/${nameDocu}`,
     {responseType: 'blob'});
   }
+
+  modificarPdfPasajeros(multiPart: FormData){
+    console.log("docus:", multiPart);
+    return this.http.post<any>(`${this.url}/documentosoli/edit`, multiPart);
+  }
+
 }

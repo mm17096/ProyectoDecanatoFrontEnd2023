@@ -7,8 +7,8 @@ import { Vehiculo } from "../../solicitudes/Interfaces/Vehiculo";
 
 export interface SolicitudVv{
     codigoSolicitudVehiculo?:string;
-    fechaSolicitud?:Date;
-    fechaSalida?:Date;
+    fechaSolicitud:Date;
+    fechaSalida:Date;
     unidadSolicitante?:string;
     vehiculo?:Vehiculo;
     objetivoMision?: string;

@@ -165,7 +165,11 @@ export class ModalSecretariaComponent implements OnInit {
        if(this.validarfecha(solicitudVehiculo.fechaSolicitud)){
          if (this.validarfecha(solicitudVehiculo.fechaSalida)){
            if(this.validarfecha(solicitudVehiculo.fechaEntrada)){
-             if(solicitudVehiculo.cantidadPersonas == this.soliVeOd.cantidadPersonas || this.file != null){
+             if(
+              (solicitudVehiculo.cantidadPersonas == this.soliVeOd.cantidadPersonas
+              || this.file != null) ||
+              (solicitudVehiculo.cantidadPersonas < 6)
+              ){
                   //  vacío para almacenar los datos de los pasajeros
                const pasajerosData = [];
 
@@ -546,33 +550,52 @@ export class ModalSecretariaComponent implements OnInit {
   actualizarFilas() {
 
     this.cantidadPersonas = this.formularioSoliVe.get('cantidadPersonas').value;
-    const pasajerosArray = this.formularioSoliVe.get('listaPasajeros') as FormArray;
+   console.log("1:cantidadPersonas: ", this.cantidadPersonas);
+    let pasajerosArray = this.formularioSoliVe.get('listaPasajeros') as FormArray;
+    //console.log("pasajerosA: ", pasajerosArray.length);
+    let soliCantPasajeros = this.soliVeOd.listaPasajeros.length;
+   console.log("2.listaPasajerosSoliVeod", this.soliVeOd.listaPasajeros.length);
+
 
     // Calcula cuántas filas deberías tener
-    const filasAAgregar = this.cantidadPersonas >= 2 && this.cantidadPersonas <= 5 ? this.cantidadPersonas - 1 : 0;
+    let filasAAgregar: number;
+    if (this.cantidadPersonas >= 1 && this.cantidadPersonas <= 5) {
+      if (this.cantidadPersonas == 1) {
+        filasAAgregar = -1;
+      } else {
+        filasAAgregar = (this.cantidadPersonas - soliCantPasajeros) - 1;
+        console.log("calFilasAgregar:", filasAAgregar);
+      }
+    } else {
+      filasAAgregar = 0;
+    }
+    console.log("3.cantidadFilas: ", filasAAgregar);
 
     if (this.cantidadPersonas <= 5) {
       // Si la cantidad actual es menor o igual a 5, elimina el último input si existe
+      console.log("4.pasajerosArray:",pasajerosArray.length);
       if (pasajerosArray.length > filasAAgregar) {
+        console.log("entro al eliminar input");
         pasajerosArray.removeAt(pasajerosArray.length - 1);
         this.pasajeroFormControls.pop();
       }
 
+
       // Agrega filas adicionales según la cantidad deseada
       while (pasajerosArray.length < filasAAgregar) {
-        console.log(pasajerosArray.length);
+        console.log("5.pasajerosArray:",pasajerosArray.length);
         pasajerosArray.push(this.fb.group({
           id: [''], // Puedes inicializar estos valores como desees
           nombrePasajero: ['']
         }));
-
+        console.log("6.pasajerosArray:",pasajerosArray.length);
         // Agrega un nuevo FormControl al arreglo pasajeroFormControls
         this.pasajeroFormControls.push(new FormControl(''));
       }
     } else {
       // Si la cantidad de personas es mayor a 5, detén la generación de filas
-      pasajerosArray.clear();
-      this.pasajeroFormControls = [];
+      //pasajerosArray.clear();
+      //this.pasajeroFormControls = [];
     }
 
     if (this.cantidadPersonas > 5) {
@@ -583,6 +606,43 @@ export class ModalSecretariaComponent implements OnInit {
       this.mostrarArchivoAdjunto = false; // Ocultar el campo de entrada de archivo
     }
   }
+
+  actualizarPasajeros() {
+    this.cantidadPersonas = this.formularioSoliVe.get('cantidadPersonas').value;
+
+    if (this.cantidadPersonas > 5) {
+      this.mostrarTabla = false; // Ocultar la tabla
+      this.mostrarArchivoAdjunto = true; // Mostrar el campo de entrada de archivo
+    } else if (this.cantidadPersonas <=1 ) {
+      this.mostrarTabla=false;
+      this.mostrarArchivoAdjunto = false;
+    }else {
+      this.mostrarTabla = true; // Mostrar la tabla
+      this.mostrarArchivoAdjunto = false; // Ocultar el campo de entrada de archivo
+    }
+    // Verifica si la cantidad de personas está dentro del rango deseado (2 a 5)
+    if (this.cantidadPersonas >= 2 && this.cantidadPersonas <= 5) {
+      const cantidadFilasDeseada = this.cantidadPersonas - 1;
+
+      // Elimina filas en exceso si hay más de las deseadas
+      while (this.pasajeroFormControls.length > cantidadFilasDeseada) {
+        this.pasajeroFormControls.pop();
+      }
+
+      // Agrega filas si no hay suficientes
+      while (this.pasajeroFormControls.length < cantidadFilasDeseada) {
+        const control = new FormControl('', Validators.required);
+        this.pasajeroFormControls.push(control);
+      }
+    } else if(this.cantidadPersonas < 2) {
+      while (this.pasajeroFormControls.length > 0) {
+        this.pasajeroFormControls.pop();
+      }
+    }
+  }
+
+
+
 
   siMuestraAlertas() {
     return this.alerts.every((alert) => alert.show);

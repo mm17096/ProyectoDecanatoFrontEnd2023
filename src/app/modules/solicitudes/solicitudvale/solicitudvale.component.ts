@@ -30,6 +30,7 @@ import {
 } from "../Interfaces/solicitudValeAprobar.interface";
 
 import { UsuarioService } from "src/app/account/auth/services/usuario.service";
+import { title } from "process";
 
 @Component({
   selector: "app-solicitudvale",
@@ -133,7 +134,7 @@ export class SolicitudvaleComponent implements OnInit {
     private existenciaService: ServiceService,
     private mensajesService: MensajesService,
     private router: Router,
-    private usuarios: UsuarioService,
+    private usuarios: UsuarioService
   ) {
     this.iniciarFormulario();
     this.usuarios.getUsuario();
@@ -236,15 +237,59 @@ export class SolicitudvaleComponent implements OnInit {
   //Obtiene el código de asignación
   obtenerCodigoAsignacion(codigoSolitudVale: string) {
     //this.obtenerIdSolicitudVale(this.solicitudvv.codigoSolicitudVehiculo)
-    this.service.getCodigoAsignacion(codigoSolitudVale).subscribe({
-      next: (response) => {
-        this.codigoAsignacion = response;
-        this.paramAsignacion = this.codigoAsignacion.codigoAsignacion;
-        this.router.navigate([
-          "/asignacion-vale/asignacion",
-          this.paramAsignacion,
-        ]);
+    let timerInterval;
+    Swal.fire({
+      title: "Espere",
+      text: "Realizando la acción...",
+      icon: "info",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showCancelButton: false,
+      showConfirmButton: false,
+      timer: 1000,
+      didOpen: () => {
+
+        timerInterval = setInterval(() => {
+          const content = Swal.getHtmlContainer()
+          if (content) {
+            const b = content.querySelector('b')
+            if (b) {
+              b.textContent = Swal.getTimerLeft() + ''
+            }
+          }
+        }, 100);
       },
+      willClose: () => {
+        clearInterval(timerInterval);
+      }
+    }).then((result) => {
+      if (
+        result.dismiss === Swal.DismissReason.timer
+      ) {
+        this.service.getCodigoAsignacion(codigoSolitudVale).subscribe({
+          next: (response) => {
+            this.codigoAsignacion = response;
+            this.paramAsignacion = this.codigoAsignacion.codigoAsignacion;
+            this.router.navigate([
+              "/asignacion-vale/asignacion",
+              this.paramAsignacion,
+            ]);
+            // Resuelve la promesa sin argumentos
+          },
+          error: (err) => {
+            // Cerrar SweetAlert de carga
+            Swal.close();
+            this.mensajesService.mensajesSweet(
+              "error",
+              "Ups... Algo salió mal",
+              err.error.message
+            );// Rechaza la promesa con el error
+          },
+        });
+      }
+    });
+    return new Promise<void>((resolve, reject) => {
+
     });
   }
 
@@ -362,8 +407,6 @@ export class SolicitudvaleComponent implements OnInit {
 
   //Guardar la asignación de vales
   async guardar() {
-
-
     if (this.formularioSolicitudVale.valid) {
       if (this.estadoSoli == "Nueva" || this.estadoSoli == "Revisión") {
         if ((await this.mensajesService.mensajeSolicitarAprobacion()) == true) {
@@ -389,7 +432,6 @@ export class SolicitudvaleComponent implements OnInit {
 
   //Regitra la asignación de los vales
   registrando() {
-
     //const usuariosObj = this.usuarios.getUsuario();
     const usuarioJson = JSON.parse(this.storage.getItem("usuario" || ""));
 
@@ -407,7 +449,6 @@ export class SolicitudvaleComponent implements OnInit {
       solicitudVale: this.codigoSolicitudValeAprobar,
       cantidadVales: cantidadVales,
     };
-
 
     Swal.fire({
       title: "Espere",
@@ -455,45 +496,55 @@ export class SolicitudvaleComponent implements OnInit {
     new Date().toLocaleDateString();
     const fechaAsignacion = this.obtenerFechaConFormato();
 
-    const solicitud: ISolcitudAprobar = {
-      codigoSolicitudVale: this.codigoSolicitudValeAprobar,
-      cantidadVales: cantidadVales,
-      estadoSolicitudVale: estadoSolicitud,
-      observaciones: this.observacionesSolicitudVale,
-    };
+    if (cantidadVales > 0) {
+      const solicitud: ISolcitudAprobar = {
+        codigoSolicitudVale: this.codigoSolicitudValeAprobar,
+        cantidadVales: cantidadVales,
+        estadoSolicitudVale: estadoSolicitud,
+        observaciones: this.observacionesSolicitudVale,
+      };
 
-    Swal.fire({
-      title: "Espere",
-      text: "Realizando la acción...",
-      icon: "info",
-      allowOutsideClick: false,
-      allowEscapeKey: false,
-      showCancelButton: false,
-      showConfirmButton: false,
-    });
-    return new Promise<void>((resolve, reject) => {
-      this.service.solicitarAprobacion(solicitud).subscribe({
-        next: (resp: any) => {
-          // Cerrar SweetAlert de carga
-          Swal.close();
-          this.getSolicitudesVale(8);
-          this.modalService.dismissAll();
-          this.limpiarCampos();
-          this.mensajesService.mensajesToast("success", "Enviada para Aprobar");
-          resolve(); // Resuelve la promesa sin argumentos
-        },
-        error: (err) => {
-          // Cerrar SweetAlert de carga
-          Swal.close();
-          this.mensajesService.mensajesSweet(
-            "error",
-            "Ups... Algo salió mal",
-            err.error.message
-          );
-          reject(err); // Rechaza la promesa con el error
-        },
+      Swal.fire({
+        title: "Espere",
+        text: "Realizando la acción...",
+        icon: "info",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showCancelButton: false,
+        showConfirmButton: false,
       });
-    });
+      return new Promise<void>((resolve, reject) => {
+        this.service.solicitarAprobacion(solicitud).subscribe({
+          next: (resp: any) => {
+            // Cerrar SweetAlert de carga
+            Swal.close();
+            this.getSolicitudesVale(8);
+            this.modalService.dismissAll();
+            this.limpiarCampos();
+            this.mensajesService.mensajesToast(
+              "success",
+              "Enviada para Aprobar"
+            );
+            resolve(); // Resuelve la promesa sin argumentos
+          },
+          error: (err) => {
+            // Cerrar SweetAlert de carga
+            Swal.close();
+            this.mensajesService.mensajesSweet(
+              "error",
+              "Ups... Algo salió mal",
+              err.error.message
+            );
+            reject(err); // Rechaza la promesa con el error
+          },
+        });
+      });
+    } else {
+      this.mensajesService.mensajesToast(
+        "warning",
+        "Debe solicitar al menos un vale"
+      );
+    }
   }
   limpiarCampos() {
     this.formularioSolicitudVale.reset();

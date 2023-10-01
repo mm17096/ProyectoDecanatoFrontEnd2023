@@ -74,7 +74,7 @@ export class SolicitudVehiculoService {
     // Mostrar la alerta de Swal antes de realizar la solicitud
     Swal.fire({
       title: 'Espere un momento!',
-      html: 'Se está procesando la solicitud...',
+      html: 'Se está procesando la información...',
       didOpen: () => {
         Swal.showLoading();
       }
@@ -181,7 +181,7 @@ export class SolicitudVehiculoService {
     // Mostrar la alerta de Swal antes de realizar la solicitud
     Swal.fire({
       title: 'Espere un momento!',
-      html: 'Se está procesando la solicitud...',
+      html: 'Se está procesando la información...',
       didOpen: () => {
         Swal.showLoading();
       }

@@ -30,6 +30,7 @@ export class MisSolicitudesComponent implements OnInit {
                private userService: UsuarioService) { }
 
   ngOnInit(): void {
+
     this.obtenerUsuarioActivo();
     this.breadCrumbItems = [{ label: 'Solicitud de Vehículo' }, { label: 'Mis Solicitudes', active: true }]; // miga de pan
     this.soliVeService.getSolicitudesVehiculo(this.estadoSeleccionado);

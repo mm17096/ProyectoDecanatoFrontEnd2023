@@ -18,7 +18,7 @@
                 <td class="align-middle text-center">{{ empleado.nombre + ' ' + empleado.apellido }}</td>
                 <td class="align-middle text-center">{{ empleado.cargo.nombreCargo }}</td>
                 <td class="align-middle text-center">{{ empleado.departamento.nombre }}</td>
-                <td class="align-middle text-center">{{ empleado.jefe ? 'SI' : 'NO' }}</td>
+                <td class="align-middle text-center">{{ empleado.cargo.nombreCargo == 'JEFE DEPARTAMENTO' ? 'SI' : 'NO' }}</td>
                 <!-- <td class="align-middle text-center">{{ empleado.correo }}</td> -->
                 <td class="align-middle text-center">
                     <h5>

@@ -63,7 +63,7 @@
               }}</span>
             <i class="mdi mdi-chevron-down ms-1"></i>
             <p class="user-text">{{ empleado?.cargo.nombreCargo | slice:0:15}}{{ empleado?.cargo.nombreCargo.length > 15? '...' : ''}}</p>
-            <span class="user-text-2" *ngIf="empleado?.jefe">Jefe Dpto</span>
+          <!--   <span class="user-text-2" *ngIf="empleado?.jefe">Jefe Dpto</span> -->
           </button>
         </div>
 
@@ -73,18 +73,7 @@
           <app-modal [leyenda]="'Datos'"></app-modal>
 
           <app-modal [leyenda]="'Credenciales'" [nuevo]="usuario?.nuevo"></app-modal>
-<!-- 
-           <a class="dropdown-item" (click)="Email()"><i class="bx bx-mail font-size-16 align-middle me-1"></i>
-            {{ 'Enviar Email' | translate}}</a>
- -->
- 
-<!--           <a class="dropdown-item d-block" href="javascript: void(0);"><i
-              class="bx bx-wrench font-size-16 align-middle me-1"></i>{{
-            'Configuración' | translate}} </a>
-          <a class="dropdown-item" href="javascript: void(0);"><i
-              class="bx bx-lock-open font-size-16 align-middle me-1"></i>
-            {{ 'Bloquear' | translate}}</a>
-          <div class="dropdown-divider"></div> -->
+          
           <a class="dropdown-item text-danger" href="javascript: void(0);" (click)="logout()"><i
               class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i>
             {{ 'Cerrar Sesión' | translate}}</a>

@@ -1,11 +1,10 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
-import { ServiceService } from "../../../Service/service.service";
 import { IValesAsignar } from "../../../Interfaces/asignacionvale.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { log } from "console";
-import { IPaginacion } from "src/app/shared/models/IPaginacion.interface";
 import { IValesAsignarPage } from "../../../Interfaces/solicitudValeAprobar.interface";
+import { Observable } from "rxjs";
+import { DetalleService } from "src/app/modules/asignacion-vales/services/detalle.service";
 const DEFAULT_PAGE_SIZE = 1;
 @Component({
   selector: "app-vales-asignar",
@@ -13,25 +12,59 @@ const DEFAULT_PAGE_SIZE = 1;
   styleUrls: ["./vales-asignar.component.scss"],
 })
 export class ValesAsignarComponent implements OnInit {
+
+  valesAsignarData: IValesAsignarPage[];
+
+  total$: Observable<number>;
+  vales$: Observable<IValesAsignarPage[]>;
+
   buscarVale: string = "";
   pVales: any;
   valesAsingar!: IValesAsignar;
-  valesAsignarPage: IPaginacion<IValesAsignarPage>;
+  valesAsignarPage: IValesAsignarPage;
   currentPage = DEFAULT_PAGE_SIZE;
   cantVales: number;
   size: number;
   constructor(
     private modalService: NgbModal,
-    private service: ServiceService,
+    public detalleService: DetalleService,
     private mensajesService: MensajesService
-  ) {}
+  ) {
+    this.vales$ = detalleService.vales$;
+    this.total$ = detalleService.total$;
+  }
 
   @Input() cantidadVales!: any;
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    //this.vales$ = this.detalleService.getValesAsignar(1)
+  }
+
+ /*  setOrders(vales: IValesAsignarPage[]) {
+    this.valesAsignarData = vales;
+    this.detalleService._search$.next(); // Vuelve a realizar la búsqueda y paginación
+  } */
 
   valesAsignar(valesAsignarModal: any) {
     const cantidadVales = this.cantidadVales.get("cantidadVales")?.value;
-    this.cantVales = cantidadVales;
+
+    this.detalleService.getValesAsignar(cantidadVales);
+
+    this.detalleService.getVales(cantidadVales).subscribe((data) =>{
+      console.log("data: ", data);
+      this.valesAsignarData = data
+      console.log("interfaz: ", this.valesAsignarData);
+    });
+    //this.detalleService.getValesAsignar(cantidadVales)
+    /* .subscribe({
+      next: (resp) => {
+         resp;
+        console.log("resp: ", resp);
+      },
+    }); */
+    //console.log("service: ", this.detalleService.getValesAsignar(cantidadVales));
+
+    //this.total$ = this.detalleService.total$;
+    /* this.cantVales = cantidadVales;
     if (cantidadVales == 0 || cantidadVales < 0) {
       this.mensajesService.mensajesToast(
         "warning",
@@ -50,17 +83,48 @@ export class ValesAsignarComponent implements OnInit {
       } else {
         this.size = 10;
       }
-      this.service.getValesAsignarPage(0, this.size, cantidadVales);
-      this.modalService.open(valesAsignarModal, { size: "lg", centered: true });
-    }
+    } */
+    /*this.service.getValesAsignarPage(0, cantidadVales, cantidadVales).subscribe({
+      next: (resp) => {
+        console.log("resp: ", resp);
+
+        this.valesAsignarData = resp;
+        console.log("valesAsignarData: ", this.valesAsignarData);
+         this.valesAsignarPage = resp;
+        this.cantVales = this.valesAsignarPage.totalRecords;
+        if (this.cantVales == 0 || this.cantVales < 0) {
+          this.mensajesService.mensajesToast(
+            "warning",
+            "Ingrese una cantidad válida"
+          );
+        } else if (this.cantVales > 20) {
+          this.mensajesService.mensajesToast(
+            "warning",
+            "Sólo se pueden asignar 20 vales por solicitud"
+          );
+        } else {
+          if (this.cantVales < 10 && this.cantVales > 5) {
+            this.size = this.cantVales;
+          } else if (this.cantVales <= 5) {
+            this.size = this.cantVales;
+          } else {
+            this.size = 10;
+          }
+        }
+      },
+      error: (err) => {
+        this.mensajesService.mensajesToast("error", err.error.error);
+      },
+    });*/
+    this.modalService.open(valesAsignarModal, { size: "lg", centered: true });
   }
 
-  get listaVales() {
+  /* get listaVales() {
     this.valesAsignarPage = this.service.listValesAsignar;
     return this.valesAsignarPage;
-  }
+  } */
 
-  onPageChange(page: number) {
+  /* onPageChange(page: number) {
     if (this.cantVales < 10 && this.cantVales > 5) {
       this.size = this.cantVales;
     } else if (this.cantVales <= 5) {
@@ -73,7 +137,7 @@ export class ValesAsignarComponent implements OnInit {
       this.cantVales - this.size,
       this.cantVales
     );
-  }
+  } */
 
   get fechaActual() {
     // Obtiene la fecha actual

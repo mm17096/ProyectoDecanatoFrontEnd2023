@@ -84,6 +84,7 @@
                     <select name="tickets-table_length" aria-controls="tickets-table" name="pageSize"
                         [(ngModel)]="service.pageSize"
                         class="custom-select custom-select-sm form-control form-control-sm mx-2">
+                        <option [ngValue]="5">5</option>
                         <option [ngValue]="10">10</option>
                         <option [ngValue]="25">25</option>
                         <option [ngValue]="50">50</option>

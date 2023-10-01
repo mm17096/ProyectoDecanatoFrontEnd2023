@@ -23,37 +23,38 @@
           <tr>
             <th class="align-middle text-center">Codigo Vale</th>
             <th></th>
-            <th class="align-middle text-center" >Valor $</th>
-
+            <th class="align-middle text-center">Valor $</th>
           </tr>
         </thead>
         <tbody>
-          <tr
-            *ngFor="
-              let vale of listaVales.content
-                | filter : buscarVale
-              let i = index
-            "
-          >
-            <td  class="align-middle text-center h3">
+          <tr *ngFor="let vale of vales$ | async as vales; let i = index">
+            <td class="align-middle text-center h3">
               {{ vale.correlativoVale }}
             </td>
             <td></td>
-            <td *ngIf="vale.fechaVencimiento < fechaActual" class="h4"><span class="badge rounded-pill bg-danger">Vencido</span></td>
+            <td *ngIf="vale.fechaVencimiento < fechaActual" class="h4">
+              <span class="badge rounded-pill bg-danger">Vencido</span>
+            </td>
             <td class="align-middle text-center h3">
               {{ "$ " + vale.valorVale + ".00" }}
             </td>
           </tr>
         </tbody>
       </table>
+      <!-- Pagination -->
       <div class="pagination pagination-rounded justify-content-end mb-2">
-        <ngb-pagination
-          [pageSize]="valesAsignarPage.pageable.pageSize"
-          [collectionSize]="valesAsignarPage.totalElements"
-          (pageChange)="onPageChange($event)"
-          (page)="(currentPage)"
-        >
-        </ngb-pagination>
+        <!-- Pagination -->
+        <div class="col-sm-12 col-md-5">
+          <div class="text-md-right float-md-end pagination-rounded">
+            <ngb-pagination
+              [collectionSize]="total$ | async"
+              [(page)]="detalleService.page"
+              [pageSize]="detalleService.pageSize"
+            >
+            </ngb-pagination>
+          </div>
+        </div>
+        <!-- End Pagination -->
       </div>
     </div>
   </div>

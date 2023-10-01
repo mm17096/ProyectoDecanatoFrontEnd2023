@@ -116,7 +116,7 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
 DocumentosSoliCard(soliVehi: ISolicitudVehiculo,largeDataModal: any){
   this.cargarDocSoliCar(soliVehi.codigoSolicitudVehiculo);
   if(soliVehi.cantidadPersonas > 5){
-  this.modalService.open(largeDataModal, { size: "lg", centered: true });
+  this.modalService.open(largeDataModal, { size: "xl", centered: true });
   }else{
     this.mensajesService.mensajesSweet(
       "warning",
@@ -160,12 +160,13 @@ cargarDocVale(id:string,largeDataModal: any){
         "No hay documentos para mostrar'"
       );
     }else{
-      this.modalService.open(largeDataModal, { size: "lg", centered: true });
+      this.modalService.open(largeDataModal, { size: "xl", centered: true });
     }
         console.log(response);
     });
 }
 descargarver(doc:DocumetSoliC){
+  const tipoBuscado = "Lista de pasajeros";
     this.soliVeService.obtenerDocumentPdf(doc.nombredocment)
     .subscribe((resp:any) => {
       let file = new Blob([resp], { type: 'application/pdf' });
@@ -174,7 +175,27 @@ descargarver(doc:DocumetSoliC){
     });
 }
 descarver(doc:DocumetVale){
+  const nombreDocumento = doc.foto; // Reemplaza con el nombre del documento que desees descargar
 
+  this.consultaService.descargarDocumento(nombreDocumento).subscribe(
+    (data: Blob) => {
+      // Crear un objeto URL a partir del Blob
+      const url = window.URL.createObjectURL(data);
+
+      // Crear un enlace invisible en el DOM y hacer clic en él para iniciar la descarga
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = nombreDocumento; // Nombre de archivo para la descarga
+      document.body.appendChild(a);
+      a.click();
+
+      // Liberar el objeto URL
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    },
+    (error) => {
+      console.error('Error al descargar el documento', error);
+    });
 }
   cerarPDF(soliVehi: ISolicitudVehiculo,vales: IConsultaDelAl[]){
    // this.cargarConsultaValeDelAl(soliVehi.codigoSolicitudVehiculo);

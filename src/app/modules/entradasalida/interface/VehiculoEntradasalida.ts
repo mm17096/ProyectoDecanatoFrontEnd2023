@@ -20,8 +20,8 @@ export interface IsolicitudVehiculo{
     motorista: IMotorista,
     listDocumentos: string,
     horasValidas: boolean
-
 }
+
 export interface IVehiculoentradaSalida{
     codigoVehiculo: string;
     placa:string;

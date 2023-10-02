@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 import {ModalComponent} from "../../components/modal/modal.component";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
@@ -24,15 +24,18 @@ export class MisSolicitudesComponent implements OnInit {
   estadoSeleccionado: any;
   estadosSoliVe: IEstados [] = [];
   usuario!: Usuario;
+  public textSizeClass = '';
 
   constructor( private soliVeService: SolicitudVehiculoService, private modalService: NgbModal,
                private userService: UsuarioService) { }
 
   ngOnInit(): void {
+
     this.obtenerUsuarioActivo();
     this.breadCrumbItems = [{ label: 'Solicitud de Vehículo' }, { label: 'Mis Solicitudes', active: true }]; // miga de pan
     this.soliVeService.getSolicitudesVehiculo(this.estadoSeleccionado);
     this.getEstados();
+    this.setInitialTextSize();
   }
 
   abrirModal(leyenda: string) {
@@ -73,4 +76,25 @@ export class MisSolicitudesComponent implements OnInit {
     });
   }
 
+  private setInitialTextSize() {
+    const screenWidth = window.innerWidth;
+
+    if (screenWidth < 576) { // Extra pequeña
+      this.textSizeClass = 'text-xs';
+    } else if (screenWidth >= 576 && screenWidth < 768) { // Pequeña
+      this.textSizeClass = 'text-sm';
+    } else { // Extra grande
+      this.textSizeClass = 'text-xl';
+    }
+
+    console.log('Tamaño de texto actual:', this.textSizeClass);
+  }
+
+
+  // Función que se ejecuta cuando cambia el tamaño de la pantalla
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    // Llamamos a la función para actualizar el tamaño de texto
+    this.setInitialTextSize();
+  }
 }

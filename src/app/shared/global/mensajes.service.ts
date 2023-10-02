@@ -117,20 +117,31 @@ export class MensajesService {
 
   async mensajeAsignar(
     icono: SweetAlertIcon = "warning",
-    title: string = "Se asignarán los vales correspondientes",
-    label: string = "¿Esta seguro de asignar los vales?"
+    title: string = "¿Esta seguro de asignar los vales?",
+    label: string = "La acción no se podrá deshacer, digite: ",
+    palabraClave: string = "confirmar"
   ) {
     let estado = false;
-
+    const palabra = palabraClave;
     await Swal.fire({
       icon: icono,
       title: title,
-      text: label,
+      input: "text",
+      inputLabel: label + palabraClave,
+      inputValue: "",
       showCancelButton: true,
       confirmButtonColor: "#972727",
       confirmButtonText: "Aceptar",
       cancelButtonColor: "#2c3136",
       cancelButtonText: "Cancelar",
+      inputValidator: (value) => {
+        if (!value) {
+          return "¡Tiene que escribir algo!";
+        }
+        if (value != palabra) {
+          return "¡No coincide!";
+        }
+      },
     }).then((result) => {
       if (result.isConfirmed) {
         estado = true;
@@ -143,20 +154,32 @@ export class MensajesService {
   }
   async mensajeSolicitarAprobacion(
     icono: SweetAlertIcon = "warning",
-    title: string = "Se solicitará al jefe de unidad la aprobación de la solicitud",
-    label: string = "¿Esta seguro?"
+    title: string = "¿Está seguro de enviar para Aprobar?",
+    label: string = "La acción no se podrá deshacer, digite: ",
+    palabraClave: string = "confirmar"
   ) {
-    let estado = false;
 
+    let estado = false;
+    const palabra = palabraClave;
     await Swal.fire({
       icon: icono,
       title: title,
-      text: label,
+      input: "text",
+      inputLabel: label + palabraClave,
+      inputValue: "",
       showCancelButton: true,
       confirmButtonColor: "#972727",
       confirmButtonText: "Aceptar",
       cancelButtonColor: "#2c3136",
       cancelButtonText: "Cancelar",
+      inputValidator: (value) => {
+        if (!value) {
+          return "¡Tiene que escribir algo!";
+        }
+        if (value != palabra) {
+          return "¡No coincide!";
+        }
+      },
     }).then((result) => {
       if (result.isConfirmed) {
         estado = true;
@@ -171,19 +194,30 @@ export class MensajesService {
     cantVales: number,
     icono: SweetAlertIcon = "warning",
     title: string = "Aprobará la solicutd con " + cantVales + " Vales",
-    label: string = "¿Esta seguro?"
+    label: string = "La acción no se podrá deshacer, digite: ",
+    palabraClave: string = "confirmar"
   ) {
     let estado = false;
-
+    const palabra = palabraClave;
     await Swal.fire({
       icon: icono,
       title: title,
-      text: label,
+      input: "text",
+      inputLabel: label + palabraClave,
+      inputValue: "",
       showCancelButton: true,
       confirmButtonColor: "#972727",
       confirmButtonText: "Aceptar",
       cancelButtonColor: "#2c3136",
       cancelButtonText: "Cancelar",
+      inputValidator: (value) => {
+        if (!value) {
+          return "¡Tiene que escribir algo!";
+        }
+        if (value != palabra) {
+          return "¡No coincide!";
+        }
+      },
     }).then((result) => {
       if (result.isConfirmed) {
         estado = true;
@@ -196,20 +230,31 @@ export class MensajesService {
   }
   async mensajeSolicitudRevision(
     icono: SweetAlertIcon = "warning",
-    title: string = "Se enviará para que pueda ser revisada",
-    label: string = "¿Esta seguro?"
+    title: string = "¿Está seguro de enviar para Revisar?",
+    label: string = "La acción no se podrá deshacer, digite: ",
+    palabraClave: string = "confirmar"
   ) {
     let estado = false;
-
+    const palabra = palabraClave;
     await Swal.fire({
       icon: icono,
       title: title,
-      text: label,
+      input: "text",
+      inputLabel: label + palabraClave,
+      inputValue: "",
       showCancelButton: true,
       confirmButtonColor: "#972727",
       confirmButtonText: "Aceptar",
       cancelButtonColor: "#2c3136",
       cancelButtonText: "Cancelar",
+      inputValidator: (value) => {
+        if (!value) {
+          return "¡Tiene que escribir algo!";
+        }
+        if (value != palabra) {
+          return "¡No coincide!";
+        }
+      },
     }).then((result) => {
       if (result.isConfirmed) {
         estado = true;

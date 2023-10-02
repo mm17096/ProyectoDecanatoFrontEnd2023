@@ -1,10 +1,12 @@
 
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { AbstractControl, FormBuilder ,FormGroup, ValidationErrors, Validators} from '@angular/forms';
+
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NAME_VALIDATE } from 'src/app/constants/constants';
 import Swal from 'sweetalert2';
-import { EntradaSalidaI, IEntradaSalida } from '../../interface/EntSalinterface';
+import { EntradaSalidaI, IEntradaSalida, SolitudVehiculoI } from '../../interface/EntSalinterface';
 import { Router } from '@angular/router';
 import { ListaentradasalidaService } from '../../service/listaentradasalida.service';
 import { MensajesService } from 'src/app/shared/global/mensajes.service';
@@ -22,17 +24,18 @@ export class ModalComponent implements OnInit {
   @Input() leyendas!: string;
   @Input() titulo!: string;
   @Input() entradasalidaOd!: IEntradaSalida;
-  @Input() salidaentradaOd!: boolean;
-  @Input() objetivoMision: IsolicitudVehiculo;
-  @Input() controllerdata: boolean;
+
+ // @Input() salidaentradaOd!: boolean;
+  @Input() objetivoMision:IsolicitudVehiculo;
+  @Input() controllerdata:boolean;
+
   //objetivoMision="";
   fechaSalida = "";
 
   formBuilder!: FormGroup;
-  //miFormulario: FormGroup;
-  private isName: string = NAME_VALIDATE;
-  entradasalidas: IEntradaSalida[] = [];//para almacenar los resultados
-  entrasal: IEntradaSalida;
+  entradasalidas: IEntradaSalida[]=[];//para almacenar los resultados
+  //entrasal:IEntradaSalida;
+
   solicitudvale: ISolicitudvalep
   horaActual: string;
   fechaActual: string;
@@ -41,7 +44,7 @@ export class ModalComponent implements OnInit {
   /////esto para enviar el objetivo a la modal
   //objetivoMision: IsolicitudVehiculo;
 
-
+  kilometrajeAnterior: number = 0;
 
   constructor(private modalService: NgbModal, private mensajesService: MensajesService, private fb: FormBuilder, private router: Router, private listaentradasalidaservice: ListaentradasalidaService) { }
 
@@ -102,6 +105,13 @@ export class ModalComponent implements OnInit {
 
       return null;
     };
+  }
+  validateKilometraje(control: AbstractControl): ValidationErrors | null {
+    const currentKilometraje = parseFloat(control.value) || 0;
+    if (currentKilometraje <= this.kilometrajeAnterior) {
+      return { 'kilometrajeInvalido': true };
+    }
+    return null;
   }
 
   OnlyNumbersAllowed(event): boolean {
@@ -228,6 +238,15 @@ export class ModalComponent implements OnInit {
         this.obtenerLista();
         this.recargar();
       });
+  }
+
+  guardar() {
+    if (this.formBuilder.valid) {
+      if (this.entradasalidaOd != null) {
+        //this.editando();
+      } else {
+       this.registrando();
+      }
     } else {
       const entsali: EntradaSalidaI = new EntradaSalidaI(listando.tipo, listando.fecha, listando.hora, listando.combustible, listando.kilometraje, 2, listando.solicitudvehiculo);
       this.listaentradasalidaservice.NuevosDatos(entsali).subscribe((resp: any) => {
@@ -261,6 +280,80 @@ export class ModalComponent implements OnInit {
         this.recargar();
       });
     }
+  }
+
+  registrando() {
+    const listando = this.formBuilder.value;
+      if(!this.controllerdata){
+        const entsali: EntradaSalidaI = new EntradaSalidaI(listando.tipo, listando.fecha, listando.hora, listando.combustible, listando.kilometraje,1, listando.solicitudvehiculo);
+        this.listaentradasalidaservice.NuevosDatos(entsali).subscribe((resp: any) => {
+          if (resp) {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              //timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+            });
+            Toast.fire({
+              icon: 'success',
+              text: 'Almacenamiento exitoso'
+            });
+            this.formBuilder.reset();
+            this.recargar();
+            this.modalService.dismissAll();
+          }
+        }, (err: any) => {
+          this.mensajesService.mensajesSweet(
+            "error",
+            "Ups... Algo salió mal",
+            err
+          )
+          this.obtenerLista();
+            this.recargar();
+        });      
+      }else{
+        const entsali: EntradaSalidaI = new EntradaSalidaI(listando.tipo, listando.fecha, listando.hora, listando.combustible, listando.kilometraje,2, listando.solicitudvehiculo);
+        const modificando:SolitudVehiculoI= new SolitudVehiculoI(listando.solicitudvehiculo, listando.fecha);
+        this.listaentradasalidaservice.NuevosDatos(entsali).subscribe((resp: any) => {
+          this.listaentradasalidaservice.modificandoFecha(modificando).subscribe((res:any)=>{
+            if (res) {
+              const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                //timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener('mouseenter', Swal.stopTimer)
+                  toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+              });
+              Toast.fire({
+                icon: 'success',
+                text: 'Almacenamiento exito'
+              });
+              this.formBuilder.reset();
+              this.recargar();
+              this.modalService.dismissAll();
+            }
+          }, (err: any) => {
+            this.mensajesService.mensajesSweet(
+              "error",
+              "Ups... Algo salió mal",
+              err
+            )
+            this.obtenerLista();
+              this.recargar();
+          });
+
+          })
+          
+      }
   }
 
   recargar() {

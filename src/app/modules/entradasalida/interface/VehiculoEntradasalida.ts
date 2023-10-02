@@ -13,10 +13,10 @@ export interface IsolicitudVehiculo{
     cantidadPersonas:number,
     listaPasajeros: string,
     solicitante:ISolicitante,
-    nombreJefeDepto: string
+    JefeDepto: string,//modificado
     fechaEntrada: string,
     estado: number,
-    estadoString: string,
+    //estadoString: string,
     motorista: IMotorista,
     listDocumentos: string,
     horasValidas: boolean
@@ -45,6 +45,7 @@ export interface ISolicitante{
     nombre: string,
     clave: string,
     nuevo: number,
+    token: string, //agregado
     empleado: string
 }
 export interface IMotorista{

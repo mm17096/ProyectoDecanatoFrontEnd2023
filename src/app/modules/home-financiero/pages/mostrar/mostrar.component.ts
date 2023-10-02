@@ -1,5 +1,5 @@
 import { MensajesService } from "src/app/shared/global/mensajes.service";
-import { DatePipe } from "@angular/common";
+import { CurrencyPipe, DatePipe } from "@angular/common";
 import { HomeFinancieroService } from "./../../services/home-financiero.service";
 import { Component, OnInit } from "@angular/core";
 import { Empleado } from "src/app/account/auth/models/usuario.models";
@@ -23,10 +23,14 @@ export class MostrarComponent implements OnInit {
 
   texto?: string;
 
+  //grafica Compra
+  chartData: any[] = [];
+
   constructor(
     private homeFinancieroService: HomeFinancieroService,
     private datePipe: DatePipe,
-    private mensajesService: MensajesService
+    private mensajesService: MensajesService,
+    private currencyPipe: CurrencyPipe
   ) {}
 
   ngOnInit(): void {
@@ -37,6 +41,10 @@ export class MostrarComponent implements OnInit {
   formatDate(date: string): string {
     const fecha = new Date(date);
     return this.datePipe.transform(fecha, "dd/MM/yyyy") || "";
+  }
+
+  formatCurrency(amount: number): string {
+    return this.currencyPipe.transform(amount, 'USD', 'symbol', '1.2-2') || '';
   }
 
   get empleado(): Empleado | null {
@@ -70,6 +78,7 @@ export class MostrarComponent implements OnInit {
       .getListarPorRangoDeFechas(fechaInicial, fechaFinal)
       .subscribe((compras: ICompra[]) => {
         this.listCompra = compras;
+        this.graficar();
         this.montoGenerado = this.cantidaGenerada = 0;
         this.listCompra.forEach((x) => {
           this.montoGenerado += x.totalCompra;
@@ -131,5 +140,12 @@ export class MostrarComponent implements OnInit {
         "Debe seleccionar ambas fechas."
       );
     }
+  }
+
+  graficar() {
+    this.chartData = this.listCompra.map((compra) => ({
+      data: [compra.totalCompra],
+      label: this.formatDate(compra.fechaCompra)
+    }));
   }
 }

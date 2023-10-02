@@ -41,7 +41,7 @@ export class ModalDocumentosComponent implements OnInit {
 
   ngOnInit(): void {
     this.formBuilder = this.Iniciarformulario();
-   // this.ObtenerSolicitudValeById(this.codigoAsignacion);
+    // this.ObtenerSolicitudValeById(this.codigoAsignacion);
   }
 
   guardar() {
@@ -49,7 +49,6 @@ export class ModalDocumentosComponent implements OnInit {
       if (this.documentovaleOd != null) {
         //this.editando();
       } else {
-        console.log("antes de registrar");
         this.registrando();
       }
     } else {
@@ -68,7 +67,6 @@ export class ModalDocumentosComponent implements OnInit {
         this.asignacionSolicitud = data;
         this.idSolicitud =
           this.asignacionSolicitud.solicitudVale.idSolicitudVale;
-        console.log("solicitud: ", this.idSolicitud);
         this.obtenerSolicitud(this.idSolicitud, content);
       },
     });
@@ -182,31 +180,8 @@ export class ModalDocumentosComponent implements OnInit {
     this.router.navigate([currentUrl]);
   }
   openModal(content: any) {
-
-    console.log("codigo A: ", this.codigoAsignacion);
-
     this.ObtenerSolicitudValeById(this.codigoAsignacion, content);
-
     this.obtenerLista(this.idSolicitud, content);
-    //this.obtenerLista(this.idSolicitud, content);
-    //this.obtenerSolicitud(this.idSolicitud, content);
-    /* console.log("tamaño: ", );
-
-    if (this.estadoEntrada == 2) {
-      if (this.sizeDocs == 2) {
-        this.mensajesService.mensajesToast(
-          "info",
-          "Ya se registraron todos los documentos"
-        );
-      } else {
-        this.modalService.open(content, { size: "lx", centered: true });
-      }
-    } else {
-      this.mensajesService.mensajesToast(
-        "warning",
-        "Vehículo no ha regresado de la misión"
-      );
-    } */
   }
 
   validaciones(content: any) {
@@ -269,7 +244,6 @@ export class ModalDocumentosComponent implements OnInit {
     return this.detalleservice.listDeMisiones;
   }
   obtenerSolicitud(id: string, content: any) {
-
     this.detalleservice.getSolicitudVale(id).subscribe({
       next: (data) => {
         this.estadoEntrada = data[0].estadoEntradaSolicitudVale;
@@ -278,14 +252,10 @@ export class ModalDocumentosComponent implements OnInit {
     });
   }
   obtenerLista(id: string, content: any) {
-    console.log("id: ", id);
-
     //para poder mostrar e la tabla
     this.detalleservice.ObtenerLista(id).subscribe(
       (resp: IDocumentosvale[]) => {
         this.entradasalidas = resp;
-        console.log("lista: ", resp);
-        console.log("tamaño de la lista: ", this.sizeDocs);
         this.sizeDocs = resp.length;
         this.validaciones(content);
       },

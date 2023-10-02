@@ -14,6 +14,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { UIModule } from 'src/app/shared/ui/ui.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 FullCalendarModule.registerPlugins([ // register FullCalendar plugins
   dayGridPlugin,
@@ -37,7 +38,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     UIModule,
     NgbModule,
     FormsModule,
-
+    NgSelectModule
   ]
 })
 export class CalendarioModule { }

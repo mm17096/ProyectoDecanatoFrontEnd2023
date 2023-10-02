@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { CalendarOptions, EventApi, EventInput, EventSourceFunc,formatDate } from '@fullcalendar/core';
+import { CalendarOptions, EventApi, EventClickArg, EventInput, EventSourceFunc,formatDate } from '@fullcalendar/core';
 import dayGrirdPlugin from '@fullcalendar/daygrid';
 import { ServicioService } from '../servicio/servicio.service';
 import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
 import { SolicitudVv } from '../../solicitudes/Interfaces/SolicitudVv';
+import { ModalSecretariaComponent } from '../../solicitud-vehiculo/components/modal-secretaria/modal-secretaria.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ISolicitudVehiculo } from '../../solicitud-vehiculo/interfaces/data.interface';
 
 @Component({
   selector: 'app-calendario',
@@ -12,9 +15,11 @@ import { SolicitudVv } from '../../solicitudes/Interfaces/SolicitudVv';
 })
 export class CalendarioComponent implements OnInit {
 
-
-
-
+  breadCrumbItems: Array<{}>;
+  solicitud: any[] = [];
+  editEvent: any;
+  selectedData: ISolicitudVehiculo;
+  contador = 0;
   calendarOptions: CalendarOptions = {
     headerToolbar: {
 
@@ -27,10 +32,16 @@ export class CalendarioComponent implements OnInit {
    // timeZone: 'UTC',
     locale: 'es',
 
-
+    eventClick : this.handleEventClick.bind(this),
     events: this.LoadEvents.bind(this),
 
   };
+
+  ngOnInit(): void {
+    this.breadCrumbItems = [{ label: 'Calendario' }, { label: 'Solicitud', active: true }];
+  }
+
+
 
   currentEvents: EventApi[] = [];
   async LoadEvents(args: EventSourceFunc): Promise<EventInput[]> { // empieza el forech
@@ -142,24 +153,48 @@ export class CalendarioComponent implements OnInit {
         });
       } // termina el metodo async
 
+    //metodo para cargar el modal
+  async handleEventClick(clickInfo: EventClickArg) {
+        this.editEvent = clickInfo.event;
+        console.log(this.editEvent.id)
+       const compara = this.editEvent.id;
+
+      const dataSoli =  await this.soliService.getSolicitudV().toPromise();
+          let data = dataSoli.find(x => x.codigoSolicitudVehiculo == clickInfo.event.id);
+            if (data.codigoSolicitudVehiculo == compara) {
+               console.log("lo que trajo", data);
+              this.abrirModalSecre('Edicion', data);
+            }
+          }
+
+
+
+        //this.modalService.open();
+
+
        handleEvents(events: EventApi[]) {
     this.currentEvents = events;
   }
 
-  handleDateClick(arg) {
-    alert('date click! ' + arg.dateStr)
-  }
-  breadCrumbItems: Array<{}>;
-  usuariojson : any;
 
-  constructor( private soliService: ServicioService, private userService: UsuarioService) {
+get listSoliVeData(){
+  return this.soliService.getSoli2();
+}
+
+
+  constructor( private soliService: ServicioService, private modalService: NgbModal) {
 
    }
 
 
-
-  ngOnInit(): void {
-    this.breadCrumbItems = [{ label: 'Calendario' }, { label: 'Solicitud', active: true }];
+   abrirModalSecre(leyenda: string, data: any) {
+    const selectedData = data;
+ console.log("lo que trajo", data);
+    const modalRef = this.modalService.open(ModalSecretariaComponent, {size:'xl', backdrop: 'static'});
+    modalRef.componentInstance.leyenda = leyenda;
+    modalRef.componentInstance.soliVeOd = data;
+    modalRef.componentInstance.usuarioActivo = "SECR_DECANATO";
   }
+
 
 }

@@ -15,6 +15,8 @@ import { DefaultComponent } from './default/default.component';
 import { SaasComponent } from './saas/saas.component';
 import { CryptoComponent } from './crypto/crypto.component';
 import { BlogComponent } from './blog/blog.component';
+import { CardComponent } from 'src/app/modules/entradasalida/components/card/card.component';
+import { EntradasalidaModule } from 'src/app/modules/entradasalida/entradasalida.module';
 
 @NgModule({
   declarations: [DefaultComponent, SaasComponent, CryptoComponent, BlogComponent],
@@ -31,6 +33,7 @@ import { BlogComponent } from './blog/blog.component';
     NgApexchartsModule,
     SharedModule,
     SimplebarAngularModule
+    ,EntradasalidaModule
   ]
 })
 export class DashboardsModule { }

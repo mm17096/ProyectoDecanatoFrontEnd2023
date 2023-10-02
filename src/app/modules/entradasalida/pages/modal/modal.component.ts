@@ -27,7 +27,6 @@ export class ModalComponent implements OnInit {
   @Input() controllerdata:boolean;
   //objetivoMision="";
   fechaSalida="";
-
   formBuilder!: FormGroup;
   entradasalidas: IEntradaSalida[]=[];//para almacenar los resultados
   //entrasal:IEntradaSalida;
@@ -39,6 +38,15 @@ export class ModalComponent implements OnInit {
   /////esto para enviar el objetivo a la modal
   //objetivoMision: IsolicitudVehiculo;
   kilometrajeAnterior: number = 0;
+  alerts = [
+    {
+      id: 9,
+      type: "info",
+      message:
+        " Por favor, asegúrese de completar todos los campos obligatorios (*) y de cumplir con los formatos correspondientes. Además, le recomendamos prestar atención a los mensajes de alerta",
+      show: false,
+    },
+  ];
  
 
   
@@ -80,7 +88,7 @@ export class ModalComponent implements OnInit {
   private Iniciarformulario(): FormGroup {
     return this.fb.group({
       id:[''],
-      fecha: ['', [Validators.required, this.maxDateValidator()]],
+      fecha: ['', [Validators.required]],
       hora: ['', [Validators.required]],
       kilometraje: ['', [Validators.required]],
       combustible: ['', [Validators.required]],
@@ -97,8 +105,8 @@ export class ModalComponent implements OnInit {
       const selectedDate = new Date(control.value);
       const today = this.getToday();
 
-      if (selectedDate > today) {
-        return { maxDate: true };
+      if (selectedDate <= today) {
+        return { max: true };
       }
 
       return null;
@@ -289,19 +297,30 @@ export class ModalComponent implements OnInit {
 
   
   esCampoValido(campo: string){
-    
     const validarCampo= this.formBuilder.get(campo);
     /*if(campo=="solicitudvehiculo"){
       return 'is-valid';
     }*/
-    
-    
     return !validarCampo?.valid && validarCampo?.touched ? 'is-invalid' : validarCampo?.touched? 'is-valid': '';
   
   }
-
   get Listamisiones() {
     return this.listaentradasalidaservice.listDeMisiones;
+  }
+
+  //metodos para la alerta
+  CambiarAlert(alert) {
+    alert.show = !alert.show;
+  }
+
+  restaurarAlerts() {
+    this.alerts.forEach((alert) => {
+      alert.show = true;
+    });
+  }
+
+  siMuestraAlertas() {
+    return this.alerts.every((alert) => alert.show);
   }
 
   

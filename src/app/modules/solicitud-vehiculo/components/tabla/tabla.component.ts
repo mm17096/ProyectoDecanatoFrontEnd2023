@@ -56,11 +56,11 @@ export class TablaComponent implements OnInit {
     modalRef.componentInstance.usuarioActivo = this.userAcivo;
   }
 
-  abrirModalBitacora(data: any) {
+  abrirModalLog(data: any) {
     this.obtenerLog(data.codigoSolicitudVehiculo).then(() => {
       console.log("mostrando: ", this.logSoli);
       const modalRef = this.modalService.open(ModalLogComponent, { size: 'xl', backdrop: 'static' });
-      modalRef.componentInstance.soliVeOd = data;
+      modalRef.componentInstance.log = this.logSoli;
     });
   }
 

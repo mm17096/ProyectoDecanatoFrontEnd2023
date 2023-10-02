@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {ILogSoliVe} from "../../interfaces/data.interface";
 
 @Component({
   selector: 'app-modal-log',
@@ -18,6 +19,9 @@ export class ModalLogComponent implements OnInit {
     },
   ];
 
+  @Input() log!: ILogSoliVe[];
+  p: any; // paginacion
+
   constructor(private modalService: NgbModal, public activeModal: NgbActiveModal) { }
 
   ngOnInit(): void {
@@ -33,6 +37,13 @@ export class ModalLogComponent implements OnInit {
   }
   CambiarAlert(alert) {
     alert.show = !alert.show;
+  }
+  calcularNumeroCorrelativo(index: number): number {
+    if (typeof this.p === 'number') {
+      return (this.p - 1) * 10 + index + 1;
+    } else {
+      return index + 1; // Si no es numérico, solo regresamos el índice + 1
+    }
   }
 
 }

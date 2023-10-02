@@ -1,5 +1,5 @@
 import { MensajesService } from "src/app/shared/global/mensajes.service";
-import { CurrencyPipe, DatePipe } from "@angular/common";
+import { DatePipe } from "@angular/common";
 import { HomeFinancieroService } from "./../../services/home-financiero.service";
 import { Component, OnInit } from "@angular/core";
 import { Empleado } from "src/app/account/auth/models/usuario.models";
@@ -29,8 +29,7 @@ export class MostrarComponent implements OnInit {
   constructor(
     private homeFinancieroService: HomeFinancieroService,
     private datePipe: DatePipe,
-    private mensajesService: MensajesService,
-    private currencyPipe: CurrencyPipe
+    private mensajesService: MensajesService
   ) {}
 
   ngOnInit(): void {
@@ -43,8 +42,9 @@ export class MostrarComponent implements OnInit {
     return this.datePipe.transform(fecha, "dd/MM/yyyy") || "";
   }
 
-  formatCurrency(amount: number): string {
-    return this.currencyPipe.transform(amount, 'USD', 'symbol', '1.2-2') || '';
+  formatDateCompleto(date: string): string {
+    const fecha = new Date(date);
+    return this.datePipe.transform(fecha, "dd/MM/yy HH:mm") || "";
   }
 
   get empleado(): Empleado | null {
@@ -145,7 +145,7 @@ export class MostrarComponent implements OnInit {
   graficar() {
     this.chartData = this.listCompra.map((compra) => ({
       data: [compra.totalCompra],
-      label: this.formatDate(compra.fechaCompra)
+      label: this.formatDateCompleto(compra.fechaCompra)
     }));
   }
 }

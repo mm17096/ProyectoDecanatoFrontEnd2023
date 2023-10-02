@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 import { HomeFinancieroRoutingModule } from './home-financiero-routing.module';
 import { MostrarComponent } from './pages/mostrar/mostrar.component';
@@ -34,8 +34,7 @@ import { ChartsModule } from 'ng2-charts';
     LayoutsModule,
     ChartsModule
   ], providers: [
-    DatePipe,
-    CurrencyPipe
+    DatePipe
   ]
 })
 export class HomeFinancieroModule { }

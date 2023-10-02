@@ -22,6 +22,10 @@ export class GraficaCompraComponent implements OnInit {
         {
           ticks: {
             beginAtZero: true,
+            callback: function (value, index, values) {
+              // Formatear el valor como moneda
+              return '$' + value.toFixed(2);
+            },
           },
         },
       ],

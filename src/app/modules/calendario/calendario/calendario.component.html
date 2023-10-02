@@ -4,6 +4,20 @@
     <div class="col-12">
       <div class="card">
         <div class="card-body">
+          <div class="col-12">
+            <label class="estados">Estados de las solicitudes</label>
+            <br>
+            <span class="badge rounded-pill bg-warning"> En espera por jefe </span>
+            <span class="badge rounded-pill bg-info"> Aprobado por jefe </span>
+            <span class="badge rounded-pill bg-esdec"> En espera por decano </span>
+            <span class="badge rounded-pill bg-success"> Aprobada </span>
+            <span class="badge rounded-pill bg-purple"> Asignado </span>
+            <span class="badge rounded-pill bg-revision"> Revisión </span>
+            <span class="badge rounded-pill bg-prima"> Finalizada </span>
+            <span class="badge rounded-pill bg-danger"> Anulada </span>
+          </div>
+
+
           <div class="app-calendar">
             <!-- calendar -->
             <full-calendar [options]="calendarOptions"></full-calendar>

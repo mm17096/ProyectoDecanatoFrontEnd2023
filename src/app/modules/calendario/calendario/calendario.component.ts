@@ -7,6 +7,7 @@ import { SolicitudVv } from '../../solicitudes/Interfaces/SolicitudVv';
 import { ModalSecretariaComponent } from '../../solicitud-vehiculo/components/modal-secretaria/modal-secretaria.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ISolicitudVehiculo } from '../../solicitud-vehiculo/interfaces/data.interface';
+import { ModalComponent } from '../../solicitud-vehiculo/components/modal/modal.component';
 
 @Component({
   selector: 'app-calendario',
@@ -20,9 +21,14 @@ export class CalendarioComponent implements OnInit {
   editEvent: any;
   selectedData: ISolicitudVehiculo;
   contador = 0;
+
+
   calendarOptions: CalendarOptions = {
     headerToolbar: {
 
+    },
+    buttonText:{
+      today : 'Hoy'
     },
 
     initialView: 'dayGridMonth',
@@ -30,10 +36,10 @@ export class CalendarioComponent implements OnInit {
     editable: true,
     selectable: true,
    // timeZone: 'UTC',
-    locale: 'es',
+    locale: 'es',              // para poner en español el calendario
 
-    eventClick : this.handleEventClick.bind(this),
-    events: this.LoadEvents.bind(this),
+    eventClick : this.handleEventClick.bind(this),  // al dar click sobre un evento se invoca
+    events: this.LoadEvents.bind(this),             // para cargar los eventos que bienen del servicio
 
   };
 
@@ -44,8 +50,9 @@ export class CalendarioComponent implements OnInit {
 
 
   currentEvents: EventApi[] = [];
-  async LoadEvents(args: EventSourceFunc): Promise<EventInput[]> { // empieza el forech
 
+  async LoadEvents(args: EventSourceFunc): Promise<EventInput[]> { // empieza el forech
+        
         return new Promise<EventInput[]>((resolve) => {
          // console.log(args.startStr);
 
@@ -66,13 +73,18 @@ export class CalendarioComponent implements OnInit {
           let var1 : string = fechaInicio.toISOString().split('T')[0];
           let var2 : string = fechaFin.toISOString().split('T')[0];
 
+          //nombre del solicitante
+          const paso1 = val.solicitante.empleado.nombre;
+          const paso2 = paso1.split(" ");
+          const nombre = paso2[0];
+          console.log("solicitante",val.solicitante.empleado.nombre);
           // switch para pintar los eventos segun el estado
              switch (val.estado) {
                 case 1:
 
                   events.push({
                     id: val.codigoSolicitudVehiculo,
-                    title: "solicitud",
+                    title: nombre,
                     start: var1,
                     end: var2,
                     className: 'bg-warning text-white'
@@ -82,7 +94,7 @@ export class CalendarioComponent implements OnInit {
 
                   events.push({
                     id: val.codigoSolicitudVehiculo,
-                    title: "solicitud",
+                    title: nombre,
                     start: var1,
                     end: var2,
                     className: 'bg-info text-white'
@@ -92,7 +104,7 @@ export class CalendarioComponent implements OnInit {
 
                   events.push({
                     id: val.codigoSolicitudVehiculo,
-                    title: "solicitud",
+                    title: nombre,
                     start: var1,
                     end: var2,
 
@@ -103,7 +115,7 @@ export class CalendarioComponent implements OnInit {
 
                   events.push({
                     id: val.codigoSolicitudVehiculo,
-                    title: "solicitud",
+                    title: nombre,
                     start: var1,
                     end: var2,
                     className: 'bg-success text-white'
@@ -114,7 +126,7 @@ export class CalendarioComponent implements OnInit {
 
                     events.push({
                       id: val.codigoSolicitudVehiculo,
-                      title: "solicitud",
+                      title: nombre,
                       start: var1,
                       end: var2,
                       color: '#B79CED'
@@ -126,10 +138,23 @@ export class CalendarioComponent implements OnInit {
 
                     events.push({
                       id: val.codigoSolicitudVehiculo,
-                      title: "solicitud",
+                      title: nombre,
                       start: var1,
                       end: var2,
                       color: '#A6ACAF'
+
+                    });
+
+                  break;
+                  case 7:
+
+                    events.push({
+                      id: val.codigoSolicitudVehiculo,
+                      title: nombre,
+                      start: var1,
+                      end: var2,
+                      color: 'blue'
+
                     });
 
                   break;
@@ -138,7 +163,7 @@ export class CalendarioComponent implements OnInit {
 
                   events.push({
                     id: val.codigoSolicitudVehiculo,
-                    title: "solicitud",
+                    title: nombre,
                     start: var1,
                     end: var2,
                     className: 'bg-danger text-white'
@@ -155,21 +180,21 @@ export class CalendarioComponent implements OnInit {
 
     //metodo para cargar el modal
   async handleEventClick(clickInfo: EventClickArg) {
-        this.editEvent = clickInfo.event;
+        this.editEvent = clickInfo.event; // obtenemos los eventos del calendario
         console.log(this.editEvent.id)
-       const compara = this.editEvent.id;
+       const compara = this.editEvent.id; // se asigna a una variable el id del evento que tambien es el codigo de la solicitud
 
-      const dataSoli =  await this.soliService.getSolicitudV().toPromise();
-          let data = dataSoli.find(x => x.codigoSolicitudVehiculo == clickInfo.event.id);
+      const dataSoli =  await this.soliService.getSolicitudV().toPromise();  // se obtinen las solicitudes
+          let data = dataSoli.find(x => x.codigoSolicitudVehiculo == clickInfo.event.id);  // se busca la solicitud
             if (data.codigoSolicitudVehiculo == compara) {
                console.log("lo que trajo", data);
-              this.abrirModalSecre('Edicion', data);
+              this.abrirModal('Detalle', data);                  // se invoca al metodo para abrir el modal
             }
           }
 
 
 
-        //this.modalService.open();
+
 
 
        handleEvents(events: EventApi[]) {
@@ -187,10 +212,10 @@ get listSoliVeData(){
    }
 
 
-   abrirModalSecre(leyenda: string, data: any) {
+   abrirModal(leyenda: string, data: any) {
     const selectedData = data;
  console.log("lo que trajo", data);
-    const modalRef = this.modalService.open(ModalSecretariaComponent, {size:'xl', backdrop: 'static'});
+    const modalRef = this.modalService.open(ModalComponent, {size:'xl', backdrop: 'static'});
     modalRef.componentInstance.leyenda = leyenda;
     modalRef.componentInstance.soliVeOd = data;
     modalRef.componentInstance.usuarioActivo = "SECR_DECANATO";

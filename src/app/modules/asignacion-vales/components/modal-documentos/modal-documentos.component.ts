@@ -41,18 +41,14 @@ export class ModalDocumentosComponent implements OnInit {
 
   ngOnInit(): void {
     this.formBuilder = this.Iniciarformulario();
-    this.ObtenerSolicitudValeById(this.codigoAsignacion);
-    this.obtenerLista(this.idSolicitud);
-    this.obtenerSolicitud(this.idSolicitud);
+    // this.ObtenerSolicitudValeById(this.codigoAsignacion);
   }
-
 
   guardar() {
     if (this.formBuilder.valid) {
       if (this.documentovaleOd != null) {
         //this.editando();
       } else {
-        console.log("antes de registrar");
         this.registrando();
       }
     } else {
@@ -65,15 +61,13 @@ export class ModalDocumentosComponent implements OnInit {
     }
   }
 
-  ObtenerSolicitudValeById(codigoA: string) {
+  ObtenerSolicitudValeById(codigoA: string, content: any) {
     this.detalleservice.getAsignacionValeSolicitudVale(codigoA).subscribe({
       next: (data) => {
         this.asignacionSolicitud = data;
         this.idSolicitud =
           this.asignacionSolicitud.solicitudVale.idSolicitudVale;
-          console.log("solicitud: ",this.idSolicitud);
-          this.obtenerLista(this.idSolicitud);
-          this.obtenerSolicitud(this.idSolicitud);
+        this.obtenerSolicitud(this.idSolicitud, content);
       },
     });
   }
@@ -186,11 +180,12 @@ export class ModalDocumentosComponent implements OnInit {
     this.router.navigate([currentUrl]);
   }
   openModal(content: any) {
+    this.ObtenerSolicitudValeById(this.codigoAsignacion, content);
+    this.obtenerLista(this.idSolicitud, content);
+  }
 
-    console.log("tamaño: ",this.obtenerLista(this.idSolicitud));
+  validaciones(content: any) {
     if (this.estadoEntrada == 2) {
-
-
       if (this.sizeDocs == 2) {
         this.mensajesService.mensajesToast(
           "info",
@@ -248,22 +243,21 @@ export class ModalDocumentosComponent implements OnInit {
   get Listamisiones() {
     return this.detalleservice.listDeMisiones;
   }
-  obtenerSolicitud(id: string) {
+  obtenerSolicitud(id: string, content: any) {
     this.detalleservice.getSolicitudVale(id).subscribe({
       next: (data) => {
         this.estadoEntrada = data[0].estadoEntradaSolicitudVale;
+        this.validaciones(content);
       },
     });
   }
-  obtenerLista(id: string) {
+  obtenerLista(id: string, content: any) {
     //para poder mostrar e la tabla
     this.detalleservice.ObtenerLista(id).subscribe(
       (resp: IDocumentosvale[]) => {
         this.entradasalidas = resp;
-        console.log("lista: ", resp);
-        console.log("tamaño de la lista: ", this.sizeDocs);
         this.sizeDocs = resp.length;
-
+        this.validaciones(content);
       },
       (error) => {
         // Manejar errores aquí

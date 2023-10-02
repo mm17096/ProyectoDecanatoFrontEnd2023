@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { EntradaSalidaI, IEntradaSalida } from '../interface/EntSalinterface';
+import { EntradaSalidaI, IEntradaSalida, SolitudVehiculoI } from '../interface/EntSalinterface';
 import {  IsolicitudVehiculo } from '../interface/VehiculoEntradasalida';
 import {Observable } from 'rxjs';
+
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { ISolicitudvalep } from '../../solicitud-vale-paginacion/interface/solicitudvalep.interface';
@@ -18,13 +19,13 @@ export class ListaentradasalidaService {
   listDeMisiones: IsolicitudVehiculo[] = [];
   constructor(private http: HttpClient) {
 
-        const token = localStorage.getItem('token');
-        const headers = new HttpHeaders({
-          Authorization: `Bearer ${token}`
-        });
-        this.requestOptions = {
-          headers: headers
-        };
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    this.requestOptions = {
+      headers: headers
+    };
   }
 
   getMisiones() {
@@ -53,18 +54,18 @@ export class ListaentradasalidaService {
   }
 
   get ObtenerLista(): Observable<IEntradaSalida[]> {
-     // Recupera el token de acceso desde el local storage
-     const token = localStorage.getItem('token');
+    // Recupera el token de acceso desde el local storage
+    const token = localStorage.getItem('token');
 
-     // Crea un objeto HttpHeaders para agregar el token de acceso en el encabezado 'Authorization'
-     const headers = new HttpHeaders({
-       Authorization: `Bearer ${token}`
-     });
+    // Crea un objeto HttpHeaders para agregar el token de acceso en el encabezado 'Authorization'
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
 
-     // Configura las opciones de la solicitud HTTP con los encabezados personalizados
-     const requestOptions = {
-       headers: headers
-     };
+    // Configura las opciones de la solicitud HTTP con los encabezados personalizados
+    const requestOptions = {
+      headers: headers
+    };
 
     return this.http.get<IEntradaSalida[]>(`${this.baseUrl}/entradasalida`, requestOptions);
   }
@@ -73,17 +74,28 @@ export class ListaentradasalidaService {
 
   NuevosDatos(entrasali: EntradaSalidaI): any {
     const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    this.requestOptions = {
+      headers: headers
+    };
+    return this.http.post(`${this.baseUrl}/entradasalida/insertar`, entrasali, this.requestOptions);
+  }
+
+  modificandoFecha(modi: SolitudVehiculoI ): Observable<Object> {
+    const token = localStorage.getItem('token');
         const headers = new HttpHeaders({
           Authorization: `Bearer ${token}`
         });
         this.requestOptions = {
           headers: headers
         };
-    return this.http.post(`${this.baseUrl}/entradasalida/insertar`,entrasali, this.requestOptions);
+    return this.http.put(`${this.baseUrl}/solicitudvehiculo/fecharegreso`, modi,this.requestOptions);
   }
 
   public putEntradasalida(entrasali: EntradaSalidaI): Observable<Object> {
-    return this.http.put(`${this.baseUrl}/entradasalida/{{id}}`,entrasali, this.requestOptions);
+    return this.http.put(`${this.baseUrl}/entradasalida/{{id}}`, entrasali, this.requestOptions);
   }
   public putEmpleado(ent: IEntradaSalida): any {
     return this.http.put(`${this.baseUrl}/entradasalida/editar/${ent.id}`, ent, this.requestOptions);
@@ -100,14 +112,13 @@ export class ListaentradasalidaService {
     };
 
     if (termino.length > 1) {
+
      return this.http.get<IsolicitudVehiculo[]>(`${this.baseUrl}/solicitudvehiculo/listasinpagina/${termino}`, requestOptions).pipe(
-          map(vehiculos=>vehiculos.filter(vehiculos=>vehiculos.estado===4))
+          map(vehiculos=>vehiculos.filter(vehiculos=>vehiculos.estado===5))
       );
     } else {
-      return this.http.get<IsolicitudVehiculo[]>(`${this.baseUrl}/solicitudvehiculo/todas`, requestOptions).pipe(
-        //muestra los autos con estadoSolicitud4 y que tengan la fecha igual a la actual
-        map(vehiculos=>vehiculos.filter(vehiculo=>vehiculo.estado==5 && this.compararFechasSalida(vehiculo.fechaSalida)))
-      )
+      return this.http.get<IsolicitudVehiculo[]>(`${this.baseUrl}/entradasalida/todas`, requestOptions);
+
     }
   }
 
@@ -117,6 +128,10 @@ export class ListaentradasalidaService {
     // Convierte ambas fechas a cadenas en formato de fecha (sin hora)
     const fechaSalidaStr = fechaSalida.toString().split('T')[0];
     const fechaActualStr = fechaActual.toISOString().split('T')[0];
+
+    console.log("Salida sistema: " + fechaSalidaStr);
+    console.log("Actual: " + fechaActualStr);
+
     // Compara si las fechas son iguales
     return fechaSalidaStr === fechaActualStr;
   }
@@ -131,8 +146,19 @@ export class ListaentradasalidaService {
     return fechaEntradaStr === fechaActualStr;
   }
 
- /*obtenerImagenes(): Observable<IVehiculoentradaSalida[]> {
+  /*obtenerImagenes(): Observable<IVehiculoentradaSalida[]> {
+ 
+     const token = localStorage.getItem('token');
+     const headers = new HttpHeaders({
+       Authorization: `Bearer ${token}`
+     });
+     const requestOptions = {
+       headers: headers
+     };
+     return this.http.get<IVehiculoentradaSalida[]>(`${this.baseUrl}/vehiculo/listasinpagina`, requestOptions);
+   }*/
 
+  listarEstado(estado: string, id: number): Observable<IEntradaSalida> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
@@ -140,29 +166,18 @@ export class ListaentradasalidaService {
     const requestOptions = {
       headers: headers
     };
-    return this.http.get<IVehiculoentradaSalida[]>(`${this.baseUrl}/vehiculo/listasinpagina`, requestOptions);
-  }*/
+    return this.http.get<IEntradaSalida>(`${this.baseUrl}/entradasalida/buscarentradasalida?filtro=${estado}&tipo=${id}`, requestOptions);
+  }
 
-listarEstado(estado: string, id: number ): Observable<IEntradaSalida>{
-  const token = localStorage.getItem('token');
+  obtenercodigosolicitudvale(id: number): Observable<ISolicitudvalep> {
+    const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
     const requestOptions = {
       headers: headers
     };
-  return this.http.get<IEntradaSalida>(`${this.baseUrl}/entradasalida/buscarentradasalida?filtro=${estado}&tipo=${id}`,requestOptions);
-}
-
-obtenercodigosolicitudvale(id: number ): Observable<ISolicitudvalep>{
-  const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-    const requestOptions = {
-      headers: headers
-    };
-  return this.http.get<ISolicitudvalep>(`${this.baseUrl}/solicitudvale/buscarcodigosolicitudvale?codigo=${id}`,requestOptions);
-}
+    return this.http.get<ISolicitudvalep>(`${this.baseUrl}/solicitudvale/buscarcodigosolicitudvale?codigo=${id}`, requestOptions);
+  }
 
 }

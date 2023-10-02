@@ -22,6 +22,7 @@ const routes: Routes = [
   {  path: 'depto', loadChildren: () => import('./depto/depto.module').then(m => m.DeptoModule)},
 
   { path: 'dashboard', loadChildren: () => import('./../pages/dashboards/dashboards.module').then(m => m.DashboardsModule) },
+  { path: '', loadChildren: () => import('./../pages/dashboards/dashboards.module').then(m => m.DashboardsModule) },
 ];
 
 @NgModule({

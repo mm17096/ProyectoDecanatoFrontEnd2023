@@ -107,7 +107,7 @@ export const MENU: MenuItem[] = [
         parentId: 8,
       },
       {
-        id: 111,
+        id: 11,
         label: "Ajustes de Vales",
         link: "/devolucion-vale",
         role: ["ADMIN","ASIS_FINANCIERO","JEFE_FINANACIERO"],
@@ -387,6 +387,13 @@ export const MENU_ASIS_FINAN: MenuItem[] = [
         id: 10,
         label: "Compras",
         link: "/compra",
+        role: ["ADMIN","ASIS_FINANCIERO","JEFE_FINANACIERO"],
+        parentId: 8,
+      },
+      {
+        id: 11,
+        label: "Ajustes de Vales",
+        link: "/devolucion-vale",
         role: ["ADMIN","ASIS_FINANCIERO","JEFE_FINANACIERO"],
         parentId: 8,
       },

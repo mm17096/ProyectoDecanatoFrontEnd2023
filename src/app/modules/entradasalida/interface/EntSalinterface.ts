@@ -87,3 +87,10 @@ export class EntradaSalidaI {
 
 ){}
   }
+
+  export class SolitudVehiculoI {
+    constructor(
+        public codigoSolicitudVehiculo?: number,
+        public fechaEntrada?: string
+){}
+  }

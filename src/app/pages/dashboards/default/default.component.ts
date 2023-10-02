@@ -8,6 +8,8 @@ import { ConfigService } from '../../../core/services/config.service';
 import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
 import { IEmpleado } from 'src/app/modules/empleado/interface/empleado.interface';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { ServiceService } from 'src/app/modules/solicitudes/Service/service.service';
+import { IExistenciaVales } from 'src/app/modules/solicitudes/Interfaces/existenciavales.interface';
 
 @Component({
   selector: 'app-default',
@@ -30,6 +32,7 @@ export class DefaultComponent implements OnInit {
   usuario!: string;
   imagenBlob: Blob | null = null;
   imagenURL: any; // Variable para almacenar la URL de la imagen
+  existenciaI!: IExistenciaVales; //para vales disponibles
 
 
   @ViewChild('content') content;
@@ -38,12 +41,14 @@ export class DefaultComponent implements OnInit {
     private configService: ConfigService,
     private eventService: EventService,
     private usuarioService: UsuarioService,
-    private jwtHelper: JwtHelperService
+    private jwtHelper: JwtHelperService,
+    private existenciaService: ServiceService,
     ) {}
 
   ngOnInit() {
     //console.log(this.usuarioService.getUsuario());
     this.fotoEmpleado =  this.usuarioService.empleadofoto;
+    this.obtnerExistenciaVales();
     /**
      * horizontal-vertical layput set
      */
@@ -67,14 +72,14 @@ export class DefaultComponent implements OnInit {
     this.fetchData();
   }
 
-  decodeToken() {
+/*   decodeToken() {
     const token = this.usuarioService.token;
     const decodedToken = this.jwtHelper.decodeToken(token);
     return decodedToken.sub;
-  }
+  } */
 
   //// metodo para obtener el empleado /////
-  getEmpleadoData(nombre: string) {
+/*   getEmpleadoData(nombre: string) {
     this.eventService.getEmpleado(nombre)
       .subscribe(
         (data: IEmpleado) => {
@@ -84,7 +89,7 @@ export class DefaultComponent implements OnInit {
           console.error('Error al obtener datos del empleado', error);
         }
       );
-  }
+  } */
 
   ngAfterViewInit() {
     /* setTimeout(() => {
@@ -92,6 +97,19 @@ export class DefaultComponent implements OnInit {
     }, 2000); */
   }
 
+  /* Metodos para optener datos de cards */
+  
+  //Obtitne la existencia de los vales
+  obtnerExistenciaVales() {
+    this.existenciaService.getCantidadVales().subscribe({
+      next: (response) => {
+        this.existenciaI = response;
+      },
+    });
+  }
+
+  /* Metodos para optener datos de cards */
+  
   /**
    * Fetches the data
    */

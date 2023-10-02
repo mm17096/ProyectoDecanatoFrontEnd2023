@@ -69,7 +69,6 @@ export class EncabezadoComponent implements OnInit {
       { label: "Vales" },
       { label: "Asignación de Vales" },
       { label: "Registro de Asignaciones", active: true },
-
     ];
 
     this.route.paramMap.subscribe((params: ParamMap) => {
@@ -77,7 +76,7 @@ export class EncabezadoComponent implements OnInit {
     });
 
     this.obtnerEncabezado(this.codigoAsignacion);
-    this.ObtenerSolicitudValeById(this.codigoAsignacion);
+
     const user = JSON.parse(this.storage.getItem("usuario" || ""));
     this.usuario = user.codigoUsuario;
   }
@@ -102,6 +101,7 @@ export class EncabezadoComponent implements OnInit {
   }
 
   async liquidar() {
+    let error: string;
 
     if (this.estadoEntrada == 2) {
       if (this.listaDocumentosSize == 2) {
@@ -116,28 +116,30 @@ export class EncabezadoComponent implements OnInit {
             showConfirmButton: false,
           });
           return new Promise<void>((resolve, reject) => {
-            this.service.liquidarVales(this.liquidacion, this.usuario).subscribe({
-              next: (data: any) => {
-                // Cerrar SweetAlert de carga
-                Swal.close();
-                this.mensajesService.mensajesToast(
-                  "success",
-                  "Misión Finalizada"
-                );
-                this.router.navigate(["/solicitudes/solicitudvale"]);
-                resolve(); // Resuelve la promesa sin argumentos
-              },
-              error: (err) => {
-                // Cerrar SweetAlert de carga
-                Swal.close();
-                this.mensajesService.mensajesSweet(
-                  "error",
-                  "Ups... Algo salió mal",
-                  err.error.message
-                );
-                reject(err); // Rechaza la promesa con el error
-              },
-            });
+            this.service
+              .liquidarVales(this.liquidacion, this.usuario)
+              .subscribe({
+                next: (data: any) => {
+                  // Cerrar SweetAlert de carga
+                  Swal.close();
+                  this.mensajesService.mensajesToast(
+                    "success",
+                    "Misión Finalizada"
+                  );
+                  this.router.navigate(["/solicitudes/solicitudvale"]);
+                  resolve(); // Resuelve la promesa sin argumentos
+                },
+                error: (err) => {
+                  // Cerrar SweetAlert de carga
+                  Swal.close();
+                  this.mensajesService.mensajesSweet(
+                    "error",
+                    "Ups... Algo salió mal",
+                    (error = err.error.message)
+                  );
+                  reject(err); // Rechaza la promesa con el error
+                },
+              });
           });
         }
       } else if (this.listaDocumentosSize == 1) {
@@ -201,8 +203,12 @@ export class EncabezadoComponent implements OnInit {
         this.asignacionSolicitud = data;
         this.idSolicitud =
           this.asignacionSolicitud.solicitudVale.idSolicitudVale;
-          this.obtenerLista(this.idSolicitud);
+        this.obtenerLista(this.idSolicitud);
         this.obtenerSolicitud(this.idSolicitud);
+
+      },
+      error: (err) => {
+        return false;
       },
     });
   }
@@ -211,6 +217,8 @@ export class EncabezadoComponent implements OnInit {
       next: (data) => {
         console.log("resp: ", data);
         this.estadoEntrada = data[0].estadoEntradaSolicitudVale;
+        this.liquidar();
+        console.log("estado entrada", this.estadoEntrada);
       },
     });
   }
@@ -222,6 +230,7 @@ export class EncabezadoComponent implements OnInit {
         this.entradasalidas = resp;
 
         this.listaDocumentosSize = resp.length;
+        this.liquidar();
       },
       (error) => {
         // Manejar errores aquí

@@ -22,7 +22,7 @@
         <thead class="table-light">
           <tr>
             <th class="align-middle text-center">Codigo Vale</th>
-            <th></th>
+            <th class="align-middle text-center"></th>
             <th class="align-middle text-center">Valor $</th>
           </tr>
         </thead>
@@ -31,7 +31,6 @@
             <td class="align-middle text-center h3">
               {{ vale.correlativoVale }}
             </td>
-            <td></td>
             <td *ngIf="vale.fechaVencimiento < fechaActual" class="h4">
               <span class="badge rounded-pill bg-danger">Vencido</span>
             </td>

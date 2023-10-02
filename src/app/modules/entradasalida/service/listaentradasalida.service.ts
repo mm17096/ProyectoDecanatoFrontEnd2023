@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { EntradaSalidaI, IEntradaSalida } from '../interface/EntSalinterface';
-import { IsolicitudVehiculo } from '../interface/VehiculoEntradasalida';
-import { Observable } from 'rxjs';
+import { EntradaSalidaI, IEntradaSalida, SolitudVehiculoI } from '../interface/EntSalinterface';
+import {  IsolicitudVehiculo } from '../interface/VehiculoEntradasalida';
+import {Observable } from 'rxjs';
+
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { ISolicitudvalep } from '../../solicitud-vale-paginacion/interface/solicitudvalep.interface';
@@ -82,6 +83,17 @@ export class ListaentradasalidaService {
     return this.http.post(`${this.baseUrl}/entradasalida/insertar`, entrasali, this.requestOptions);
   }
 
+  modificandoFecha(modi: SolitudVehiculoI ): Observable<Object> {
+    const token = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+          Authorization: `Bearer ${token}`
+        });
+        this.requestOptions = {
+          headers: headers
+        };
+    return this.http.put(`${this.baseUrl}/solicitudvehiculo/fecharegreso`, modi,this.requestOptions);
+  }
+
   public putEntradasalida(entrasali: EntradaSalidaI): Observable<Object> {
     return this.http.put(`${this.baseUrl}/entradasalida/{{id}}`, entrasali, this.requestOptions);
   }
@@ -100,15 +112,13 @@ export class ListaentradasalidaService {
     };
 
     if (termino.length > 1) {
-      return this.http.get<IsolicitudVehiculo[]>(`${this.baseUrl}/solicitudvehiculo/listasinpagina/${termino}`, requestOptions).pipe(
-        map(vehiculos => vehiculos.filter(vehiculos => vehiculos.estado === 4))
+
+     return this.http.get<IsolicitudVehiculo[]>(`${this.baseUrl}/solicitudvehiculo/listasinpagina/${termino}`, requestOptions).pipe(
+          map(vehiculos=>vehiculos.filter(vehiculos=>vehiculos.estado===5))
       );
     } else {
-   /*    return this.http.get<IsolicitudVehiculo[]>(`${this.baseUrl}/solicitudvehiculo/todas`, requestOptions); */
-       return this.http.get<IsolicitudVehiculo[]>(`${this.baseUrl}/solicitudvehiculo/todas`, requestOptions).pipe(
-        //muestra los autos con estadoSolicitud4 y que tengan la fecha igual a la actual
-        map(vehiculos => vehiculos.filter(vehiculo => vehiculo.estado == 5 || this.compararFechasSalida(vehiculo.fechaSalida)))
-      ) 
+      return this.http.get<IsolicitudVehiculo[]>(`${this.baseUrl}/entradasalida/todas`, requestOptions);
+
     }
   }
 

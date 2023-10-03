@@ -16,6 +16,12 @@
             class="mdi mdi-arrow-right ms-1"></i></a>
 </div>
 
+<div *ngIf="leyenda == 'Credenciales' && home == true">
+    <a style="cursor: pointer;" class="btn btn-primary btn-sm" (click)="openModal(content)" >Credenciales
+      <i
+              class="mdi mdi-arrow-right ms-1"></i></a>
+  </div>
+
 <!-- Modal-->
 <div class="modal modal-fullscreen-xl-down fade" id="modalEmpleado" name="modalEmpleado" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">

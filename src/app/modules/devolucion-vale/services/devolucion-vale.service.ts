@@ -22,16 +22,49 @@ export class DevolucionValeService {
   ) {}
 
   getProveedor() {
+    // Crear una variable para la alerta de carga
+    let loadingAlert: any;
+
+    // Mostrar SweetAlert de carga
+    loadingAlert = Swal.fire({
+      title: "Espere",
+      text: "Realizando la acción...",
+      icon: "info",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showCancelButton: false,
+      showConfirmButton: false,
+    });
+
     this.http
       .get(`${this.baseUrl}/proveedor/listasinpagina`)
       .pipe(map((resp: any) => resp as IProveedor[]))
-      .subscribe((proveedor: IProveedor[]) => {
-        this.listProveedor = proveedor;
-      });
+      .subscribe(
+        (proveedor: IProveedor[]) => {
+          // Cerrar SweetAlert de carga
+          loadingAlert.close();
+
+          // Asignar los proveedores a la lista
+          this.listProveedor = proveedor;
+        },
+        (error) => {
+          // Cerrar SweetAlert de carga en caso de error
+          loadingAlert.close();
+          this.mensajesService.mensajesSweet(
+            "error",
+            "Ups... Algo salió mal",
+            "Error al cargar los proveedores"
+          );
+        }
+      );
   }
 
   getValesPorCantidad(cantidad: number = 0): Promise<IVale[]> {
-    Swal.fire({
+    // Crear una variable para la alerta de carga
+    let loadingAlert: any;
+
+    // Mostrar SweetAlert de carga
+    loadingAlert = Swal.fire({
       title: "Espere",
       text: "Realizando la acción...",
       icon: "info",
@@ -48,12 +81,12 @@ export class DevolucionValeService {
           .pipe(map((resp: any) => resp as IVale[]))
           .subscribe({
             next: (vale: IVale[]) => {
-              Swal.close();
+              loadingAlert.close();
               this.listVale = vale;
               resolve(vale); // Resuelve la promesa con los datos
             },
             error: (err) => {
-              Swal.close();
+              loadingAlert.close();
               this.mensajesService.mensajesSweet(
                 "error",
                 "Ups... Algo salió mal",
@@ -63,7 +96,7 @@ export class DevolucionValeService {
             },
           });
       } else {
-        Swal.close();
+        loadingAlert.close();
         this.listVale = [];
         resolve([]);
       }
@@ -71,7 +104,11 @@ export class DevolucionValeService {
   }
 
   getValesPorMonto(monto: number = 0): Promise<IVale[]> {
-    Swal.fire({
+    // Crear una variable para la alerta de carga
+    let loadingAlert: any;
+
+    // Mostrar SweetAlert de carga
+    loadingAlert = Swal.fire({
       title: "Espere",
       text: "Realizando la acción...",
       icon: "info",
@@ -88,7 +125,7 @@ export class DevolucionValeService {
           .pipe(map((resp: any) => resp as IVale[]))
           .subscribe({
             next: (vale: IVale[]) => {
-              Swal.close();
+              loadingAlert.close();
 
               if (vale.length === 0) {
                 this.listVale = [];
@@ -105,7 +142,7 @@ export class DevolucionValeService {
               resolve(vale); // Resuelve la promesa con los datos
             },
             error: (err) => {
-              Swal.close();
+              loadingAlert.close();
               this.mensajesService.mensajesSweet(
                 "error",
                 "Ups... Algo salió mal",
@@ -115,7 +152,7 @@ export class DevolucionValeService {
             },
           });
       } else {
-        Swal.close();
+        loadingAlert.close();
         this.listVale = [];
         resolve([]);
       }
@@ -137,7 +174,7 @@ export class DevolucionValeService {
     const requestBody = {
       vales: vales,
       concepto: concepto,
-      idusuariologueado: idusuariologueado
+      idusuariologueado: idusuariologueado,
     };
 
     // Realiza la solicitud HTTP con el objeto requestBody y configura el encabezado para JSON
@@ -149,6 +186,9 @@ export class DevolucionValeService {
   }
 
   validarUsuario(usuarioMardarDto: IUsuarioMandarDto) {
-    return this.http.post(`${this.baseUrl}/vale/validarusuario`, usuarioMardarDto);
+    return this.http.post(
+      `${this.baseUrl}/vale/validarusuario`,
+      usuarioMardarDto
+    );
   }
 }

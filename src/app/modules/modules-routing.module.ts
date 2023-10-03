@@ -15,12 +15,13 @@ const routes: Routes = [
   { path: 'home-financiero',  loadChildren: () => import('./home-financiero/home-financiero.module').then(m => m.HomeFinancieroModule) },
 
   //Ruta de empleado //
-  { path: 'empleados', loadChildren: () => import('./empleado/empleado.module').then(m => m.EmpleadoModule), canActivate: [AuthGuard] },
+  { path: 'empleados', 
+  loadChildren: () => import('./empleado/empleado.module').then(m => m.EmpleadoModule), canActivate: [AuthGuard] },
 
   { path: 'vehiculo', loadChildren: () => import('./vehiculo/vehiculo.module').then(m => m.VehiculoModule), canActivate: [AuthGuard] },
   { path: 'cargo', loadChildren: () => import('./cargo/cargo.module').then(m => m.CargoModule)},
   {  path: 'depto', loadChildren: () => import('./depto/depto.module').then(m => m.DeptoModule)},
-
+  { path: 'calendario', loadChildren: () => import('./calendario/calendario.module').then(m => m.CalendarioModule) },
   { path: 'dashboard', loadChildren: () => import('./../pages/dashboards/dashboards.module').then(m => m.DashboardsModule) },
   { path: '', loadChildren: () => import('./../pages/dashboards/dashboards.module').then(m => m.DashboardsModule) },
 ];

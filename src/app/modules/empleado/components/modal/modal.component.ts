@@ -140,8 +140,8 @@ export class ModalComponent implements OnInit {
 
   ////// metodo para tomar la desicion si es registro o actualizacion /////
   guardar() {
-    this.cargando();
     if (this.formBuilder.valid) {
+      this.cargando();
       if (this.empleadOd != null) {
         this.editando();
       } else {
@@ -179,7 +179,7 @@ export class ModalComponent implements OnInit {
           toast: true,
           position: 'top-end',
           showConfirmButton: false,
-          timer: 3000,
+          timer: 2000,
           //timerProgressBar: true,
           didOpen: (toast) => {
             toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -190,6 +190,10 @@ export class ModalComponent implements OnInit {
         Toast.fire({
           icon: 'success',
           text: 'Almacenamiento exitoso'
+        }).then(() => {
+          this.formBuilder.reset();
+          this.recargar();
+          this.modalService.dismissAll();
         });
       },
       (err) => {
@@ -198,7 +202,7 @@ export class ModalComponent implements OnInit {
           toast: true,
           position: 'top-end',
           showConfirmButton: false,
-          timer: 3000,
+          timer: 2000,
           //timerProgressBar: true,
           didOpen: (toast) => {
             toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -209,6 +213,10 @@ export class ModalComponent implements OnInit {
         Toast.fire({
           icon: 'success',
           text: 'Almacenamiento exitoso'
+        }).then(() => {
+          this.formBuilder.reset();
+          this.recargar();
+          this.modalService.dismissAll();
         });
       }
     );
@@ -221,9 +229,6 @@ export class ModalComponent implements OnInit {
       this.empleadoService.postEmpleado(empleado).subscribe((resp: any) => {
         if (resp) {
           this.Email(this.formBuilder.get('correo').value, this.formBuilder.get('nombre').value + ' ' + this.formBuilder.get('apellido').value);
-          this.formBuilder.reset();
-          this.recargar();
-          this.modalService.dismissAll();
         }
       }, (err: any) => {
         this.mensajesService.mensajesSweet(
@@ -233,29 +238,9 @@ export class ModalComponent implements OnInit {
         )
       });
     } else {
-
       this.empleadoService.postEmpleadoImagen(empleado, this.file).subscribe((resp: any) => {
         if (resp) {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            //timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener('mouseenter', Swal.stopTimer)
-              toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
-          });
-
-          Toast.fire({
-            icon: 'success',
-            text: 'Almacenamiento exitoso'
-          });
-
-          this.formBuilder.reset();
-          this.recargar();
-          this.modalService.dismissAll();
+          this.Email(this.formBuilder.get('correo').value, this.formBuilder.get('nombre').value + ' ' + this.formBuilder.get('apellido').value);
         }
       }, (err: string) => {
         this.mensajesService.mensajesSweet(
@@ -273,7 +258,6 @@ export class ModalComponent implements OnInit {
     const empleado = this.formBuilder.value;
     empleado.nombrefoto = this.empleadOd.nombrefoto;
     empleado.urlfoto = this.empleadOd.urlfoto;
-    console.log(empleado);
     if (this.imagen === 'no hay') {
       this.empleadoService.putEmpleado(empleado).subscribe((resp: any) => {
         if (resp) {
@@ -282,7 +266,7 @@ export class ModalComponent implements OnInit {
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
-            timer: 3000,
+            timer: 2000,
             //timerProgressBar: true,
             didOpen: (toast) => {
               toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -293,14 +277,13 @@ export class ModalComponent implements OnInit {
           Toast.fire({
             icon: 'success',
             text: 'Modificación exitosa'
+          }).then(() => {
+            this.formBuilder.reset();
+            this.recargar();
+            this.modalService.dismissAll();
           });
-
-          this.formBuilder.reset();
-          this.recargar();
-          this.modalService.dismissAll();
         }
       }, (err: any) => {
-        console.log(err);
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",
@@ -310,11 +293,12 @@ export class ModalComponent implements OnInit {
     } else {
       this.empleadoService.putEmpleadoImagen(empleado, this.file).subscribe((resp: any) => {
         if (resp) {
+          Swal.close();
           const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
-            timer: 3000,
+            timer: 2000,
             //timerProgressBar: true,
             didOpen: (toast) => {
               toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -325,6 +309,10 @@ export class ModalComponent implements OnInit {
           Toast.fire({
             icon: 'success',
             text: 'Modificación exitosa'
+          }).then(() => {
+            this.formBuilder.reset();
+            this.recargar();
+            this.modalService.dismissAll();
           });
 
           this.formBuilder.reset();
@@ -480,32 +468,11 @@ export class ModalComponent implements OnInit {
   }
 
   cargando() {
-    let timerInterval;
     Swal.fire({
       title: 'Espere un momento!',
-      html: 'Se esta procesando la solicitud.',
-      timer: 5000,
-
+      html: 'Se está procesando la petición...',
       didOpen: () => {
         Swal.showLoading();
-        timerInterval = setInterval(() => {
-          const content = Swal.getHtmlContainer()
-          if (content) {
-            const b = content.querySelector('b')
-            if (b) {
-              b.textContent = Swal.getTimerLeft() + ''
-            }
-          }
-        }, 100);
-      },
-      willClose: () => {
-        clearInterval(timerInterval);
-      }
-    }).then((result) => {
-      if (
-        result.dismiss === Swal.DismissReason.timer
-      ) {
-        console.log('I was closed by the timer');
       }
     });
   }

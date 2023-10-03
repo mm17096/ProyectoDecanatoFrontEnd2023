@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EmpleadoService } from '../../service/empleado.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-listar',
@@ -15,6 +16,14 @@ export class ListarComponent implements OnInit {
   constructor(private empleadoService: EmpleadoService) { }
 
   ngOnInit() {
+    Swal.fire({
+      title: 'Espere un momento!',
+      html: 'Se está procesando la información...',
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+    
     this.breadCrumbItems = [{ label: 'Empleado' }, { label: 'Listar', active: true }];
     this.empleadoService.getEmpleados();
   }

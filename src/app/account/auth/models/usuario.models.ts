@@ -12,6 +12,14 @@ export class Usuario {
   ) {}
 }
 
+export class DataCards {
+  constructor(
+    public vales: string,
+    public misiones: string,
+    public misioneshoy: string,
+    public misionesmes: string,
+  ) {}
+}
 
 
 export class Empleado{

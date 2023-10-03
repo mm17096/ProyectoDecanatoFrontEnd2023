@@ -23,6 +23,9 @@ export class MostrarComponent implements OnInit {
 
   texto?: string;
 
+  //grafica Compra
+  chartData: any[] = [];
+
   constructor(
     private homeFinancieroService: HomeFinancieroService,
     private datePipe: DatePipe,
@@ -37,6 +40,11 @@ export class MostrarComponent implements OnInit {
   formatDate(date: string): string {
     const fecha = new Date(date);
     return this.datePipe.transform(fecha, "dd/MM/yyyy") || "";
+  }
+
+  formatDateCompleto(date: string): string {
+    const fecha = new Date(date);
+    return this.datePipe.transform(fecha, "dd/MM/yy HH:mm") || "";
   }
 
   get empleado(): Empleado | null {
@@ -70,6 +78,7 @@ export class MostrarComponent implements OnInit {
       .getListarPorRangoDeFechas(fechaInicial, fechaFinal)
       .subscribe((compras: ICompra[]) => {
         this.listCompra = compras;
+        this.graficar();
         this.montoGenerado = this.cantidaGenerada = 0;
         this.listCompra.forEach((x) => {
           this.montoGenerado += x.totalCompra;
@@ -131,5 +140,12 @@ export class MostrarComponent implements OnInit {
         "Debe seleccionar ambas fechas."
       );
     }
+  }
+
+  graficar() {
+    this.chartData = this.listCompra.map((compra) => ({
+      data: [compra.totalCompra],
+      label: this.formatDateCompleto(compra.fechaCompra)
+    }));
   }
 }

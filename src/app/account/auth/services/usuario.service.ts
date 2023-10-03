@@ -1,5 +1,5 @@
 import { Injectable, NgZone, inject } from '@angular/core';
-import { Empleado, Usuario } from '../models/usuario.models';
+import { DataCards, Empleado, Usuario } from '../models/usuario.models';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { IEmail, ILoginUsuario, IRegistroUsuario, IRespass } from '../interfaces/usuario';
@@ -16,6 +16,7 @@ export class UsuarioService {
   storage: Storage = window.localStorage;
   public usuario!: Usuario;
   public empleado!: Empleado;
+  public cards!: DataCards;
   private http = inject(HttpClient);
   private baseUrl: string = environment.baseUrl;
 
@@ -60,6 +61,22 @@ export class UsuarioService {
         return throwError(err.error.message);
       })
     );
+  }
+
+  getCards() {
+    this.http
+      .get(`${this.baseUrl}/usuario/datacards`)
+      .pipe(map((resp: any) => resp as any))
+      .subscribe(
+        (datacards: any) => {
+          this.cards = datacards; // guarda cards
+          const { vales, misiones, misioneshoy, misionesmes } = datacards;
+          this.cards = new DataCards(vales, misiones, misioneshoy, misionesmes);
+        },
+        (error) => {
+          console.error("Error al obtener las cards:", error);
+        }
+      );
   }
 
   resetpass(rest: IRespass) {

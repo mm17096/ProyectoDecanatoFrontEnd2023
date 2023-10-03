@@ -112,10 +112,7 @@ export class ModalComponent implements OnInit {
           Validators.pattern(this.isInteger),
         ],
       ],
-      fechaCompra: [
-        "",
-        [Validators.required, Validators.pattern(this.isDate)],
-      ],
+      fechaCompra: ["", [Validators.required, Validators.pattern(this.isDate)]],
       fechaVencimiento: [
         "",
         [Validators.required, Validators.pattern(this.isDate)],
@@ -302,14 +299,30 @@ export class ModalComponent implements OnInit {
 
   editando() {
     const compra = this.formularioGeneral.value;
+
+    // Mostrar SweetAlert de carga
+    Swal.fire({
+      title: "Espere",
+      text: "Realizando la acción...",
+      icon: "info",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showCancelButton: false,
+      showConfirmButton: false,
+    });
+
     this.compraService.modificar(compra).subscribe({
       next: (resp: any) => {
+        // Cerrar SweetAlert de carga
+        Swal.close();
         this.compraService.getCompras();
-        this.mensajesService.mensajesToast("success", "Registro modificado");
         this.modalService.dismissAll();
         this.limpiarCampos();
+        this.mensajesService.mensajesToast("success", "Registro modificado");
       },
       error: (err) => {
+        // Cerrar SweetAlert de carga
+        Swal.close();
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",

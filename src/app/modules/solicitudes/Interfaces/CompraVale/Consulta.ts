@@ -109,3 +109,24 @@ export interface LogSoliVehi{
     fechalogsolive:Date;
     usuario:string;
 }
+
+export interface LogVale{  
+    idlogvale:string;
+    actividad:string;
+    estadovale:number;
+    fechalogvale:Date;
+    idvale:string;
+    usuario:string;
+}
+
+export interface IdCompra{  
+    codigocompra:string;
+}
+export interface IdVale{  
+    idvale:string;
+    correlativo:number;
+    estado:number;
+    fechavencimiento:Date;
+    valor:number;
+    codigocompra:string;
+}

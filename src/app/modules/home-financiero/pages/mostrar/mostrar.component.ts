@@ -23,6 +23,11 @@ export class MostrarComponent implements OnInit {
 
   texto?: string;
 
+  valesActivos: number;
+  ValesAsignados: number;
+  soliNuevas: number;
+  soliPorAprobar: number;
+
   //grafica Compra
   chartData: any[] = [];
 
@@ -34,6 +39,8 @@ export class MostrarComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarComprasPorRangoDeFechas();
+    this.getcatidadValesPorEstado();
+    this.getcatidadSolicitudesPorEstado();
     this.texto = "Este Mes";
   }
 
@@ -147,5 +154,61 @@ export class MostrarComponent implements OnInit {
       data: [compra.totalCompra],
       label: this.formatDateCompleto(compra.fechaCompra)
     }));
+  }
+
+  getcatidadValesPorEstado() {
+    // Crear una variable para la alerta de carga
+    let loadingAlert: any;
+    // Mostrar SweetAlert de carga
+    loadingAlert = Swal.fire({
+      title: "Espere",
+      text: "Realizando la acción...",
+      icon: "info",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showCancelButton: false,
+      showConfirmButton: false,
+    });
+
+    this.homeFinancieroService.getCantidadValesPorEstado(8).subscribe(
+      (cantidad: number) => {
+        loadingAlert.close();
+        this.valesActivos = cantidad;
+      }
+    );
+    this.homeFinancieroService.getCantidadValesPorEstado(5).subscribe(
+      (cantidad: number) => {
+        loadingAlert.close();
+        this.ValesAsignados = cantidad;
+      }
+    );
+  }
+
+  getcatidadSolicitudesPorEstado() {
+    // Crear una variable para la alerta de carga
+    let loadingAlert: any;
+    // Mostrar SweetAlert de carga
+    loadingAlert = Swal.fire({
+      title: "Espere",
+      text: "Realizando la acción...",
+      icon: "info",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showCancelButton: false,
+      showConfirmButton: false,
+    });
+
+    this.homeFinancieroService.getCantidadSolicitudesPorEstado(8).subscribe(
+      (cantidad: number) => {
+        loadingAlert.close();
+        this.soliNuevas = cantidad;
+      }
+    );
+    this.homeFinancieroService.getCantidadSolicitudesPorEstado(1).subscribe(
+      (cantidad: number) => {
+        loadingAlert.close();
+        this.soliPorAprobar = cantidad;
+      }
+    );
   }
 }

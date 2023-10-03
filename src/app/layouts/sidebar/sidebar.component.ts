@@ -5,7 +5,7 @@ import { Router, NavigationEnd } from '@angular/router';
 
 import { HttpClient } from '@angular/common/http';
 
-import { MENU, MENU_ASIS_FINAN, MENU_JEFE_DEPTO, MENU_JEFE_FINAN, MENU_USER, MENU_VIGILANTE } from './menu';
+import { MENU, MENU_ASIS_FINAN, MENU_JEFE_DEPTO, MENU_JEFE_FINAN, MENU_SECRE_DECA, MENU_USER, MENU_VIGILANTE } from './menu';
 import { MenuItem } from './menu.model';
 import { TranslateService } from '@ngx-translate/core';
 import { UsuarioService } from 'src/app/account/auth/services/usuario.service';
@@ -151,12 +151,8 @@ this.usuariojson = this.userService.usuarioJSON;
    * Initialize
    */
   initialize(): void {
-   // const userObj = this.userService.usuario
-   // const rol = userObj.role;
-   //this.obtenerUsuarioActivo();
-  // console.log("rol en el metodo 2:",this.userService.usuario.role);
-   //console.log("poasd:",this.userService.rol)
-   console.log("rol del metodo json",this.usuariojson.role)
+
+
 
    switch (this.usuariojson.role){
     case "JEFE_DEPTO" : {
@@ -164,7 +160,7 @@ this.usuariojson = this.userService.usuarioJSON;
         break;
     }
     case "SECR_DECANATO" : {
-      this.menuItems = MENU_JEFE_DEPTO
+      this.menuItems = MENU_SECRE_DECA
         break;
     }
     case "DECANO" : {
@@ -208,7 +204,7 @@ this.usuariojson = this.userService.usuarioJSON;
     });
   }
 */
- 
+
 //this.usuariojson.codigoUsario
 
   obtenerUsuarioActivo(){

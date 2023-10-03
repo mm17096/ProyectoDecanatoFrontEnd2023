@@ -31,16 +31,6 @@ export class TablaComponent implements OnInit {
   }
 
   ngOnInit() { }
-
-
-/*   public static function desencriptacion($string)
-    {
-        $key = hash('sha256', SECRET_KEY);
-        $iv = substr(hash('sha256', SECRET_IV), 0, 16);
-        $contra = openssl_decrypt(base64_decode($string), METHOD, $key, 0, $iv);
-        return $contra;
-    } */
-
   private Iniciarformulario(): FormGroup {
     return this.fb.group({
       codigoEmpleado: [''],

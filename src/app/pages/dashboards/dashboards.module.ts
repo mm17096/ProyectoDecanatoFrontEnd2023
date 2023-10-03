@@ -15,6 +15,7 @@ import { DefaultComponent } from './default/default.component';
 import { SaasComponent } from './saas/saas.component';
 import { CryptoComponent } from './crypto/crypto.component';
 import { BlogComponent } from './blog/blog.component';
+import { LayoutsModule } from 'src/app/layouts/layouts.module';
 
 @NgModule({
   declarations: [DefaultComponent, SaasComponent, CryptoComponent, BlogComponent],
@@ -30,7 +31,8 @@ import { BlogComponent } from './blog/blog.component';
     WidgetModule,
     NgApexchartsModule,
     SharedModule,
-    SimplebarAngularModule
+    SimplebarAngularModule,
+    LayoutsModule
   ]
 })
 export class DashboardsModule { }

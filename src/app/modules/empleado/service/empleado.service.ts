@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { ICargo, IDepto, IEmpleado, IEmpleadoTabala } from '../interface/empleado.interface';
 import { environment } from 'src/environments/environment';
 import { map } from "rxjs/operators";
+import Swal from 'sweetalert2';
 
 
 @Injectable({
@@ -26,9 +27,11 @@ export class EmpleadoService {
         .subscribe(
           (empleados: IEmpleado[]) => {
             this.listEmpleados = empleados; // Actualiza la propiedad listEmpleados
+            Swal.close();
           },
           (error) => {
             console.error("Error al obtener los empleados:", error);
+            Swal.close();
           }
         );
   }

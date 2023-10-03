@@ -11,9 +11,6 @@ import { TablaDetalleComponent } from "../tabla-detalle/tabla-detalle.component"
 import Swal from "sweetalert2";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
 import { IAnularMision } from "../../interfaces/asignacion.interface";
-import { DetalleDocumentosComponent } from "../detalle-documentos/detalle-documentos.component";
-import { arrayModel } from "../../../../pages/ecommerce/product.model";
-import { ModalDocumentosComponent } from "../../components/modal-documentos/modal-documentos.component";
 import { IDocumentosvale } from "../../interface/IDocumentosvale";
 import {
   ISolcitudAprobar,
@@ -57,6 +54,7 @@ export class EncabezadoComponent implements OnInit {
   listaDocumentosSize: number;
 
   usuario: string;
+  empleado: string;
   constructor(
     private service: DetalleService,
     private http: HttpClient,
@@ -79,6 +77,7 @@ export class EncabezadoComponent implements OnInit {
 
     const user = JSON.parse(this.storage.getItem("usuario" || ""));
     this.usuario = user.codigoUsuario;
+    this.empleado = user.empleado.nombre + " " + user.empleado.apellido;
   }
   ngAfterViewInit() {
     this.liquidacion.idAsignacionVale = this.codigoAsignacion;
@@ -117,7 +116,7 @@ export class EncabezadoComponent implements OnInit {
           });
           return new Promise<void>((resolve, reject) => {
             this.service
-              .liquidarVales(this.liquidacion, this.usuario)
+              .liquidarVales(this.liquidacion, this.usuario, this.empleado)
               .subscribe({
                 next: (data: any) => {
                   // Cerrar SweetAlert de carga
@@ -173,7 +172,7 @@ export class EncabezadoComponent implements OnInit {
         showConfirmButton: false,
       });
       return new Promise<void>((resolve, reject) => {
-        this.service.anularMision(this.misionAnulada, this.usuario).subscribe({
+        this.service.anularMision(this.misionAnulada, this.usuario, this.empleado).subscribe({
           next: (data: any) => {
             // Cerrar SweetAlert de carga
             Swal.close();

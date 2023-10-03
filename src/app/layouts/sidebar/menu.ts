@@ -79,7 +79,7 @@ export const MENU: MenuItem[] = [
       },
       {
         id: 11,
-        label: "Mis Solicitudes",
+        label: "Listado",
         link: "/solicitudes/solicitudvale",
         role: ["ADMIN","ASIS_FINANCIERO","JEFE_FINANACIERO"],
         parentId: 9,
@@ -221,7 +221,7 @@ export const MENU_JEFE_DEPTO: MenuItem[] = [
     isTitle: true
   },
 
-  
+
 
   {
     id: 7,
@@ -327,7 +327,7 @@ export const MENU_ASIS_FINAN: MenuItem[] = [
     id: 2,
     label: 'Inicio',
     icon: 'bx-home-circle',
-    link: '/dashboard',
+    link: '/home-financiero',
   },
   {
     id: 3,
@@ -363,7 +363,7 @@ export const MENU_ASIS_FINAN: MenuItem[] = [
 
       {
         id: 11,
-        label: "Mis Solicitudes",
+        label: "Listado",
         link: "/solicitudes/solicitudvale",
         role: ["ADMIN","ASIS_FINANCIERO","JEFE_FINANACIERO"],
         parentId: 9,
@@ -444,7 +444,7 @@ export const MENU_JEFE_FINAN: MenuItem[] = [
     id: 2,
     label: 'Inicio',
     icon: 'bx-home-circle',
-    link: '/dashboard',
+    link: '/home-financiero',
   },
   {
     id: 3,
@@ -539,12 +539,6 @@ export const MENU_VIGILANTE: MenuItem[] = [
   },
   {
     id: 2,
-    label: 'Inicio',
-    icon: 'bx-home-circle',
-    link: '/dashboard',
-  },
-  {
-    id: 3,
     label: 'MODULOS',
     isTitle: true
   },

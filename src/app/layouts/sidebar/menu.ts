@@ -327,7 +327,7 @@ export const MENU_ASIS_FINAN: MenuItem[] = [
     id: 2,
     label: 'Inicio',
     icon: 'bx-home-circle',
-    link: '/home-financioero',
+    link: '/home-financiero',
   },
   {
     id: 3,
@@ -539,12 +539,6 @@ export const MENU_VIGILANTE: MenuItem[] = [
   },
   {
     id: 2,
-    label: 'Inicio',
-    icon: 'bx-home-circle',
-    link: '/entradasalida/listar',
-  },
-  {
-    id: 3,
     label: 'MODULOS',
     isTitle: true
   },

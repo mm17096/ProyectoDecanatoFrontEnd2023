@@ -87,10 +87,19 @@ export class EncabezadoComponent implements OnInit {
   }
 
   obtnerEncabezado(codigoA: string) {
+    let alert: any;
+      alert = Swal.fire({
+        title: "Espere un momento!",
+        html: "Se está procesando la información...",
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
     this.service.getDetalleAsignacionVale(codigoA).subscribe({
       next: (data) => {
         this.detalleAsignacion = data;
         this.mision = this.detalleAsignacion.mision;
+        alert.close();
       },
     });
   }
@@ -172,25 +181,27 @@ export class EncabezadoComponent implements OnInit {
         showConfirmButton: false,
       });
       return new Promise<void>((resolve, reject) => {
-        this.service.anularMision(this.misionAnulada, this.usuario, this.empleado).subscribe({
-          next: (data: any) => {
-            // Cerrar SweetAlert de carga
-            Swal.close();
-            this.mensajesService.mensajesToast("success", "Misión Anulada");
-            this.router.navigate(["/solicitudes/solicitudvale"]);
-            resolve(); // Resuelve la promesa sin argumentos
-          },
-          error: (err) => {
-            // Cerrar SweetAlert de carga
-            Swal.close();
-            this.mensajesService.mensajesSweet(
-              "error",
-              "Ups... Algo salió mal",
-              err.error.message
-            );
-            reject(err); // Rechaza la promesa con el error
-          },
-        });
+        this.service
+          .anularMision(this.misionAnulada, this.usuario, this.empleado)
+          .subscribe({
+            next: (data: any) => {
+              // Cerrar SweetAlert de carga
+              Swal.close();
+              this.mensajesService.mensajesToast("success", "Misión Anulada");
+              this.router.navigate(["/solicitudes/solicitudvale"]);
+              resolve(); // Resuelve la promesa sin argumentos
+            },
+            error: (err) => {
+              // Cerrar SweetAlert de carga
+              Swal.close();
+              this.mensajesService.mensajesSweet(
+                "error",
+                "Ups... Algo salió mal",
+                err.error.message
+              );
+              reject(err); // Rechaza la promesa con el error
+            },
+          });
       });
     }
   }
@@ -204,7 +215,6 @@ export class EncabezadoComponent implements OnInit {
           this.asignacionSolicitud.solicitudVale.idSolicitudVale;
         this.obtenerLista(this.idSolicitud);
         this.obtenerSolicitud(this.idSolicitud);
-
       },
       error: (err) => {
         return false;

@@ -98,7 +98,7 @@ export class ModalSecretariaComponent implements OnInit {
   }
 
   detalle(leyenda: string){
-    if (leyenda == 'Edicion' || leyenda == 'Detalle'){
+    if (leyenda == 'Edicion' || leyenda == 'Detalle' || leyenda == 'DetalleDec'){
 
       const solicitudVehiculo = this.soliVeOd;
 
@@ -137,12 +137,15 @@ export class ModalSecretariaComponent implements OnInit {
       // por estado revision
       this.formularioSoliVe.get('observaciones')
         .setValue(this.soliVeOd != null ? this.soliVeOd.observaciones: '');
-      // this.formularioSoliVe.get('motorista')
-      //   .setValue(this.soliVeOd != null ? this.soliVeOd.motorista : '');
+      this.formularioSoliVe.get('motorista')
+         .setValue(this.soliVeOd != null ? this.soliVeOd.motorista.nombre + ' '
+           + this.soliVeOd.motorista.apellido: '');
 
       if (solicitudVehiculo.cantidadPersonas > 5){
         this.mostrarTabla = false;
         this.btnVerPdf = true;
+      }else if (solicitudVehiculo.cantidadPersonas==1){
+        this.mostrarTabla = false;
       }
 
 
@@ -655,5 +658,52 @@ export class ModalSecretariaComponent implements OnInit {
         },
       });
     });
+  }
+
+  async revisionSolicitud() {
+
+    if(this.formularioSoliVe.get('observaciones').value == ''){
+      this.formularioSoliVe.get('observaciones').setErrors({required:true});
+      this.formularioSoliVe.get('observaciones').markAsTouched();
+      this.mensajesService.mensajesToast("warning", "Se requiere campo observaciones");
+      return;
+    }
+    if (await this.mensajesService.mensajeRevision() == true){
+      this.soliVeOd.estado = 6;
+      this.soliVeOd.observaciones = this.formularioSoliVe.get('observaciones').value;
+      await this.actualizarSolicitud(this.soliVeOd);
+    }
+  }
+
+  actualizarSolicitudDec(data: any):Promise <void>{
+    return new Promise<void>((resolve, reject) => {
+      this.soliVeService.updateSolciitudVehiculo(data).subscribe({
+        next: () => {
+          //resp:any
+          this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
+          this.modalService.dismissAll();
+          setTimeout(() => {
+            this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
+          }, 3025);
+          resolve();
+        },
+        error: (error) => {
+          Swal.close();
+          this.mensajesService.mensajesSweet(
+            'error',
+            'Ups... Algo salió mal',
+            error.error.message
+          );
+          reject (error);
+        },
+      });
+    });
+  }
+
+  async aprobarSolicitud(){
+    console.log(this.soliVeOd);
+    if ((await this.mensajesService.mensajeAprobar()) == true) {
+        await this.actualizarSolicitudDec(this.soliVeOd);
+    }
   }
 }

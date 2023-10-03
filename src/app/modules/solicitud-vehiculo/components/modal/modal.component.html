@@ -606,11 +606,7 @@
               usuarioActivo.role == 'DECANO') && vista === 'listado'">
         Aprobar
       </button>
-      <button type="button" class="btn btn-info w-sm me-2" id="btn-detalle_save" name="btn-save"
-              (click)="revisionSolicitud()"
-              *ngIf="(usuarioActivo.role == 'DECANO') && vista === 'listado'">
-        Revisión
-      </button>
+
       <button type="button" class="btn btn-warning w-sm me-2" id="btn-detalle-ave" name="btn-save"
               (click)="anularSolicitud()"
               *ngIf="(usuarioActivo.role == 'DECANO') && vista === 'listado'">

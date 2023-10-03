@@ -41,12 +41,18 @@ export class TablaComponent implements OnInit {
   }
 
   abrirModal(leyenda: string, data: any) {
-    this.selectedData = data; // Almacena los datos del registro seleccionado
-    const modalRef = this.modalService.open(ModalComponent, {size:'xl', backdrop: 'static'});
-    modalRef.componentInstance.leyenda = leyenda; // Pasa la leyenda al componente modal
-    modalRef.componentInstance.soliVeOd = data;
-    modalRef.componentInstance.vista = this.vista;
-    modalRef.componentInstance.usuarioActivo = this.userAcivo;
+    if (this.userAcivo.role == 'DECANO' && data.estado == 3){
+      this.abrirModalSecre(leyenda, data)
+    } else if (this.userAcivo.role == 'SECR_DECANATO' && (data.estado == 2 || data.estado == 6)){
+      this.abrirModalSecre(leyenda, data);
+    }else {
+      this.selectedData = data; // Almacena los datos del registro seleccionado
+      const modalRef = this.modalService.open(ModalComponent, {size: 'xl', backdrop: 'static'});
+      modalRef.componentInstance.leyenda = leyenda; // Pasa la leyenda al componente modal
+      modalRef.componentInstance.soliVeOd = data;
+      modalRef.componentInstance.vista = this.vista;
+      modalRef.componentInstance.usuarioActivo = this.userAcivo;
+    }
   }
 
   abrirModalSecre(leyenda: string, data: any) {

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CompraDto, Consulta, ConsultaDto, Decano, DocumetSoliC, DocumetVale, DocumetValeId, IConsultaDelAl, LogSoliVehi } from '../../Interfaces/CompraVale/Consulta';
+import { CompraDto, Consulta, ConsultaDto, Decano, DocumetSoliC, DocumetVale, DocumetValeId, IConsultaDelAl, IdVale, LogSoliVehi, LogVale } from '../../Interfaces/CompraVale/Consulta';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { IConsultaExcelTabla, IConsultaExcelTablaC, IConsultaExcelTablaCompraDto, IConsultaExcelTablaDto, ITablaConsulta, ITablaConsultaC, ITablaConsultaCompraDto, ITablaConsultaDto } from '../../Interfaces/CompraVale/excel';
@@ -238,6 +238,20 @@ export class ConsultaService {
   getLogSoliVehi(id:string){
     return this.http.get<LogSoliVehi[]>(this.urlbase+'/consulta/logsolivhe/'+id);
   }
-  
 
+  getCompraMovimientos(){
+    return this.http.get<ICompra[]>(this.urlbase+'/compra/listasinpagina');
+  }
+  
+  getLogVale(id:string){
+    return this.http.get<LogVale[]>(this.urlbase+'/consulta/logvale/'+id);
+  }
+
+  getIdVale(id:string){
+    return this.http.get<IdVale[]>(this.urlbase+'/consulta/idvale/'+id);
+  }
+  
+  getIdCompraV(id:string){
+    return this.http.get<ICompra>(this.urlbase+'/compra/lista/'+id);
+  }
 }

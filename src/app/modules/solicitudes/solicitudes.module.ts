@@ -15,10 +15,11 @@ import { SolicitudValeAprobarComponent } from './solicitud-vale-aprobar/solicitu
 import { ValesAsignarComponent } from './solicitudvale/components/vales-asignar/vales-asignar.component';
 import { SolicitanteComponent } from './solicitante/solicitante.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { MovimientosvalesComponent } from './movimientosvales/movimientosvales.component';
 
 @NgModule({
 
-  declarations: [ SolicitanteComponent, SolicitudvComponent, SolicitudvaleComponent, SolicitudValeAprobarComponent, ValesAsignarComponent],
+  declarations: [ SolicitanteComponent, SolicitudvComponent, SolicitudvaleComponent, SolicitudValeAprobarComponent, ValesAsignarComponent, MovimientosvalesComponent],
 
   imports: [
     CommonModule,

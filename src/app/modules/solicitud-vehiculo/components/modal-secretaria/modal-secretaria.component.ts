@@ -98,7 +98,7 @@ export class ModalSecretariaComponent implements OnInit {
   }
 
   detalle(leyenda: string){
-    if (leyenda == 'Edicion' || leyenda == 'Detalle' || leyenda == 'DetalleDec'){
+    if (leyenda == 'Edicion' || leyenda == 'Detalle'){
 
       const solicitudVehiculo = this.soliVeOd;
 
@@ -135,8 +135,7 @@ export class ModalSecretariaComponent implements OnInit {
         .setValue(this.soliVeOd != null ? this.soliVeOd.solicitante.empleado.nombre+' '
         + this.soliVeOd.solicitante.empleado.apellido: '');
       // por estado revision
-      this.formularioSoliVe.get('observaciones')
-        .setValue(this.soliVeOd != null ? this.soliVeOd.observaciones: '');
+
       this.formularioSoliVe.get('motorista')
          .setValue(this.soliVeOd != null ? this.soliVeOd.motorista.nombre + ' '
            + this.soliVeOd.motorista.apellido: '');
@@ -263,11 +262,23 @@ export class ModalSecretariaComponent implements OnInit {
   registrarSoliVe() : Promise<void> {
     const solicitudVehiculo = this.formularioSoliVe.value;
     solicitudVehiculo.codigoSolicitudVehiculo = this.soliVeOd.codigoSolicitudVehiculo;
+    //solicitudVehiculo.motorista = this.soliVeOd.motorista.codigoEmpleado;
     solicitudVehiculo.solicitante = this.soliVeOd.solicitante.codigoUsuario;
     solicitudVehiculo.nombreJefeDepto = this.soliVeOd.nombreJefeDepto;
+    const nombreMotoristaExistente =  this.soliVeOd.motorista.nombre + ' ' +
+      this.soliVeOd.motorista.apellido;
+    console.log("morisado", nombreMotoristaExistente);
+    console.log("input", solicitudVehiculo.vehiculo);
     if(this.soliVeOd.vehiculo.placa == this.formularioSoliVe.get('vehiculo').value){
+      console.log("entro al if vehiculo");
       solicitudVehiculo.vehiculo = this.soliVeOd.vehiculo.codigoVehiculo;
     }
+    if (nombreMotoristaExistente.toString() == this.formularioSoliVe.get('motorista').value){
+      console.log("entro al if motorista");
+      solicitudVehiculo.motorista = this.soliVeOd.motorista.codigoEmpleado;
+    }
+    console.log("vehiculo",solicitudVehiculo.vehiculo);
+    console.log("motorista", solicitudVehiculo.motorista);
     const tipoBuscado = "Lista de pasajeros";
     const documentosFiltrados = this.soliVeOd.listDocumentos.filter((documento) => {
       return documento.tipoDocumento === tipoBuscado;

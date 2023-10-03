@@ -7,9 +7,10 @@ import { ConsultaService } from '../Service/Excel/consulta.service';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { LOGO } from '../Interfaces/logo';
-import { DocumetSoliC, DocumetVale, DocumetValeId, IConsultaDelAl, Tabla } from '../Interfaces/CompraVale/Consulta';
+import { DocumetSoliC, DocumetVale, DocumetValeId, IConsultaDelAl, LogSoliVehi, Tabla } from '../Interfaces/CompraVale/Consulta';
 import { Usuario, Empleado } from 'src/app/account/auth/models/usuario.models';
 import { MensajesService } from 'src/app/shared/global/mensajes.service';
+import { DatePipe } from '@angular/common';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -39,17 +40,19 @@ export class SolicitanteComponent implements OnInit {
   estadoSeleccionado: any;
   estadosSoliVe: IEstados [] = [];
   fechaActual: Date = new Date();
+  logSoliVe: LogSoliVehi[];
+  estado:string = '';
 
   constructor( private soliVeService: SolicitudVehiculoService, private modalService: NgbModal,
                private userService: UsuarioService, private consultaService: ConsultaService,
-               private mensajesService: MensajesService) { }
+               private mensajesService: MensajesService,private datePipe: DatePipe) { }
 
   ngOnInit(): void {
     
     this.obtenerUsuarioActivo();
-    console.log('usuario ',this.usuarioActivo)
+   // console.log('usuario ',this.usuarioActivo)
     this.userService.getUsuario();
-    this.breadCrumbItems = [{ label: 'Solicitud de trasporte' }, { label: 'Mis Solicitudes', active: true }]; // miga de pan
+    this.breadCrumbItems = [{ label: 'Solicitud de transporte' }, { label: 'Mis Solicitudes', active: true }]; // miga de pan
    // this.soliVeService.getSolicitudesVehiculo(this.estadoSeleccionado);
     this.getEstados();
     this.obtenerUsuarioActivo();
@@ -67,9 +70,9 @@ if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCa
         this.veri=true;
 }
 
- console.log('usuario ',usuario)
+// console.log('usuario ',usuario)
 });
-    console.log('usuario ',this.usuario)
+   // console.log('usuario ',this.usuario)
   }
   
   cargarConsulta(){
@@ -139,7 +142,8 @@ DocumentosVale(soliVehi: ISolicitudVehiculo,largeDataModal: any){
 }
 cargarDocSoliCar(id: string){
   this.consultaService.getConsultaDocumnetoSoliCa(id).subscribe((response: DocumetSoliC[])=>{
-    this.documentSoliCard = response;
+    const tipoBuscado = "Lista de pasajeros";
+        this.documentSoliCard = response;
      //   console.log(response);
     });
 }
@@ -162,7 +166,7 @@ cargarDocVale(id:string,largeDataModal: any){
     }else{
       this.modalService.open(largeDataModal, { size: "xl", centered: true });
     }
-        console.log(response);
+       // console.log(response);
     });
 }
 descargarver(doc:DocumetSoliC){
@@ -194,12 +198,369 @@ descarver(doc:DocumetVale){
       document.body.removeChild(a);
     },
     (error) => {
-      console.error('Error al descargar el documento', error);
+      this.mensajesService.mensajesSweet(
+        "warning",
+        "Ups... ",
+        "No se puede descargar el documentos "+error
+      );
     });
 }
-  cerarPDF(soliVehi: ISolicitudVehiculo,vales: IConsultaDelAl[]){
+generarPDFLOGsoli(soliVehi: ISolicitudVehiculo){
+  this.consultaService.getLogSoliVehi(soliVehi.codigoSolicitudVehiculo).subscribe((response: LogSoliVehi[])=>{
+    this.logSoliVe = response;
+    if(response === null){
+      this.mensajesService.mensajesSweet(
+        "warning",
+        "Ups... ",
+        "No hay datos para mostrar'"
+      );
+    }else{
+    this.crearPDFLog(response,soliVehi);
+    }
+     //   console.log(response);
+    });
+}
+
+generarPdfLogVale(soliVehi: ISolicitudVehiculo){
+  this.crearPDFLogVa();
+
+}
+crearPDFLogVa(){
+  const pdfDefinicionl: any = {content:[], footer: {
+    columns: [
+      {
+
+        text: 'Fecha y Hora de impresión: '+this.datePipe.transform(this.fechaActual, 'dd/MM/yyyy HH:mm:ss a')+'       .',
+        alignment: 'right'
+      },
+    ]
+  },	styles: {
+		header: {
+			fontSize: 18,
+			bold: true,
+			margin: [0, 0, 0, 10]
+		},
+		subheader: {
+			fontSize: 16,
+			bold: true,
+			margin: [0, 10, 0, 5]
+		},
+		tableExample: {
+			margin: [0, 5, 0, 15]
+		},
+		tableHeader: {
+			bold: true,
+			fontSize: 13,
+			color: 'black'
+		}
+	},}
+  pdfDefinicionl.content.push(
+    {
+     style: 'tableExample',
+     table: {
+       widths: ['auto', '*'],
+       headerRows: 1,
+       body: [
+         [{ image: LOGO, // Datos base64 de tu imagen .png
+         width: 60, // Ancho de la imagen
+         height: 80,},
+         {text: 'UNIVERSIDAD DE EL SALVADOR\nFACULTAD MULTIDISCIPLINARIA PARACENTRAL\nMOVIMIENTOS DE VALES DE COMBUSTIBLE',
+         alignment: 'center',style: 'subheader'}
+
+        ],
+
+       ]
+     },
+     layout: 'noBorders'
+   },
+   {text:'\n'},
+   {
+     style: 'tableExample',
+     table: {
+       widths: ['*'],
+       headerRows: 1,
+       body: [
+         [{text: 'LISTA DE MOVIMIENTOS', style: 'tableHeader',alignment: 'center'}],
+          [''],
+       ]
+     },
+     layout: 'lightHorizontalLines'
+   },
+   {text:'\n'},
+   )
+
+   const tableRow = [];
+      let j = 0;
+      tableRow.push([{ text: 'N.',
+      alignment: 'center',style: 'tableHeader'},
+      {text: 'ACTIVIDAD',
+      alignment: 'center',style: 'tableHeader'},
+      {text: 'FECHA',
+      alignment: 'center',style: 'tableHeader'},
+      {text: 'USUARIO',
+      alignment: 'center',style: 'tableHeader'},
+      {text: 'ESTADO',
+      alignment: 'center',style: 'tableHeader'}
+     ],);
+   /*
+       for (const persona of log) {
+        // console.log(persona.nombrePasajero);
+        if(persona.estadosolive == 1){
+          this.estado = 'En espera por jefe';
+        }else if(persona.estadosolive == 2){
+          this.estado = 'Aprobado por jefe';
+        }else if(persona.estadosolive == 3){
+          this.estado = 'En espera por decano';
+        }else if(persona.estadosolive == 4){
+          this.estado = 'Aprobada';
+        }else if(persona.estadosolive == 5){
+          this.estado = 'Asignado';
+        }else if(persona.estadosolive == 6){
+          this.estado = 'Revisión';
+        }else if(persona.estadosolive == 7){
+          this.estado = 'Finalizada';
+        }else if(persona.estadosolive == 8){
+          this.estado = 'Activo';
+        }else if(persona.estadosolive == 9){
+          this.estado = 'Inactivo';
+        }else if(persona.estadosolive == 10){
+          this.estado = 'Caducado';
+        }else if(persona.estadosolive == 11){
+          this.estado = 'Consumido';
+        }else if(persona.estadosolive == 12){
+          this.estado = 'Devuelto';
+        }else if(persona.estadosolive == 13){
+          this.estado = 'Gasolinera';
+        }else if(persona.estadosolive == 14){
+          this.estado = 'UES';
+        }else if(persona.estadosolive == 15){
+          this.estado = 'Anulada';
+        }
+       
+         tableRow.push([{text: `${j+1}`,
+         alignment: 'center'}, {text: `${persona.actividad}`,
+         alignment: 'center'}, {text: `${this.datePipe.transform(persona.fechalogsolive, 'dd/MM/yyyy HH:mm:ss a')}`,
+         alignment: 'center'}, {text: `${persona.usuario}`,
+         alignment: 'center'}, {text: `${this.estado}`,
+         alignment: 'center'}],);
+         j++;
+       }*/
+       pdfDefinicionl.content.push(
+        {
+          style: 'tableExample',
+          table: {
+            widths: ['auto', 'auto','auto','auto','auto'],
+            headerRows: 1,
+            body: tableRow
+          },
+        },
+      );
+
+      pdfMake.createPdf(pdfDefinicionl).open();
+}
+crearPDFLog(log: LogSoliVehi[],soliVehi: ISolicitudVehiculo){
+  const pdfDefinicionl: any = {content:[], footer: {
+    columns: [
+      {
+
+        text: 'Fecha y Hora de impresión: '+this.datePipe.transform(this.fechaActual, 'dd/MM/yyyy HH:mm:ss a')+'       .',
+        alignment: 'right'
+      },
+    ]
+  },	styles: {
+		header: {
+			fontSize: 18,
+			bold: true,
+			margin: [0, 0, 0, 10]
+		},
+		subheader: {
+			fontSize: 16,
+			bold: true,
+			margin: [0, 10, 0, 5]
+		},
+		tableExample: {
+			margin: [0, 5, 0, 15]
+		},
+		tableHeader: {
+			bold: true,
+			fontSize: 13,
+			color: 'black'
+		}
+	},}
+  pdfDefinicionl.content.push(
+    {
+     style: 'tableExample',
+     table: {
+       widths: ['auto', '*'],
+       headerRows: 1,
+       body: [
+         [{ image: LOGO, // Datos base64 de tu imagen .png
+         width: 60, // Ancho de la imagen
+         height: 80,},
+         {text: 'UNIVERSIDAD DE EL SALVADOR\nFACULTAD MULTIDISCIPLINARIA PARACENTRAL\nMOVIMIENTOS SOLICITUD DE TRANSPORTE',
+         alignment: 'center',style: 'subheader'}
+
+        ],
+
+       ]
+     },
+     layout: 'noBorders'
+   },
+   {text:'\n'},
+   {
+    columns: [
+      {
+
+        text: [ {text:'Fecha de Solicitud: ', bold: true}, this.formatDate(`${soliVehi.fechaSolicitud}`),
+      
+      ],
+       
+      },
+      {
+        text: [ {text: 'Fecha de Misión: ', bold: true},this.formatDate(`${soliVehi.fechaSalida}`),],
+      },
+
+    ]
+  },
+  {text:'\n'},
+  {
+    columns: [
+      {
+
+        text: [ {text: 'Objetivo de la Misión: ', bold: true},soliVehi.objetivoMision,],
+       
+      },
+
+    ]
+  },
+  {text:'\n'},
+  {
+    columns: [
+      {
+
+        text: [ {text: 'Lugar que visitará: ', bold: true},soliVehi.direccion,],
+       
+      },
+
+    ]
+  },
+   {
+     style: 'tableExample',
+     table: {
+       widths: ['*'],
+       headerRows: 1,
+       body: [
+         [{text: 'LISTA DE MOVIMIENTOS', style: 'tableHeader',alignment: 'center'}],
+          [''],
+       ]
+     },
+     layout: 'lightHorizontalLines'
+   },
+   {text:'\n'},
+   )
+
+   const tableRow = [];
+      let j = 0;
+      tableRow.push([{ text: 'N.',
+      alignment: 'center',style: 'tableHeader'},
+      {text: 'ACTIVIDAD',
+      alignment: 'center',style: 'tableHeader'},
+      {text: 'FECHA',
+      alignment: 'center',style: 'tableHeader'},
+      {text: 'USUARIO',
+      alignment: 'center',style: 'tableHeader'},
+      {text: 'ESTADO',
+      alignment: 'center',style: 'tableHeader'}
+     ],);
+     let estado = '';
+       for (const persona of log) {
+        // console.log(persona.nombrePasajero);
+        if(persona.estadosolive == 1){
+          this.estado = 'En espera por jefe';
+        }else if(persona.estadosolive == 2){
+          this.estado = 'Aprobado por jefe';
+        }else if(persona.estadosolive == 3){
+          this.estado = 'En espera por decano';
+        }else if(persona.estadosolive == 4){
+          this.estado = 'Aprobada';
+        }else if(persona.estadosolive == 5){
+          this.estado = 'Asignado';
+        }else if(persona.estadosolive == 6){
+          this.estado = 'Revisión';
+        }else if(persona.estadosolive == 7){
+          this.estado = 'Finalizada';
+        }else if(persona.estadosolive == 8){
+          this.estado = 'Activo';
+        }else if(persona.estadosolive == 9){
+          this.estado = 'Inactivo';
+        }else if(persona.estadosolive == 10){
+          this.estado = 'Caducado';
+        }else if(persona.estadosolive == 11){
+          this.estado = 'Consumido';
+        }else if(persona.estadosolive == 12){
+          this.estado = 'Devuelto';
+        }else if(persona.estadosolive == 13){
+          this.estado = 'Gasolinera';
+        }else if(persona.estadosolive == 14){
+          this.estado = 'UES';
+        }else if(persona.estadosolive == 15){
+          this.estado = 'Anulada';
+        }
+        console.log(this.estado)
+         tableRow.push([{text: `${j+1}`,
+         alignment: 'center'}, {text: `${persona.actividad}`,
+         alignment: 'center'}, {text: `${this.datePipe.transform(persona.fechalogsolive, 'dd/MM/yyyy HH:mm:ss a')}`,
+         alignment: 'center'}, {text: `${persona.usuario}`,
+         alignment: 'center'}, {text: `${this.estado}`,
+         alignment: 'center'}],);
+         j++;
+       }
+       pdfDefinicionl.content.push(
+        {
+          style: 'tableExample',
+          table: {
+            widths: ['auto', 'auto','auto','auto','auto'],
+            headerRows: 1,
+            body: tableRow
+          },
+        },
+      );
+
+      pdfMake.createPdf(pdfDefinicionl).open();
+}
+async cerarPDF(soliVehi: ISolicitudVehiculo,vales: IConsultaDelAl[]){
    // this.cargarConsultaValeDelAl(soliVehi.codigoSolicitudVehiculo);
-     const pdfDefinicion: any = {content:[],}
+    const decano = await this.consultaService.getDecano();
+   // console.log('Valor obtenido de cano:', decano);
+    // Continúa con cualquier otra lógica después de obtener el valor
+     const pdfDefinicion: any = {content:[],footer: {
+      columns: [
+        {
+  
+          text: 'Fecha y Hora de impresión: '+this.datePipe.transform(this.fechaActual, 'dd/MM/yyyy HH:mm:ss a')+'       .',
+          alignment: 'right'
+        },
+      ]
+    },	styles: {
+      header: {
+        fontSize: 18,
+        bold: true,
+        margin: [0, 0, 0, 10]
+      },
+      subheader: {
+        fontSize: 16,
+        bold: true,
+        margin: [0, 10, 0, 5]
+      },
+      tableExample: {
+        margin: [0, 5, 0, 15]
+      },
+      tableHeader: {
+        bold: true,
+        fontSize: 13,
+        color: 'black'
+      }
+    },}
     pdfDefinicion.content.push(
      {
 			style: 'tableExample',
@@ -210,7 +571,7 @@ descarver(doc:DocumetVale){
 					[{ image: LOGO, // Datos base64 de tu imagen .png
           width: 60, // Ancho de la imagen
           height: 80,},
-          {text: 'UNIVERSIDAD DE EL SALVADOR\nFACULTAD MULTIDISCIPLINARIA PARACENTRAL\nSOLICITUD DE TRASPORTE',
+          {text: 'UNIVERSIDAD DE EL SALVADOR\nFACULTAD MULTIDISCIPLINARIA PARACENTRAL\nSOLICITUD DE TRANSPORTE',
           alignment: 'center',style: 'subheader'}
 
          ],
@@ -237,11 +598,13 @@ descarver(doc:DocumetVale){
 			columns: [
 				{
 
-					text: 'Fecha de Solicitud: '+this.formatDate(`${soliVehi.fechaSolicitud}`),
+					text: [ {text:'Fecha de Solicitud: ', bold: true}, this.formatDate(`${soliVehi.fechaSolicitud}`),
+        
+        ],
          
 				},
 				{
-					text: 'Fecha de Misión: '+this.formatDate(`${soliVehi.fechaSalida}`),
+					text: [ {text: 'Fecha de Misión: ', bold: true},this.formatDate(`${soliVehi.fechaSalida}`),],
 				},
 
 			]
@@ -251,7 +614,7 @@ descarver(doc:DocumetVale){
 			columns: [
 				{
 
-					text: 'Unidad Solicitud: '+soliVehi.unidadSolicitante,
+					text: [ {text: 'Unidad Solicitud: ', bold: true},soliVehi.unidadSolicitante,],
 
 				},
 
@@ -262,11 +625,11 @@ descarver(doc:DocumetVale){
 			columns: [
 				{
 
-					text: 'Vehiculo: '+soliVehi.vehiculo.marca+', '+soliVehi.vehiculo.modelo+', '+soliVehi.vehiculo.clase+', '+soliVehi.vehiculo.tipo_gas+', '+soliVehi.vehiculo.color+', '+soliVehi.vehiculo.year,
+					text: [ {text: 'Vehículo: ', bold: true},soliVehi.vehiculo.marca+', '+soliVehi.vehiculo.modelo+', '+soliVehi.vehiculo.clase+', '+soliVehi.vehiculo.tipo_gas+', '+soliVehi.vehiculo.color+', '+soliVehi.vehiculo.year,],
 
 				},
 				{
-					text: 'Placa: '+soliVehi.vehiculo.placa,
+					text: [ {text: 'Placa: ', bold: true},soliVehi.vehiculo.placa,],
 
 				},
 
@@ -277,7 +640,7 @@ descarver(doc:DocumetVale){
 			columns: [
 				{
 
-					text: 'Objetivo de la Misión: '+soliVehi.objetivoMision,
+					text: [ {text: 'Objetivo de la Misión: ', bold: true},soliVehi.objetivoMision,],
          
 				},
 
@@ -288,7 +651,7 @@ descarver(doc:DocumetVale){
 			columns: [
 				{
 
-					text: 'Lugar que visitará: '+soliVehi.direccion,
+					text: [ {text: 'Lugar que visitará: ', bold: true},soliVehi.direccion,],
          
 				},
 
@@ -299,15 +662,15 @@ descarver(doc:DocumetVale){
 			columns: [
 				{
 
-					text: 'N* de Personas que viajan: '+soliVehi.cantidadPersonas,
+					text: [ {text: 'N. de Personas que viajan: ', bold: true},soliVehi.cantidadPersonas,],
 
 				},
 				{
-					text: 'Hora de Salida: '+soliVehi.horaSalida,
+					text: [ {text: 'Hora de Salida: ', bold: true},soliVehi.horaSalida,],
 
 				},
         {
-					text: 'Hora de Regreso: '+soliVehi.horaEntrada,
+					text: [ {text: 'Hora de Regreso: ', bold: true},soliVehi.horaEntrada,],
 
 				},
 
@@ -318,11 +681,11 @@ descarver(doc:DocumetVale){
 			columns: [
 				{
 
-					text: 'Nombre del responsable: '+soliVehi.solicitante.empleado.nombre+' '+soliVehi.solicitante.empleado.apellido,
+					text: [ {text: 'Nombre del responsable: ', bold: true},soliVehi.solicitante.empleado.nombre+' '+soliVehi.solicitante.empleado.apellido,],
 				},
         {
 
-					text: 'Firma: ',
+					text: [ {text: 'Firma: ', bold: true},],
 				},
 			]
 		},
@@ -340,37 +703,17 @@ descarver(doc:DocumetVale){
 		},
     {text:'\n'},
     )
-     /*
-      styles: {
-        header: {
-          fontSize: 18,
-          bold: true,
-          margin: [0, 0, 0, 10]
-        },
-        subheader: {
-          fontSize: 16,
-          bold: true,
-          margin: [0, 10, 0, 5]
-        },
-        tableExample: {
-          margin: [0, 5, 0, 15]
-        },
-        tableHeader: {
-          bold: true,
-          fontSize: 13,
-          color: 'black'
-        }
-      }*/
+     
       const tableRow = [];
       let j = 0;
-      tableRow.push([{ text: 'N*',
+      tableRow.push([{ text: 'N.',
       alignment: 'center',style: 'tableHeader'},
       {text: 'NOMBRE',
       alignment: 'center',style: 'tableHeader'}
 
      ],);
        for (const persona of soliVehi.listaPasajeros) {
-         console.log(persona.nombrePasajero);
+       //  console.log(persona.nombrePasajero);
          tableRow.push([{text: `${j+1}`,
          alignment: 'center'}, {text: `${persona.nombrePasajero}`,
          alignment: 'center'}],);
@@ -394,7 +737,7 @@ descarver(doc:DocumetVale){
 			columns: [
 				{
 
-					text: 'Sello\n',
+					text: [ {text: 'Sello\n', bold: true},],
           alignment: ''
 
 				},
@@ -417,7 +760,7 @@ descarver(doc:DocumetVale){
 			columns: [
 				{
 
-					text: 'Nombre de Motorista: '+soliVehi.motorista?.nombre+', '+soliVehi.motorista?.apellido,
+					text: [ {text: 'Nombre de Motorista: ', bold: true},soliVehi.motorista?.nombre+', '+soliVehi.motorista?.apellido,],
 
 				},
 
@@ -428,11 +771,11 @@ descarver(doc:DocumetVale){
 			columns: [
 				{
 
-					text: 'Vehículo: '+soliVehi.vehiculo.marca+', '+soliVehi.vehiculo.modelo+', '+soliVehi.vehiculo.clase+', '+soliVehi.vehiculo.tipo_gas+', '+soliVehi.vehiculo.color+', '+soliVehi.vehiculo.year,
+					text: [ {text: 'Vehículo: ', bold: true},soliVehi.vehiculo.marca+', '+soliVehi.vehiculo.modelo+', '+soliVehi.vehiculo.clase+', '+soliVehi.vehiculo.tipo_gas+', '+soliVehi.vehiculo.color+', '+soliVehi.vehiculo.year,],
           
 				},
 				{
-					text: 'Placa: '+soliVehi.vehiculo.placa,
+					text: [ {text: 'Placa: ', bold: true},soliVehi.vehiculo.placa,],
 
 				},
 
@@ -444,15 +787,15 @@ descarver(doc:DocumetVale){
 			columns: [
 				{
 
-					text: 'N* de Vales: '+vales.length,
+					text: [ {text: 'N. de Vales: ', bold: true},vales.length,],
           
 				},
 				{
-					text: 'Del: '+vales[0].correlativo,
+					text: [ {text: 'Del: ', bold: true},vales[0].correlativo,],
           
 				},
         {
-					text: 'AL: '+vales[this.valeDelAl.length-1].correlativo,
+					text: [ {text: 'AL: ', bold: true},vales[this.valeDelAl.length-1].correlativo,],
 
 				},
 
@@ -463,34 +806,23 @@ descarver(doc:DocumetVale){
 			columns: [
 				{
 
-					text: 'F.',
+					text: [ {text: 'F.', bold: true},],
 
 				},
 				{
-					text: 'Sello',
+					text: [ {text: 'Sello', bold: true},],
 
 				},
 
 
 			]
 		},
-    {text:'\n'},
+   // {text:'\n'},
     {
 			columns: [
 				{
 
-					text: 'Nombre y firma Decano',
-
-				},
-
-			]
-		},
-    {text:'\n'},
-    {
-			columns: [
-				{
-
-					text: 'Observaciones: '+soliVehi.observaciones,
+					text: [ {text: decano},{text:'\nNombre y firma Decano', bold: true},],
 
 				},
 
@@ -501,12 +833,13 @@ descarver(doc:DocumetVale){
 			columns: [
 				{
 
-					text: 'Fecha y Hora de imprecion: '+this.formatoFecha(this.fechaActual),
-          alignment: 'right'
+					text: [ {text: 'Observaciones: ', bold: true},soliVehi.observaciones,],
+
 				},
 
 			]
 		},
+    
     );
     pdfMake.createPdf(pdfDefinicion).open();
 
@@ -515,7 +848,15 @@ descarver(doc:DocumetVale){
   cargarConsultaValeDelAl(soli: ISolicitudVehiculo){
     this.consultaService.getConsultaSolicitudVDelAl(soli.codigoSolicitudVehiculo).subscribe((response: IConsultaDelAl[])=>{
       this.valeDelAl = response;
+      if(response === null){
+        this.mensajesService.mensajesSweet(
+          "warning",
+          "Ups... ",
+          "No hay datos para mostrar'"
+        );
+      }else{
       this.cerarPDF(soli,response);
+      }
        //   console.log(response);
       });
   }
@@ -536,9 +877,9 @@ descarver(doc:DocumetVale){
   //  const row = data[i];
   const tableRow = [];
      let j = 0;
-     tableRow.push({i:'N*',codi:'Nombre'});
+     tableRow.push({i:'N.',codi:'Nombre'});
       for (const persona of soliVehi1.listaPasajeros) {
-        console.log(persona.nombrePasajero);
+//console.log(persona.nombrePasajero);
         tableRow.push({i:`${j+1}`,codi:persona.nombrePasajero});
         j++;
       }

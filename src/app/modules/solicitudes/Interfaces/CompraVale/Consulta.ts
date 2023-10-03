@@ -97,3 +97,15 @@ export interface DocumetSoliC{
     codigosolicitudvehiculo:string;
     tipodocument:string;
 }
+
+export interface Decano{  
+    nombre:string;
+    apellido:string;
+}
+
+export interface LogSoliVehi{  
+    actividad:string;
+    estadosolive:number;
+    fechalogsolive:Date;
+    usuario:string;
+}

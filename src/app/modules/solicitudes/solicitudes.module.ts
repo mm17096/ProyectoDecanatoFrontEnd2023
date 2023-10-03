@@ -1,6 +1,6 @@
 
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 import { SolicitudesRoutingModule } from "./solicitudes-routing.module";
 import { SolicitudvComponent } from "./solicitudv/solicitudv.component";
@@ -33,7 +33,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
     NgSelectModule,
     NgbTooltipModule,
     NgbModule,
-  ]
+  ],
+  providers: [DatePipe],
 
 })
 export class SolicitudesModule {}

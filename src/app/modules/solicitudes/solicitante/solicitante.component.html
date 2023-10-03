@@ -1,3 +1,4 @@
+<app-loader></app-loader>
 <div class="container-fluid">
     <app-page-title title="Solicitudes de Vehículos" [breadcrumbItems]="breadCrumbItems"></app-page-title>
   
@@ -55,7 +56,7 @@
                     </tr>
                 <!--  <ng-container *ngIf="solicitudesVehiculo.length > 0; else noDataTemplate">-->
                     <!-- *ngFor="let data of cards | filter:queryString | paginate: { itemsPerPage: 10, currentPage: p }" -->
-                    <tr *ngFor="let data of solicitudesVehiculo | filter:term | paginate: { itemsPerPage: 10, currentPage: p };
+                    <tr *ngFor="let data of solicitudesVehiculo | filter:term | paginate: { itemsPerPage: 8, currentPage: p };
                                           let i = index">
                       <td *ngIf="data.estado===7">{{calcularNumeroCorrelativo(i)}}</td>
                       <td *ngIf="data.estado===7">{{data.solicitante.empleado.departamento.nombre}}</td>
@@ -74,11 +75,17 @@
                       </td>
                       <td *ngIf="data.estado===7" style="text-align: center">
                         <button type="button" (click)="cargarConsultaValeDelAl(data)" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1">
-                                    <i class="mdi mdi-file-document-outline"></i></button>
+                                    <i class="mdi mdi-file-document-outline" ngbTooltip="Solicitud de tranporte"></i></button>
                        <button type="button" (click)="DocumentosSoliCard(data,mdDocumnetoSoliCar)" class="btn btn-warning btn-sm btn-rounded boton-cuadrado mx-1">
-                                      <i class="mdi mdi-format-list-bulleted"></i></button>
+                                      <i class="mdi mdi-format-list-bulleted" ngbTooltip="Lista de pasajeros doc."></i></button>
                        <button type="button" (click)="DocumentosVale(data,mdDocumentVale)" class="btn btn-success btn-sm btn-rounded boton-cuadrado mx-1">
-                        <i class="mdi  mdi-download-outline"></i></button>
+                        <i class="mdi  mdi-download-outline" ngbTooltip="Documentos de liquidación"></i></button>
+                        <button type="button" class="btn btn-primary btn-sm btn-rounded boton-cuadrado mx-1" (click)="generarPDFLOGsoli(data)"
+                          ngbTooltip="Movimientos de solicitud de vehículos">
+                             <i class="mdi mdi-file-document-outline"></i></button>
+                      <!--  <button type="button" class="btn btn-danger btn-sm btn-rounded boton-cuadrado mx-1" (click)="generarPdfLogVale(data)"
+                             ngbTooltip="Movimientos de vales">
+                                <i class="mdi mdi-file-document-outline"></i></button>-->
                         <!-- <i class="mdi mdi-account-lock-outline"></i>
                          mdi-account-check-outline -->
                       </td>
@@ -138,16 +145,16 @@
       <ng-container>
         <!-- *ngFor="let data of cards | filter:queryString | paginate: { itemsPerPage: 10, currentPage: p }" -->
         <tr *ngFor="let data of documentSoliCard let i = index">
-          <td *ngIf="data.tipodocument ==='Lista de pasajeros'">
+          <td >
             {{calcularNumeroCorrelativo(i)}}
           </td>
-          <td *ngIf="data.tipodocument ==='Lista de pasajeros'">
+          <td >
             {{data.fecha | date : "dd/MM/yyyy"}}  
           </td>
-          <td *ngIf="data.tipodocument ==='Lista de pasajeros'">
+          <td >
             {{data.nombredocment}}   
           </td>
-          <td *ngIf="data.tipodocument ==='Lista de pasajeros'" style="text-align: center">
+          <td  style="text-align: center">
             <button type="button" (click)="descargarver(data)" class="btn btn-info btn-sm btn-rounded boton-cuadrado mx-1">
               <i class="mdi mdi-18px mdi-download-outline"></i></button>
           </td>

@@ -4,7 +4,7 @@ import { ConsultaService } from './consulta.service';
 import { IConsultaExcelTabla, IConsultaExcelTablaC, IConsultaExcelTablaCompraDto, IConsultaExcelTablaDto, ITablaConsulta, ITablaConsultaC, ITablaConsultaCompraDto, ITablaConsultaDto } from '../../Interfaces/CompraVale/excel';
 import * as fs from 'file-saver';
 import { LOGO } from '../../Interfaces/logo';
-import { Cantidad, Consulta, IConsultaDelAl, In, Tabla, ValidarVale } from '../../Interfaces/CompraVale/Consulta';
+import { Cantidad, Consulta, Decano, IConsultaDelAl, In, Tabla, ValidarVale } from '../../Interfaces/CompraVale/Consulta';
 import { Veri } from '../../Interfaces/CompraVale/Veri';
 import { IExistenciaVales } from '../../Interfaces/existenciavales.interface';
 @Injectable({
@@ -28,6 +28,7 @@ export class ExcelService {
   valorvv:number;
   id:string;
   in:In[]=[];
+  decano:Decano[]=[];
   hhh:Date;
   private workbook!:Workbook
   constructor(private consultaService: ConsultaService) { }
@@ -37,11 +38,12 @@ dowloadExcel(
   dataExcelConsulta: IConsultaExcelTablaDto,
   dataExcelCompra: IConsultaExcelTablaCompraDto,
   fechaDesde:Date, 
-  fechaAsta:Date) {
+  fechaAsta:Date,
+  deca:Decano[]) {
   this.workbook = new Workbook(); 
   this.workbook.creator = 'ues.edu.sv';
 // this.workbook.addWorksheet('CONSULTAS');
-this.crearTablaConsulta(_existenciaI,dataExcelConsulta.tablaConsultaConsulta,dataExcelCompra.tablaConsultaCompra,fechaDesde,fechaAsta);
+this.crearTablaConsulta(_existenciaI,dataExcelConsulta.tablaConsultaConsulta,dataExcelCompra.tablaConsultaCompra,fechaDesde,fechaAsta,deca);
 //this.crearTablaConsulta();
 this.workbook.xlsx.writeBuffer().then((data) => {
 const blob = new Blob([data]);
@@ -53,7 +55,8 @@ async crearTablaConsulta(
   dataConsultaTaTableConsulta: ITablaConsultaDto[],
   dataConsultaTaTableCompra: ITablaConsultaCompraDto[],
   fechaDesde:Date,
-  fechaAsta:Date) {
+  fechaAsta:Date,
+  decan:Decano[]) {
  let sheet = this.workbook.addWorksheet('CONSULTAS');
   sheet.getColumn("A").width = 15;
   sheet.getColumn("B").width = 15;
@@ -113,7 +116,7 @@ const position: ImagePosition ={
   color: {
   argb: 'FF000000'
   }
-  };
+   };
 
 titulo.style.font = { bold: true, size: 12,
 name: 'Antique Olive', 
@@ -219,12 +222,12 @@ titulo1.style.font = { bold: true, size: 12,
       size: 12,
       italic: true,
        };
-      sheet.getCell(`${columnKey}11`).fill = {
-      type: 'pattern',
-      pattern: 'solid',
-      fgColor: {argb: 'C7F6FF' }, 
-      bgColor: {argb: ''},
-      };
+       sheet.getCell(`${columnKey}11`).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {argb: 'C7F6FF' }, 
+        bgColor: {argb: ''},
+        };
       });
       //-------------------------------------------
       let cell = 0;
@@ -571,6 +574,11 @@ titulo1.style.font = { bold: true, size: 12,
             argb: 'FF000000'
             }
             };
+            //this.cacultaDecano();
+           // const decano = await this.consultaService.getDecano();
+          // console.log(this.decano[0].nombre)
+            const titulo09911 = sheet.getCell('A'+`${index+18}`);
+           titulo09911.value = `${decan[0].nombre} ${decan[0].apellido}`
            const titulo0991 = sheet.getCell('A'+`${index+19}`);
            titulo0991.value = ' Nombre y firma Decano'
            titulo0991.style.font = { bold: true, size: 10,
@@ -581,9 +589,9 @@ titulo1.style.font = { bold: true, size: 12,
             };
             console.log('obj veri',this.valor);
     //--------------------------------------------
-    console.log('obj', this.cccc);
-    console.log('in', this.in);
-    console.log('obj', this.cccc.length);
+   // console.log('obj', this.cccc);
+   // console.log('in', this.in);
+   // console.log('obj', this.cccc.length);
     let connnnnn =0
     let ooo = 0;
       for(let j=0; j<this.cccc.length; j++){
@@ -603,8 +611,8 @@ titulo1.style.font = { bold: true, size: 12,
       }
 
       let ll = this.in.length;
-      console.log('connnnn', connnnnn);
-      console.log('kk', kk);
+     // console.log('connnnn', connnnnn);
+     // console.log('kk', kk);
       if(this.hhh === this.in[ll-1].idn){
       const titulosffcc = sheet.getCell('E'+`${this.in[ll-1].in+(13-1)}`);
       titulosffcc.value = `${kk-connnnnn}`;
@@ -632,80 +640,7 @@ titulo1.style.font = { bold: true, size: 12,
             console.log(this.valor[i]);
         }
       }
-   // this.cargarConsultaValeDelAl(this.id,0,0);
-
    
-      //---------------------------------------------------------
-     /* let j = 0;
-      let cant = 0;
-      let jj =0;
-      dataConsultaTaTable.forEach((item)=>{
-        jj++
-        if(item.fechacompra <= fechaDesde && item.idcompra != this.idcompra){
-        
-            j += item.cantidad;
-            this.precio = item.precio;
-            this.items = [{cantidad:j,preciou:item.precio}];
-
-       }
-        this.idcompra = item.idcompra;
-      });
-      const titulo9 = sheet.getCell('H12');
-      titulo9.value = `${j}`;
-      const fileInsertar = sheet.getRows(13,jj+31)!;
-      let index = 0;
-      let row = fileInsertar[index];
-      dataConsultaTaTable.forEach((item)=>{ 
-        
-        if(item.fecha >= fechaDesde && item.fecha <= fechaAsta){
-        if(item.fecha != this.fecha){
-          
-
-          row = fileInsertar[index];
-          row.values = [item.fecha,'','','','','','','','',''];
-          index++
-          row = fileInsertar[index];
-          cant = j-item.ExistCant;
-          row.values = [
-            `${item.codigoVale}`,
-                `${''}`,
-              `${'$'}`,
-                `${'$'}`,
-                  `${item.solidasCant}`,
-                    `${'$'+ item.salidasPU}`,
-                      `${'$'+(item.solidasCant*item.salidasPU)}`,
-                        `${cant}`,
-                          `${'$'+item.ExistPU}`,
-                            `${'$'+(cant*item.ExistPU)}`,
-                             // `${item.fecha}`
-         ];
-         j=cant;
-         index++      
-        }else {
-        row = fileInsertar[index];
-        row.values = [
-            `${item.codigoVale}`,
-            `${item.entradasCant}`,
-              `${'$'+ item.entradasPU}`,
-                `${'$'+ (item.entradasCant*item.entradasPU)}`,
-                  `${item.solidasCant}`,
-                    `${'$'+ item.salidasPU}`,
-                      `${'$'+(item.solidasCant*item.salidasPU)}`,
-                        `${item.ExistCant}`,
-                          `${'$'+item.ExistPU}`,
-                            `${'$'+(item.ExistCant*item.ExistPU)}`,
-                              `${item.fecha}`
-         ];
-         index++
-        this.cantvale = item.solidasCant;
-        }
-         this.fecha = item.fecha;
-      }
-      });*/
-    
-
-      
-      
   }
   formatoFecha(fecha: Date): string {
     const options: Intl.DateTimeFormatOptions = {

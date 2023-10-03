@@ -195,6 +195,8 @@ export class SolicitudvaleComponent implements OnInit {
 
     this.usuarios.SendEmail(email).subscribe(
       (resp) => {
+        console.log("resp: ", resp);
+
         Swal.close();
         const Toast = Swal.mixin({
           toast: true,

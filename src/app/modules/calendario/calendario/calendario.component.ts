@@ -8,6 +8,7 @@ import { ModalSecretariaComponent } from '../../solicitud-vehiculo/components/mo
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ISolicitudVehiculo } from '../../solicitud-vehiculo/interfaces/data.interface';
 import { ModalComponent } from '../../solicitud-vehiculo/components/modal/modal.component';
+import { Usuario } from 'src/app/account/auth/models/usuario.models';
 
 @Component({
   selector: 'app-calendario',
@@ -21,7 +22,7 @@ export class CalendarioComponent implements OnInit {
   editEvent: any;
   selectedData: ISolicitudVehiculo;
   contador = 0;
-
+  usuario !: Usuario;
 
   calendarOptions: CalendarOptions = {
     headerToolbar: {
@@ -207,18 +208,19 @@ get listSoliVeData(){
 }
 
 
-  constructor( private soliService: ServicioService, private modalService: NgbModal) {
+  constructor( private soliService: ServicioService, private modalService: NgbModal, private usuarioService: UsuarioService) {
 
    }
 
 
    abrirModalSecre(leyenda: string, data: any) {
+    this.usuario = this.usuarioService.usuario;
     const selectedData = data;
- console.log("lo que trajo", data);
+     //console.log("lo que trajo", this.usuario);
     const modalRef = this.modalService.open(ModalSecretariaComponent, {size:'xl', backdrop: 'static'});
     modalRef.componentInstance.leyenda = leyenda;
     modalRef.componentInstance.soliVeOd = data;
-    modalRef.componentInstance.usuarioActivo = "SECR_DECANATO";
+    modalRef.componentInstance.usuarioActivo = this.usuario;
   }
 
 }

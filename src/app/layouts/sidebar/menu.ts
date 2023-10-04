@@ -159,7 +159,7 @@ export const MENU: MenuItem[] = [
     label: "Movimientos de vales",
     icon: "mdi mdi-checkbox-multiple-blank-outline",
     role: ["ADMIN","ASIS_FINANCIERO","JEFE_FINANACIERO"],
-    link: "/solicitudes/solicitudv"
+    link: "/solicitudes/movimientosvales"
   },
   {
     id: 15,
@@ -437,7 +437,7 @@ export const MENU_ASIS_FINAN: MenuItem[] = [
     label: "Movimientos de vales",
     icon: "mdi mdi-checkbox-multiple-blank-outline",
     role: ["ADMIN","ASIS_FINANCIERO","JEFE_FINANACIERO"],
-    link: "/solicitudes/solicitudv"
+    link: "/solicitudes/movimientosvales"
   },
   {
     id: 15,
@@ -561,7 +561,7 @@ export const MENU_JEFE_FINAN: MenuItem[] = [
     label: "Movimientos de vales",
     icon: "mdi mdi-checkbox-multiple-blank-outline",
     role: ["ADMIN","ASIS_FINANCIERO","JEFE_FINANACIERO"],
-    link: "/solicitudes/solicitudv"
+    link: "/solicitudes/movimientosvales"
   },
 
 ];

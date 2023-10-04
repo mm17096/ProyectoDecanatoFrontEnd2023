@@ -76,7 +76,7 @@ export class ModalComponent implements OnInit {
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router,
               private soliVeService: SolicitudVehiculoService, public activeModal: NgbActiveModal,
               private mensajesService: MensajesService,
-              ) {
+  ) {
     this.solicitudVale = {
       idSolicitudVale: '',
       cantidadVale: 0,
@@ -87,6 +87,9 @@ export class ModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.usuarioActivo);
+    //console.log("data",this.soliVeOd);
+    console.log("modal", this.vista);
     this.iniciarFormulario();
     this.llenarSelectDepartamentos();
     this.soliVeService.obtenerVehiculos();
@@ -138,95 +141,100 @@ export class ModalComponent implements OnInit {
         this.btnVerPdf = true;
       }
       for (const persona of this.soliVeOd.listaPasajeros) {
+        //console.log(persona);
         this.pasajeros.push({id: persona.id, nombrePasajero: persona.nombrePasajero});
 
         const control = new FormControl(this.soliVeOd != null ? persona.nombrePasajero : '');
         this.pasajeroFormControls.push(control);
       }
+      console.log(this.pasajeros);
     }
   }
 
   async guardar(){
     this.formularioSoliVe.value.unidadSolicitante = this.usuarioActivo.empleado.departamento.nombre;
     const solicitudVehiculo = this.formularioSoliVe.value;
+    console.log("formularo: ",this.formularioSoliVe);
 
     if (this.formularioSoliVe.valid){
       if (this.soliVeOd != null){
         this.editarSoliVe();
       }else{
-       if(this.validarfecha(solicitudVehiculo.fechaSolicitud)){
-         if (this.validarfecha(solicitudVehiculo.fechaSalida)){
-           if(this.validarfecha(solicitudVehiculo.fechaEntrada)){
-             if(this.file  != null
-              || solicitudVehiculo.cantidadPersonas < 6){
-                  //  vacío para almacenar los datos de los pasajeros
-               const pasajerosData = [];
+        if(this.validarfecha(solicitudVehiculo.fechaSolicitud)){
+          if (this.validarfecha(solicitudVehiculo.fechaSalida)){
+            if(this.validarfecha(solicitudVehiculo.fechaEntrada)){
+              if(this.file  != null
+                || solicitudVehiculo.cantidadPersonas < 6){
+                //  vacío para almacenar los datos de los pasajeros
+                const pasajerosData = [];
 
-               // Recorrer los controles de los pasajeros
-               for (const control of this.pasajeroFormControls) {
-                 // Obtener el valor del control
-                 const nombrePasajero = control.value;
+                // Recorrer los controles de los pasajeros
+                for (const control of this.pasajeroFormControls) {
+                  // Obtener el valor del control
+                  const nombrePasajero = control.value;
 
-                 // objeto con el valor del control y un ID vacío
-                 const pasajero = { id: '', nombrePasajero };
+                  // objeto con el valor del control y un ID vacío
+                  const pasajero = { id: '', nombrePasajero };
 
-                 // Agregar el objeto al arreglo de pasajerosData
-                 pasajerosData.push(pasajero);
-               }
+                  // Agregar el objeto al arreglo de pasajerosData
+                  pasajerosData.push(pasajero);
+                }
 
-               solicitudVehiculo.listaPasajeros = pasajerosData;
+                solicitudVehiculo.listaPasajeros = pasajerosData;
 
-               // validacion lista de pasajeros
-               const todosLlenos = pasajerosData.every((pasajero) => {
-                 const value = pasajero.nombrePasajero;
+                //console.log("dataPas: ",pasajerosData);
 
-                 return typeof value === 'string' && value.trim() !== '';
+                // validacion lista de pasajeros
+                const todosLlenos = pasajerosData.every((pasajero) => {
+                  const value = pasajero.nombrePasajero;
+
+                  return typeof value === 'string' && value.trim() !== '';
 
 
-               });
+                });
 
-               if (!todosLlenos) {
-                 this.mensajesService.mensajesToast(
-                   "warning",
-                   "Por favor, completa todos los nombres de los pasajeros."
-                 );
-                 // fin validacion de lista de pasajeros
-               } else {
-                 // Todos los nombres de los pasajeros están llenos, continuar con el envío de la solicitud.
-                 if ((await this.mensajesService.mensajesConfirmar()) == true) {
-                   await this.registrarSoliVe();
-                 }
-               }
-             } else {
+                if (!todosLlenos) {
+                  this.mensajesService.mensajesToast(
+                    "warning",
+                    "Por favor, completa todos los nombres de los pasajeros."
+                  );
+                  // fin validacion de lista de pasajeros
+                } else {
+                  // Todos los nombres de los pasajeros están llenos, continuar con el envío de la solicitud.
+                  if ((await this.mensajesService.mensajesConfirmar()) == true) {
+                    await this.registrarSoliVe();
+                  }
+                }
+              } else {
+                this.mensajesService.mensajesToast(
+                  "warning",
+                  "Debe subir pdf de la lista de pasajeros"
+                );
+              }
+            } else {
               this.mensajesService.mensajesToast(
                 "warning",
-                "Debe subir pdf de la lista de pasajeros"
+                "Año de fecha de regreso incorrecta"
               );
-             }
-           } else {
-             this.mensajesService.mensajesToast(
-               "warning",
-               "Año de fecha de regreso incorrecta"
-             );
-           }
-         } else {
-           this.mensajesService.mensajesToast(
-             "warning",
-             "Año de fecha de misión incorrecta"
-           );
-         }
-       } else {
-         this.mensajesService.mensajesToast(
-           "warning",
-           "Año de fecha de solicitud incorrecta"
-         );
-       }
+            }
+          } else {
+            this.mensajesService.mensajesToast(
+              "warning",
+              "Año de fecha de misión incorrecta"
+            );
+          }
+        } else {
+          this.mensajesService.mensajesToast(
+            "warning",
+            "Año de fecha de solicitud incorrecta"
+          );
+        }
       }
     } else {
       // Mostrar nombres de campos inválidos por consola
-      /*console.log('Campos inválidos:',
+      console.log('Campos inválidos:',
         Object.keys(this.formularioSoliVe.controls).filter((controlName) =>
-          this.formularioSoliVe.get(controlName)?.invalid));*/
+          this.formularioSoliVe.get(controlName)?.invalid));
 
       this.mensajesService.mensajesToast(
         "warning",
@@ -292,7 +300,7 @@ export class ModalComponent implements OnInit {
     /* fin de la direccion */
 
     // Mostrar SweetAlert de carga
-   Swal.fire({
+    Swal.fire({
       title: "Espere",
       text: "Realizando la acción...",
       icon: "info",
@@ -302,6 +310,7 @@ export class ModalComponent implements OnInit {
       showConfirmButton: false,
     });
 
+    //console.log(solicitudVehiculo);
     return new Promise<void> ((resolve, reject) => {
       this.soliVeService.registrarSoliVe(solicitudVehiculo).subscribe({
         next: (resp: any) => {
@@ -309,7 +318,7 @@ export class ModalComponent implements OnInit {
           Swal.close();
 
           if (solicitudVehiculo.file != null && solicitudVehiculo.cantidadPersonas > 5) {
-              // enviar pdf
+            // enviar pdf
             const formData = new FormData();
             let obj = {
               nombreDocumento: '',
@@ -325,6 +334,7 @@ export class ModalComponent implements OnInit {
 
             this.soliVeService.enviarPdfPasajeros(formData).subscribe({
               next: () => {
+                //console.log(pdfResp:any);
                 this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
                 this.mensajesService.mensajesToast("success", "Registro agregado");
                 this.modalService.dismissAll();
@@ -375,7 +385,7 @@ export class ModalComponent implements OnInit {
         }
       },
       (error: any) => {
-       // console.error('Error al obtener opciones de vehículos desde el backend:', error);
+        // console.error('Error al obtener opciones de vehículos desde el backend:', error);
       }
     );
   }
@@ -474,9 +484,9 @@ export class ModalComponent implements OnInit {
   obtenerFechaActual(date: Date): string {
     const year = date.getFullYear();
     const mes = (date.getMonth() + 1).toString().
-      padStart(2, '0');
+    padStart(2, '0');
     const dia = date.getDate().toString().
-      padStart(2, '0');
+    padStart(2, '0');
     return `${year}-${mes}-${dia}`;
   }
 
@@ -599,6 +609,7 @@ export class ModalComponent implements OnInit {
   }
 
   async aprobarSolicitud(){
+    console.log(this.soliVeOd);
     if ((await this.mensajesService.mensajeAprobar()) == true) {
       //await this.actualizarSolicitud(data);
       if (this.usuarioActivo.role=="JEFE_DEPTO"){
@@ -643,14 +654,18 @@ export class ModalComponent implements OnInit {
   }
 
   actualizarSolicitudDec(data: any):Promise <void>{
+    console.log("emtro ", data);
     return new Promise<void>((resolve, reject) => {
       this.soliVeService.updateSolciitudVehiculo(data).subscribe({
-        next: () => {
+        next: (resp: any) => {
           // resp: any
+          console.log("respuesta", resp);
           this.solicitudVale.cantidadVale =0 ;
           this.solicitudVale.estadoEntrada = 1;
           this.solicitudVale.estado = 8;
           this.solicitudVale.solicitudVehiculo = data.codigoSolicitudVehiculo;
+
+          console.log("soliva," + this.solicitudVale);
 
           this.soliVeService.registrarSolicitudVale(this.solicitudVale).subscribe({
             next: () => {
@@ -694,12 +709,12 @@ export class ModalComponent implements OnInit {
     const tipoBuscado = "Lista de pasajeros";
 
     const nombreDocument = this.soliVeOd.listDocumentos.filter((documento:IDocumento) => documento.tipoDocumento === tipoBuscado)
-    .map((documento) => documento.nombreDocumento);
+      .map((documento) => documento.nombreDocumento);
     this.soliVeService.obtenerDocumentPdf(nombreDocument)
-    .subscribe((resp:any) => {
-      let file = new Blob([resp], { type: 'application/pdf' });
-      let fileUrl = URL.createObjectURL(file);
-      window.open(fileUrl);
-    });
+      .subscribe((resp:any) => {
+        let file = new Blob([resp], { type: 'application/pdf' });
+        let fileUrl = URL.createObjectURL(file);
+        window.open(fileUrl);
+      });
   }
 }

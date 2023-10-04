@@ -52,7 +52,7 @@ export class CalendarioComponent implements OnInit {
   currentEvents: EventApi[] = [];
 
   async LoadEvents(args: EventSourceFunc): Promise<EventInput[]> { // empieza el forech
-        
+
         return new Promise<EventInput[]>((resolve) => {
          // console.log(args.startStr);
 
@@ -188,7 +188,7 @@ export class CalendarioComponent implements OnInit {
           let data = dataSoli.find(x => x.codigoSolicitudVehiculo == clickInfo.event.id);  // se busca la solicitud
             if (data.codigoSolicitudVehiculo == compara) {
                console.log("lo que trajo", data);
-              this.abrirModal('Detalle', data);                  // se invoca al metodo para abrir el modal
+              this.abrirModalSecre('Detalle', data);                  // se invoca al metodo para abrir el modal
             }
           }
 
@@ -212,14 +212,13 @@ get listSoliVeData(){
    }
 
 
-   abrirModal(leyenda: string, data: any) {
+   abrirModalSecre(leyenda: string, data: any) {
     const selectedData = data;
  console.log("lo que trajo", data);
-    const modalRef = this.modalService.open(ModalComponent, {size:'xl', backdrop: 'static'});
+    const modalRef = this.modalService.open(ModalSecretariaComponent, {size:'xl', backdrop: 'static'});
     modalRef.componentInstance.leyenda = leyenda;
     modalRef.componentInstance.soliVeOd = data;
     modalRef.componentInstance.usuarioActivo = "SECR_DECANATO";
   }
-
 
 }

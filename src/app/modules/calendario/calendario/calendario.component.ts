@@ -216,7 +216,7 @@ get listSoliVeData(){
    abrirModalSecre(leyenda: string, data: any) {
     this.usuario = this.usuarioService.usuario;
     const selectedData = data;
- console.log("lo que trajo", this.usuario);
+     //console.log("lo que trajo", this.usuario);
     const modalRef = this.modalService.open(ModalSecretariaComponent, {size:'xl', backdrop: 'static'});
     modalRef.componentInstance.leyenda = leyenda;
     modalRef.componentInstance.soliVeOd = data;

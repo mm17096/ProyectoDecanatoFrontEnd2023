@@ -245,9 +245,9 @@ export class ModalSecretariaComponent implements OnInit {
        }
     } else {
       // Mostrar nombres de campos inválidos por consola
-      console.log('Campos inválidos:',
+      /*console.log('Campos inválidos:',
         Object.keys(this.formularioSoliVe.controls).filter((controlName) =>
-          this.formularioSoliVe.get(controlName)?.invalid));
+          this.formularioSoliVe.get(controlName)?.invalid));*/
 
       this.mensajesService.mensajesToast(
         "warning",
@@ -268,7 +268,6 @@ export class ModalSecretariaComponent implements OnInit {
   registrarSoliVe() : Promise<void> {
     const solicitudVehiculo = this.formularioSoliVe.value;
     solicitudVehiculo.codigoSolicitudVehiculo = this.soliVeOd.codigoSolicitudVehiculo;
-    //solicitudVehiculo.motorista = this.soliVeOd.motorista.codigoEmpleado;
     solicitudVehiculo.solicitante = this.soliVeOd.solicitante.codigoUsuario;
     solicitudVehiculo.nombreJefeDepto = this.soliVeOd.nombreJefeDepto;
     let nombreMotoristaExistente;
@@ -277,18 +276,14 @@ export class ModalSecretariaComponent implements OnInit {
         this.soliVeOd.motorista.apellido;
 
       if (nombreMotoristaExistente.toString() == this.formularioSoliVe.get('motorista').value){
-        console.log("entro al if motorista");
         solicitudVehiculo.motorista = this.soliVeOd.motorista.codigoEmpleado;
       }
     }
 
     if(this.soliVeOd.vehiculo.placa == this.formularioSoliVe.get('vehiculo').value){
-      console.log("entro al if vehiculo");
       solicitudVehiculo.vehiculo = this.soliVeOd.vehiculo.codigoVehiculo;
     }
 
-    console.log("vehiculo",solicitudVehiculo.vehiculo);
-    console.log("motorista", solicitudVehiculo.motorista);
     const tipoBuscado = "Lista de pasajeros";
     const documentosFiltrados = this.soliVeOd.listDocumentos.filter((documento) => {
       return documento.tipoDocumento === tipoBuscado;
@@ -722,7 +717,6 @@ export class ModalSecretariaComponent implements OnInit {
   }
 
   async aprobarSolicitud(){
-    console.log(this.soliVeOd);
     if ((await this.mensajesService.mensajeAprobar()) == true) {
         await this.actualizarSolicitudDec(this.soliVeOd);
     }

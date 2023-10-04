@@ -87,9 +87,6 @@ export class ModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.usuarioActivo);
-    //console.log("data",this.soliVeOd);
-    console.log("modal", this.vista);
     this.iniciarFormulario();
     this.llenarSelectDepartamentos();
     this.soliVeService.obtenerVehiculos();
@@ -141,20 +138,17 @@ export class ModalComponent implements OnInit {
         this.btnVerPdf = true;
       }
       for (const persona of this.soliVeOd.listaPasajeros) {
-        //console.log(persona);
         this.pasajeros.push({id: persona.id, nombrePasajero: persona.nombrePasajero});
 
         const control = new FormControl(this.soliVeOd != null ? persona.nombrePasajero : '');
         this.pasajeroFormControls.push(control);
       }
-      console.log(this.pasajeros);
     }
   }
 
   async guardar(){
     this.formularioSoliVe.value.unidadSolicitante = this.usuarioActivo.empleado.departamento.nombre;
     const solicitudVehiculo = this.formularioSoliVe.value;
-    console.log("formularo: ",this.formularioSoliVe);
 
     if (this.formularioSoliVe.valid){
       if (this.soliVeOd != null){
@@ -181,8 +175,6 @@ export class ModalComponent implements OnInit {
                }
 
                solicitudVehiculo.listaPasajeros = pasajerosData;
-
-               //console.log("dataPas: ",pasajerosData);
 
                // validacion lista de pasajeros
                const todosLlenos = pasajerosData.every((pasajero) => {
@@ -232,9 +224,9 @@ export class ModalComponent implements OnInit {
       }
     } else {
       // Mostrar nombres de campos inválidos por consola
-      console.log('Campos inválidos:',
+      /*console.log('Campos inválidos:',
         Object.keys(this.formularioSoliVe.controls).filter((controlName) =>
-          this.formularioSoliVe.get(controlName)?.invalid));
+          this.formularioSoliVe.get(controlName)?.invalid));*/
 
       this.mensajesService.mensajesToast(
         "warning",
@@ -310,7 +302,6 @@ export class ModalComponent implements OnInit {
       showConfirmButton: false,
     });
 
-    //console.log(solicitudVehiculo);
     return new Promise<void> ((resolve, reject) => {
       this.soliVeService.registrarSoliVe(solicitudVehiculo).subscribe({
         next: (resp: any) => {
@@ -334,7 +325,6 @@ export class ModalComponent implements OnInit {
 
             this.soliVeService.enviarPdfPasajeros(formData).subscribe({
               next: () => {
-                //console.log(pdfResp:any);
                 this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
                 this.mensajesService.mensajesToast("success", "Registro agregado");
                 this.modalService.dismissAll();
@@ -609,7 +599,6 @@ export class ModalComponent implements OnInit {
   }
 
   async aprobarSolicitud(){
-    console.log(this.soliVeOd);
     if ((await this.mensajesService.mensajeAprobar()) == true) {
       //await this.actualizarSolicitud(data);
       if (this.usuarioActivo.role=="JEFE_DEPTO"){
@@ -654,7 +643,6 @@ export class ModalComponent implements OnInit {
   }
 
   actualizarSolicitudDec(data: any):Promise <void>{
-    console.log("emtro ");
     return new Promise<void>((resolve, reject) => {
       this.soliVeService.updateSolciitudVehiculo(data).subscribe({
         next: () => {
@@ -663,8 +651,6 @@ export class ModalComponent implements OnInit {
           this.solicitudVale.estadoEntrada = 1;
           this.solicitudVale.estado = 8;
           this.solicitudVale.solicitudVehiculo = data.codigoSolicitudVehiculo;
-
-          console.log("soliva," + this.solicitudVale);
 
           this.soliVeService.registrarSolicitudVale(this.solicitudVale).subscribe({
             next: () => {

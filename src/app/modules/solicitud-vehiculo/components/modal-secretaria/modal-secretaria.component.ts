@@ -136,9 +136,15 @@ export class ModalSecretariaComponent implements OnInit {
         + this.soliVeOd.solicitante.empleado.apellido: '');
       // por estado revision
 
-      this.formularioSoliVe.get('motorista')
-         .setValue(this.soliVeOd != null ? this.soliVeOd.motorista.nombre + ' '
-           + this.soliVeOd.motorista.apellido: '');
+      if(this.soliVeOd.motorista != null){
+        this.formularioSoliVe.get('motorista')
+          .setValue(this.soliVeOd != null ? this.soliVeOd.motorista.nombre + ' '
+            + this.soliVeOd.motorista.apellido: '');
+      }
+      if (this.soliVeOd.observaciones != null){
+        this.formularioSoliVe.get('observaciones')
+          .setValue(this.soliVeOd != null ? this.soliVeOd.observaciones: '');
+      }
 
       if (solicitudVehiculo.cantidadPersonas > 5){
         this.mostrarTabla = false;
@@ -265,18 +271,22 @@ export class ModalSecretariaComponent implements OnInit {
     //solicitudVehiculo.motorista = this.soliVeOd.motorista.codigoEmpleado;
     solicitudVehiculo.solicitante = this.soliVeOd.solicitante.codigoUsuario;
     solicitudVehiculo.nombreJefeDepto = this.soliVeOd.nombreJefeDepto;
-    const nombreMotoristaExistente =  this.soliVeOd.motorista.nombre + ' ' +
-      this.soliVeOd.motorista.apellido;
-    console.log("morisado", nombreMotoristaExistente);
-    console.log("input", solicitudVehiculo.vehiculo);
+    let nombreMotoristaExistente;
+    if(this.soliVeOd.motorista != null) {
+        nombreMotoristaExistente =  this.soliVeOd.motorista.nombre + ' ' +
+        this.soliVeOd.motorista.apellido;
+
+      if (nombreMotoristaExistente.toString() == this.formularioSoliVe.get('motorista').value){
+        console.log("entro al if motorista");
+        solicitudVehiculo.motorista = this.soliVeOd.motorista.codigoEmpleado;
+      }
+    }
+
     if(this.soliVeOd.vehiculo.placa == this.formularioSoliVe.get('vehiculo').value){
       console.log("entro al if vehiculo");
       solicitudVehiculo.vehiculo = this.soliVeOd.vehiculo.codigoVehiculo;
     }
-    if (nombreMotoristaExistente.toString() == this.formularioSoliVe.get('motorista').value){
-      console.log("entro al if motorista");
-      solicitudVehiculo.motorista = this.soliVeOd.motorista.codigoEmpleado;
-    }
+
     console.log("vehiculo",solicitudVehiculo.vehiculo);
     console.log("motorista", solicitudVehiculo.motorista);
     const tipoBuscado = "Lista de pasajeros";
@@ -639,12 +649,12 @@ export class ModalSecretariaComponent implements OnInit {
       this.formularioSoliVe.get('observaciones').setErrors({required:true});
       this.formularioSoliVe.get('observaciones').markAsTouched();
       this.mensajesService.mensajesToast("warning", "Solicitud se requiere campo observaciones");
-      return;
-    }
-    if (await this.mensajesService.mensajeAnular() == true){
-      this.soliVeOd.estado = 15;
-      this.soliVeOd.observaciones = this.formularioSoliVe.get('observaciones').value;
-      await this.actualizarSolicitud(this.soliVeOd);
+    } else {
+      if (await this.mensajesService.mensajeAnular() == true){
+        this.soliVeOd.estado = 15;
+        this.soliVeOd.observaciones = this.formularioSoliVe.get('observaciones').value;
+        await this.actualizarSolicitud(this.soliVeOd);
+      }
     }
   }
 

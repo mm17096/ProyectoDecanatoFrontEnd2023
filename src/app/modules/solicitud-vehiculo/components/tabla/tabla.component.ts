@@ -184,6 +184,4 @@ export class TablaComponent implements OnInit {
       return index + 1; // Si no es numérico, solo regresamos el índice + 1
     }
   }
-
-  protected readonly length = length;
 }

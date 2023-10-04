@@ -1,7 +1,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Consulta } from '../Interfaces/CompraVale/Consulta';
+import { Consulta, Decano } from '../Interfaces/CompraVale/Consulta';
 import { ExcelService } from '../Service/Excel/excel.service';
 import { ConsultaService } from '../Service/Excel/consulta.service';
 import { IConsultaExcelTabla, IConsultaExcelTablaC, IConsultaExcelTablaCompraDto, IConsultaExcelTablaDto } from '../Interfaces/CompraVale/excel';
@@ -33,6 +33,7 @@ export class SolicitudvComponent implements OnInit {
   dataExcelC: IConsultaExcelTablaC;
   dataExcelConsulta: IConsultaExcelTablaDto;
   dataExcelCompra: IConsultaExcelTablaCompraDto;
+  decano:Decano[];
   usuario: Usuario;
   veri: boolean = false;
   alerts = [
@@ -91,6 +92,14 @@ export class SolicitudvComponent implements OnInit {
       { label: "Modals", active: true },
     ];
   }
+  cacultaDecano(){
+    this.consultaService.getConsultaDecano().subscribe({
+      next: (response) => {
+        this.decano = response;
+       // console.log(this.existenciaI);
+      },
+     });
+   }
   cargarConsulta(){
     this.consultaService.getConsultaExporExcel().subscribe((response)=>{
       this.dataExcel = response;
@@ -132,6 +141,7 @@ export class SolicitudvComponent implements OnInit {
       if(usuario.cargo.nombreCargo == "ASISTENTE FINANCIERA" || usuario.cargo.nombreCargo == "JEFE FINANCIERO" || usuario.cargo.nombreCargo == "ADMINISTRADOR"){
     this.cargarConsultaDto();
     this.cargarCompraDto();
+    this.cacultaDecano();
     this.obtnerExistenciaVales();  
   //  this.download()
   if (this.formularioGeneral.valid) {
@@ -185,22 +195,15 @@ export class SolicitudvComponent implements OnInit {
     }
 //console.log('usuario ',this.usuario.role)
     });
-    console.log('usuario ',this.usuario)
+  //  console.log('usuario ',this.usuario)
   }
   
   download(): void{
     this.cargarConsultaDto();
     this.cargarCompraDto();
+    this.cacultaDecano();
     this.obtnerExistenciaVales();
-   // getCompraC();
-   ///console.log(this.formatDate(new Date));
-   
-   // this.obtnerExistenciaVales();
-   
-     // this.cargarConsulta();
-      //this.cargarCompraC();
-   
-        this.excelService.dowloadExcel(this.existenciaI,this.dataExcelConsulta,this.dataExcelCompra,this.fechaDesde,this.fechaAsta);
+        this.excelService.dowloadExcel(this.existenciaI,this.dataExcelConsulta,this.dataExcelCompra,this.fechaDesde,this.fechaAsta,this.decano);
       
       
 

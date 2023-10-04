@@ -287,6 +287,28 @@
           </div>
           <!-- fin hora de salida -->
         </div>
+        <div class="row" *ngIf="leyenda != 'Nueva'">
+          <div class="mt-2">
+            <div class="form-group">
+              <label for="observa-id">Observaciones:</label>
+              <textarea cols="30" rows="2" class="form-control"
+                        id="observa-id"
+                        [placeholder]="soliVeOd.observaciones != '' ? '' : 'Ingrese observaciones'"
+                        formControlName="observaciones"
+                        [class]="esCampoValido('observaciones')"
+                        [readonly] = "(leyenda == 'Detalle' &&
+                        (usuarioActivo.role != 'JEFE_DEPTO' && usuarioActivo.role == 'JEFE_FINANACIERO')) ||
+                        leyenda == 'Detalle' && vista == 'mis-solicitudes'">
+              </textarea>
+              <div class="invalid-feedback">
+                <span
+                  *ngIf="formularioSoliVe.get('observaciones')?.errors?.['required']">
+                  Requiere una observación
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="col-md-3">
         <div class="row">

@@ -135,6 +135,11 @@ export class ModalComponent implements OnInit {
         .setValue(this.soliVeOd != null ? this.soliVeOd.solicitante.empleado.nombre+' '
           + this.soliVeOd.solicitante.empleado.apellido: '');
 
+      if (this.soliVeOd.observaciones != null){
+        this.formularioSoliVe.get('observaciones')
+          .setValue(this.soliVeOd != null ? this.soliVeOd.observaciones: '');
+      }
+
 
       if (solicitudVehiculo.cantidadPersonas > 5){
         this.mostrarTabla = false;
@@ -435,6 +440,7 @@ export class ModalComponent implements OnInit {
       listaPasajeros: this.fb.array([]),
       file: ['',],
       isChecked: [false],
+      observaciones: ['',[]],
     });
 
     this.formularioSoliVe.get('isChecked').valueChanges.subscribe((isChecked) => {

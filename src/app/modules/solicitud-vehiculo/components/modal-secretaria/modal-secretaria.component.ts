@@ -698,31 +698,6 @@ export class ModalSecretariaComponent implements OnInit {
     }
   }
 
-  actualizarSolicitudJefeDepto(data: any):Promise <void>{
-    return new Promise<void>((resolve, reject) => {
-      this.soliVeService.updateSolciitudVehiculo(data).subscribe({
-        next: () => {
-          //resp:any
-          this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
-          this.modalService.dismissAll();
-          setTimeout(() => {
-            this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
-          }, 3025);
-          resolve();
-        },
-        error: (error) => {
-          Swal.close();
-          this.mensajesService.mensajesSweet(
-            'error',
-            'Ups... Algo salió mal',
-            error.error.message
-          );
-          reject (error);
-        },
-      });
-    });
-  }
-
   async aprobarSolicitud(){
     console.log(this.soliVeOd);
     if ((await this.mensajesService.mensajeAprobar()) == true) {

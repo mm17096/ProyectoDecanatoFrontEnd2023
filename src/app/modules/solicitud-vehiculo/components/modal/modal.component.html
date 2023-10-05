@@ -631,8 +631,9 @@
 
       <button type="button" class="btn btn-warning w-sm me-2" id="btn-detalle-ave" name="btn-save"
               (click)="anularSolicitud()"
-              *ngIf="(usuarioActivo.role == 'DECANO') && vista === 'listado'">
-        Denegar
+              *ngIf="(usuarioActivo.role == 'DECANO' || usuarioActivo.role == 'JEFE_DEPTO' ||
+              usuarioActivo.role == 'JEFE_FINANACIERO') && vista === 'listado'">
+        Anular
       </button>
       <button type="button" class="btn btn-dark w-sm" id="btn-cancel" name="btn-cancel"
               aria-hidden="true" (click)="activeModal.close('Close click')">Cancelar</button>

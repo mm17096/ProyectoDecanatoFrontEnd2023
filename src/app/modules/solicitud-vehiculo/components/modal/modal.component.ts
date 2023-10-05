@@ -618,8 +618,10 @@ export class ModalComponent implements OnInit {
     console.log(this.soliVeOd);
     if ((await this.mensajesService.mensajeAprobar()) == true) {
       //await this.actualizarSolicitud(data);
+      this.soliVeOd.observaciones =  this.formularioSoliVe.get('observaciones').value;
+      console.log("ob",this.soliVeOd.observaciones);
       if (this.usuarioActivo.role=="JEFE_DEPTO"){
-        await this.actualizarSolicitud(this.soliVeOd);
+        await this.actualizarSolicitud(this.soliVeOd, 'aprobada');
       }else{
         await this.actualizarSolicitudDec(this.soliVeOd);
       }
@@ -627,19 +629,28 @@ export class ModalComponent implements OnInit {
   }
 
   async anularSolicitud() {
-    if (await this.mensajesService.mensajeAnular() == true){
-      this.soliVeOd.estado = 15;
-      await this.actualizarSolicitud(this.soliVeOd);
+    if(this.formularioSoliVe.get('observaciones').value == ''){
+      this.formularioSoliVe.get('observaciones').setErrors({required:true});
+      this.formularioSoliVe.get('observaciones').markAsTouched();
+      this.mensajesService.mensajesToast("warning", "Solicitud se requiere campo observaciones");
+    } else {
+      if (await this.mensajesService.mensajeAnular() == true){
+        this.soliVeOd.observaciones =  this.formularioSoliVe.get('observaciones').value;
+        this.soliVeOd.estado = 15;
+        await this.actualizarSolicitud(this.soliVeOd, 'anulada');
+      }
     }
 
   }
 
-  actualizarSolicitud(data: any):Promise <void>{
+  actualizarSolicitud(data: any, accion: string ):Promise <void>{
+    console.log("data", data)
     return new Promise<void>((resolve, reject) => {
       this.soliVeService.updateSolciitudVehiculo(data).subscribe({
         next: () => {
           //resp:any
-          this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
+
+          this.mensajesService.mensajesToast("success", `Solicitud ${accion} con éxito`);
           this.modalService.dismissAll();
           setTimeout(() => {
             this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
@@ -660,18 +671,14 @@ export class ModalComponent implements OnInit {
   }
 
   actualizarSolicitudDec(data: any):Promise <void>{
-    console.log("emtro ", data);
     return new Promise<void>((resolve, reject) => {
       this.soliVeService.updateSolciitudVehiculo(data).subscribe({
-        next: (resp: any) => {
+        next: () => {
           // resp: any
-          console.log("respuesta", resp);
           this.solicitudVale.cantidadVale =0 ;
           this.solicitudVale.estadoEntrada = 1;
           this.solicitudVale.estado = 8;
           this.solicitudVale.solicitudVehiculo = data.codigoSolicitudVehiculo;
-
-          console.log("soliva," + this.solicitudVale);
 
           this.soliVeService.registrarSolicitudVale(this.solicitudVale).subscribe({
             next: () => {

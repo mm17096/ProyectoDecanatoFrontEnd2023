@@ -38,9 +38,25 @@ export class TablaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log("tabla:",this.solicitudesVehiculo);
   }
 
   abrirModal(leyenda: string, data: any) {
+    if (this.userAcivo.role == 'DECANO' && data.estado == 3 && this.vista == 'listado'){
+      this.abrirModalSecre(leyenda, data)
+    } else if (this.userAcivo.role == 'SECR_DECANATO' && (data.estado == 2 || data.estado == 6) && this.vista == 'listado'){
+      this.abrirModalSecre(leyenda, data);
+    }else {
+      this.selectedData = data; // Almacena los datos del registro seleccionado
+      const modalRef = this.modalService.open(ModalComponent, {size: 'xl', backdrop: 'static'});
+      modalRef.componentInstance.leyenda = leyenda; // Pasa la leyenda al componente modal
+      modalRef.componentInstance.soliVeOd = data;
+      modalRef.componentInstance.vista = this.vista;
+      modalRef.componentInstance.usuarioActivo = this.userAcivo;
+    }
+  }
+
+  abrirModalParaAdmin(leyenda: string, data: any) {
     if (this.userAcivo.role == 'DECANO' && data.estado == 3 && this.vista == 'listado'){
       this.abrirModalSecre(leyenda, data)
     } else if (this.userAcivo.role == 'SECR_DECANATO' && (data.estado == 2 || data.estado == 6) && this.vista == 'listado'){
@@ -176,6 +192,19 @@ export class TablaComponent implements OnInit {
       return (this.p - 1) * 10 + index + 1;
     } else {
       return index + 1; // Si no es numérico, solo regresamos el índice + 1
+    }
+  }
+
+  /* Metodos del administrador */
+
+  async aprobarSolicitudAdmin(data: any){
+    if ((await this.mensajesService.mensajeAprobar()) == true) {
+      //await this.actualizarSolicitud(data);
+      if (this.userAcivo.role=="JEFE_DEPTO"){
+        await this.actualizarSolicitud(data);
+      }else{
+        await this.actualizarSolicitudDec(data);
+      }
     }
   }
 }

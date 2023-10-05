@@ -16,6 +16,7 @@ import {
   IConsultaDelAl,
   In,
   Tabla,
+  UsuarioDto,
   ValidarVale,
 } from "../../Interfaces/CompraVale/Consulta";
 import { Veri } from "../../Interfaces/CompraVale/Veri";
@@ -52,7 +53,7 @@ export class ExcelService {
     dataExcelCompra: IConsultaExcelTablaCompraDto,
     fechaDesde: Date,
     fechaAsta: Date,
-    deca: Decano[]
+    deca: UsuarioDto[]
   ) {
     this.workbook = new Workbook();
     this.workbook.creator = "ues.edu.sv";
@@ -77,7 +78,7 @@ export class ExcelService {
     dataConsultaTaTableCompra: ITablaConsultaCompraDto[],
     fechaDesde: Date,
     fechaAsta: Date,
-    decan: Decano[]
+    decan: UsuarioDto[]
   ) {
     let sheet = this.workbook.addWorksheet("CONSULTAS");
     sheet.getColumn("A").width = 15;
@@ -673,7 +674,7 @@ export class ExcelService {
       },
     };
     const titulo09911 = sheet.getCell("A" + `${index + 18}`);
-    titulo09911.value = `${decan[0].nombre} ${decan[0].apellido}`;
+    titulo09911.value = `${decan[0].usuario}`;
     const titulo0991 = sheet.getCell("A" + `${index + 19}`);
     titulo0991.value = " Nombre y firma Decano";
     titulo0991.style.font = {

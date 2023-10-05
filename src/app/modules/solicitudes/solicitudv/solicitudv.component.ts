@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { Consulta, Decano } from "../Interfaces/CompraVale/Consulta";
+import { Consulta, Decano, UsuarioDto } from "../Interfaces/CompraVale/Consulta";
 import { ExcelService } from "../Service/Excel/excel.service";
 import { ConsultaService } from "../Service/Excel/consulta.service";
 import {
@@ -41,7 +41,7 @@ export class SolicitudvComponent implements OnInit {
   dataExcelC: IConsultaExcelTablaC;
   dataExcelConsulta: IConsultaExcelTablaDto;
   dataExcelCompra: IConsultaExcelTablaCompraDto;
-  decano: Decano[];
+  decano: UsuarioDto[];
   usuario: Usuario;
   veri: boolean = false;
   alerts = [
@@ -100,8 +100,8 @@ export class SolicitudvComponent implements OnInit {
     ];
   }
   cacultaDecano() {
-    this.consultaService.getConsultaDecano().subscribe({
-      next: (response) => {
+    this.consultaService.getConsuUsuarioDto(this.fechaDesde,this.fechaAsta).subscribe({
+      next: (response:UsuarioDto[]) => {
         this.decano = response;
       },
     });

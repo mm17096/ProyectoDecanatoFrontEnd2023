@@ -17,8 +17,10 @@ import {
   IConsultaDelAl,
   IdVale,
   LogSoliVehi,
+  LogSoliVehiID,
   LogVale,
   Tabla,
+  UsuarioDto,
 } from "../Interfaces/CompraVale/Consulta";
 import { Usuario, Empleado } from "src/app/account/auth/models/usuario.models";
 import { MensajesService } from "src/app/shared/global/mensajes.service";
@@ -235,9 +237,9 @@ export class SolicitanteComponent implements OnInit {
       .getLogSoliVehi(soliVehi.codigoSolicitudVehiculo)
       .subscribe(
         (response: LogSoliVehi[]) => {
-          this.crearPDFLog(response, soliVehi);
-
-          //   console.log(response);
+         // this.crearPDFLog(response, soliVehi);
+        //  this.obtenerIDvale(soliVehi,response);
+             console.log(response);
         },
         (error) => {
           // Cerrar SweetAlert de carga en caso de error
@@ -251,6 +253,20 @@ export class SolicitanteComponent implements OnInit {
           );
         }
       );
+  }
+
+  obtenerIDvale(soliVehi: ISolicitudVehiculo,response: LogSoliVehi[]){
+    this.consultaService
+      .getConsultaDocumnetoValeId(soliVehi.codigoSolicitudVehiculo)
+      .subscribe((respon: DocumetValeId[]) => {
+         this.genrarVlogVhi(soliVehi,response,respon);
+      });
+  }
+
+  genrarVlogVhi(soliVehi: ISolicitudVehiculo,response: LogSoliVehi[],respon: DocumetValeId[]){
+      this.consultaService.getLogSoliVehiID(respon[0].idsolicitudvale).subscribe((res: LogSoliVehiID[]) => {
+        //this.crearPDFLog(response, soliVehi, res);
+      });
   }
 
   generarPdfLogVale(soliVehi: ISolicitudVehiculo, content: any) {
@@ -750,6 +766,7 @@ export class SolicitanteComponent implements OnInit {
       { text: "ACTIVIDAD", alignment: "center", style: "tableHeader" },
       { text: "FECHA", alignment: "center", style: "tableHeader" },
       { text: "USUARIO", alignment: "center", style: "tableHeader" },
+      { text: "CARGO", alignment: "center", style: "tableHeader" },
       { text: "ESTADO", alignment: "center", style: "tableHeader" },
     ]);
     let estado = "";
@@ -798,10 +815,12 @@ export class SolicitanteComponent implements OnInit {
           alignment: "center",
         },
         { text: `${persona.usuario}`, alignment: "center" },
+        { text: `${persona.cargo}`, alignment: "center" },
         { text: `${this.estado}`, alignment: "center" },
       ]);
       j++;
     }
+   
     pdfDefinicionl.content.push({
       style: "tableExample",
       table: {
@@ -813,8 +832,8 @@ export class SolicitanteComponent implements OnInit {
 
     pdfMake.createPdf(pdfDefinicionl).open();
   }
-  async cerarPDF(soliVehi: ISolicitudVehiculo, vales: IConsultaDelAl[]) {
-    const decano = await this.consultaService.getDecano();
+  async cerarPDF(soliVehi: ISolicitudVehiculo, vales: IConsultaDelAl[],u: UsuarioDto[]) {
+   // const decano = await this.consultaService.getDecano();
     // Continúa con cualquier otra lógica después de obtener el valor
     const pdfDefinicion: any = {
       content: [],
@@ -1171,7 +1190,7 @@ export class SolicitanteComponent implements OnInit {
         columns: [
           {
             text: [
-              { text: decano },
+              { text: u[0].usuario },
               { text: "\nNombre y firma Decano", bold: true },
             ],
           },
@@ -1204,10 +1223,16 @@ export class SolicitanteComponent implements OnInit {
             "No hay datos para mostrar'"
           );
         } else {
-          this.cerarPDF(soli, response);
+       //   this.cerarPDF(soli, response);
+          this.cargarUsuarioDecano(soli, response);
         }
-        //   console.log(response);
       });
+  }
+
+  cargarUsuarioDecano(soli: ISolicitudVehiculo,response: IConsultaDelAl[]){
+    this.consultaService.getConsuUsuarioDto(soli.fechaSolicitud,soli.fechaEntrada).subscribe((resp: UsuarioDto[])=>{
+      this.cerarPDF(soli, response,resp);
+    });
   }
   formatoFecha(fecha: Date): string {
     const options: Intl.DateTimeFormatOptions = {

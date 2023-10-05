@@ -58,14 +58,47 @@ export class ExcelService {
     this.workbook = new Workbook();
     this.workbook.creator = "ues.edu.sv";
     // this.workbook.addWorksheet('CONSULTAS');
-    this.crearTablaConsulta(
-      _existenciaI,
-      dataExcelConsulta.tablaConsultaConsulta,
-      dataExcelCompra.tablaConsultaCompra,
-      fechaDesde,
-      fechaAsta,
-      deca
-    );
+    if(dataExcelCompra != null){
+    if(_existenciaI != null){
+      this.crearTablaConsulta(
+        _existenciaI,
+        dataExcelConsulta.tablaConsultaConsulta,
+        dataExcelCompra.tablaConsultaCompra,
+        fechaDesde,
+        fechaAsta,
+        deca
+      );
+    }else{
+      this.crearTablaConsulta(
+        null,
+        dataExcelConsulta.tablaConsultaConsulta,
+        dataExcelCompra.tablaConsultaCompra,
+        fechaDesde,
+        fechaAsta,
+        deca
+      );
+    }
+    }else{
+      if(_existenciaI != null){
+        this.crearTablaConsulta(
+          _existenciaI,
+          dataExcelConsulta.tablaConsultaConsulta,
+          null,
+          fechaDesde,
+          fechaAsta,
+          deca
+        );
+      }else{
+        this.crearTablaConsulta(
+          null,
+          dataExcelConsulta.tablaConsultaConsulta,
+          null,
+          fechaDesde,
+          fechaAsta,
+          deca
+        );
+      }
+    }
     //this.crearTablaConsulta();
     this.workbook.xlsx.writeBuffer().then((data) => {
       const blob = new Blob([data]);
@@ -488,6 +521,7 @@ export class ExcelService {
     index = index + 1;
     let cantcompra = 0;
     let cantcomprapu = 0;
+    if(dataConsultaTaTableCompra !=null){
     dataConsultaTaTableCompra.forEach((item) => {
       if (this.fechac === null) {
         row = fileInsertar[index];
@@ -556,6 +590,7 @@ export class ExcelService {
         this.fechac = item.fechacompra;
       }
     });
+  }
     //----------------------------------------------
     ["A", "B", "C", "D", "E", "F", "G", "H"].forEach((columnKey) => {
       sheet.getCell(`${columnKey}${index + 13}`).font = {
@@ -647,11 +682,19 @@ export class ExcelService {
       };
     });
     const titulo05 = sheet.getCell("A" + `${index + 15}`);
+   if(eexistenciaI !=null){
     titulo05.value =
       'Vales disponibles a la fecha de impresión: "' +
       `${this.formatoFecha(this.fechaActual)}` +
       '" = ' +
       `${eexistenciaI.valesDisponibles}`;
+   }else{
+    titulo05.value =
+    'Vales disponibles a la fecha de impresión: "' +
+    `${this.formatoFecha(this.fechaActual)}` +
+    '" = ' +
+    `${'0'}`;
+   }
     titulo05.style.font = {
       bold: true,
       size: 12,

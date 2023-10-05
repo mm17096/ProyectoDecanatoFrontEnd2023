@@ -237,9 +237,9 @@ export class SolicitanteComponent implements OnInit {
       .getLogSoliVehi(soliVehi.codigoSolicitudVehiculo)
       .subscribe(
         (response: LogSoliVehi[]) => {
-         // this.crearPDFLog(response, soliVehi);
-        //  this.obtenerIDvale(soliVehi,response);
-             console.log(response);
+        //  this.crearPDFLog(response, soliVehi);
+          this.obtenerIDvale(soliVehi,response);
+          //   console.log(response);
         },
         (error) => {
           // Cerrar SweetAlert de carga en caso de error
@@ -260,12 +260,18 @@ export class SolicitanteComponent implements OnInit {
       .getConsultaDocumnetoValeId(soliVehi.codigoSolicitudVehiculo)
       .subscribe((respon: DocumetValeId[]) => {
          this.genrarVlogVhi(soliVehi,response,respon);
+      },
+      (error) => {
+        this.crearPDFLog(response,soliVehi,null);
       });
   }
 
   genrarVlogVhi(soliVehi: ISolicitudVehiculo,response: LogSoliVehi[],respon: DocumetValeId[]){
       this.consultaService.getLogSoliVehiID(respon[0].idsolicitudvale).subscribe((res: LogSoliVehiID[]) => {
-        //this.crearPDFLog(response, soliVehi, res);
+        this.crearPDFLog(response, soliVehi, res);
+      },
+      (error) => {
+        this.crearPDFLog(response,soliVehi,null);
       });
   }
 
@@ -614,7 +620,7 @@ export class SolicitanteComponent implements OnInit {
 
     pdfMake.createPdf(pdfDefinicionl).open();
   }
-  crearPDFLog(log: LogSoliVehi[], soliVehi: ISolicitudVehiculo) {
+  crearPDFLog(log: LogSoliVehi[], soliVehi: ISolicitudVehiculo, logv: LogSoliVehiID[]) {
     const pdfDefinicionl: any = {
       content: [],
       footer: {
@@ -803,6 +809,57 @@ export class SolicitanteComponent implements OnInit {
       } else if (persona.estadosolive == 15) {
         this.estado = "Anulada";
       }
+     // console.log(this.estado);
+      tableRow.push([
+        { text: `${j + 1}`, alignment: "center" },
+        { text: `${persona.actividad}`, alignment: "center" },
+        {
+          text: `${this.datePipe.transform(
+            persona.fechalogsolive,
+            "dd/MM/yyyy HH:mm:ss a"
+          )}`,
+          alignment: "center",
+        },
+        { text: `${persona.usuario}`, alignment: "center" },
+        { text: `${persona.cargo}`, alignment: "center" },
+        { text: `${this.estado}`, alignment: "center" },
+      ]);
+      j++;
+    }
+    if(logv != null){
+    for (const persona of logv) {
+      // console.log(persona.nombrePasajero);
+      if (persona.estadosolive == 1) {
+        this.estado = "En espera por jefe";
+      } else if (persona.estadosolive == 2) {
+        this.estado = "Aprobado por jefe";
+      } else if (persona.estadosolive == 3) {
+        this.estado = "En espera por decano";
+      } else if (persona.estadosolive == 4) {
+        this.estado = "Aprobada";
+      } else if (persona.estadosolive == 5) {
+        this.estado = "Asignado";
+      } else if (persona.estadosolive == 6) {
+        this.estado = "Revisión";
+      } else if (persona.estadosolive == 7) {
+        this.estado = "Finalizada";
+      } else if (persona.estadosolive == 8) {
+        this.estado = "Activo";
+      } else if (persona.estadosolive == 9) {
+        this.estado = "Inactivo";
+      } else if (persona.estadosolive == 10) {
+        this.estado = "Caducado";
+      } else if (persona.estadosolive == 11) {
+        this.estado = "Consumido";
+      } else if (persona.estadosolive == 12) {
+        this.estado = "Devuelto";
+      } else if (persona.estadosolive == 13) {
+        this.estado = "Gasolinera";
+      } else if (persona.estadosolive == 14) {
+        this.estado = "UES";
+      } else if (persona.estadosolive == 15) {
+        this.estado = "Anulada";
+      }
       console.log(this.estado);
       tableRow.push([
         { text: `${j + 1}`, alignment: "center" },
@@ -820,11 +877,11 @@ export class SolicitanteComponent implements OnInit {
       ]);
       j++;
     }
-   
+  }
     pdfDefinicionl.content.push({
       style: "tableExample",
       table: {
-        widths: ["auto", "auto", "auto", "auto", "auto"],
+        widths: ["auto", "auto", "auto", "auto", "auto","auto"],
         headerRows: 1,
         body: tableRow,
       },
@@ -1157,23 +1214,48 @@ export class SolicitanteComponent implements OnInit {
           },
         ],
       },
-      { text: "\n" },
-      {
-        columns: [
-          {
-            text: [{ text: "N. de Vales: ", bold: true }, vales.length],
-          },
-          {
-            text: [{ text: "Del: ", bold: true }, vales[0].correlativo],
-          },
-          {
-            text: [
-              { text: "AL: ", bold: true },
-              vales[this.valeDelAl.length - 1].correlativo,
-            ],
-          },
-        ],
-      },
+      
+    );
+    if(vales != null){
+    pdfDefinicion.content.push({ text: "\n" },
+    {
+      columns: [
+        {
+          text: [{ text: "N. de Vales: ", bold: true }, vales.length],
+        },
+        {
+          text: [{ text: "Del: ", bold: true }, vales[0].correlativo],
+        },
+        {
+          text: [
+            { text: "AL: ", bold: true },
+            vales[this.valeDelAl.length - 1].correlativo,
+          ],
+        },
+      ],
+    },
+   );
+  }else{
+    pdfDefinicion.content.push({ text: "\n" },
+    {
+      columns: [
+        {
+          text: [{ text: "N. de Vales: ", bold: true }, '0'],
+        },
+        {
+          text: [{ text: "Del: ", bold: true }, ''],
+        },
+        {
+          text: [
+            { text: "AL: ", bold: true },
+            '',
+          ],
+        },
+      ],
+    },
+   );
+  }
+    pdfDefinicion.content.push(
       { text: "\n" },
       {
         columns: [
@@ -1216,16 +1298,10 @@ export class SolicitanteComponent implements OnInit {
       .getConsultaSolicitudVDelAl(soli.codigoSolicitudVehiculo)
       .subscribe((response: IConsultaDelAl[]) => {
         this.valeDelAl = response;
-        if (response === null) {
-          this.mensajesService.mensajesSweet(
-            "warning",
-            "Ups... ",
-            "No hay datos para mostrar'"
-          );
-        } else {
-       //   this.cerarPDF(soli, response);
           this.cargarUsuarioDecano(soli, response);
-        }
+      },
+      (error) => {
+        this.cargarUsuarioDecano(soli, null);
       });
   }
 

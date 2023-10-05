@@ -617,6 +617,16 @@
       </div>
     </div>
     <div class="d-flex justify-content-end mt-4">
+<!--      botones administrador-->
+      <div *ngIf="usuarioActivo.role == 'ADMIN'">
+
+        <button type="button" class="btn btn-primary w-sm me-2" id="btn-detalle-save-admin" name="btn-save"
+                (click)="aprobarSolicitudAdministrador()">
+          Aprobar
+        </button>
+
+      </div>
+<!--      fin de botones administrador-->
       <button type="submit" class="btn btn-primary w-sm me-2" id="btn-save" name="btn-save"
               *ngIf="leyenda == 'Nueva'">
         Enviar

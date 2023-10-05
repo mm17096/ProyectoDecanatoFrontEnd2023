@@ -57,17 +57,15 @@ export class TablaComponent implements OnInit {
   }
 
   abrirModalParaAdmin(leyenda: string, data: any) {
-    if (this.userAcivo.role == 'DECANO' && data.estado == 3 && this.vista == 'listado'){
-      this.abrirModalSecre(leyenda, data)
-    } else if (this.userAcivo.role == 'SECR_DECANATO' && (data.estado == 2 || data.estado == 6) && this.vista == 'listado'){
-      this.abrirModalSecre(leyenda, data);
-    }else {
+    if (this.userAcivo.role == 'ADMIN' && data.estado == 1 && this.vista == 'listar'){
       this.selectedData = data; // Almacena los datos del registro seleccionado
       const modalRef = this.modalService.open(ModalComponent, {size: 'xl', backdrop: 'static'});
       modalRef.componentInstance.leyenda = leyenda; // Pasa la leyenda al componente modal
       modalRef.componentInstance.soliVeOd = data;
       modalRef.componentInstance.vista = this.vista;
       modalRef.componentInstance.usuarioActivo = this.userAcivo;
+    }else {
+      this.abrirModalSecre(leyenda, data);
     }
   }
 

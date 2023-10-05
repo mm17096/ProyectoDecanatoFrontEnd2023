@@ -720,4 +720,43 @@ export class ModalComponent implements OnInit {
         window.open(fileUrl);
       });
   }
+
+  /* administrador */
+  async aprobarSolicitudAdministrador(){
+    if ((await this.mensajesService.mensajeAprobar()) == true) {
+      //await this.actualizarSolicitud(data);
+      this.soliVeOd.observaciones =  this.formularioSoliVe.get('observaciones').value;
+
+       if (this.soliVeOd.estado == 1 && this.usuarioActivo.role == 'ADMIN'){
+        this.soliVeOd.estado = 2;
+        await this.actualizarSolicitudAdmin(this.soliVeOd, 'aprobada');
+      }
+    }
+  }
+
+  actualizarSolicitudAdmin(data: any, accion: string ):Promise <void>{
+    return new Promise<void>((resolve, reject) => {
+      this.soliVeService.updateSolciitudVehiculo(data).subscribe({
+        next: () => {
+          //resp:any
+
+          this.mensajesService.mensajesToast("success", `Solicitud ${accion} con éxito`);
+          this.modalService.dismissAll();
+          setTimeout(() => {
+            this.soliVeService.getSolicitudesVehiculo(1);
+          }, 3025);
+          resolve();
+        },
+        error: (error) => {
+          Swal.close();
+          this.mensajesService.mensajesSweet(
+            'error',
+            'Ups... Algo salió mal',
+            error.error.message
+          );
+          reject (error);
+        },
+      });
+    });
+  }
 }

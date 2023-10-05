@@ -9,6 +9,7 @@ import {
   NAME_STRING_NUMBER_VALIDATE,
   NAME_TILDES_VALIDATE,
 } from "src/app/constants/constants";
+import Swal from "sweetalert2";
 
 @Component({
   selector: "app-modal",
@@ -111,14 +112,35 @@ export class ModalComponent implements OnInit {
   registrando() {
     const proveedor = this.formularioGeneral.value;
     proveedor.estado = 8;
+
+    // Crear una variable para la alerta de carga
+    let loadingAlert: any;
+
+    // Mostrar SweetAlert de carga
+    loadingAlert = Swal.fire({
+      title: "Espere un momento!",
+      html: "Se está procesando la información...",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showCancelButton: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
     this.proveedorService.guardar(proveedor).subscribe({
       next: (resp: any) => {
+        // Cerrar SweetAlert de carga
+        loadingAlert.close();
         this.proveedorService.getProveedors();
         this.mensajesService.mensajesToast("success", "Registro agregado");
         this.modalService.dismissAll();
         this.limpiarCampos();
       },
       error: (err) => {
+        // Cerrar SweetAlert de carga
+        loadingAlert.close();
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",
@@ -131,14 +153,35 @@ export class ModalComponent implements OnInit {
   editando() {
     const proveedor = this.formularioGeneral.value;
     proveedor.estado = this.proveedor.estado;
+
+    // Crear una variable para la alerta de carga
+    let loadingAlert: any;
+
+    // Mostrar SweetAlert de carga
+    loadingAlert = Swal.fire({
+      title: "Espere un momento!",
+      html: "Se está procesando la información...",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showCancelButton: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
     this.proveedorService.modificar(proveedor).subscribe({
       next: (resp: any) => {
+        // Cerrar SweetAlert de carga
+        loadingAlert.close();
         this.proveedorService.getProveedors();
         this.mensajesService.mensajesToast("success", "Registro modificado");
         this.modalService.dismissAll();
         this.limpiarCampos();
       },
       error: (err) => {
+        // Cerrar SweetAlert de carga
+        loadingAlert.close();
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",

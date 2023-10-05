@@ -112,10 +112,7 @@ export class ModalComponent implements OnInit {
           Validators.pattern(this.isInteger),
         ],
       ],
-      fechaCompra: [
-        "",
-        [Validators.required, Validators.pattern(this.isDate)],
-      ],
+      fechaCompra: ["", [Validators.required, Validators.pattern(this.isDate)]],
       fechaVencimiento: [
         "",
         [Validators.required, Validators.pattern(this.isDate)],
@@ -264,22 +261,27 @@ export class ModalComponent implements OnInit {
     const compra = this.formularioGeneral.value;
     const idusuariologueado = this.usuarioService.usuario.codigoUsuario;
 
+    // Crear una variable para la alerta de carga
+    let loadingAlert: any;
+
     // Mostrar SweetAlert de carga
-    Swal.fire({
-      title: "Espere",
-      text: "Realizando la acción...",
-      icon: "info",
+    loadingAlert = Swal.fire({
+      title: "Espere un momento!",
+      html: "Se está procesando la información...",
       allowOutsideClick: false,
       allowEscapeKey: false,
       showCancelButton: false,
       showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
     });
 
     return new Promise<void>((resolve, reject) => {
       this.compraService.guardar(compra, idusuariologueado).subscribe({
         next: (resp: any) => {
           // Cerrar SweetAlert de carga
-          Swal.close();
+          loadingAlert.close();
           this.compraService.getCompras();
           this.modalService.dismissAll();
           this.limpiarCampos();
@@ -288,7 +290,7 @@ export class ModalComponent implements OnInit {
         },
         error: (err) => {
           // Cerrar SweetAlert de carga
-          Swal.close();
+          loadingAlert.close();
           this.mensajesService.mensajesSweet(
             "error",
             "Ups... Algo salió mal",
@@ -302,14 +304,35 @@ export class ModalComponent implements OnInit {
 
   editando() {
     const compra = this.formularioGeneral.value;
+
+    // Crear una variable para la alerta de carga
+    let loadingAlert: any;
+
+    // Mostrar SweetAlert de carga
+    loadingAlert = Swal.fire({
+      title: "Espere un momento!",
+      html: "Se está procesando la información...",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showCancelButton: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
     this.compraService.modificar(compra).subscribe({
       next: (resp: any) => {
+        // Cerrar SweetAlert de carga
+        loadingAlert.close();
         this.compraService.getCompras();
-        this.mensajesService.mensajesToast("success", "Registro modificado");
         this.modalService.dismissAll();
         this.limpiarCampos();
+        this.mensajesService.mensajesToast("success", "Registro modificado");
       },
       error: (err) => {
+        // Cerrar SweetAlert de carga
+        loadingAlert.close();
         this.mensajesService.mensajesSweet(
           "error",
           "Ups... Algo salió mal",

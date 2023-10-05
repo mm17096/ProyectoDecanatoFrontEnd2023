@@ -94,12 +94,14 @@ export class ServiceService {
     );
   }
 
-  insertar(asignacionVale: IAsignacionVale, idUsuario: string) {
+  insertar(asignacionVale: IAsignacionVale, idUsuario: string, empleado: string, cargo: string) {
     console.log("en el servicio:", asignacionVale);
     console.log("suario en el servicio:", this.usuario);
     const data = {
       asignacionValeInDto: asignacionVale,
       idUsuarioLogueado: idUsuario,
+      empleado: empleado,
+      cargo: cargo
     };
     console.log("data en el servicio:", data);
 
@@ -112,9 +114,15 @@ export class ServiceService {
     );
   }
 
-  getValesAsignarPage(page: number = 1, size: number, cantVales: number):Observable<IValesAsignarPage[]> {
+  getValesAsignarPage(
+    page: number = 1,
+    size: number,
+    cantVales: number
+  ): Observable<IValesAsignarPage[]> {
     console.log("en el servicio cantVales: " + size);
-    return this.http.get<IValesAsignarPage[]>(`${this.baseUrl}/asignacionvale/listarvalesasignar/${cantVales}`) /*
+    return this.http.get<IValesAsignarPage[]>(
+      `${this.baseUrl}/asignacionvale/listarvalesasignar/${cantVales}`
+    ) /*
       .subscribe(
         (data) => {
           this.listValesAsignar = data;
@@ -139,10 +147,16 @@ export class ServiceService {
   }
 
   //Cambia el estado, minserta la cantidad y añade observaciones a la solicitud de vale
-  solicitarAprobacion(solicitud: ISolcitudAprobar) {
-    return this.http.post<ISolcitudAprobar>(
+  solicitarAprobacion(solicitud: ISolcitudAprobar, usuario: string, cargo: string) {
+    const data = {
+      solicitudValeAprobarDto: solicitud,
+      idUsuarioLogueado: usuario,
+      cargo: cargo
+    };
+
+    return this.http.post(
       `${this.baseUrl}/asignacionvale/solitudaprobar`,
-      solicitud
+      data
     );
   }
 

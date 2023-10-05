@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ISolicitudVehiculo} from "../../interfaces/data.interface";
+import {ILogSoliVe, ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {ModalComponent} from "../modal/modal.component";
 import { ModalSecretariaComponent } from '../modal-secretaria/modal-secretaria.component';
@@ -8,6 +8,7 @@ import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.servic
 import Swal from "sweetalert2";
 import {Usuario} from "../../../../account/auth/models/usuario.models";
 import {ISolicitudvalep} from "../../../solicitud-vale-paginacion/interface/solicitudvalep.interface";
+import {ModalLogComponent} from "../modal-log/modal-log.component";
 
 @Component({
   selector: 'app-tabla',
@@ -23,6 +24,7 @@ export class TablaComponent implements OnInit {
   p: any; // paginacion
   selectedData: any; // Almacena los datos del registro seleccionado
   solicitudVale!: ISolicitudvalep;
+  logSoli: ILogSoliVe[];
   constructor(private modalService: NgbModal,
               private mensajesService: MensajesService,
               private soliService: SolicitudVehiculoService) {
@@ -38,26 +40,47 @@ export class TablaComponent implements OnInit {
   ngOnInit(): void {
   }
 
-
   abrirModal(leyenda: string, data: any) {
-    this.selectedData = data; // Almacena los datos del registro seleccionado
-    const modalRef = this.modalService.open(ModalComponent, {size:'xl', backdrop: 'static'});
-    modalRef.componentInstance.leyenda = leyenda; // Pasa la leyenda al componente modal
-    modalRef.componentInstance.soliVeOd = data;
-    modalRef.componentInstance.vista = this.vista;
-    modalRef.componentInstance.usuarioActivo = this.userAcivo;
+    if (this.userAcivo.role == 'DECANO' && data.estado == 3 && this.vista == 'listado'){
+      this.abrirModalSecre(leyenda, data)
+    } else if (this.userAcivo.role == 'SECR_DECANATO' && (data.estado == 2 || data.estado == 6) && this.vista == 'listado'){
+      this.abrirModalSecre(leyenda, data);
+    }else {
+      this.selectedData = data; // Almacena los datos del registro seleccionado
+      const modalRef = this.modalService.open(ModalComponent, {size: 'xl', backdrop: 'static'});
+      modalRef.componentInstance.leyenda = leyenda; // Pasa la leyenda al componente modal
+      modalRef.componentInstance.soliVeOd = data;
+      modalRef.componentInstance.vista = this.vista;
+      modalRef.componentInstance.usuarioActivo = this.userAcivo;
+    }
   }
 
   abrirModalSecre(leyenda: string, data: any) {
-    this.selectedData = data;
     const modalRef = this.modalService.open(ModalSecretariaComponent, {size:'xl', backdrop: 'static'});
     modalRef.componentInstance.leyenda = leyenda;
     modalRef.componentInstance.soliVeOd = data;
     modalRef.componentInstance.usuarioActivo = this.userAcivo;
   }
 
+  abrirModalLog(data: any) {
+    this.obtenerLog(data.codigoSolicitudVehiculo).then(() => {
+      const modalRef = this.modalService.open(ModalLogComponent, { size: 'xl', backdrop: 'static' });
+      modalRef.componentInstance.log = this.logSoli;
+    });
+  }
+
+  obtenerLog(codigoSoliVe: string): Promise<void> {
+    return this.soliService.getLogSoli(codigoSoliVe)
+      .then((log: ILogSoliVe[]) => {
+        this.logSoli = log;
+      })
+      .catch((error) => {
+        console.error('Error al obtener el log de la solicitud', error);
+      });
+  }
+
+
   async aprobarSolicitud(data: any){
-    console.log(data);
     if ((await this.mensajesService.mensajeAprobar()) == true) {
       //await this.actualizarSolicitud(data);
       if (this.userAcivo.role=="JEFE_DEPTO"){
@@ -69,7 +92,6 @@ export class TablaComponent implements OnInit {
   }
 
   async revisionSolicitud(data: any) {
-    console.log(data);
     if (await this.mensajesService.mensajeRevision() == true){
       data.estado = 6;
       await this.actualizarSolicitud(data);
@@ -78,7 +100,6 @@ export class TablaComponent implements OnInit {
   }
 
   async anularSolicitud(data: any) {
-    console.log(data);
     if (await this.mensajesService.mensajeAnular() == true){
       data.estado = 15;
       await this.actualizarSolicitud(data);
@@ -109,7 +130,6 @@ export class TablaComponent implements OnInit {
   }
 
   actualizarSolicitudDec(data: any):Promise <void>{
-    console.log("emtro ");
     return new Promise<void>((resolve, reject) => {
       this.soliService.updateSolciitudVehiculo(data).subscribe({
         next: () => {
@@ -119,7 +139,6 @@ export class TablaComponent implements OnInit {
           this.solicitudVale.estado = 8;
           this.solicitudVale.solicitudVehiculo = data.codigoSolicitudVehiculo;
 
-          console.log("soliva," + this.solicitudVale);
 
           this.soliService.registrarSolicitudVale(this.solicitudVale).subscribe({
             next: () => {
@@ -159,5 +178,4 @@ export class TablaComponent implements OnInit {
       return index + 1; // Si no es numérico, solo regresamos el índice + 1
     }
   }
-
 }

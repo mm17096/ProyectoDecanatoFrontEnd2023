@@ -23,6 +23,14 @@ export class MostrarComponent implements OnInit {
 
   texto?: string;
 
+  valesActivos: number;
+  ValesAsignados: number;
+  soliNuevas: number;
+  soliPorAprobar: number;
+
+  //grafica Compra
+  chartData: any[] = [];
+
   constructor(
     private homeFinancieroService: HomeFinancieroService,
     private datePipe: DatePipe,
@@ -31,12 +39,19 @@ export class MostrarComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarComprasPorRangoDeFechas();
+    this.getcatidadValesPorEstado();
+    this.getcatidadSolicitudesPorEstado();
     this.texto = "Este Mes";
   }
 
   formatDate(date: string): string {
     const fecha = new Date(date);
     return this.datePipe.transform(fecha, "dd/MM/yyyy") || "";
+  }
+
+  formatDateCompleto(date: string): string {
+    const fecha = new Date(date);
+    return this.datePipe.transform(fecha, "dd/MM/yy HH:mm") || "";
   }
 
   get empleado(): Empleado | null {
@@ -70,6 +85,7 @@ export class MostrarComponent implements OnInit {
       .getListarPorRangoDeFechas(fechaInicial, fechaFinal)
       .subscribe((compras: ICompra[]) => {
         this.listCompra = compras;
+        this.graficar();
         this.montoGenerado = this.cantidaGenerada = 0;
         this.listCompra.forEach((x) => {
           this.montoGenerado += x.totalCompra;
@@ -131,5 +147,38 @@ export class MostrarComponent implements OnInit {
         "Debe seleccionar ambas fechas."
       );
     }
+  }
+
+  graficar() {
+    this.chartData = this.listCompra.map((compra) => ({
+      data: [compra.totalCompra],
+      label: this.formatDateCompleto(compra.fechaCompra),
+    }));
+  }
+
+  getcatidadValesPorEstado() {
+    this.homeFinancieroService
+      .getCantidadValesPorEstado(8)
+      .subscribe((cantidad: number) => {
+        this.valesActivos = cantidad;
+      });
+    this.homeFinancieroService
+      .getCantidadValesPorEstado(5)
+      .subscribe((cantidad: number) => {
+        this.ValesAsignados = cantidad;
+      });
+  }
+
+  getcatidadSolicitudesPorEstado() {
+    this.homeFinancieroService
+      .getCantidadSolicitudesPorEstado(8)
+      .subscribe((cantidad: number) => {
+        this.soliNuevas = cantidad;
+      });
+    this.homeFinancieroService
+      .getCantidadSolicitudesPorEstado(1)
+      .subscribe((cantidad: number) => {
+        this.soliPorAprobar = cantidad;
+      });
   }
 }

@@ -252,15 +252,20 @@ export class MostrarComponent implements OnInit {
       " en concepto de: " +
       concepto;
 
+    // Crear una variable para la alerta de carga
+    let loadingAlert: any;
+
     // Mostrar SweetAlert de carga
-    Swal.fire({
-      title: "Espere",
-      text: "Realizando la acción...",
-      icon: "info",
+    loadingAlert = Swal.fire({
+      title: "Espere un momento!",
+      html: "Se está procesando la información...",
       allowOutsideClick: false,
       allowEscapeKey: false,
       showCancelButton: false,
       showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
     });
 
     this.devolucionValeService
@@ -268,7 +273,7 @@ export class MostrarComponent implements OnInit {
       .subscribe({
         next: (resp: any) => {
           // Ocultar SweetAlert de carga
-          Swal.close();
+          loadingAlert.close();
           this.mensajesService.mensajesSweet(
             "success",
             "Ajuste de vales completado",
@@ -282,7 +287,7 @@ export class MostrarComponent implements OnInit {
         },
         error: (err) => {
           // Ocultar SweetAlert de carga
-          Swal.close();
+          loadingAlert.close();
           this.mensajesService.mensajesSweet(
             "error",
             "Ups... Algo salió mal",

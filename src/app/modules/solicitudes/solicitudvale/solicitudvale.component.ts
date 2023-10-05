@@ -31,6 +31,7 @@ import {
 
 import { UsuarioService } from "src/app/account/auth/services/usuario.service";
 import { title } from "process";
+import { IEmail } from "src/app/account/auth/interfaces/usuario";
 
 @Component({
   selector: "app-solicitudvale",
@@ -176,16 +177,73 @@ export class SolicitudvaleComponent implements OnInit {
     this.getSolicitudesVale(8);
   }
 
+  Email(asunto: string, titulo: string, mensaje: string, centro: string) {
+    const correoUsuario = this.storage.getItem("correo" || "");
+    const nombreUsuario = this.storage.getItem("nombre" || "");
+    const codUsuario = this.storage.getItem("codUsuario" || "");
+
+    const email: IEmail = {
+      asunto: asunto,
+      titulo: titulo,
+      email: correoUsuario,
+      receptor: "Estimad@ : " + nombreUsuario,
+      mensaje: mensaje,
+      centro: centro,
+      codigo: codUsuario,
+      abajo: "Gracias por su atención a este importante mensaje.",
+    };
+
+    this.usuarios.SendEmail(email).subscribe(
+      (resp) => {
+        console.log("resp: ", resp);
+
+        Swal.close();
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2500,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+
+        Toast.fire({
+          icon: "success",
+          text: "¡Se ha enviando un mensaje al correo institucional!",
+        }).then(() => {});
+      },
+      (err) => {
+        Swal.fire({
+          icon: "error",
+          title: "Algo salió mal",
+          text: err,
+        });
+      }
+    );
+  }
+
   getSolicitudesVale(estado: number) {
+    let alert: any;
+    alert = Swal.fire({
+      title: "Espere un momento!",
+      html: "Se está procesando la información...",
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
     this.service.getSolicitdValePorEstado(estado).subscribe({
       next: (data) => {
         this.solicitudesVales = data;
         this.obtenerFechaFormateada(data);
         this.asignacionEstados(estado);
+        alert.close();
       },
       error: (err) => {
         this.solicitudesVales = undefined;
         this.mensajeTabla = "No hay datos para mostrar";
+        alert.close();
       },
     });
   }
@@ -200,9 +258,18 @@ export class SolicitudvaleComponent implements OnInit {
         "Ingrese una cantidad válida"
       );
     } else {
+      let alert: any;
+      alert = Swal.fire({
+        title: "Espere un momento!",
+        html: "Se está procesando la información...",
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
       this.service.getValesAignar(cantidadVales).subscribe({
         next: (response) => {
           this.valesAsingar = response;
+          alert.close();
         },
       });
       this.modalService.open(valesAsignarModal, { size: "lg", centered: true });
@@ -236,7 +303,6 @@ export class SolicitudvaleComponent implements OnInit {
 
   //Obtiene el código de asignación
   obtenerCodigoAsignacion(codigoSolitudVale: string) {
-    //this.obtenerIdSolicitudVale(this.solicitudvv.codigoSolicitudVehiculo)
     let timerInterval;
     Swal.fire({
       title: "Espere",
@@ -248,32 +314,32 @@ export class SolicitudvaleComponent implements OnInit {
       showConfirmButton: false,
       timer: 1000,
       didOpen: () => {
-
+        Swal.showLoading();
         timerInterval = setInterval(() => {
-          const content = Swal.getHtmlContainer()
+          const content = Swal.getHtmlContainer();
           if (content) {
-            const b = content.querySelector('b')
+            const b = content.querySelector("b");
             if (b) {
-              b.textContent = Swal.getTimerLeft() + ''
+              b.textContent = Swal.getTimerLeft() + "";
             }
           }
         }, 100);
       },
       willClose: () => {
         clearInterval(timerInterval);
-      }
+      },
     }).then((result) => {
-      if (
-        result.dismiss === Swal.DismissReason.timer
-      ) {
+      if (result.dismiss === Swal.DismissReason.timer) {
         this.service.getCodigoAsignacion(codigoSolitudVale).subscribe({
           next: (response) => {
             this.codigoAsignacion = response;
             this.paramAsignacion = this.codigoAsignacion.codigoAsignacion;
+
             this.router.navigate([
               "/asignacion-vale/asignacion",
               this.paramAsignacion,
             ]);
+            Swal.close();
             // Resuelve la promesa sin argumentos
           },
           error: (err) => {
@@ -283,14 +349,12 @@ export class SolicitudvaleComponent implements OnInit {
               "error",
               "Ups... Algo salió mal",
               err.error.message
-            );// Rechaza la promesa con el error
+            ); // Rechaza la promesa con el error
           },
         });
       }
     });
-    return new Promise<void>((resolve, reject) => {
-
-    });
+    return new Promise<void>((resolve, reject) => {});
   }
 
   obtenerFechaFormateada(data: any) {
@@ -434,7 +498,9 @@ export class SolicitudvaleComponent implements OnInit {
   registrando() {
     //const usuariosObj = this.usuarios.getUsuario();
     const usuarioJson = JSON.parse(this.storage.getItem("usuario" || ""));
-
+    const empleado =
+      usuarioJson.empleado.nombre + " " + usuarioJson.empleado.apellido;
+    const cargo = usuarioJson.empleado.cargo.nombreCargo;
     //Asignaré los campos necesario para guardar la asignación
     const cantidadVales =
       this.formularioSolicitudVale.get("cantidadVales")?.value;
@@ -460,31 +526,37 @@ export class SolicitudvaleComponent implements OnInit {
       showConfirmButton: false,
     });
     return new Promise<void>((resolve, reject) => {
-      this.service.insertar(asignarVales, usuarioJson.codigoUsuario).subscribe({
-        next: (resp: any) => {
-          // Cerrar SweetAlert de carga
-          Swal.close();
-          this.mostrar();
-          this.modalService.dismissAll();
-          this.limpiarCampos();
-          this.mensajesService.mensajesToast("success", "Vales Asignados");
-          resolve(); // Resuelve la promesa sin argumentos
-        },
-        error: (err) => {
-          // Cerrar SweetAlert de carga
-          Swal.close();
-          this.mensajesService.mensajesSweet(
-            "error",
-            "Ups... Algo salió mal",
-            err.error.message
-          );
-          reject(err); // Rechaza la promesa con el error
-        },
-      });
+      this.service
+        .insertar(asignarVales, usuarioJson.codigoUsuario, empleado, cargo)
+        .subscribe({
+          next: (resp: any) => {
+            // Cerrar SweetAlert de carga
+            Swal.close();
+            this.mostrar();
+            this.modalService.dismissAll();
+            this.limpiarCampos();
+            this.mensajesService.mensajesToast("success", "Vales Asignados");
+            resolve(); // Resuelve la promesa sin argumentos
+          },
+          error: (err) => {
+            // Cerrar SweetAlert de carga
+            Swal.close();
+            this.mensajesService.mensajesSweet(
+              "error",
+              "Ups... Algo salió mal",
+              err.error.message
+            );
+            reject(err); // Rechaza la promesa con el error
+          },
+        });
     });
   }
 
   async solicitarAprobacion() {
+    const usuarioLogueado = JSON.parse(this.storage.getItem("usuario" || ""));
+    const empleado =
+      usuarioLogueado.empleado.nombre + " " + usuarioLogueado.empleado.apellido;
+    const cargo = usuarioLogueado.empleado.cargo.nombreCargo;
     //Asignaré los campos necesario para modificar la asignación
     const cantidadVales =
       this.formularioSolicitudVale.get("cantidadVales")?.value;
@@ -503,8 +575,8 @@ export class SolicitudvaleComponent implements OnInit {
         estadoSolicitudVale: estadoSolicitud,
         observaciones: this.observacionesSolicitudVale,
       };
-
-      Swal.fire({
+      let alert: any;
+      alert = Swal.fire({
         title: "Espere",
         text: "Realizando la acción...",
         icon: "info",
@@ -514,10 +586,10 @@ export class SolicitudvaleComponent implements OnInit {
         showConfirmButton: false,
       });
       return new Promise<void>((resolve, reject) => {
-        this.service.solicitarAprobacion(solicitud).subscribe({
+        this.service.solicitarAprobacion(solicitud, empleado, cargo).subscribe({
           next: (resp: any) => {
             // Cerrar SweetAlert de carga
-            Swal.close();
+
             this.getSolicitudesVale(8);
             this.modalService.dismissAll();
             this.limpiarCampos();
@@ -525,17 +597,25 @@ export class SolicitudvaleComponent implements OnInit {
               "success",
               "Enviada para Aprobar"
             );
+            this.Email(
+              "Solicitar aprobación para la asignación de vales",
+              "Solicitud de Vale",
+              "Se ha enviado una solicitud de vale para su aprobación",
+              "Solicitud de Vale"
+            );
             resolve(); // Resuelve la promesa sin argumentos
+            alert.close();
           },
           error: (err) => {
             // Cerrar SweetAlert de carga
-            Swal.close();
+
             this.mensajesService.mensajesSweet(
               "error",
               "Ups... Algo salió mal",
               err.error.message
             );
             reject(err); // Rechaza la promesa con el error
+            alert.close();
           },
         });
       });
@@ -615,13 +695,6 @@ export class SolicitudvaleComponent implements OnInit {
   scrollModal(scrollDataModal: any) {
     this.modalService.open(scrollDataModal, { scrollable: true });
   }
-
-  /* get paginatedItems() {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    return this.items.filter(item =>
-      item.solicitante.toLowerCase().includes(this.searchTerm.toLowerCase())
-    ).slice(startIndex, startIndex + this.itemsPerPage);
-  }*/
 
   get pageNumbers() {
     return Array(Math.ceil(this.filteredItems.length / this.itemsPerPage))

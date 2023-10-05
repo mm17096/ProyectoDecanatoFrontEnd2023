@@ -655,18 +655,18 @@ export class ModalSecretariaComponent implements OnInit {
       if (await this.mensajesService.mensajeAnular() == true){
         this.soliVeOd.estado = 15;
         this.soliVeOd.observaciones = this.formularioSoliVe.get('observaciones').value;
-        await this.actualizarSolicitud(this.soliVeOd);
+        await this.actualizarSolicitud(this.soliVeOd, 'anulada');
       }
     }
   }
 
-  actualizarSolicitud(data: any):Promise <void>{
+  actualizarSolicitud(data: any, accion: string):Promise <void>{
     return new Promise<void>((resolve, reject) => {
       this.soliVeService.updateSolciitudVehiculo(data).subscribe({
         next: () => {
           //resp:any
           this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
-          this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
+          this.mensajesService.mensajesToast("success", `Solicitud ${accion} con éxito`);
           this.modalService.dismissAll();
           resolve();
         },
@@ -694,7 +694,7 @@ export class ModalSecretariaComponent implements OnInit {
     if (await this.mensajesService.mensajeRevision() == true){
       this.soliVeOd.estado = 6;
       this.soliVeOd.observaciones = this.formularioSoliVe.get('observaciones').value;
-      await this.actualizarSolicitud(this.soliVeOd);
+      await this.actualizarSolicitud(this.soliVeOd, 'enviada a revisión');
     }
   }
 

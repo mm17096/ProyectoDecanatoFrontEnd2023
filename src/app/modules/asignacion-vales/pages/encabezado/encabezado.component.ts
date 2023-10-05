@@ -55,6 +55,7 @@ export class EncabezadoComponent implements OnInit {
 
   usuario: string;
   empleado: string;
+  cargo: string;
   constructor(
     private service: DetalleService,
     private http: HttpClient,
@@ -78,6 +79,7 @@ export class EncabezadoComponent implements OnInit {
     const user = JSON.parse(this.storage.getItem("usuario" || ""));
     this.usuario = user.codigoUsuario;
     this.empleado = user.empleado.nombre + " " + user.empleado.apellido;
+    this.cargo = user.empleado.cargo.nombreCargo;
   }
   ngAfterViewInit() {
     this.liquidacion.idAsignacionVale = this.codigoAsignacion;
@@ -125,7 +127,7 @@ export class EncabezadoComponent implements OnInit {
           });
           return new Promise<void>((resolve, reject) => {
             this.service
-              .liquidarVales(this.liquidacion, this.usuario, this.empleado)
+              .liquidarVales(this.liquidacion, this.usuario, this.empleado, this.cargo)
               .subscribe({
                 next: (data: any) => {
                   // Cerrar SweetAlert de carga
@@ -182,7 +184,7 @@ export class EncabezadoComponent implements OnInit {
       });
       return new Promise<void>((resolve, reject) => {
         this.service
-          .anularMision(this.misionAnulada, this.usuario, this.empleado)
+          .anularMision(this.misionAnulada, this.usuario, this.empleado, this.cargo)
           .subscribe({
             next: (data: any) => {
               // Cerrar SweetAlert de carga

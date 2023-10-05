@@ -21,7 +21,7 @@
                     <div class="col-md-12">
                         <div class="mb-3">
                           <label>Misión</label><span class="text-danger"> </span>
-                        
+
                             <div >
                               {{mision}}
                             </div>
@@ -32,15 +32,14 @@
                             <div class="mb-3" >
                                     <label class="control-label" for="file">Documento: </label>
                                     <input id="file" type="file" name="file" multiple class="form-control" formControlName="foto" (change)="onFileSelected($event)" />
-                            </div>                    
+                            </div>
                     </div>
                     <div class="col-md-12">
                         <div class="mb-3">
                             <label class="control-label">Tipo documento:</label>
                             <select class="form-control form-select" id="tipo"name="tipo" formControlName="tipo" [class]="esCampoValido('tipo')">
-                                <option value="">Seleccione tipo de documento</option>
-                                <option value="Comprobante de recibido">Comprobante de recibido</option>
-                                <option value="facturación de consumo de vales">facturación de consumo de vales</option>
+                                <option value="">Seleccione </option>
+                                <option *ngFor="let item of select" [value]="item.value">{{ item.option }}</option>
                             </select>
                             <div class="invalid-feedback">
                                 <!-- aqui la validación-->

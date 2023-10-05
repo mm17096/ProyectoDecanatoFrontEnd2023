@@ -30,6 +30,7 @@ export class ModalDocumentosComponent implements OnInit {
   entradasalidas: IDocumentosvale[] = [];
   estadoEntrada!: number;
   sizeDocs: number;
+  fechaMax: string;
   select = [];
 
   constructor(
@@ -43,6 +44,9 @@ export class ModalDocumentosComponent implements OnInit {
   ngOnInit(): void {
     this.formBuilder = this.Iniciarformulario();
     this.ObtenerSolicitudValeById(this.codigoAsignacion);
+    this.fechaMax = new Date().toISOString().split("T")[0];
+    console.log("fechaMax: ", this.fechaMax);
+
   }
 
   guardar() {
@@ -62,7 +66,7 @@ export class ModalDocumentosComponent implements OnInit {
     }
   }
 
-  ObtenerSolicitudValeById(codigoA: string/* , content: any */) {
+  ObtenerSolicitudValeById(codigoA: string /* , content: any */) {
     this.detalleservice.getAsignacionValeSolicitudVale(codigoA).subscribe({
       next: (data) => {
         this.asignacionSolicitud = data;
@@ -70,8 +74,8 @@ export class ModalDocumentosComponent implements OnInit {
           this.asignacionSolicitud.solicitudVale.idSolicitudVale;
 
         console.log("idSolicitud: ", this.idSolicitud);
-        this.obtenerSolicitud(this.idSolicitud/* , content */);
-        this.obtenerLista(this.idSolicitud/* , content */);
+        this.obtenerSolicitud(this.idSolicitud /* , content */);
+        this.obtenerLista(this.idSolicitud /* , content */);
       },
     });
   }
@@ -258,7 +262,7 @@ export class ModalDocumentosComponent implements OnInit {
       tipo: ["", [Validators.required]],
       fecha: ["", [Validators.required, this.maxDateValidator()]],
       comprobante: ["", [Validators.required]],
-      foto: [""],
+      foto: ["", [Validators.required]],
       url: [""],
       solicitudvale: [""],
     });
@@ -285,18 +289,18 @@ export class ModalDocumentosComponent implements OnInit {
   get Listamisiones() {
     return this.detalleservice.listDeMisiones;
   }
-  obtenerSolicitud(id: string/* , content: any */) {
+  obtenerSolicitud(id: string /* , content: any */) {
     console.log("idSoli: ", id);
 
     this.detalleservice.getSolicitudVale(id).subscribe({
       next: (data) => {
         this.estadoEntrada = data[0].estadoEntradaSolicitudVale;
         console.log("estadoEntrada: ", this.estadoEntrada);
-       // this.validaciones(content);
+        // this.validaciones(content);
       },
     });
   }
-  obtenerLista(id: string/* , content: any */) {
+  obtenerLista(id: string /* , content: any */) {
     //para poder mostrar e la tabla
     console.log("id: ", id);
 

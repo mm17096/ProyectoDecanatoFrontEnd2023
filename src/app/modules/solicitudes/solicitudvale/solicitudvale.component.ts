@@ -500,7 +500,7 @@ export class SolicitudvaleComponent implements OnInit {
     const usuarioJson = JSON.parse(this.storage.getItem("usuario" || ""));
     const empleado =
       usuarioJson.empleado.nombre + " " + usuarioJson.empleado.apellido;
-      const cargo = usuarioJson.empleado.cargo.nombreCargo;
+    const cargo = usuarioJson.empleado.cargo.nombreCargo;
     //Asignaré los campos necesario para guardar la asignación
     const cantidadVales =
       this.formularioSolicitudVale.get("cantidadVales")?.value;

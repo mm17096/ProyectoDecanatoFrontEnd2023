@@ -135,14 +135,22 @@ export class ModalSecretariaComponent implements OnInit {
         .setValue(this.soliVeOd != null ? this.soliVeOd.solicitante.empleado.nombre+' '
         + this.soliVeOd.solicitante.empleado.apellido: '');
       // por estado revision
-      this.formularioSoliVe.get('observaciones')
-        .setValue(this.soliVeOd != null ? this.soliVeOd.observaciones: '');
-      // this.formularioSoliVe.get('motorista')
-      //   .setValue(this.soliVeOd != null ? this.soliVeOd.motorista : '');
+
+      if(this.soliVeOd.motorista != null){
+        this.formularioSoliVe.get('motorista')
+          .setValue(this.soliVeOd != null ? this.soliVeOd.motorista.nombre + ' '
+            + this.soliVeOd.motorista.apellido: '');
+      }
+      if (this.soliVeOd.observaciones != null){
+        this.formularioSoliVe.get('observaciones')
+          .setValue(this.soliVeOd != null ? this.soliVeOd.observaciones: '');
+      }
 
       if (solicitudVehiculo.cantidadPersonas > 5){
         this.mostrarTabla = false;
         this.btnVerPdf = true;
+      }else if (solicitudVehiculo.cantidadPersonas==1){
+        this.mostrarTabla = false;
       }
 
 
@@ -237,9 +245,9 @@ export class ModalSecretariaComponent implements OnInit {
        }
     } else {
       // Mostrar nombres de campos inválidos por consola
-      console.log('Campos inválidos:',
+      /*console.log('Campos inválidos:',
         Object.keys(this.formularioSoliVe.controls).filter((controlName) =>
-          this.formularioSoliVe.get(controlName)?.invalid));
+          this.formularioSoliVe.get(controlName)?.invalid));*/
 
       this.mensajesService.mensajesToast(
         "warning",
@@ -262,9 +270,20 @@ export class ModalSecretariaComponent implements OnInit {
     solicitudVehiculo.codigoSolicitudVehiculo = this.soliVeOd.codigoSolicitudVehiculo;
     solicitudVehiculo.solicitante = this.soliVeOd.solicitante.codigoUsuario;
     solicitudVehiculo.nombreJefeDepto = this.soliVeOd.nombreJefeDepto;
+    let nombreMotoristaExistente;
+    if(this.soliVeOd.motorista != null) {
+        nombreMotoristaExistente =  this.soliVeOd.motorista.nombre + ' ' +
+        this.soliVeOd.motorista.apellido;
+
+      if (nombreMotoristaExistente.toString() == this.formularioSoliVe.get('motorista').value){
+        solicitudVehiculo.motorista = this.soliVeOd.motorista.codigoEmpleado;
+      }
+    }
+
     if(this.soliVeOd.vehiculo.placa == this.formularioSoliVe.get('vehiculo').value){
       solicitudVehiculo.vehiculo = this.soliVeOd.vehiculo.codigoVehiculo;
     }
+
     const tipoBuscado = "Lista de pasajeros";
     const documentosFiltrados = this.soliVeOd.listDocumentos.filter((documento) => {
       return documento.tipoDocumento === tipoBuscado;
@@ -625,12 +644,12 @@ export class ModalSecretariaComponent implements OnInit {
       this.formularioSoliVe.get('observaciones').setErrors({required:true});
       this.formularioSoliVe.get('observaciones').markAsTouched();
       this.mensajesService.mensajesToast("warning", "Solicitud se requiere campo observaciones");
-      return;
-    }
-    if (await this.mensajesService.mensajeAnular() == true){
-      this.soliVeOd.estado = 15;
-      this.soliVeOd.observaciones = this.formularioSoliVe.get('observaciones').value;
-      await this.actualizarSolicitud(this.soliVeOd);
+    } else {
+      if (await this.mensajesService.mensajeAnular() == true){
+        this.soliVeOd.estado = 15;
+        this.soliVeOd.observaciones = this.formularioSoliVe.get('observaciones').value;
+        await this.actualizarSolicitud(this.soliVeOd);
+      }
     }
   }
 
@@ -655,5 +674,51 @@ export class ModalSecretariaComponent implements OnInit {
         },
       });
     });
+  }
+
+  async revisionSolicitud() {
+
+    if(this.formularioSoliVe.get('observaciones').value == ''){
+      this.formularioSoliVe.get('observaciones').setErrors({required:true});
+      this.formularioSoliVe.get('observaciones').markAsTouched();
+      this.mensajesService.mensajesToast("warning", "Se requiere campo observaciones");
+      return;
+    }
+    if (await this.mensajesService.mensajeRevision() == true){
+      this.soliVeOd.estado = 6;
+      this.soliVeOd.observaciones = this.formularioSoliVe.get('observaciones').value;
+      await this.actualizarSolicitud(this.soliVeOd);
+    }
+  }
+
+  actualizarSolicitudDec(data: any):Promise <void>{
+    return new Promise<void>((resolve, reject) => {
+      this.soliVeService.updateSolciitudVehiculo(data).subscribe({
+        next: () => {
+          //resp:any
+          this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
+          this.modalService.dismissAll();
+          setTimeout(() => {
+            this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
+          }, 3025);
+          resolve();
+        },
+        error: (error) => {
+          Swal.close();
+          this.mensajesService.mensajesSweet(
+            'error',
+            'Ups... Algo salió mal',
+            error.error.message
+          );
+          reject (error);
+        },
+      });
+    });
+  }
+
+  async aprobarSolicitud(){
+    if ((await this.mensajesService.mensajeAprobar()) == true) {
+        await this.actualizarSolicitudDec(this.soliVeOd);
+    }
   }
 }

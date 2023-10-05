@@ -333,6 +333,7 @@ export class DetalleService {
     return this.http.post(`${this.baseUrl}/asignacionvale/liquidar`, data);
   }
 
+  //anula la mision
   anularMision(misionAnulada: IAnularMision, usuario: string, empleado: string, cargo: string) {
     const data = {
       misionAnulada: misionAnulada,

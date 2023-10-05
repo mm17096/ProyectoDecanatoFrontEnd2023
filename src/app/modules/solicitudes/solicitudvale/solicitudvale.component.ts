@@ -303,15 +303,6 @@ export class SolicitudvaleComponent implements OnInit {
 
   //Obtiene el código de asignación
   obtenerCodigoAsignacion(codigoSolitudVale: string) {
-    //this.obtenerIdSolicitudVale(this.solicitudvv.codigoSolicitudVehiculo)
-    /* let alert: any;
-    alert = Swal.fire({
-      title: "Espere un momento!",
-      html: "Se está procesando la información...",
-      didOpen: () => {
-        Swal.showLoading();
-      },
-    }); */
     let timerInterval;
     Swal.fire({
       title: "Espere",
@@ -509,6 +500,7 @@ export class SolicitudvaleComponent implements OnInit {
     const usuarioJson = JSON.parse(this.storage.getItem("usuario" || ""));
     const empleado =
       usuarioJson.empleado.nombre + " " + usuarioJson.empleado.apellido;
+    const cargo = usuarioJson.empleado.cargo.nombreCargo;
     //Asignaré los campos necesario para guardar la asignación
     const cantidadVales =
       this.formularioSolicitudVale.get("cantidadVales")?.value;
@@ -535,7 +527,7 @@ export class SolicitudvaleComponent implements OnInit {
     });
     return new Promise<void>((resolve, reject) => {
       this.service
-        .insertar(asignarVales, usuarioJson.codigoUsuario, empleado)
+        .insertar(asignarVales, usuarioJson.codigoUsuario, empleado, cargo)
         .subscribe({
           next: (resp: any) => {
             // Cerrar SweetAlert de carga
@@ -564,6 +556,7 @@ export class SolicitudvaleComponent implements OnInit {
     const usuarioLogueado = JSON.parse(this.storage.getItem("usuario" || ""));
     const empleado =
       usuarioLogueado.empleado.nombre + " " + usuarioLogueado.empleado.apellido;
+    const cargo = usuarioLogueado.empleado.cargo.nombreCargo;
     //Asignaré los campos necesario para modificar la asignación
     const cantidadVales =
       this.formularioSolicitudVale.get("cantidadVales")?.value;
@@ -593,7 +586,7 @@ export class SolicitudvaleComponent implements OnInit {
         showConfirmButton: false,
       });
       return new Promise<void>((resolve, reject) => {
-        this.service.solicitarAprobacion(solicitud, empleado).subscribe({
+        this.service.solicitarAprobacion(solicitud, empleado, cargo).subscribe({
           next: (resp: any) => {
             // Cerrar SweetAlert de carga
 

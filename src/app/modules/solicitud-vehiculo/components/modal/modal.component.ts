@@ -628,7 +628,7 @@ export class ModalComponent implements OnInit {
       if (await this.mensajesService.mensajeAnular() == true){
         this.soliVeOd.observaciones =  this.formularioSoliVe.get('observaciones').value;
         this.soliVeOd.estado = 15;
-        await this.actualizarSolicitud(this.soliVeOd, 'anulada');
+        await this.actualizarSolicitudAdmin(this.soliVeOd, 'anulada');
       }
     }
 

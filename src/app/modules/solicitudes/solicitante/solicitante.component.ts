@@ -156,7 +156,6 @@ export class SolicitanteComponent implements OnInit {
       );
     }
   }
-
   DocumentosVale(soliVehi: ISolicitudVehiculo, largeDataModal: any) {
     this.cargarDocValeID(soliVehi.codigoSolicitudVehiculo, largeDataModal);
   }
@@ -449,6 +448,7 @@ export class SolicitanteComponent implements OnInit {
         this.crearPDFLog(response, soliVehi, null);
       }
     );
+
   }
 
   generarPdfLogVale(soliVehi: ISolicitudVehiculo, content: any) {
@@ -881,6 +881,7 @@ export class SolicitanteComponent implements OnInit {
     soliVehi: ISolicitudVehiculo,
     logv: LogSoliVehiID[]
   ) {
+
     const pdfDefinicionl: any = {
       content: [],
       footer: {
@@ -1080,7 +1081,7 @@ export class SolicitanteComponent implements OnInit {
       } else if (persona.estadosolive == 15) {
         this.estado = "Anulada";
       }
-      // console.log(this.estado);
+ 
       tableRow.push([
         { text: `${j + 1}`, alignment: "center" },
         { text: `${persona.actividad}`, alignment: "center" },
@@ -1092,6 +1093,7 @@ export class SolicitanteComponent implements OnInit {
           alignment: "center",
         },
         { text: `${persona.usuario}`, alignment: "center" },
+
         { text: `${persona.cargo}`, alignment: "center" },
         { text: `${this.estado}`, alignment: "center" },
       ]);
@@ -1556,6 +1558,7 @@ export class SolicitanteComponent implements OnInit {
           {
             text: [
               { text: u[0].usuario },
+
               { text: "\nNombre y firma Decano", bold: true },
             ],
           },

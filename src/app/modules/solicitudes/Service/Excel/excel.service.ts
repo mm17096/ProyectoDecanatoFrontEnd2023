@@ -258,6 +258,45 @@ export class ExcelService {
         argb: "FF000000",
       },
     };
+    titulo2.alignment = {
+      vertical: "middle",
+      horizontal: "center",
+      wrapText: false,
+    };
+    titulo3.style.font = {
+      bold: true,
+      size: 10,
+      name: "Antique Olive",
+      color: {
+        argb: "FF000000",
+      },
+    };
+    titulo4.style.font = {
+      bold: true,
+      size: 10,
+      name: "Antique Olive",
+      color: {
+        argb: "FF000000",
+      },
+    };
+    titulo5.style.font = {
+      bold: true,
+      size: 10,
+      name: "Antique Olive",
+      underline: "single",
+      color: {
+        argb: "FF000000",
+      },
+    };
+    titulo6.style.font = {
+      bold: true,
+      size: 10,
+      name: "Antique Olive",
+      underline: "single",
+      color: {
+        argb: "FF000000",
+      },
+    };
     const headerR = sheet.getRow(10);
     headerR.values = [
       "N° de Vales/ F.",
@@ -591,6 +630,7 @@ export class ExcelService {
       }
     });
   }
+
     //----------------------------------------------
     ["A", "B", "C", "D", "E", "F", "G", "H"].forEach((columnKey) => {
       sheet.getCell(`${columnKey}${index + 13}`).font = {

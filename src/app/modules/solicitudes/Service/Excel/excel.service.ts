@@ -272,6 +272,67 @@ export class ExcelService {
     const titulo00 = sheet.getCell("H" + `${11}`);
     titulo00.value = `${this.formatDate(`${fechaDesde}`)}`;
     titulo00.style.font = {
+
+      bold: true,
+      size: 12,
+      name: "Antique Olive",
+      color: {
+        argb: "FF000000",
+      },
+    };
+    titulo2.alignment = {
+      vertical: "middle",
+      horizontal: "center",
+      wrapText: false,
+    };
+    titulo3.style.font = {
+      bold: true,
+      size: 10,
+      name: "Antique Olive",
+      color: {
+        argb: "FF000000",
+      },
+    };
+    titulo4.style.font = {
+      bold: true,
+      size: 10,
+      name: "Antique Olive",
+      color: {
+        argb: "FF000000",
+      },
+    };
+    titulo5.style.font = {
+      bold: true,
+      size: 10,
+      name: "Antique Olive",
+      underline: "single",
+      color: {
+        argb: "FF000000",
+      },
+    };
+    titulo6.style.font = {
+      bold: true,
+      size: 10,
+      name: "Antique Olive",
+      underline: "single",
+      color: {
+        argb: "FF000000",
+      },
+    };
+    const headerR = sheet.getRow(10);
+    headerR.values = [
+      "N° de Vales/ F.",
+      "Entradas Cant.",
+      "Entradas P.U.",
+      "Entradas Total",
+      "Salidas Cant.",
+      "Salidas P.U.",
+      "Salidas  Total",
+      "Fecha",
+    ];
+    const titulo00 = sheet.getCell("H" + `${11}`);
+    titulo00.value = `${this.formatDate(`${fechaDesde}`)}`;
+    titulo00.style.font = {
       bold: true,
       size: 12,
       name: "Antique Olive",
@@ -591,6 +652,7 @@ export class ExcelService {
       }
     });
   }
+
     //----------------------------------------------
     ["A", "B", "C", "D", "E", "F", "G", "H"].forEach((columnKey) => {
       sheet.getCell(`${columnKey}${index + 13}`).font = {

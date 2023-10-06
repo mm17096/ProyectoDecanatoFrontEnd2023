@@ -65,7 +65,7 @@ export class TablaComponent implements OnInit {
       modalRef.componentInstance.soliVeOd = data;
       modalRef.componentInstance.vista = this.vista;
       modalRef.componentInstance.usuarioActivo = this.userAcivo;
-    }else if (this.userAcivo.role == 'ADMIN' && (data.estado == 2 || data.estado == 3)) {
+    }else if (this.userAcivo.role == 'ADMIN' && data.estado != 1) {
       console.log("entro al else if del modal admin")
       this.abrirModalSecre(leyenda, data);
     }

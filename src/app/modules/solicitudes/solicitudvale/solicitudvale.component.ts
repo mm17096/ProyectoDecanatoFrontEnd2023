@@ -109,6 +109,7 @@ export class SolicitudvaleComponent implements OnInit {
   formularioSolicitudVale: FormGroup;
   formularioSolicitudValev: FormGroup;
   existenciaI!: IExistenciaVales;
+  existencia: number;
   term: any; // para buscar
 
   breadCrumbItems: Array<{}>;
@@ -160,6 +161,7 @@ export class SolicitudvaleComponent implements OnInit {
       direccion: new FormControl("", [Validators.required]),
       unidadSolicitante: new FormControl("", [Validators.required]),
       observacionRevision: new FormControl(""),
+      existencia: new FormControl(""),
     });
     this.cantidadValesA =
       this.formularioSolicitudVale.get("cantidadVales")?.value;
@@ -281,6 +283,7 @@ export class SolicitudvaleComponent implements OnInit {
     this.existenciaService.getCantidadVales().subscribe({
       next: (response) => {
         this.existenciaI = response;
+        this.existencia = this.existenciaI.valesDisponibles;
       },
     });
   }
@@ -303,15 +306,6 @@ export class SolicitudvaleComponent implements OnInit {
 
   //Obtiene el código de asignación
   obtenerCodigoAsignacion(codigoSolitudVale: string) {
-    //this.obtenerIdSolicitudVale(this.solicitudvv.codigoSolicitudVehiculo)
-    /* let alert: any;
-    alert = Swal.fire({
-      title: "Espere un momento!",
-      html: "Se está procesando la información...",
-      didOpen: () => {
-        Swal.showLoading();
-      },
-    }); */
     let timerInterval;
     Swal.fire({
       title: "Espere",
@@ -476,15 +470,35 @@ export class SolicitudvaleComponent implements OnInit {
     this.formularioSolicitudVale
       .get("observacionRevision")
       ?.setValue(String(observacionRevision));
+      this.formularioSolicitudVale
+      .get("existencia")
+      ?.setValue(String(this.existenciaI.valesDisponibles));
   }
 
   //Guardar la asignación de vales
   async guardar() {
+    const cantidadVales =
+      this.formularioSolicitudVale.get("cantidadVales")?.value;
     if (this.formularioSolicitudVale.valid) {
       if (this.estadoSoli == "Nueva" || this.estadoSoli == "Revisión") {
-        if ((await this.mensajesService.mensajeSolicitarAprobacion()) == true) {
-          // solicitar aprobación
-          this.solicitarAprobacion();
+        if (cantidadVales > this.existenciaI.valesDisponibles) {
+          Swal.fire({
+            icon: "error",
+            title: "Error de Solicitud",
+            text: "No puede Asignar más vales de los que existen",
+            showCancelButton: false,
+            confirmButtonColor: "#972727",
+            confirmButtonText: "Aceptar",
+            cancelButtonColor: "#2c3136",
+            cancelButtonText: "Cancelar",
+          });
+        } else {
+          if (
+            (await this.mensajesService.mensajeSolicitarAprobacion()) == true
+          ) {
+            // solicitar aprobación
+            this.solicitarAprobacion();
+          }
         }
       } else {
         if ((await this.mensajesService.mensajeAsignar()) == true) {
@@ -509,6 +523,7 @@ export class SolicitudvaleComponent implements OnInit {
     const usuarioJson = JSON.parse(this.storage.getItem("usuario" || ""));
     const empleado =
       usuarioJson.empleado.nombre + " " + usuarioJson.empleado.apellido;
+    const cargo = usuarioJson.empleado.cargo.nombreCargo;
     //Asignaré los campos necesario para guardar la asignación
     const cantidadVales =
       this.formularioSolicitudVale.get("cantidadVales")?.value;
@@ -535,7 +550,7 @@ export class SolicitudvaleComponent implements OnInit {
     });
     return new Promise<void>((resolve, reject) => {
       this.service
-        .insertar(asignarVales, usuarioJson.codigoUsuario, empleado)
+        .insertar(asignarVales, usuarioJson.codigoUsuario, empleado, cargo)
         .subscribe({
           next: (resp: any) => {
             // Cerrar SweetAlert de carga
@@ -564,6 +579,7 @@ export class SolicitudvaleComponent implements OnInit {
     const usuarioLogueado = JSON.parse(this.storage.getItem("usuario" || ""));
     const empleado =
       usuarioLogueado.empleado.nombre + " " + usuarioLogueado.empleado.apellido;
+    const cargo = usuarioLogueado.empleado.cargo.nombreCargo;
     //Asignaré los campos necesario para modificar la asignación
     const cantidadVales =
       this.formularioSolicitudVale.get("cantidadVales")?.value;
@@ -576,6 +592,8 @@ export class SolicitudvaleComponent implements OnInit {
     const fechaAsignacion = this.obtenerFechaConFormato();
 
     if (cantidadVales > 0) {
+      console.log("cantidadVales: ", cantidadVales);
+
       const solicitud: ISolcitudAprobar = {
         codigoSolicitudVale: this.codigoSolicitudValeAprobar,
         cantidadVales: cantidadVales,
@@ -593,7 +611,7 @@ export class SolicitudvaleComponent implements OnInit {
         showConfirmButton: false,
       });
       return new Promise<void>((resolve, reject) => {
-        this.service.solicitarAprobacion(solicitud, empleado).subscribe({
+        this.service.solicitarAprobacion(solicitud, empleado, cargo).subscribe({
           next: (resp: any) => {
             // Cerrar SweetAlert de carga
 
@@ -626,7 +644,7 @@ export class SolicitudvaleComponent implements OnInit {
           },
         });
       });
-    } else {
+    }else {
       this.mensajesService.mensajesToast(
         "warning",
         "Debe solicitar al menos un vale"

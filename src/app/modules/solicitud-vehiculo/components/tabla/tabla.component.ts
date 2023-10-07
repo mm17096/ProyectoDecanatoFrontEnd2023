@@ -38,7 +38,6 @@ export class TablaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("tabla:",this.vista);
   }
 
   abrirModal(leyenda: string, data: any) {
@@ -58,7 +57,6 @@ export class TablaComponent implements OnInit {
 
   abrirModalParaAdmin(leyenda: string, data: any) {
     if (this.userAcivo.role == 'ADMIN' && data.estado == 1 && this.vista == 'listar'){
-      console.log("entro al if del modal admin")
       this.selectedData = data; // Almacena los datos del registro seleccionado
       const modalRef = this.modalService.open(ModalComponent, {size: 'xl', backdrop: 'static'});
       modalRef.componentInstance.leyenda = leyenda; // Pasa la leyenda al componente modal
@@ -66,7 +64,6 @@ export class TablaComponent implements OnInit {
       modalRef.componentInstance.vista = this.vista;
       modalRef.componentInstance.usuarioActivo = this.userAcivo;
     }else if (this.userAcivo.role == 'ADMIN' && data.estado != 1) {
-      console.log("entro al else if del modal admin")
       this.abrirModalSecre(leyenda, data);
     }
   }

@@ -169,62 +169,70 @@ export class ModalComponent implements OnInit {
           if (this.validarfecha(solicitudVehiculo.fechaSalida)){
             if(this.validarfecha(solicitudVehiculo.fechaEntrada)){
               if (solicitudVehiculo.fechaEntrada >= solicitudVehiculo.fechaSalida){
-                console.log("fechaEntrada", solicitudVehiculo.fechaEntrada);
-                console.log("fechaSalida")
-                if(this.file  != null
-                  || solicitudVehiculo.cantidadPersonas < 6){
-                  //  vacío para almacenar los datos de los pasajeros
-                  const pasajerosData = [];
-
-                  // Recorrer los controles de los pasajeros
-                  for (const control of this.pasajeroFormControls) {
-                    // Obtener el valor del control
-                    const nombrePasajero = control.value;
-
-                    // objeto con el valor del control y un ID vacío
-                    const pasajero = { id: '', nombrePasajero };
-
-                    // Agregar el objeto al arreglo de pasajerosData
-                    pasajerosData.push(pasajero);
-                  }
-
-                  solicitudVehiculo.listaPasajeros = pasajerosData;
-
-                  //console.log("dataPas: ",pasajerosData);
-
-                  // validacion lista de pasajeros
-                  const todosLlenos = pasajerosData.every((pasajero) => {
-                    const value = pasajero.nombrePasajero;
-
-                    return typeof value === 'string' && value.trim() !== '';
-
-
-                  });
-
-                  if (!todosLlenos) {
-                    this.mensajesService.mensajesToast(
-                      "warning",
-                      "Por favor, completa todos los nombres de los pasajeros."
-                    );
-                    // fin validacion de lista de pasajeros
-                  } else {
-                    // Todos los nombres de los pasajeros están llenos, continuar con el envío de la solicitud.
-                    if ((await this.mensajesService.mensajesConfirmar()) == true) {
-                      await this.registrarSoliVe();
-                    }
-                  }
-                } else {
+                if (solicitudVehiculo.horaEntrada <= solicitudVehiculo.horaSalida &&
+                  solicitudVehiculo.fechaSalida == solicitudVehiculo.fechaEntrada){
                   this.mensajesService.mensajesToast(
                     "warning",
-                    "Debe subir pdf de la lista de pasajeros"
+                    "La hora de regreso debe ser mayor a la hora de salida en una misión de un día"
                   );
+                }else {
+                  if(this.file  != null
+                    || solicitudVehiculo.cantidadPersonas < 6){
+                    //  vacío para almacenar los datos de los pasajeros
+                    const pasajerosData = [];
+
+                    // Recorrer los controles de los pasajeros
+                    for (const control of this.pasajeroFormControls) {
+                      // Obtener el valor del control
+                      const nombrePasajero = control.value;
+
+                      // objeto con el valor del control y un ID vacío
+                      const pasajero = { id: '', nombrePasajero };
+
+                      // Agregar el objeto al arreglo de pasajerosData
+                      pasajerosData.push(pasajero);
+                    }
+
+                    solicitudVehiculo.listaPasajeros = pasajerosData;
+
+                    //console.log("dataPas: ",pasajerosData);
+
+                    // validacion lista de pasajeros
+                    const todosLlenos = pasajerosData.every((pasajero) => {
+                      const value = pasajero.nombrePasajero;
+
+                      return typeof value === 'string' && value.trim() !== '';
+
+
+                    });
+
+                    if (!todosLlenos) {
+                      this.mensajesService.mensajesToast(
+                        "warning",
+                        "Por favor, completa todos los nombres de los pasajeros."
+                      );
+                      // fin validacion de lista de pasajeros
+                    } else {
+                      // Todos los nombres de los pasajeros están llenos, continuar con el envío de la solicitud.
+                      if ((await this.mensajesService.mensajesConfirmar()) == true) {
+                        await this.registrarSoliVe();
+                      }
+                    }
+                  } else {
+                    this.mensajesService.mensajesToast(
+                      "warning",
+                      "Debe subir pdf de la lista de pasajeros"
+                    );
+                  }
                 }
+
               }else{
                 this.mensajesService.mensajesToast(
                   "warning",
                   "La fecha de misión  debe ser mayor o igual a la fecha de salida"
                 );
               }
+
             } else {
               this.mensajesService.mensajesToast(
                 "warning",

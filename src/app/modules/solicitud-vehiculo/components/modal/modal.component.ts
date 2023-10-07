@@ -137,6 +137,12 @@ export class ModalComponent implements OnInit {
           .setValue(this.soliVeOd != null ? this.soliVeOd.observaciones: '');
       }
 
+      if(this.soliVeOd.motorista != null){
+        this.formularioSoliVe.get('motorista')
+          .setValue(this.soliVeOd != null ? this.soliVeOd.motorista.nombre + ' '
+            + this.soliVeOd.motorista.apellido: '');
+      }
+
 
       if (solicitudVehiculo.cantidadPersonas > 5){
         this.mostrarTabla = false;
@@ -434,6 +440,7 @@ export class ModalComponent implements OnInit {
       file: ['',],
       isChecked: [false],
       observaciones: ['',[]],
+      motorista: ['', []]
     });
 
     this.formularioSoliVe.get('isChecked').valueChanges.subscribe((isChecked) => {
@@ -628,7 +635,11 @@ export class ModalComponent implements OnInit {
       if (await this.mensajesService.mensajeAnular() == true){
         this.soliVeOd.observaciones =  this.formularioSoliVe.get('observaciones').value;
         this.soliVeOd.estado = 15;
-        await this.actualizarSolicitudAdmin(this.soliVeOd, 'anulada');
+        if (this.usuarioActivo.role == 'ADMIN'){
+          await this.actualizarSolicitudAdmin(this.soliVeOd, 'anulada');
+        }else{
+          await this.actualizarSolicitud(this.soliVeOd, 'anulada');
+        }
       }
     }
 
@@ -728,7 +739,6 @@ export class ModalComponent implements OnInit {
       this.soliVeOd.observaciones =  this.formularioSoliVe.get('observaciones').value;
 
        if (this.soliVeOd.estado == 1 && this.usuarioActivo.role == 'ADMIN'){
-        this.soliVeOd.estado = 2;
         await this.actualizarSolicitudAdmin(this.soliVeOd, 'aprobada');
       }
     }

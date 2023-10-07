@@ -128,7 +128,11 @@ export class TablaComponent implements OnInit {
       this.soliService.updateSolciitudVehiculo(data).subscribe({
         next: () => {
           //resp: any
-          this.soliService.getSolicitudesRol(this.userAcivo.role);
+          if (this.userAcivo.role == 'ADMIN'){
+            this.soliService.getSolicitudesVehiculo(1);
+          }else {
+            this.soliService.getSolicitudesRol(this.userAcivo.role);
+          }
           this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
           resolve();
         },
@@ -159,7 +163,11 @@ export class TablaComponent implements OnInit {
           this.soliService.registrarSolicitudVale(this.solicitudVale).subscribe({
             next: () => {
               // valeResp: any
-              this.soliService.getSolicitudesRol(this.userAcivo.role);
+              if (this.userAcivo.role == 'ADMIN'){
+                this.soliService.getSolicitudesVehiculo(3);
+              }else {
+                this.soliService.getSolicitudesRol(this.userAcivo.role);
+              }
               this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
               resolve();
             },
@@ -200,9 +208,9 @@ export class TablaComponent implements OnInit {
   async aprobarSolicitudAdmin(data: any){
     if ((await this.mensajesService.mensajeAprobar()) == true) {
       //await this.actualizarSolicitud(data);
-      if (this.userAcivo.role=="JEFE_DEPTO"){
+      if (data.estado == 1){
         await this.actualizarSolicitud(data);
-      }else{
+      }else if(data.estado == 3){
         await this.actualizarSolicitudDec(data);
       }
     }

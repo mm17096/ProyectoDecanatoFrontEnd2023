@@ -377,7 +377,11 @@ export class ModalSecretariaComponent implements OnInit {
             this.soliVeService.enviarPdfPasajeros(formData).subscribe({
               next: (pdfResp: any) => {
                 //console.log(pdfResp);
-                this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
+                if (this.usuarioActivo.role == 'ADMIN'){
+                  this.soliVeService.getSolicitudesVehiculo(2);
+                }else{
+                  this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
+                }
                 this.mensajesService.mensajesToast("success", "Registro agregado");
                 this.modalService.dismissAll();
                 this.formularioSoliVe.reset();
@@ -394,7 +398,11 @@ export class ModalSecretariaComponent implements OnInit {
               },
             });
           } else {
-            this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
+            if (this.usuarioActivo.role == 'ADMIN'){
+              this.soliVeService.getSolicitudesVehiculo(2);
+            }else{
+              this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
+            }
             this.mensajesService.mensajesToast("success", "Asignacion exitosa");
             this.modalService.dismissAll();
             this.formularioSoliVe.reset();

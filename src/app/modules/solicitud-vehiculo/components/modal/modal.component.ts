@@ -8,7 +8,7 @@ import {
   Validators
 } from "@angular/forms";
 import {Router} from "@angular/router";
-import {IDocumento, IPais, IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
+import {IDocumento, IEmail, IPais, IPasajero, ISolicitudVehiculo} from "../../interfaces/data.interface";
 import {SolicitudVehiculoService} from "../../services/solicitud-vehiculo.service";
 
 import {map} from "rxjs/operators";
@@ -18,6 +18,7 @@ import {IVehiculos} from "../../../vehiculo/interfaces/vehiculo-interface";
 import {INTEGER_VALIDATE} from "../../../../constants/constants";
 import { Usuario } from 'src/app/account/auth/models/usuario.models';
 import {ISolicitudvalep} from "../../../solicitud-vale-paginacion/interface/solicitudvalep.interface";
+import {EmailService} from "../../services/email.service";
 
 @Component({
   selector: 'app-modal',
@@ -75,7 +76,7 @@ export class ModalComponent implements OnInit {
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private router: Router,
               private soliVeService: SolicitudVehiculoService, public activeModal: NgbActiveModal,
-              private mensajesService: MensajesService,
+              private mensajesService: MensajesService, private emailService: EmailService
   ) {
     this.solicitudVale = {
       idSolicitudVale: '',
@@ -357,6 +358,9 @@ export class ModalComponent implements OnInit {
               next: () => {
                 //console.log(pdfResp:any);
                 this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
+                /*Correo*/
+                this.enviarEmail(this.usuarioActivo.empleado.departamento.nombre)
+                /*Fin correo*/
                 this.mensajesService.mensajesToast("success", "Registro agregado");
                 this.modalService.dismissAll();
                 this.formularioSoliVe.reset();
@@ -374,6 +378,9 @@ export class ModalComponent implements OnInit {
             });
           } else {
             this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
+            /*Correo*/
+            this.enviarEmail(this.usuarioActivo.empleado.departamento.nombre)
+            /*Fin correo*/
             this.mensajesService.mensajesToast("success", "Registro agregado");
             this.modalService.dismissAll();
             this.formularioSoliVe.reset();
@@ -786,4 +793,33 @@ export class ModalComponent implements OnInit {
       });
     });
   }
+  /*fin administrador*/
+
+
+  /*Correo*/
+  enviarEmail(departamento: any){
+    /*Correo*/
+    this.emailService.getCorreoJefeDepto(departamento).subscribe(
+      (datos) => {
+        const nombreCompletoSolicitante = this.usuarioActivo.empleado.nombre + " "+
+          this.usuarioActivo.empleado.apellido;
+        const email: IEmail = {
+          asunto: 'Solicitud de vehículo pendiente de aprobación',
+          titulo: 'Solicitud de vehículo pendiente de aprobación',
+          email: datos.correo,
+          receptor: "Estimad@ "+datos.nombreCompleto+".",
+          mensaje: nombreCompletoSolicitante+" ha realizado una solicitud de vehículo para una misión y esta a la espera de su aprobación.",
+          centro: 'Por favor ingrese al sistema para ver más detalles',
+          abajo: 'Gracias por su atención a este importante mensaje.\nFeliz día!',
+        }
+        this.emailService.notificarEmailJefeDepto(email);
+      },
+      (error) => {
+        console.error('Error al obtener el correo:', error);
+      }
+    );
+    /*Fin correo*/
+  }
+  /*Fin correo*/
+
 }

@@ -64,4 +64,14 @@ export class EmailService {
   getCorreoJefeDepto(depto: string): Observable<{ correo: string, nombreCompleto: string }> {
     return this.http.get<{ correo: string, nombreCompleto: string }>(`${this.url}/solicitudvehiculo/obtenerjefe/${depto}`);
   }
+
+  getSolicitante(id: string): Observable<{ correo: string, nombreCompleto: string }>{
+    return this.http.get<{ correo: string, nombreCompleto: string }>
+          (`${this.url}/solicitudvehiculo/obtenersolicitante/${id}`);
+  }
+
+  getEmailNameRol(rol: string): Observable<{ correo: string, nombreCompleto: string }>{
+    return this.http.get<{ correo: string, nombreCompleto: string }>
+    (`${this.url}/solicitudvehiculo/obtenercrol/${rol}`);
+  }
 }

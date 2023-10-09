@@ -132,7 +132,8 @@ export class TablaComponent implements OnInit {
           }else {
             this.soliService.getSolicitudesRol(this.userAcivo.role);
           }
-          this.enviarEmailAprob(this.userAcivo.empleado.departamento.nombre);
+          this.enviarEmailAprob('SECR_DECANATO', 'Nueva solicitud de vehículo pendiente',
+            'Tiene una nueva solicitud de vehículo pendiente de asignar motorista o verificación de la información.');
           this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
           resolve();
         },
@@ -168,7 +169,8 @@ export class TablaComponent implements OnInit {
               }else {
                 this.soliService.getSolicitudesRol(this.userAcivo.role);
               }
-              this.enviarEmailAprob(this.userAcivo.empleado.departamento.nombre);
+              this.enviarEmailAprob('SECR_DECANATO', 'Nueva solicitud de vehículo pendiente',
+                'Tiene una nueva solicitud de vehículo pendiente de asignar motorista o verificación de la información.');
               this.mensajesService.mensajesToast("success", "Solicitud aprobada con éxito");
               resolve();
             },
@@ -219,19 +221,16 @@ export class TablaComponent implements OnInit {
 
   /* correo */
 
-  enviarEmailAprob(departamento: any){
-    /*Correo*/
-    this.emailService.getCorreoJefeDepto(departamento).subscribe(
+  enviarEmailAprob(rol: any, titulo: string, mensaje: string){
+    this.emailService.getEmailNameRol(rol).subscribe(
       (datos) => {
-        const nombreCompletoSolicitante = this.userAcivo.empleado.nombre + " "+
-          this.userAcivo.empleado.apellido;
         const email: IEmail = {
-          asunto: 'Solicitud de vehículo pendiente de aprobación',
-          titulo: 'Solicitud de vehículo pendiente de aprobación',
+          asunto: titulo,
+          titulo: titulo,
           email: datos.correo,
           receptor: "Estimad@ "+datos.nombreCompleto+".",
-          mensaje: nombreCompletoSolicitante+" ha realizado una solicitud de vehículo para una misión y esta a la espera de su aprobación.",
-          centro: 'Por favor ingrese al sistema para ver más detalles',
+          mensaje: mensaje,
+          centro: 'Por favor ingrese al sistema para ver más detalles tabla',
           abajo: 'Gracias por su atención a este importante mensaje.\nFeliz día!',
         }
         this.emailService.notificarEmail(email);
@@ -240,7 +239,6 @@ export class TablaComponent implements OnInit {
         console.error('Error al obtener el correo:', error);
       }
     );
-    /*Fin correo*/
   }
 
   /* fin correo */

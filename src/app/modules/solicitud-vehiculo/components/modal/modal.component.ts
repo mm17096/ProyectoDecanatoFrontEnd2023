@@ -677,6 +677,13 @@ export class ModalComponent implements OnInit {
 
           this.mensajesService.mensajesToast("success", `Solicitud ${accion} con éxito`);
           this.modalService.dismissAll();
+          if (accion == 'anulada'){
+            this.enviarEmailAnulacion(data.solicitante.codigoUsuario, data.observaciones);
+          }else if(accion=='aprobada'){
+            this.enviarEmailSecre('SECR_DECANATO', 'Nueva solicitud de vehículo pendiente',
+              'Tiene una nueva solicitud de vehículo pendiente de asignar motorista o verificación de la información.');
+          }
+
           setTimeout(() => {
             this.soliVeService.getSolicitudesRol(this.usuarioActivo.role);
           }, 3025);
@@ -776,6 +783,12 @@ export class ModalComponent implements OnInit {
 
           this.mensajesService.mensajesToast("success", `Solicitud ${accion} con éxito`);
           this.modalService.dismissAll();
+          if (accion == 'aprobada'){
+            this.enviarEmailSecre('SECR_DECANATO', 'Nueva solicitud de vehículo pendiente',
+              'Tiene una nueva solicitud de vehículo pendiente de asignar motorista o verificación de la información.');
+          }else if (accion == 'anulada'){
+            this.enviarEmailAnulacion(data.solicitante.codigoUsuario, data.observaciones);
+          }
           setTimeout(() => {
             this.soliVeService.getSolicitudesVehiculo(1);
           }, 3025);
@@ -798,7 +811,6 @@ export class ModalComponent implements OnInit {
 
   /*Correo*/
   enviarEmail(departamento: any){
-    /*Correo*/
     this.emailService.getCorreoJefeDepto(departamento).subscribe(
       (datos) => {
         const nombreCompletoSolicitante = this.usuarioActivo.empleado.nombre + " "+
@@ -818,8 +830,53 @@ export class ModalComponent implements OnInit {
         console.error('Error al obtener el correo:', error);
       }
     );
-    /*Fin correo*/
   }
-  /*Fin correo*/
+
+  enviarEmailAnulacion(id: any, obsevacion: any){
+    if (obsevacion ==  null){
+      obsevacion = 'SIN NINGUNA OBSERVACIÓN';
+    }
+    this.emailService.getSolicitante(id).subscribe(
+      (datos) => {
+        const nombreUserAccion = this.usuarioActivo.empleado.nombre + " "+
+          this.usuarioActivo.empleado.apellido;
+        const email: IEmail = {
+          asunto: 'Solicitud de vehículo ANULADA',
+          titulo: 'Solicitud de vehículo ANULADA',
+          email: datos.correo,
+          receptor: "Estimad@ "+datos.nombreCompleto+".",
+          mensaje: "Su solicitud ha sido anulada por "+nombreUserAccion+". "+obsevacion,
+          centro: 'Por favor ingrese al sistema para ver más detalles',
+          abajo: 'Gracias por su atención a este importante mensaje.\nFeliz día!',
+        }
+        this.emailService.notificarEmail(email);
+      },
+      (error) => {
+        console.error('Error al obtener el correo:', error);
+      }
+    );
+  }
+
+  enviarEmailSecre(rol: any, titulo: string, mensaje: string){
+    this.emailService.getEmailNameRol(rol).subscribe(
+      (datos) => {
+        const email: IEmail = {
+          asunto: titulo,
+          titulo: titulo,
+          email: datos.correo,
+          receptor: "Estimad@ "+datos.nombreCompleto+".",
+          mensaje: mensaje,
+          centro: 'Por favor ingrese al sistema para ver más detalles',
+          abajo: 'Gracias por su atención a este importante mensaje.\nFeliz día!',
+        }
+        this.emailService.notificarEmail(email);
+      },
+      (error) => {
+        console.error('Error al obtener el correo:', error);
+      }
+    );
+  }
+
+  /* fin correo */
 
 }

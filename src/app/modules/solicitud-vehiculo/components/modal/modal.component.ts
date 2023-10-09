@@ -812,7 +812,7 @@ export class ModalComponent implements OnInit {
           centro: 'Por favor ingrese al sistema para ver más detalles',
           abajo: 'Gracias por su atención a este importante mensaje.\nFeliz día!',
         }
-        this.emailService.notificarEmailJefeDepto(email);
+        this.emailService.notificarEmail(email);
       },
       (error) => {
         console.error('Error al obtener el correo:', error);

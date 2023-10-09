@@ -40,7 +40,7 @@ export class EmailService {
   }
 
   /*correo*/
-  notificarEmailJefeDepto(email: IEmail) {
+  notificarEmail(email: IEmail) {
     console.log("data a enviar al backend" , email);
     this.enviarNotificacionCorreo(email).subscribe(
       (resp) => {

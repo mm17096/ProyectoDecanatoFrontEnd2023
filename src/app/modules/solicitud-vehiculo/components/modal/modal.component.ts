@@ -359,7 +359,9 @@ export class ModalComponent implements OnInit {
                 //console.log(pdfResp:any);
                 this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
                 /*Correo*/
-                this.enviarEmail(this.usuarioActivo.empleado.departamento.nombre)
+                if (this.usuarioActivo.role != ("JEFE_DEPTO" || "JEFE_FINANACIERO" || 'DECANO')){
+                  this.enviarEmail(this.usuarioActivo.empleado.departamento.nombre);
+                }
                 /*Fin correo*/
                 this.mensajesService.mensajesToast("success", "Registro agregado");
                 this.modalService.dismissAll();
@@ -379,7 +381,9 @@ export class ModalComponent implements OnInit {
           } else {
             this.soliVeService.getSolicitudesVehiculo(this.estadoSelecionado);
             /*Correo*/
-            this.enviarEmail(this.usuarioActivo.empleado.departamento.nombre)
+            if (this.usuarioActivo.role != ("JEFE_DEPTO" || "JEFE_FINANACIERO" || 'DECANO')){
+              this.enviarEmail(this.usuarioActivo.empleado.departamento.nombre);
+            }
             /*Fin correo*/
             this.mensajesService.mensajesToast("success", "Registro agregado");
             this.modalService.dismissAll();
